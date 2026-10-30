@@ -1,0 +1,140 @@
+{
+  "schema": "BZ63_STATIC_SCOPE_AND_MIGRATION_REVIEW_V1",
+  "verdict": "COMPONENT_SCOPE_CONFIRMED_DIRECT_INTEGRATION_NOT_READY_VERSION_AND_READ_ROUTING_REQUIRED",
+  "authority_main": "bd30876ea9ec9affb7531a1ef806fc3a6379bc06",
+  "qualified_component": {
+    "base_sha256": "6f3ad60c9f235512bd762133c56f5e662fe9b78cbc8eec0cf76b76dc44942ec9",
+    "proposed_sha256": "e329280fa138a3a01e98cb99713dc5e93b3f2cee4d1dae95f7c937ec371b6de7",
+    "patch_sha256": "0f1a81de45c0adf987d5332a2af2a0e71fd552ceab5917197637ca1a87b1ee95",
+    "case_sha256": "38e1ecf1050a21da46aff58472c356db727192ebdf954b9286cb2582113e3bc1",
+    "result_sha256": "79a8e29be6e8c9c2f48ceb3d33686db9742153006249d2ceda6fc63f828116ba",
+    "BZ62_manifest_sha256": "a8a8a1b8a2185d2abcc1b6331bcfc6bbc711728b3667bef460d979129409d08f",
+    "all16_frozen_payload_hashes_verified": true,
+    "actual_BZ62": {
+      "Node_processes": 1,
+      "connected_cases": 1,
+      "vectors": 35,
+      "engine": 0,
+      "native_SQL": 0,
+      "provider_HTTP": 0,
+      "CF": 0,
+      "TG": 0
+    },
+    "replayed_in_BZ63": false
+  },
+  "findings": [
+    {
+      "id": "INTERNAL_BINDING_NOT_FIRST_SOURCE_AUTHENTICATION",
+      "severity": "SCOPE_LIMIT",
+      "evidence": "proposed63-116; BZ62 full_native/base/quote positives",
+      "detail": "Guard verifies supplied current original candle fact/header, requested seed+12baseline row windows, clocks/row refs/comparison basis and equality of retained aggregates. RECONFIRMED_SUPPLIED_CLOSED_ROWS is truthful for that meaning. No new false positive identified within that predicate by static review. It does not recover the first seed acquisition fact_id/evidence or original per-window hashes, and cannot prove original baseline vector equality when different vectors share median/range. Source auth remains false; forged metadata or revision authenticity is outside this proof."
+    },
+    {
+      "id": "ROLLING_FACT_ID_SYNC",
+      "severity": "STATIC_INFERENCE_UNEXECUTED",
+      "evidence": "proposed69-76; currentSeedRatioSources122-135",
+      "detail": "A genuinely new analysis with synchronously matching new fact_id/evidence/header/coverage and source clocks<=its T0 may reconfirm full supplied historical windows. This synchronized rolling-ID positive was not executed in BZ62; expected behavior follows conditions only. Substituting a newer fact into an old immutable analysis leaves old fact_ids/evidence or source clock>T0 and returns UNKNOWN; changing old analysis to fix this is prohibited."
+    },
+    {
+      "id": "CONSERVATIVE_UNKNOWNS",
+      "severity": "KNOWN_FALSE_NEGATIVES_BY_POLICY",
+      "detail": "Complete data elsewhere remains UNKNOWN unless supplied as the exact analysis/input candle fact. Different profile, SHORT_HISTORY, absent old metadata/row refs, duplicate declared candle fact_id, >1440 rows, missing required unit flags, or absent current5m declared range can remain UNKNOWN even if humans could independently prove values. Current/seed numerator alone can be verifiable yet all seed features are UNKNOWN when12-window baseline is missing, because one guard couples all8. No external resolver or automatic fallback exists."
+    },
+    {
+      "id": "UNVERSIONED_KEY_COLLISION",
+      "severity": "INTEGRATION_BLOCKER",
+      "evidence": "proposedFEATURE_CAPSULE_VERSION +215; runtime/retained-capsules.mjs11-28,41-45",
+      "detail": "Proposal keeps v2 schema/key pump:feature-capsule:v2:<analysis_sha>. Same original generates changed feature payload/digest. Retained original() regenerates on remember and record(); immutable() rejects changed bytes at existing v2 key. A later outcome of an old signal can therefore hit IMMUTABLE_RETAINED_CAPSULE_CONFLICT even if initial new writer was intended only for new signals. BZ62 used a fresh fixture writer without store/old existing capsule, so this collision was not exercised."
+    },
+    {
+      "id": "LEGACY_BOUND_PROMOTION",
+      "severity": "INTEGRATION_BLOCKER",
+      "evidence": "proposed readFeatureCapsule217-229; exact reader bytes unchanged SHA5524acfd79730f7e880343f329fb75769c4b07b7408a8d90f23dd8f4a93f99ff",
+      "detail": "Reader validates schema/digest/generic bound+header clocks but ignores source_window_status/ranges. Old header-only v2 boundtrue still passes. Digest proves bytes only; neither recent read time nor new deployment can certify old seed windows. Actual downstream model use was not inspected and is UNKNOWN; API acceptance is statically confirmed."
+    },
+    {
+      "id": "OUTCOME_LINK_VERSION_ROUTING",
+      "severity": "INTEGRATION_BLOCKER",
+      "evidence": "proposed244; retained-capsules41-53",
+      "detail": "prepareOutcomeCapsule hardcodes current FEATURE_CAPSULE_VERSION and feature:v2 key; record() requires origin exact signal.origin; summary link hardcodes v2 schema/key. Bumping one constant alone can reject old mature features or collide with existing immutable summary link. Cross-schema routing must preserve old origin/T0/P0/outcome and correct feature key+hash."
+    },
+    {
+      "id": "IMMUTABILITY_PROOF_BOUNDARY",
+      "severity": "CONFIRMED_CONTROLLED_ONLY",
+      "detail": "35 vectors compare frozen analysis/input/card bytes, capsule origin/plan/input+analysis digests, non-seed features and retention against base. Card is an unrelated frozen synthetic object and never passed to writer; this proves local nonmutation/isolation, not sender integration, native saved-card persistence or global retention. No physical storage or entry acceptance claimed."
+    }
+  ],
+  "integration_plan": [
+    {
+      "step": 1,
+      "action": "Introduce a distinct new feature schema and key namespace (recommended v3), plus binding-policy marker outside origin. Keep v2 immutable bytes/keys unchanged. Source status must mean supplied-row reconfirmation, never first-source authentication."
+    },
+    {
+      "step": 2,
+      "action": "Choose capsule codec deterministically from immutable original metadata/recorded writer epoch and existing feature reference. Pin selection at creation of NEW originals; never choose current code or Date.now at later outcome. Preserve saved original implementation pin. Legacy originals without v3 marker stay legacy; do not mutate/re-hash old analysis/input or backfill originals."
+    },
+    {
+      "step": 3,
+      "action": "Split raw audit reading from verified seed-feature view. v2 stays readable for audit/labels; its seed features become LEGACY_SOURCE_WINDOW_UNVERIFIED/UNKNOWN in the verified view without rewriting stored values. New schema reader requires expected binding policy, status/range/header-clock consistency and supported writer implementation. Generic boundtrue is insufficient."
+    },
+    {
+      "step": 4,
+      "action": "Make outcome and summary-link codecs explicit per feature_schema: old v2 outcomes/links retain exact keys and origins, new v3 features/outcomes/links use their own namespace and exact feature hash. Keep signal.origin equality and original+4h. Do not regenerate old v2 payload through new writer. If a legacy original has no saved capsule/reference, return explicit capsule-unavailable/legacy status while preserving original per-wave outcome/summary; do not manufacture verified v3 or block/reclassify the numeric outcome."
+    },
+    {
+      "step": 5,
+      "action": "No bulk migration, source lookup, reader promotion, deletion, protected-reference removal or current1941 publication modification. Only new eligible originals/capsules after explicitly recorded writer policy use v3; all other full/unread data remains explicit UNKNOWN until a separately scoped resolver is designed/admitted."
+    },
+    {
+      "step": 6,
+      "action": "ROOT owns coherent canonical/version/retained-writer/read-consumer integration and subsequent artifact. Keep accepted BZ62 component proof attached to e329 exact bytes, but do not treat it as version-routing/store integration proof. BZ63 changes no code and runs no new case."
+    }
+  ],
+  "unknowns": [
+    "Real first-source row/authenticity evidence beyond synthetic fixtures not read.",
+    "Synchronized rolling new-ID positive is static inference, not a BZ62 executed result.",
+    "Actual model/consumer eligibility behavior and real historical capsule inventory not read.",
+    "Native sender/data migration outcome under proposed version transition not tested or installed."
+  ],
+  "own_lease": {
+    "owner": "CODEX:OFFLINE_ANOMALIES:1793356868000",
+    "full": {
+      "commit": "8dfaff995e28b6e8e1d2ea225faa27c4e48fb976",
+      "git_blob": "48e5b5affbed1a73a47ab8ce4afba4ca0ca60d61"
+    }
+  },
+  "BZ63_actual": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "CF": 0,
+    "OAuth": 0,
+    "TG": 0,
+    "canonical_edits": 0,
+    "outbound": 0
+  },
+  "preserved": [
+    "all prior costs/unknowns/CLOSEDholds/reserves/caps/manual3",
+    "oldreport/9pauses/2OWNERdeferrals physicalstorage and entry",
+    "no raw/private16/recipient/sourcepacket reads",
+    "ROOT publication/nativepostinstall status separate; no new currentpinSENT closure claimed"
+  ],
+  "source_files": {
+    "pump-report/runtime/retained-capsules.mjs": {
+      "git_blob": "bd0a2e1ec1d98374ad56ffab88ca26fc374c876b",
+      "sha256": "688aaec7d1414dd1699a08c9d60b0b529bb2a5496db8d9cae6c62bc71faeaed8"
+    },
+    "pump-report/runtime/summary-index.mjs": {
+      "git_blob": "edb3bac51544ee8d3443aa892fbdc3675120c69d",
+      "sha256": "6bcd1ce9fae3d9e875ade28d7ae166b2a11f5326349b4ee86ff9065effc3e784"
+    },
+    "pump-report/analytics/feature-capsule.mjs": {
+      "git_blob": "dd3358d6ee010b19e5cd8c98efc243334323b740",
+      "sha256": "6f3ad60c9f235512bd762133c56f5e662fe9b78cbc8eec0cf76b76dc44942ec9"
+    }
+  }
+}

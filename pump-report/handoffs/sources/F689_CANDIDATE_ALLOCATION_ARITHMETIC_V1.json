@@ -1,0 +1,188 @@
+{
+  "schema": "F689_WHOLE_CANDIDATE_PLANNED_ALLOCATION_ARITHMETIC_V1",
+  "status": "EXACT_SAVED_SNAPSHOT_REFUSAL_EXPLAINED_NO_DOUBLE_COUNT_DEFECT",
+  "base_main": "bd30876ea9ec9affb7531a1ef806fc3a6379bc06",
+  "updated_safe_main": "8a271bccdba6b404737635c294f3c7e450243b6a",
+  "authority": {
+    "main": "8a271bccdba6b404737635c294f3c7e450243b6a",
+    "all17_FULL": true,
+    "register_chars": 1099744,
+    "all4_equal": true,
+    "root_owner": "CODEX:PUMP_PUBLICATION_ACTUAL_INSTALL_20261030:1793355771000",
+    "expiry": 1793358471000,
+    "fence": false
+  },
+  "evidence_refs": [
+    {
+      "path": "pump-report/runtime/budget.mjs",
+      "git_blob": "c1da8700dd1006338f9f8aa4f60cc2fe1f53227c",
+      "sha256": "c2ffa92d691acb6bb7e517fa483b010b688960e91054313e53ab8007ab3838bd"
+    },
+    {
+      "path": "pump-report/runtime/future-candidate-reserve.mjs",
+      "git_blob": "e59e0390c6e6f8a22848295feea31c866d50eb2d",
+      "sha256": "d5be9e33fab978862dfdb82ac44fc3c70a353e43515eea7e3dc95f7d50ae3105"
+    },
+    {
+      "path": "pump-report/runtime/candidate-surplus.mjs",
+      "git_blob": "b8197636c03488ecd1fea20573f728ed9e0c3a40",
+      "sha256": "6a4bc16a9cf93c89ef028c84110dabf2f25a031b07e51fe3285cceff04e92175"
+    },
+    {
+      "path": "pump-report/runtime/discovery-reserve.mjs",
+      "git_blob": "99a3f3c5ef776162585c8f2da361e452b4c95fb4",
+      "sha256": "a4323b4332c385337dbb16a9f5c66624fc635b01e4a09e40547bf1c2f08d48b2"
+    },
+    {
+      "path": "pump-report/runtime/production-policy.mjs",
+      "git_blob": "5d3cbfb40b4519b6c73bcbabee17e2f0e04a18d9",
+      "sha256": "a6a6857d0c382b6011e7061b3cebb0c5f9d044db5fe218da9838ff750a092b86"
+    },
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_POSTINSTALL_SOURCE_BUDGET_SAFE_PROJECTION_V1.json",
+      "git_blob": "30643cc5204582e2b89e07a5f17b8d934a220448",
+      "sha256": "c8f6fda62795505ce7746e4e9c5c391e14c4fec48cd705a1fcfeebcc61327f78"
+    }
+  ],
+  "saved_time": {
+    "UTC": "2026-10-30T10:30:52.938Z",
+    "MSK": "2026-10-30 13:30:52.938",
+    "ts": 1793356252938
+  },
+  "equation": {
+    "limit": 638,
+    "charged": 195,
+    "new_candidate": 12,
+    "CLOSED_unused_hold": 62,
+    "future_discovery": 154,
+    "future_base1_per_hour": 72,
+    "future_baseExtra2_per_hour": 144,
+    "lhs": 639,
+    "excess": 1,
+    "remaining_plan_before_forecast": 443,
+    "protected_remaining": 432,
+    "available_to_new_candidate": 11,
+    "required": 12,
+    "formula": "195+12+62+154+72+144=639>638;638-195-62-154-216=11"
+  },
+  "provenance": [
+    {
+      "term": "automaticplan.limit638",
+      "code": "runtime/budget.mjs:23-32",
+      "arithmetic": "floor((project900-protected_at_creation102-baseline0)*0.8)=floor638.4=638",
+      "meaning": "Frozen planned-load ceiling after protected creation reserve. 900day cap is not the spendable automatic budget."
+    },
+    {
+      "term": "held62",
+      "code": "runtime/candidate-surplus.mjs:19-54;runtime/budget.mjs:187",
+      "arithmetic": "9grants*12=108 original;108-46consumed=62remaining.44BingX+9TG=53 provider-specific;62-53=9 unassigned optional-map units.",
+      "meaning": "All85 retained grants CLOSED, today9. Older CLOSED grants no longer contribute current-day hold, today's remaining62 stays protected until original UTC day end. Unknown request keys2 remain charged/unknown; not equivalent to UNKNOWN surplus grants and not reset."
+    },
+    {
+      "term": "futureDiscovery154",
+      "code": "runtime/discovery-reserve.mjs:3-14",
+      "arithmetic": "Strictly future ticks13:35,13:40,...19:55=77ticks*2=154 BingXHTTP.",
+      "meaning": "No20:00tick and no relabelled elapsed tick."
+    },
+    {
+      "term": "future72+baseExtra144",
+      "code": "runtime/future-candidate-reserve.mjs:9-15;runtime/candidate-surplus.mjs:56-63",
+      "arithmetic": "Strictly future hourly slots14,15,16,17,18,19=6. Base future6*12=72 plus(3candidates_per_period-1)*72=144; total18 future candidates*12=216.",
+      "meaning": "BaseExtra protects the other2 future base places of frozen3/hour allocation. It is not the same slot protected twice."
+    },
+    {
+      "term": "newcandidate12",
+      "code": "runtime/production-policy.mjs:18-23;runtime/budget.mjs:182-194",
+      "arithmetic": "Upper12 includes10BingX+1Telegram+1unassigned optional map. Existing frozen allocation also12.",
+      "meaning": "Whole-operation forecast, not a promise of12 actual requests. No source/strategy threshold or budget cap change proposed."
+    }
+  ],
+  "guard_order": {
+    "exact_refusal": "runtime/budget.mjs:191 WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+    "path": "Global day bound189 passes; planned bound191 rejects before candidatePacing192/EVEN_DAY194/providerday197/month198. Surplus alternative206 triggers for EVEN_DAY only, so this planned refusal does not issue a new grant.",
+    "current_hour": "13:00period base3 already issued; prior9 base places issued, day12 base attempts. Queue12 is an independent work list, not the daily budget denominator. Even pacing is not the first emitted cause here.",
+    "outcome": "ON DEFERRED/NOT_CHECKED, checked0. No evidence of exhausted sources, no Telegram failure, no additional provider call."
+  },
+  "other_forecasts": {
+    "project": {
+      "lhs": 742,
+      "cap": 900,
+      "arithmetic": "196charged+12candidate+62held+102fixed+154discovery+216future=742",
+      "slack": 158
+    },
+    "BINGX_day": {
+      "lhs": 680,
+      "cap": 900,
+      "arithmetic": "193+10+44held+(51manual+24delivery+24outcomes)+154discovery+180future=680",
+      "slack": 220
+    },
+    "TELEGRAM_day": {
+      "lhs": 34,
+      "cap": 47,
+      "arithmetic": "3+1+9held+3manual+18future=34",
+      "slack": 13
+    },
+    "BINGX_month": {
+      "lhs": 2621,
+      "cap": 27900,
+      "arithmetic": "2134+10+44+99+154+180=2621"
+    },
+    "TELEGRAM_month": {
+      "lhs": 38,
+      "cap": 1457,
+      "arithmetic": "7+1+9+3+18=38"
+    },
+    "caveat": "Diagnostic reconstructions, not new admission/free whole-account capacity. First refusal is planned638; later provider gates are not reached. Current unknown charges and spent holds preserved. Projectcharged196 and autocharged195 differ by1; do not erase or infer its category."
+  },
+  "double_count_review": {
+    "defect_established": false,
+    "checks": [
+      "Consumed46 is already in charged totals, held term uses only remaining62, not original108.",
+      "Future base72 +extra144 represents exactly3/hour, not duplicating the same1/hour.",
+      "Fixed102 is tested separately in global day bound; planned ceiling was computed after protected_at_creation. Do not add102 again to line191.",
+      "CLOSED unused map/provider capacity remains deliberately held by accepted rule, not refunded or reopened.",
+      "Unassigned map forecast is conservative even where current eligible routes are absent. This packet does not remove issued holds or reprice saved allocation12."
+    ],
+    "interpretation": "Conservative forecast boundary, 1HTTP over the accepted plan. Not arithmetic source exhaustion or a malfunction of new publication recovery."
+  },
+  "time_behavior": {
+    "five_minute_wait_not_free": "If next discovery spends2, automaticcharged+2 while futurediscovery-2; line191 remains639 with unchanged other facts. Do not promise next5min tick passes.",
+    "next_hour_conditional": "At14MSK futurehour slots fall6→5, total future base reserve drops36. If six intervening discovery ticks consume12 and no other terms change,207+12+62+142+180=603<=638. This only describes budget eligibility; actual pacing/native/provider/gates still apply and no SENT is promised.",
+    "existing_cadence": "Keep already authorized discovery/queue cadence; no extra/manual probe, source restart, pause or frequency reduction."
+  },
+  "minimal_resolution": {
+    "runtime_patch_required": false,
+    "current": "Preserve exact caps/80%/3manual/CLOSEDholds/frozen allocation; retain queued candidates and use existing admission decisions.",
+    "useful_diagnostic": "Add/emit existing aggregate breakdown charged195/upper12/held62 with provider53+unassigned9/future154+72+144/limit638/deficit1 at the saved assessment clock. This requires no new market call.",
+    "not_authorized": "No raise638/900/47/80%, no CLOSED refund/reopen, no quota reset, no manual-reserve borrowing, no strategy or source threshold change."
+  },
+  "sufficient_evidence": {
+    "updated_same_packet_aggregate_closes_gap": true,
+    "all85_CLOSED": true,
+    "exact_global_hold": 62,
+    "no_additional_IO_needed": true,
+    "for_a_future_safe_diagnostic_only": [
+      "assessment_clock_ms",
+      "surplusHeld.http plus provider_day/provider_month totals and unassigned remainder",
+      "futureDiscovery ticks/http",
+      "futureCandidate slots/baseExtra totals",
+      "plan.limit/charged and frozen allocation"
+    ],
+    "not_a_new_lookup_request": true
+  },
+  "validation": "Independent static code read and administrative Python date/count/arithmetic/hash checks only; no Node/import/tests/engine/native/CF/provider/TG. Updated safe aggregate from same retained ROOT packet used, old runtime audit not repeated.",
+  "preservation": "BingX9002790010/min1/sec80%,TG471457,manual3,all actualspend/UNKNOWN/CLOSEDholds/reserves/9pauses/2OWNERdeferrals preserved. ROOT reported live1941/2a AUTO1DL1 normalAUTO; no new-pin SENT proof claimed.",
+  "source_operations": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "builds": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "provider_HTTP": 0,
+    "Telegram": 0,
+    "main_runtime_changes": 0,
+    "private_reads": 0
+  }
+}
