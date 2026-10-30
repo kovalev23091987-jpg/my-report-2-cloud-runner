@@ -1,0 +1,721 @@
+{
+  "schema": "ROOT_MAGMA_ACTUAL_BLOCK_STRATEGY_AUDIT_V1",
+  "basis": "Actual saved production original and same-original bound Telegram receipt; derived non-raw audit, no recomputation of strategy engine",
+  "authority_main": "7c3df8e1beeca6dc58c99b4311eff3f8e73e8e19",
+  "implementation_sha256": "dfd7b37b9ce06ba3ce6b7a06ae0f7e17e2fafffc198aaa292185c97d18450452",
+  "instrument": {
+    "instrument_id": "BINGX:USDT_M:102176:MAGMA-USDT",
+    "asset_id": "BINGX_UNDERLYING:MAGMA",
+    "venue": "BINGX",
+    "native_symbol": "MAGMA-USDT",
+    "market_type": "PERPETUAL",
+    "base": "MAGMA",
+    "quote": "USDT",
+    "settle": "USDT",
+    "margin": "USDT",
+    "classification_status": "VERIFIED_CRYPTO",
+    "identity_evidence_ref": "ROOT_F552_NATIVE_SCOPE_REVIEW:sha256:58cda3f9cf959bb2350c83874ce7f1ccc14e569f401fb99e42a34505ad5dd5da",
+    "price_tick": null,
+    "quantity_step": null,
+    "contract_multiplier": null,
+    "canonical_cross_venue_identity_qualified": false
+  },
+  "run_id": "4ec20570-d784-489b-aa05-0b5b8a86db74",
+  "analysis_ts": 1793343781755,
+  "reference_price": 0.3343,
+  "status": {
+    "ready": true,
+    "automatic_eligible": true,
+    "current_threshold_passed": true,
+    "reasons": [],
+    "wave_state": "CALM_PULLBACK"
+  },
+  "blocks": {
+    "1_movement_volume": {
+      "result": "USED_PASS",
+      "growth": {
+        "window_ms": 86400000,
+        "start_ts": 1793257320000,
+        "end_ts": 1793343720000,
+        "start_price": 0.26069,
+        "end_price": 0.33604,
+        "return_pct": 28.904062296213915
+      },
+      "recalculated_growth_pct": 28.904062296213915,
+      "automatic_day_threshold_pct": 20,
+      "short_windows": [
+        {
+          "window_ms": 300000,
+          "return_pct": 1.2351629812616727,
+          "passed": false
+        },
+        {
+          "window_ms": 900000,
+          "return_pct": 1.3359066373149098,
+          "passed": false
+        },
+        {
+          "window_ms": 3600000,
+          "return_pct": -4.311179452132807,
+          "passed": false
+        }
+      ],
+      "impulse": {
+        "field": "volume_native",
+        "unit": "UNKNOWN_NATIVE_UNIT",
+        "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+        "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:102176:MAGMA-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+        "interval_ms": 60000,
+        "volume": 39031.590000000004,
+        "baseline_median": 18055.18,
+        "ratio": 2.161794565326959,
+        "ratio_unit": "RATIO",
+        "ratio_reason": null,
+        "baseline_windows": 12,
+        "baseline_status": "FULL",
+        "normal_range": 0.0020600000000000063,
+        "start_ts": 1793337420000,
+        "end_ts": 1793337720000,
+        "open": 0.28331,
+        "close": 0.2957,
+        "low": 0.28163,
+        "return_pct": 4.373301330697821
+      },
+      "recalculated_relative_volume_ratio": 2.161794565326959,
+      "threshold_ratio": 2,
+      "current_to_impulse_volume_ratio": 0.3956874418900177,
+      "closed_candles": {
+        "expected_rows": 305,
+        "returned_rows": 305,
+        "emitted_rows": 305,
+        "complete": true,
+        "gaps": [],
+        "time_qualified": true,
+        "relative_volume_qualified": true,
+        "absolute_base_amount_qualified": false,
+        "absolute_USD_amount_qualified": false
+      },
+      "additional_price_rows": 1440,
+      "native_ticker_growth_rejected": "ROLLING_24H_OPEN_UNQUALIFIED",
+      "activity_windows": [
+        {
+          "window_ms": 180000,
+          "start_ts": 1793343540000,
+          "end_ts": 1793343720000,
+          "previous_start_ts": 1793343360000,
+          "previous_end_ts": 1793343540000,
+          "price_return_pct": 1.495061765683059,
+          "price_return_pct_reason": null,
+          "previous_price_return_pct": -0.510832657231286,
+          "previous_price_return_pct_reason": null,
+          "speed_pct_per_min": 0.49835392189435296,
+          "previous_speed_pct_per_min": -0.17027755241042866,
+          "speed_change_pct_per_min": 0.6686314743047816,
+          "volume_counter": 9432.6,
+          "previous_volume_counter": 7631.75,
+          "volume_basis": {
+            "field": "volume_native",
+            "unit": "UNKNOWN_NATIVE_UNIT",
+            "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+            "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:102176:MAGMA-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+            "interval_ms": 60000
+          },
+          "current_to_previous_volume_ratio": 1.2359681593343599,
+          "current_to_previous_volume_ratio_reason": null,
+          "baseline_median": 26316.355,
+          "baseline_windows": 20,
+          "baseline_status": "FULL",
+          "current_to_baseline_ratio": 0.3584310973157187,
+          "current_to_baseline_ratio_reason": null,
+          "volume_at_least_previous_with_less_growth": null,
+          "positive_growth_accelerated": true,
+          "reason": null
+        },
+        {
+          "window_ms": 300000,
+          "start_ts": 1793343420000,
+          "end_ts": 1793343720000,
+          "previous_start_ts": 1793343120000,
+          "previous_end_ts": 1793343420000,
+          "price_return_pct": 1.2351629812616727,
+          "price_return_pct_reason": null,
+          "previous_price_return_pct": -0.05118785944415727,
+          "previous_price_return_pct_reason": null,
+          "speed_pct_per_min": 0.24703259625233454,
+          "previous_speed_pct_per_min": -0.010237571888831454,
+          "speed_change_pct_per_min": 0.257270168141166,
+          "volume_counter": 15444.309999999998,
+          "previous_volume_counter": 38912.65,
+          "volume_basis": {
+            "field": "volume_native",
+            "unit": "UNKNOWN_NATIVE_UNIT",
+            "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+            "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:102176:MAGMA-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+            "interval_ms": 60000
+          },
+          "current_to_previous_volume_ratio": 0.39689689599654604,
+          "current_to_previous_volume_ratio_reason": null,
+          "baseline_median": 45312.53,
+          "baseline_windows": 12,
+          "baseline_status": "FULL",
+          "current_to_baseline_ratio": 0.3408397191681859,
+          "current_to_baseline_ratio_reason": null,
+          "volume_at_least_previous_with_less_growth": null,
+          "positive_growth_accelerated": true,
+          "reason": null
+        }
+      ],
+      "causation_claimed": false
+    },
+    "2_trade_sample": {
+      "result": "PARTIALLY_USED",
+      "status": "USABLE",
+      "reason": "LATEST_RETURNED_TRADE_SAMPLE_PARTIAL",
+      "buy_usdt": 95.33,
+      "sell_usdt": 84.8,
+      "netflow_usdt": 10.530000000000001,
+      "sample_start_ts": 1793343753858,
+      "sample_end_ts": 1793343779862,
+      "sample_seconds": 26.004,
+      "unique_executions": 14,
+      "coverage": {
+        "scope": "QUALIFIED_UNIQUE_RETURNED_TRADES_ONLY",
+        "returned_rows": 1000,
+        "qualified_unique_rows": 14,
+        "duplicate_rows": 0,
+        "conflicting_ids": 0,
+        "excluded_returned_rows": 986,
+        "exclusion_reasons": [
+          "TRADE_ROW_CLOCK_UNQUALIFIED"
+        ],
+        "provider_coverage": {
+          "sample_kind": "LATEST_RETURNED_BOUNDED_SAMPLE",
+          "requested_limit": 100,
+          "response_rows_max": 1000,
+          "returned_rows": 1000,
+          "returned_more_than_requested": true,
+          "response_bound_evidence_ref": "pump-report/handoffs/sources/F553_ACTUAL1000_EVIDENCE_V1.json",
+          "trade_id_field": "id_OR_ROOT_REVIEWED_fillId",
+          "fillId_alias_accepted": true,
+          "id_mapping_evidence_ref": "pump-report/handoffs/sources/F555_FILLID_ROOT_REVIEW_ACCEPTED_V1.json",
+          "vendor_ID_uniqueness_guaranteed": false,
+          "qualified_before_dedup": 999,
+          "invalid_id": 0,
+          "invalid_clock": 0,
+          "invalid_price": 0,
+          "invalid_notional": 1,
+          "unknown_side": 0,
+          "identity_mismatch": 0,
+          "id_field_rows": 0,
+          "fillId_field_rows": 1000,
+          "consistent_id_and_fillId_rows": 0,
+          "conflicting_id_fields": 0,
+          "counts_are_before_consumer_dedup": true,
+          "duplicate_and_conflicting_ids_preserved": true,
+          "complete": false,
+          "full_window_coverage": false,
+          "complete_window_start": null,
+          "complete_window_end": null,
+          "qualified_sample_start": 1793342115859,
+          "qualified_sample_end": 1793343779862,
+          "amount_field": "quoteQty",
+          "amount_unit": "USDT_PRICE_QUOTE_NOTIONAL",
+          "base_quantity_unit": "UNKNOWN",
+          "base_quantity_derived": false,
+          "maker_field": "isBuyerMaker",
+          "buyerMaker_alias_accepted": false,
+          "unit_and_maker_evidence_ref": "pump-report/handoffs/sources/T3_RECENT_TRADES_PRIMARY_PROOFS_V1.json",
+          "event_clock_basis": "NATIVE_TRADE_TIME_UNIX_MS",
+          "receipt_time_used_as_trade_time": false
+        },
+        "full_market_coverage": false
+      },
+      "price_response": {
+        "first_price": 0.33529,
+        "last_price": 0.33467,
+        "min_price": 0.3343,
+        "max_price": 0.33529,
+        "first_to_last_return_pct": -0.18491455158219372
+      },
+      "absorption_proven": false,
+      "market_path_proven": false,
+      "causation_proven": false,
+      "followup": "Review current per-row30s freshness restriction separately from response/fact TTL; no longer-window claim or policy change yet"
+    },
+    "3_liquidity": {
+      "result": "USED_PASS",
+      "status": "USABLE",
+      "spread_pct": 0.041827253443287915,
+      "sizes": [
+        {
+          "notional_usdt": 700,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 2090.6998599540148,
+            "quote_usdt": 700,
+            "vwap": 0.33481611273241135,
+            "fully_filled": true,
+            "levels_used": 6,
+            "requested_budget_usdt": 700,
+            "budget_covered": true,
+            "unused_budget_usdt": 0
+          },
+          "exit": {
+            "quantity_base": 2090.6998599540148,
+            "quote_usdt": 699.5306409532175,
+            "vwap": 0.33459161420166916,
+            "fully_filled": true,
+            "levels_used": 8
+          },
+          "entry_slippage_pct": 0.01078700412548983,
+          "exit_slippage_pct": 0.01445905998410657
+        },
+        {
+          "notional_usdt": 1000,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 2986.271859645981,
+            "quote_usdt": 1000.0000000000001,
+            "vwap": 0.3348656944175702,
+            "fully_filled": true,
+            "levels_used": 11,
+            "requested_budget_usdt": 1000,
+            "budget_covered": true,
+            "unused_budget_usdt": -1.1368683772161603e-13
+          },
+          "exit": {
+            "quantity_base": 2986.271859645981,
+            "quote_usdt": 999.0824859957911,
+            "vwap": 0.3345584504534129,
+            "fully_filled": true,
+            "levels_used": 11
+          },
+          "entry_slippage_pct": 0.02559723327861807,
+          "exit_slippage_pct": 0.024369336178298173
+        },
+        {
+          "notional_usdt": 1500,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 4478.747841919885,
+            "quote_usdt": 1499.9999999999995,
+            "vwap": 0.3349150371807941,
+            "fully_filled": true,
+            "levels_used": 12,
+            "requested_budget_usdt": 1500,
+            "budget_covered": true,
+            "unused_budget_usdt": 4.547473508864641e-13
+          },
+          "exit": {
+            "quantity_base": 4478.747841919885,
+            "quote_usdt": 1498.2656550085246,
+            "vwap": 0.334527798369258,
+            "fully_filled": true,
+            "levels_used": 12
+          },
+          "entry_slippage_pct": 0.040336095583382026,
+          "exit_slippage_pct": 0.03352905532572059
+        },
+        {
+          "notional_usdt": 2000,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 5971.042122116447,
+            "quote_usdt": 2000,
+            "vwap": 0.33494990641450983,
+            "fully_filled": true,
+            "levels_used": 15,
+            "requested_budget_usdt": 2000,
+            "budget_covered": true,
+            "unused_budget_usdt": 0
+          },
+          "exit": {
+            "quantity_base": 5971.042122116447,
+            "quote_usdt": 1997.3783999630668,
+            "vwap": 0.3345108540709963,
+            "fully_filled": true,
+            "levels_used": 12
+          },
+          "entry_slippage_pct": 0.05075166213925897,
+          "exit_slippage_pct": 0.03859249611634086
+        },
+        {
+          "notional_usdt": 3000,
+          "usable": true,
+          "reasons": [],
+          "entry": {
+            "quantity_base": 8955.159228611503,
+            "quote_usdt": 3000.0000000000005,
+            "vwap": 0.33500241854048535,
+            "fully_filled": true,
+            "levels_used": 17,
+            "requested_budget_usdt": 3000,
+            "budget_covered": true,
+            "unused_budget_usdt": -4.547473508864641e-13
+          },
+          "exit": {
+            "quantity_base": 8955.159228611503,
+            "quote_usdt": 2995.3049700785414,
+            "vwap": 0.33447813641421575,
+            "fully_filled": true,
+            "levels_used": 18
+          },
+          "entry_slippage_pct": 0.0664372245908762,
+          "exit_slippage_pct": 0.04836946742297066
+        }
+      ],
+      "unit": "USDT",
+      "snapshot_only": true,
+      "future_execution_guaranteed": false,
+      "quantity_step_known": false,
+      "fees_and_funding_included": false
+    },
+    "4_oi_funding": {
+      "result": "NO_USABLE_CONTEXT",
+      "open_interest": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+        "requested_by_runner": false
+      },
+      "funding": {
+        "status": "STALE",
+        "reason": "SOURCE_FACT_STALE",
+        "value": {
+          "rate": 0.000284,
+          "period_ms": 14400000,
+          "next_funding_ts": 1793347200000,
+          "funding_quote_kind": "FUNDING_RATE_QUOTE_SNAPSHOT_V1",
+          "rate_snapshot_ts": 1793332800000,
+          "funding_payment_event_ts": null
+        },
+        "event_ts": 1793332800000,
+        "received_ts": 1793343781489,
+        "expires_ts": 1793333100000,
+        "native_metadata_update_ts": null,
+        "coverage": {
+          "qualified": true,
+          "reason": null,
+          "unit_qualified": true,
+          "clock_qualified": true,
+          "period_qualified": true,
+          "evidence_ref": "F593_BINGX_USDT_M_FUNDING_QUOTE_CONSUMER_FRACTION_V1",
+          "unit_evidence_ref": "CCXT:373c05278144578818098d9aac82204de934b803:crypto-arbitrage-strategies.mdx:86-90:sha256:4516fca6b9b6ea730c3b90c5091ee4642475891c0b6e3489b93302acea873858",
+          "unit_qualification_basis": "ADAPTER_BASED_INFERENCE",
+          "native_to_unified_evidence_ref": "CCXT:d3159f7036f93db086cd0414642132fba5401710:bingx.ts:1827-1867:sha256:94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+          "clock_evidence_ref": "CCXT:d3159f7036f93db086cd0414642132fba5401710:bingx.ts:1827-1867:sha256:94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+          "period_evidence_ref": "CCXT:d3159f7036f93db086cd0414642132fba5401710:bingx.ts:1827-1867:sha256:94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+          "vendor_unit_guarantee_claimed": false,
+          "vendor_quote_clock_guarantee_claimed": false,
+          "quote_clock_field": "updateTime",
+          "clock_semantics": "RATE_QUOTE_SNAPSHOT",
+          "rate_event_clock_proven": false,
+          "funding_payment_event_ts": null,
+          "period_source": "SAME_RESPONSE_ROW",
+          "period_field": "fundingIntervalHours"
+        },
+        "used": false
+      },
+      "optional_http_upper_bound": 2,
+      "followup": "Qualify saved funding clock semantics and OI units/route, compare actual usefulness within existing2 slots; no added request/cap/source"
+    },
+    "5_market_comparison": {
+      "result": "REMOVED_BY_OWNER",
+      "must_not_reinstate": true
+    },
+    "6_future_liquidations": {
+      "result": "NOT_ATTEMPTED_NO_VERIFIED_ROUTE",
+      "status": "NOT_CHECKED",
+      "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+      "checked_sources": [],
+      "qualified_zone_count": 0,
+      "map_mode": "WITHOUT_MAP",
+      "provider_HTTP": 0,
+      "not_proof_of_no_liquidations_or_unsupported_asset": true,
+      "followup": "Only saved routes; actual map availability/identity/currentprice/clock qualification remains open; no fabricated ordinary levels"
+    },
+    "7_persistent_support": {
+      "result": "CONDITIONAL_DISABLED",
+      "first_launch_mandatory": false
+    }
+  },
+  "plan": {
+    "entries": [
+      {
+        "lower": 0.301475,
+        "upper": 0.30250499999999997,
+        "basis": {
+          "kind": "HIGH",
+          "price": 0.30199,
+          "event_ts": 1793337720000,
+          "known_ts": 1793337840000,
+          "fact_id": "pump-report-sources-v1:BINGX:USDT_M:102176:MAGMA-USDT:candles:000afa83-c7de-423e-bc8e-98824ecfa533"
+        },
+        "confirmation_status": "PRELIMINARY_AREA",
+        "conservative_gross_pct": 10.333713492339003,
+        "known_before_analysis": true,
+        "intermediate_highs_below_entry": 162,
+        "intermediate_highs_between_entry_and_exit": 2
+      },
+      {
+        "lower": 0.299055,
+        "upper": 0.300085,
+        "basis": {
+          "kind": "HIGH",
+          "price": 0.29957,
+          "event_ts": 1793327520000,
+          "known_ts": 1793327640000,
+          "fact_id": "pump-report-sources-v1:BINGX:USDT_M:102176:MAGMA-USDT:candles:000afa83-c7de-423e-bc8e-98824ecfa533"
+        },
+        "confirmation_status": "PRELIMINARY_AREA",
+        "conservative_gross_pct": 11.223486678774353,
+        "known_before_analysis": true,
+        "intermediate_highs_below_entry": 158,
+        "intermediate_highs_between_entry_and_exit": 3
+      },
+      {
+        "lower": 0.29801500000000003,
+        "upper": 0.299045,
+        "basis": {
+          "kind": "HIGH",
+          "price": 0.29853,
+          "event_ts": 1793291340000,
+          "known_ts": 1793291460000,
+          "fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:102176:MAGMA-USDT:price_structure:a38107b7-e349-4eaa-b4d5-5c15e7ee798b",
+          "evidence_ref": "a38107b7-e349-4eaa-b4d5-5c15e7ee798b"
+        },
+        "confirmation_status": "PRELIMINARY_AREA",
+        "conservative_gross_pct": 11.610292765302898,
+        "known_before_analysis": true,
+        "intermediate_highs_below_entry": 157,
+        "intermediate_highs_between_entry_and_exit": 7
+      }
+    ],
+    "exit": {
+      "lower": 0.33376500000000003,
+      "upper": 0.334795,
+      "basis_level": {
+        "kind": "HIGH",
+        "price": 0.33428,
+        "event_ts": 1793343060000,
+        "known_ts": 1793343180000,
+        "fact_id": "pump-report-sources-v1:BINGX:USDT_M:102176:MAGMA-USDT:candles:000afa83-c7de-423e-bc8e-98824ecfa533",
+        "evidence_ref": "000afa83-c7de-423e-bc8e-98824ecfa533"
+      }
+    },
+    "invalidation": {
+      "kind": "PRICE_BELOW",
+      "price": 0.28163,
+      "explanation": "Цена ниже сохранённой границы основания волны."
+    },
+    "minimum_gross_pct": 10.333713492339003,
+    "desired_pct": 10,
+    "minimum_recalculated_pct": 10.333713492339003,
+    "all_basis_levels_known_before_analysis": true,
+    "entry_below_reference": true,
+    "invalidation_below_entries": true,
+    "reference_inside_exit_band": true,
+    "purpose": "Future pullback entry then rebound to exit, not+10pct from publication price",
+    "selection_before_entry_and_potential": true,
+    "selected_target_kind": "NEARER_STRUCTURAL_BARRIER",
+    "historical_role_bound": false,
+    "qualified_historical_ceilings": 0,
+    "obstacle_count": 165,
+    "all_obstacles_current_price_above": true,
+    "first_displayed_obstacle_prices": [
+      0.28263,
+      0.28271,
+      0.28317
+    ],
+    "obstacle_below_all_entries_count": 157,
+    "presentation_relevance_needs_fix": true,
+    "target_obstacle_audit": "Preliminary areas and historical pivots are evidence, not proof price will reach these entries or overcome every barrier"
+  },
+  "freshness": {
+    "price": {
+      "status": "USABLE",
+      "event_ts": 1793343774000,
+      "received_ts": 1793343776016,
+      "expires_ts": 1793343804000,
+      "usable_at_analysis": true
+    },
+    "candles": {
+      "status": "USABLE",
+      "event_ts": 1793343720000,
+      "received_ts": 1793343777843,
+      "expires_ts": 1793343810000,
+      "usable_at_analysis": true
+    },
+    "orderbook": {
+      "status": "USABLE",
+      "event_ts": 1793343778769,
+      "received_ts": 1793343778835,
+      "expires_ts": 1793343793769,
+      "usable_at_analysis": true
+    },
+    "growth_24h": {
+      "status": "USABLE",
+      "event_ts": 1793343720000,
+      "received_ts": 1793343776968,
+      "expires_ts": 1793343810000,
+      "usable_at_analysis": true
+    },
+    "price_structure": {
+      "status": "USABLE",
+      "event_ts": 1793343720000,
+      "received_ts": 1793343776968,
+      "expires_ts": 1793343810000,
+      "usable_at_analysis": true
+    },
+    "trades": {
+      "status": "USABLE",
+      "event_ts": 1793343779862,
+      "received_ts": 1793343780538,
+      "expires_ts": 1793343809862,
+      "usable_at_analysis": true
+    },
+    "funding": {
+      "status": "STALE",
+      "event_ts": 1793332800000,
+      "received_ts": 1793343781489,
+      "expires_ts": 1793333100000,
+      "usable_at_analysis": false
+    }
+  },
+  "delivery": {
+    "checks": {
+      "same_original": true,
+      "receipt_bound": true,
+      "original_implementation_bound": true
+    },
+    "state": "SENT",
+    "message_id": "243",
+    "card_created_ts": 1793343782485,
+    "send_started_ts": 1793343785721,
+    "http_started_ts": 1793343786084,
+    "http_ack_received_ts": 1793343786616,
+    "confirmed_ts": 1793343786784,
+    "native_chain": "Original analysis -> saved card exacttext -> same bound recipient -> HTTP ACK -> saved message_id/readback",
+    "audit_sent_Telegram": 0,
+    "recipient_and_full_text_omitted": true
+  },
+  "outcome": {
+    "status": "NO_SAVED_OUTCOME_YET",
+    "saved_outcome_bound": false,
+    "growth_after_publication_10pct_not_equal_plan_potential": true,
+    "not_hit_miss_or_probability_yet": true
+  },
+  "run_coverage": {
+    "status": "INCOMPLETE",
+    "coverage": {
+      "status": "CHECKED",
+      "expected": 547,
+      "checked": 547,
+      "invalid_response_rows": 0,
+      "evidence_ref": "44df4ada-11b4-49d6-9db6-aa4b64fab572"
+    },
+    "catalog_coverage": {
+      "status": "CHECKED",
+      "total": 1311,
+      "qualified": 549,
+      "unqualified": 762,
+      "registry_rejected": [],
+      "registry_missing_from_catalog": [],
+      "evidence_ref": "a64a3b55-3b9f-466f-a003-ab13cbcb76a3",
+      "received_ts": 1793343647956,
+      "qualified_count_is_not_status1_count": true,
+      "owner_delivery_excluded": [
+        "BINGX:USDT_M:100:BTC-USDT",
+        "BINGX:USDT_M:101:ETH-USDT"
+      ],
+      "verified_crypto_count": 549,
+      "delivery_eligible_verified_count": 547
+    },
+    "source_evidence_coverage": {
+      "eligible_for_deep_check": 538,
+      "temporarily_deferred": 9,
+      "reason_counts": {
+        "NATIVE_CORE_UNIT_EVIDENCE_REQUIRED": 9
+      },
+      "not_an_asset_exclusion": true,
+      "current_CORE_proven": false
+    }
+  },
+  "run_resources": {
+    "total": 19,
+    "lanes": {
+      "hot": 19,
+      "background": 0,
+      "statistics": 0
+    },
+    "liquidations": 0,
+    "unknown": 0,
+    "limits": {
+      "http_per_run": 164,
+      "project_http_day": 900,
+      "lanes": {
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "deep_per_candidate": 50,
+      "liquidations_per_run": 8,
+      "manual_http_run_reserve": 24,
+      "d1_reads_day": 3500000,
+      "d1_writes_day": 70000,
+      "next_full_reads": 59000,
+      "next_full_writes": 920
+    },
+    "protected_reserves": {
+      "http_by_provider": {
+        "BINGX": 51,
+        "TELEGRAM": 3,
+        "SWOLECHARTS": 0,
+        "BINGX_WEB_METADATA": 0
+      },
+      "delivery_http": 24,
+      "outcomes_http": 24
+    },
+    "scope": "Whole original AUTO run, not solely MAGMA; includes other candidates and delivery"
+  },
+  "saved_catalog": {
+    "status": "BOUND_SAVED_NATIVE_CATALOG_AT_ORIGINAL_RECEIPT",
+    "native_source_response_bound": true,
+    "snapshot_bytes_clocks_bound": true,
+    "row_count": 1311,
+    "received_ts": 1793346950291
+  },
+  "audit_native_usage": {
+    "state": "FINALIZED",
+    "native_receipt": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:pump-magma-saved-strategy-audit-20261030-one",
+      "usage": {
+        "requests": 13,
+        "rows_read": 33,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 33,
+        "rows_written": 4
+      },
+      "original_envelope_never_reduced": true
+    },
+    "market_HTTP": 0,
+    "Telegram": 0,
+    "ordinary_daily_lookup_cap": 10,
+    "own_UTC30_total": {
+      "LOOKUP_runs": 2,
+      "SQL": 18,
+      "rows_read": 38,
+      "rows_written": 8,
+      "unknown_ops": 0
+    },
+    "whole_account_spend_not_closed": true,
+    "no_expired_named_grant_rearmed": true
+  }
+}
