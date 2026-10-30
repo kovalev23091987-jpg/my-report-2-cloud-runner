@@ -1,0 +1,11 @@
+--- F705v1/budget.mjs
++++ v2/budget.mjs
+@@ -192,7 +192,7 @@
+       const capture=(detail,equation,lhs,cap,provider=null,providerTerms={})=>candidateBudgetDiagnostic({
+         evaluated_ts:now,detail,stage:assessment_stage,equation,lhs,cap,provider,
+         terms:{global_spent:state.days[day]??0,auto_charged:diagnosticPlan?.charged??null,held_http:held.http,base_extra_http:baseExtra.http,fixed_http:fixed,future_discovery_http:discovery,future_candidate_http:future.http,operation_http_upper_bound,...providerTerms},
+-        pacing:diagnosticPacing?{maximum:diagnosticPacing.maximum,issued_current:diagnosticPacing.candidate_count,issued_before:diagnosticPacing.issued_before,base_per_period:diagnosticPacing.allocation.candidates_per_period}:null});
++        pacing:equation==='PACING'&&diagnosticPacing?{maximum:diagnosticPacing.maximum,issued_current:diagnosticPacing.candidate_count,issued_before:diagnosticPacing.issued_before,base_per_period:diagnosticPacing.allocation.candidates_per_period}:null});
+       if((state.days[day]??0)+operation_http_upper_bound+held.http+baseExtra.http+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY',capture('WHOLE_CANDIDATE_DAY_CAPACITY','GLOBAL_DAY',(state.days[day]??0)+operation_http_upper_bound+held.http+baseExtra.http+fixed+discovery+future.http,limits.project_http_day));
+       const plan=mode==='AUTO'?automaticPlan(state,now):null;diagnosticPlan=plan;
+       if(plan&&plan.charged+operation_http_upper_bound+held.http+baseExtra.http+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION',capture('WHOLE_CANDIDATE_PLANNED_ALLOCATION','PLANNED_ALLOCATION',plan.charged+operation_http_upper_bound+held.http+baseExtra.http+discovery+future.http,plan.limit));

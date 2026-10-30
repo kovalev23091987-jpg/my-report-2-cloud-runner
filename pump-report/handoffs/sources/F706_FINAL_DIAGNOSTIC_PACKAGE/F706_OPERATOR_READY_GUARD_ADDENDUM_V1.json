@@ -1,0 +1,80 @@
+{
+  "schema": "PUMP_F706_OPERATOR_READY_GUARD_ADDENDUM_V1",
+  "status": "STATIC_READY_GUARDS_REVIEWED_CONNECTED_CASE_AND_OWNER_PENDING",
+  "supersedes_only": "Earlier frozen F706 statement that operators13/14 were not read; original frozen package remains unchanged. Controller/policy qualification is still pending.",
+  "scope": "Focused static guard review of four newly ready files; no execution or existing-reader audit replay",
+  "inputs": [
+    {
+      "path": "pump-report/operator/diagnostic13-sql-policy.mjs",
+      "sha256": "bac3686168099b40df8475cc82b928c725772e59d634f11721608114eeef351f"
+    },
+    {
+      "path": "pump-report/operator/diagnostic13-quiescence-once.mjs",
+      "sha256": "566433b98672810cb44c271356a91a0862cffca98fd4aa4b373aa1ffa28e3797"
+    },
+    {
+      "path": "pump-report/operator/diagnostic14-sql-policy.mjs",
+      "sha256": "2010e9d89d18f1f4bccf94c2bf4e7afb63761dd1ea505ef6cfda22f95ca0af6e"
+    },
+    {
+      "path": "pump-report/operator/diagnostic14-observation-once.mjs",
+      "sha256": "30aeaf6ca82afe73c1e2bb8074c1280aee4be6dd86a9f6db5d7b27f5becd08c4"
+    }
+  ],
+  "findings": [
+    {
+      "paths": [
+        "diagnostic13-sql-policy.mjs:3-25",
+        "diagnostic14-sql-policy.mjs:3-25"
+      ],
+      "result": "Distinct exact runID/schema/dayUTC and old/new implementation/artifact binding. Named counters12→13 and13→14 are code guard constants, not exported actual resource state. One replacement per factory; original cap parameter10 required; atomic exact prior lookup_count added. Default runtime cap10 unchanged."
+    },
+    {
+      "paths": [
+        "diagnostic13-sql-policy.mjs:4-15",
+        "diagnostic14-sql-policy.mjs:4-15"
+      ],
+      "result": "Requires positive direct-owner admission fields and bounded same-day expiry<=admission and<=15minutes, exact500R30W16Q. Hash format alone does not prove actual owner message; ROOT must hold genuine approval before IO."
+    },
+    {
+      "paths": [
+        "diagnostic13-quiescence-once.mjs:22-47,67-86"
+      ],
+      "result": "Matches current own lease, frozen operator/policy, exact current83 artifact and fresh<=5min paused AUTO/delivery-on FULL proof. All optional saved/business reads forcedfalse and activity-run read forbidden. Only bounded paused-executor reader6reads/20s plus existing shared reservation/finalization; native envelope remains500R30W16Q/default10."
+    },
+    {
+      "paths": [
+        "diagnostic14-observation-once.mjs:25-50,70-88"
+      ],
+      "result": "Requires own lease, frozen operator/policy/current-analysis-reader entries, positive exact mode/after-install scope, current84 artifact and fresh AUTO/delivery-on FULL proof. Optional outcome/candidate/catalog/wave flags forcedfalse. Calls the existing readCurrentAnalysisPacket after ordinary shared reservation, then finalize; transport/native cap16Q500R30W retained."
+    },
+    {
+      "paths": [
+        "both operator catch/finally paths"
+      ],
+      "result": "Private wx attempt/result paths, no automatic retry; no automatic credential refresh. Unknown native usage does not finalize/refund. Exact own original native envelope is not reduced."
+    },
+    {
+      "paths": [
+        "unchanged runtime/native-budget.mjs in artifact79"
+      ],
+      "result": "Exceptions only change named count gate; native SUM(MAX(reserve,measured)), unknown/unacknowledged protection, manual/future/global read-write reserve predicates and exact-own finalization remain existing native implementation."
+    }
+  ],
+  "limitations": [
+    "Controller+policy SQLite connected case is not read/executed here; no PASS for the whole maintenance/install contour.",
+    "Existing readCurrentAnalysisPacket internals and its expected15-query worst case are not requalified in this focused addendum; observed static transport cap is16 and ROOT pending controlled case must establish actual operation bound.",
+    "Admission schemas, digest fields and prepared operators do not grant actual native/CF/owner permission. Named13/14 remain ungranted by this review.",
+    "No actual budget records/counters/auth/CF proof copied; only nonsensitive code hashes, guard constants and static findings. No operator/template source with resource bindings copied into this addendum."
+  ],
+  "execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "nativeSQL": 0,
+    "CF": 0,
+    "providerHTTP": 0,
+    "Telegram": 0,
+    "canonical_changes": 0
+  }
+}

@@ -1,0 +1,330 @@
+{
+  "schema": "PUMP_F706_FINAL_DIAGNOSTIC_REVIEW_V1",
+  "authority_main": "3a437fb3a4f64fed36c2d5562f6b4a2bc5120230",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793375066000",
+  "status": "CODE_ARTIFACT_ACCEPTED_CONTROLLER_QUALIFICATION_PENDING",
+  "parts": {
+    "budget_v2_pending_F705": "CLOSED_ACCEPTED_STATIC",
+    "controlled_runtime_qualification": "PASS_CONTROLLED_ONLY_SAVED_PROOF_READ",
+    "artifact84_integrity": "EXACT",
+    "controller_module_scope": "STATIC_ACCEPTED",
+    "new_controller_and_maintenance_policy_connected_case": "PENDING_NOT_REVIEWED",
+    "actual_installation": "NOT_INSTALLED_NOT_PROVED_BY_THIS_REVIEW"
+  },
+  "new_boundary": {
+    "budget_v2_sha256": "3af6f388654a945ea7faa3ec67ef12a7476b23da4ff856f083904a2755e04f70",
+    "F705_v1_sha256": "9b74aa1abb0f28289d59e96e4938f269a9feeb39ef7c4e74d1ef30cabc2f6b5a",
+    "diff": "Exactly one changed capture field: pacing is populated only when equation==='PACING' and diagnosticPacing is present, otherwise null.",
+    "line": 195,
+    "effect": "Limits optional witness context to equation contract. Existing inequalities/order/quote hooks/costs/charges/holds are unaffected by this one-line change. Prior F705 static review is reused, not repeated.",
+    "helper_sha256": "3ae8ec6d966a756b02b4728da6ceba48a0206d5d75b979f14947f7be4718f63f",
+    "runner_sha256": "8ee9e67d3e1cea0256bdfbc8e02af7d25cc35faa6af0289d7f3f780d8725c08e"
+  },
+  "proof_binding": {
+    "qualification_path": "pump-report/.private/budget-diagnostic-20261030-v1/qualification-v1.result.json",
+    "qualification_sha256": "e74bfe16811d3ceb1bfa7a221a3c2442677399b973dabd8697d33fec32792b96",
+    "build_path": "pump-report/.private/budget-diagnostic-20261030-v1/build-v1.result.json",
+    "build_sha256": "9686db807bcf8e7e16ea619c09b3430948d47430dd4f81af432d4af6374108ec",
+    "build_references_exact_qualification": true,
+    "artifact_path": "pump-report/.private/budget-diagnostic-20261030-v1/artifact-v1.json",
+    "artifact_sha256": "9fa83a6bee8883b5540fff12f42fac1eb2b95390106e2f1b6c0703de0b6e94f8",
+    "build_references_exact_artifact": true
+  },
+  "controlled_evidence": {
+    "basis": "Read saved ROOT proof only, not a SOURCES rerun or native observation",
+    "status": "PASS_CONTROLLED_ONLY",
+    "case_families": [
+      {
+        "kind": "ALLOWED",
+        "detail": null,
+        "error": null,
+        "witness_stage": null,
+        "IO_equal": true,
+        "ledger_equal": true
+      },
+      {
+        "kind": "GLOBAL",
+        "detail": "WHOLE_CANDIDATE_DAY_CAPACITY",
+        "error": null,
+        "witness_stage": "READ_ONLY_ASSESSMENT",
+        "IO_equal": true,
+        "ledger_equal": true
+      },
+      {
+        "kind": "PLAN",
+        "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+        "error": null,
+        "witness_stage": "READ_ONLY_ASSESSMENT",
+        "IO_equal": true,
+        "ledger_equal": true
+      },
+      {
+        "kind": "PROVIDER_DAY",
+        "detail": "WHOLE_CANDIDATE_PROVIDER_DAY",
+        "error": null,
+        "witness_stage": "READ_ONLY_ASSESSMENT",
+        "IO_equal": true,
+        "ledger_equal": true
+      },
+      {
+        "kind": "PROVIDER_MONTH",
+        "detail": "WHOLE_CANDIDATE_PROVIDER_MONTH",
+        "error": null,
+        "witness_stage": "READ_ONLY_ASSESSMENT",
+        "IO_equal": true,
+        "ledger_equal": true
+      },
+      {
+        "kind": "PACING",
+        "detail": "EVEN_DAY_CANDIDATE_ALLOCATION",
+        "error": null,
+        "witness_stage": "READ_ONLY_ASSESSMENT",
+        "IO_equal": true,
+        "ledger_equal": true
+      },
+      {
+        "kind": "ATOMIC_PLAN",
+        "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+        "error": null,
+        "witness_stage": "ATOMIC_ASSESSMENT",
+        "IO_equal": true,
+        "ledger_equal": true
+      },
+      {
+        "kind": "ATOMIC_QUOTE_PLAN",
+        "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+        "error": null,
+        "witness_stage": "ATOMIC_ASSESSMENT",
+        "IO_equal": true,
+        "ledger_equal": true
+      },
+      {
+        "kind": "INVALID_PLAN",
+        "detail": null,
+        "error": "PROTECTED_DAY_RESERVE",
+        "witness_stage": null,
+        "IO_equal": true,
+        "ledger_equal": true
+      }
+    ],
+    "old_new_store_operations_equal": true,
+    "old_new_resource_state_equal": true,
+    "all_nine_case_IO_and_ledger_equal": true,
+    "saved_runner_defer_same_witness": true,
+    "ROOT_Node_processes": 1,
+    "core_engine_send_calls": 0,
+    "real_SQL": 0,
+    "provider_CF_Telegram": 0,
+    "analytics_controlled_contract_counts": {
+      "affected_case_completed": true,
+      "controlled_valid_schemas": 17,
+      "malformed_schemas": 32,
+      "new_IO": 0,
+      "actual_budget_correct_proven": false
+    },
+    "limit": "These are controlled equality claims in frozen result file. No actual current resource state/quotas/sends or physical storage equality inferred."
+  },
+  "artifact": {
+    "pin": "6f4007ae1efbc501fe0ce27e43e881d00869b82dd9f38f5c1ff67bdf9e84db40",
+    "sha256": "9fa83a6bee8883b5540fff12f42fac1eb2b95390106e2f1b6c0703de0b6e94f8",
+    "modules": 84,
+    "changed_or_added": [
+      "runtime/budget.mjs",
+      "runtime/candidate-budget-diagnostic.mjs",
+      "runtime/runner.mjs",
+      "runtime/implementation-pin.mjs",
+      "runtime/automatic-summary.mjs"
+    ],
+    "added": [
+      "runtime/candidate-budget-diagnostic.mjs"
+    ],
+    "removed": [],
+    "unchanged": 79,
+    "proposal_overlays_exact": {
+      "budget.mjs": true,
+      "runner.mjs": true,
+      "candidate-budget-diagnostic.mjs": true
+    },
+    "helper_import_exact": true,
+    "pin_map_exact_excluding_self": true,
+    "module_manifest_all_bytes_hashes_exact": true,
+    "canonical_nonself_map_sha256": "6f4007ae1efbc501fe0ce27e43e881d00869b82dd9f38f5c1ff67bdf9e84db40",
+    "canonical_pin_matches": true,
+    "protected_modules": [
+      {
+        "name": "runtime/delivery.mjs",
+        "before": "b82766822f677a91fb6f37ef8400b57561864cd0682a098883862bea90f76d56",
+        "after": "b82766822f677a91fb6f37ef8400b57561864cd0682a098883862bea90f76d56",
+        "exact": true
+      },
+      {
+        "name": "runtime/telegram-send.mjs",
+        "before": "48adcf41445ea82ae651035ffce5e15e56b9f16e6ce3eec09139a4dc6eec5662",
+        "after": "48adcf41445ea82ae651035ffce5e15e56b9f16e6ce3eec09139a4dc6eec5662",
+        "exact": true
+      },
+      {
+        "name": "runtime/worker.mjs",
+        "before": "d58d73d976503e95149c35a668f305560483d26a701083ad07219fc1ee146a6a",
+        "after": "d58d73d976503e95149c35a668f305560483d26a701083ad07219fc1ee146a6a",
+        "exact": true
+      },
+      {
+        "name": "runtime/native-budget.mjs",
+        "before": "df3e992b184be68caf286beacb19a0d7054eb31968fe1974ccd210d0182e53b0",
+        "after": "df3e992b184be68caf286beacb19a0d7054eb31968fe1974ccd210d0182e53b0",
+        "exact": true
+      },
+      {
+        "name": "runtime/native-tail-guard.mjs",
+        "before": "1bfe47b6315da9a763de10852b29a611abaec17c74c3f88f6ba359c7e3b0b4ae",
+        "after": "1bfe47b6315da9a763de10852b29a611abaec17c74c3f88f6ba359c7e3b0b4ae",
+        "exact": true
+      },
+      {
+        "name": "runtime/store.mjs",
+        "before": "80334d1f2b6bc664ed5b75a9d9ed1e2ec56522ff1bdd2638a8cb6c82efa327e8",
+        "after": "80334d1f2b6bc664ed5b75a9d9ed1e2ec56522ff1bdd2638a8cb6c82efa327e8",
+        "exact": true
+      },
+      {
+        "name": "runtime/production-policy.mjs",
+        "before": "a6a6857d0c382b6011e7061b3cebb0c5f9d044db5fe218da9838ff750a092b86",
+        "after": "a6a6857d0c382b6011e7061b3cebb0c5f9d044db5fe218da9838ff750a092b86",
+        "exact": true
+      },
+      {
+        "name": "runtime/provider-policy.mjs",
+        "before": "1143a91cb77288bf6f4cf748f5d4a08a3c3127c6d72475cd0752400c65cdfded",
+        "after": "1143a91cb77288bf6f4cf748f5d4a08a3c3127c6d72475cd0752400c65cdfded",
+        "exact": true
+      },
+      {
+        "name": "runtime/candidate-surplus.mjs",
+        "before": "6a4bc16a9cf93c89ef028c84110dabf2f25a031b07e51fe3285cceff04e92175",
+        "after": "6a4bc16a9cf93c89ef028c84110dabf2f25a031b07e51fe3285cceff04e92175",
+        "exact": true
+      },
+      {
+        "name": "runtime/discovery-reserve.mjs",
+        "before": "a4323b4332c385337dbb16a9f5c66624fc635b01e4a09e40547bf1c2f08d48b2",
+        "after": "a4323b4332c385337dbb16a9f5c66624fc635b01e4a09e40547bf1c2f08d48b2",
+        "exact": true
+      },
+      {
+        "name": "runtime/future-candidate-reserve.mjs",
+        "before": "d5be9e33fab978862dfdb82ac44fc3c70a353e43515eea7e3dc95f7d50ae3105",
+        "after": "d5be9e33fab978862dfdb82ac44fc3c70a353e43515eea7e3dc95f7d50ae3105",
+        "exact": true
+      },
+      {
+        "name": "sources/candidate-route-cost.mjs",
+        "before": "11974700d11861f882467b5123fe1ef052a1b50c1c4c0afc7f57a86827b40c6f",
+        "after": "11974700d11861f882467b5123fe1ef052a1b50c1c4c0afc7f57a86827b40c6f",
+        "exact": true
+      },
+      {
+        "name": "analytics/index.mjs",
+        "before": "f1aaf18e882a6c8829104f0370abd842c3438d45e71d6ce945bffabbb5384186",
+        "after": "f1aaf18e882a6c8829104f0370abd842c3438d45e71d6ce945bffabbb5384186",
+        "exact": true
+      },
+      {
+        "name": "profile/start-v1.mjs",
+        "before": "a4b9745429f80cee0e35945c962d803e916e75d1977fd741cf0b5fc1bf394521",
+        "after": "a4b9745429f80cee0e35945c962d803e916e75d1977fd741cf0b5fc1bf394521",
+        "exact": true
+      }
+    ],
+    "summary_UI_reviewed": false
+  },
+  "controllers": {
+    "status": "STATIC_MODULE_SCOPE_ONLY_NEW_QUALIFICATION_PENDING",
+    "index_path": "pump-report/.private/budget-diagnostic-20261030-v1/exact-control-v1.json",
+    "index_sha256": "0c19ab82cbd7625007e7ce54b5bc94cce919a2cb5460e2726528ef65815aebbf",
+    "index_qualified": false,
+    "templates": [
+      {
+        "path": "pump-report/.private/budget-diagnostic-20261030-v1/exact-control-v1.forward.template.js",
+        "sha256": "a57ecd42317ac2e00b77fca87066288f43aae54b8ac0f653e6480292ce85d3ed"
+      },
+      {
+        "path": "pump-report/.private/budget-diagnostic-20261030-v1/exact-control-v1.return.template.js",
+        "sha256": "4131029684f654e9dbacd8a6756da6973ebc3053182b8a7129452e64bd39521b"
+      }
+    ],
+    "scope": {
+      "forward": {
+        "before_map_exact": true,
+        "after_map_exact": true,
+        "overrides": [
+          "runtime/automatic-summary.mjs",
+          "runtime/budget.mjs",
+          "runtime/candidate-budget-diagnostic.mjs",
+          "runtime/implementation-pin.mjs",
+          "runtime/runner.mjs"
+        ],
+        "removed": [],
+        "delta": [
+          "runtime/automatic-summary.mjs",
+          "runtime/budget.mjs",
+          "runtime/candidate-budget-diagnostic.mjs",
+          "runtime/implementation-pin.mjs",
+          "runtime/runner.mjs"
+        ],
+        "unchanged": 79
+      },
+      "return": {
+        "before_map_exact": true,
+        "after_map_exact": true,
+        "overrides": [
+          "runtime/automatic-summary.mjs",
+          "runtime/budget.mjs",
+          "runtime/implementation-pin.mjs",
+          "runtime/runner.mjs"
+        ],
+        "removed": [
+          "runtime/candidate-budget-diagnostic.mjs"
+        ],
+        "delta": [
+          "runtime/automatic-summary.mjs",
+          "runtime/budget.mjs",
+          "runtime/candidate-budget-diagnostic.mjs",
+          "runtime/implementation-pin.mjs",
+          "runtime/runner.mjs"
+        ],
+        "unchanged": 79
+      }
+    },
+    "confirmed": [
+      "Forward maps exactly83→84, overrides5 including the one added helper; no removals;79unchanged.",
+      "Return maps exactly84→83, overrides4 existing modules and removes exactly runtime/candidate-budget-diagnostic.mjs;79unchanged.",
+      "Template lines44/47/49/50 bind exact map sizes/removal/delta/override sets; lines105–111 merge overrides, remove only allowed helper, compare every target module source hash and check pin.",
+      "Both directions still require a separate actual quiescence and exact current base/admissions. Template code is not actual Cloudflare proof."
+    ],
+    "pending": [
+      "Index qualified:false at review read time. ROOT new connected controller/policy qualification not read/executed by SOURCES.",
+      "New maintenance13/14 operators and owner approval are outside this completed scope; no approval or actual native allowance inferred.",
+      "Actual fresh server FULL/quiescence/install/return/readback and owner approval remain separate ROOT requirements."
+    ]
+  },
+  "caps_and_unknowns": "No budget/source/native/strategy policy modules changed, except diagnostic-only budget overlay already reviewed. Protected source quote/surplus/plan/future/manual/native modules hash-equal to83. No cap growth, counter refund, old UNKNOWN/CLOSED/issued obligation mutation is introduced. Controlled resource parity supports this within fixtures; actual unknown records remain untouched and unread.",
+  "scope_limits": [
+    "SOURCES did not execute Node/import/test/build/engine/native/CF/provider/TG.",
+    "No F705/BZ80 or earlier audit/case replay. Only one-line added boundary plus saved qualification/build/artifact and new controller module scope checked.",
+    "Actual diagnostic receipts/counters/auth/CF proof remain local-only and are absent from this nonsensitive package.",
+    "Prepared artifact84 not installed; no current live settings, native acceptance or same-original SENT claimed."
+  ],
+  "execution": {
+    "SOURCES_Node": 0,
+    "SOURCES_imports": 0,
+    "SOURCES_tests": 0,
+    "SOURCES_build": 0,
+    "SOURCES_engine": 0,
+    "SOURCES_nativeSQL": 0,
+    "SOURCES_CF": 0,
+    "SOURCES_providerHTTP": 0,
+    "SOURCES_Telegram": 0,
+    "canonical_changes": 0
+  }
+}

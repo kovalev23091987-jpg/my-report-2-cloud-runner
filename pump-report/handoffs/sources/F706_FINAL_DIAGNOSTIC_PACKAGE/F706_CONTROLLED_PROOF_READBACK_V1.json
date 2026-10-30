@@ -1,0 +1,141 @@
+{
+  "schema": "PUMP_F706_CONTROLLED_PROOF_READBACK_V1",
+  "classification": "CONTROLLED_ONLY_NOT_ACTUAL_NATIVE",
+  "proofs": [
+    {
+      "path": "pump-report/.private/budget-diagnostic-20261030-v1/qualification-v1.result.json",
+      "sha256": "e74bfe16811d3ceb1bfa7a221a3c2442677399b973dabd8697d33fec32792b96",
+      "content": {
+        "schema": "ROOT_EXPLAINABLE_BUDGET_CONNECTED_CASE_V1",
+        "status": "PASS_CONTROLLED_ONLY",
+        "cases": [
+          {
+            "kind": "ALLOWED",
+            "allowed": true,
+            "detail": null,
+            "error": null,
+            "witness_stage": null,
+            "IO_equal": true,
+            "ledger_equal": true
+          },
+          {
+            "kind": "GLOBAL",
+            "allowed": false,
+            "detail": "WHOLE_CANDIDATE_DAY_CAPACITY",
+            "error": null,
+            "witness_stage": "READ_ONLY_ASSESSMENT",
+            "IO_equal": true,
+            "ledger_equal": true
+          },
+          {
+            "kind": "PLAN",
+            "allowed": false,
+            "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+            "error": null,
+            "witness_stage": "READ_ONLY_ASSESSMENT",
+            "IO_equal": true,
+            "ledger_equal": true
+          },
+          {
+            "kind": "PROVIDER_DAY",
+            "allowed": false,
+            "detail": "WHOLE_CANDIDATE_PROVIDER_DAY",
+            "error": null,
+            "witness_stage": "READ_ONLY_ASSESSMENT",
+            "IO_equal": true,
+            "ledger_equal": true
+          },
+          {
+            "kind": "PROVIDER_MONTH",
+            "allowed": false,
+            "detail": "WHOLE_CANDIDATE_PROVIDER_MONTH",
+            "error": null,
+            "witness_stage": "READ_ONLY_ASSESSMENT",
+            "IO_equal": true,
+            "ledger_equal": true
+          },
+          {
+            "kind": "PACING",
+            "allowed": false,
+            "detail": "EVEN_DAY_CANDIDATE_ALLOCATION",
+            "error": null,
+            "witness_stage": "READ_ONLY_ASSESSMENT",
+            "IO_equal": true,
+            "ledger_equal": true
+          },
+          {
+            "kind": "ATOMIC_PLAN",
+            "allowed": false,
+            "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+            "error": null,
+            "witness_stage": "ATOMIC_ASSESSMENT",
+            "IO_equal": true,
+            "ledger_equal": true
+          },
+          {
+            "kind": "ATOMIC_QUOTE_PLAN",
+            "allowed": false,
+            "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+            "error": null,
+            "witness_stage": "ATOMIC_ASSESSMENT",
+            "IO_equal": true,
+            "ledger_equal": true
+          },
+          {
+            "kind": "INVALID_PLAN",
+            "allowed": null,
+            "detail": null,
+            "error": "PROTECTED_DAY_RESERVE",
+            "witness_stage": null,
+            "IO_equal": true,
+            "ledger_equal": true
+          }
+        ],
+        "saved_runner_defer_same_witness": true,
+        "old_new_store_operations_equal": true,
+        "old_new_resource_state_equal": true,
+        "core_engine_send_calls": 0,
+        "analytics": {
+          "affected_case_completed": true,
+          "controlled_valid_schemas": 17,
+          "malformed_schemas": 32,
+          "new_IO": 0,
+          "actual_budget_correct_proven": false
+        },
+        "compiled_base_modules": 83,
+        "compiled_proposed_modules": 84,
+        "Node_processes": 1,
+        "real_SQL": 0,
+        "provider_CF_Telegram": 0,
+        "production_changed": false
+      }
+    },
+    {
+      "path": "pump-report/.private/budget-diagnostic-20261030-v1/build-v1.result.json",
+      "sha256": "9686db807bcf8e7e16ea619c09b3430948d47430dd4f81af432d4af6374108ec",
+      "content": {
+        "schema": "ROOT_EXPLAINABLE_BUDGET_QUALIFIED_ARTIFACT_V1",
+        "status": "BUILT_EXACT_NOT_INSTALLED",
+        "built_ts": 1793374896741,
+        "implementation_sha256": "6f4007ae1efbc501fe0ce27e43e881d00869b82dd9f38f5c1ff67bdf9e84db40",
+        "artifact_sha256": "9fa83a6bee8883b5540fff12f42fac1eb2b95390106e2f1b6c0703de0b6e94f8",
+        "modules": 84,
+        "base_implementation_sha256": "da52262978c5bb1037993b72d8b98c6185182e0a98d69fa3846ee6e21b7ed688",
+        "changed_or_added": [
+          "runtime/automatic-summary.mjs",
+          "runtime/budget.mjs",
+          "runtime/candidate-budget-diagnostic.mjs",
+          "runtime/implementation-pin.mjs",
+          "runtime/runner.mjs"
+        ],
+        "unchanged_base_modules": 79,
+        "zero_new_source_or_SQL_operations_by_design": true,
+        "decision_and_ledger_parity_controlled": true,
+        "qualification_sha256": "e74bfe16811d3ceb1bfa7a221a3c2442677399b973dabd8697d33fec32792b96",
+        "actual_private_budget_data_used": false,
+        "builds": 1,
+        "production_changed": false
+      }
+    }
+  ]
+}
