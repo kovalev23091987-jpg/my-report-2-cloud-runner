@@ -1,0 +1,142 @@
+{
+  "schema": "ROOT_POSTINSTALL_SOURCE_BUDGET_SAFE_PROJECTION_V1",
+  "evidence_basis": "Same admitted saved AUTO packet; arithmetic-only projection, no new IO",
+  "day_utc": "2026-10-30",
+  "saved_analysis_ts": 1793356252938,
+  "project_charged_HTTP": 196,
+  "providers": {
+    "BINGX": {
+      "charged_day": 193,
+      "charged_month": 2134,
+      "outstanding_unknown_not_zeroed": true
+    },
+    "TELEGRAM": {
+      "charged_day": 3,
+      "charged_month": 7,
+      "outstanding_unknown_not_zeroed": true
+    },
+    "SWOLECHARTS": {
+      "charged_day": 0,
+      "charged_month": 1,
+      "outstanding_unknown_not_zeroed": true
+    },
+    "BINGX_WEB_METADATA": {
+      "charged_day": 0,
+      "charged_month": 2,
+      "outstanding_unknown_not_zeroed": true
+    }
+  },
+  "automatic_plan": {
+    "schema": "PUMP_PLANNED_AUTOMATIC_DAY_V1",
+    "day": "2026-10-30",
+    "created_ts": 1793343647282,
+    "baseline_charged": 0,
+    "protected_at_creation": 102,
+    "fraction": 0.8,
+    "limit": 638,
+    "charged": 195
+  },
+  "automatic_candidate_allocation": {
+    "version": "pump-even-day-deep-v2",
+    "created_ts": 1793343647282,
+    "first_period": "1793343600000",
+    "remaining_periods": 10,
+    "http_upper_bound": 12,
+    "http_by_provider": {
+      "BINGX": 10,
+      "TELEGRAM": 1
+    },
+    "candidates_per_period": 3,
+    "baseline_auto_charged": 0
+  },
+  "automatic_deep_pacing": {
+    "1793343600000": {
+      "version": "pump-even-day-deep-v2",
+      "day": "2026-10-30",
+      "key": "1793343600000",
+      "created_ts": 1793343652301,
+      "limit": 36,
+      "charged": 15,
+      "candidate_count": 3,
+      "carried_in": 0,
+      "maximum": 3,
+      "issued_before": 0
+    },
+    "1793347200000": {
+      "version": "pump-even-day-deep-v2",
+      "day": "2026-10-30",
+      "key": "1793347200000",
+      "created_ts": 1793347260202,
+      "limit": 36,
+      "charged": 18,
+      "candidate_count": 3,
+      "carried_in": 0,
+      "maximum": 3,
+      "issued_before": 3
+    },
+    "1793350800000": {
+      "version": "pump-even-day-deep-v2",
+      "day": "2026-10-30",
+      "key": "1793350800000",
+      "created_ts": 1793350864670,
+      "limit": 36,
+      "charged": 12,
+      "candidate_count": 3,
+      "carried_in": 0,
+      "maximum": 3,
+      "issued_before": 6
+    },
+    "1793354400000": {
+      "version": "pump-even-day-deep-v2",
+      "day": "2026-10-30",
+      "key": "1793354400000",
+      "created_ts": 1793354471990,
+      "limit": 36,
+      "charged": 14,
+      "candidate_count": 3,
+      "carried_in": 0,
+      "maximum": 3,
+      "issued_before": 9
+    }
+  },
+  "surplus_grants": {
+    "retained_count": 85,
+    "day_count": 9,
+    "day_state_counts": {
+      "OPEN": 0,
+      "CLOSED": 9,
+      "UNKNOWN": 0
+    },
+    "today_original_by_provider": {
+      "BINGX": 90,
+      "TELEGRAM": 9
+    },
+    "today_remaining_by_provider": {
+      "BINGX": 44,
+      "TELEGRAM": 9
+    },
+    "today_consumed_by_provider": {
+      "BINGX": 46,
+      "TELEGRAM": 0
+    }
+  },
+  "unknown_keys_count": 2,
+  "outstanding_reservation_count": 0,
+  "refusal": [
+    {
+      "instrument_id": "BINGX:USDT_M:101825:ON-USDT",
+      "status": "DEFERRED",
+      "source_coverage": {
+        "status": "NOT_CHECKED",
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION"
+      },
+      "delivery": null
+    }
+  ],
+  "not_proof_sources_exhausted": true,
+  "CLOSED_holds_must_not_refund": true,
+  "whole_account_free_balance_claimed": false,
+  "market_HTTP": 0,
+  "Telegram": 0
+}
