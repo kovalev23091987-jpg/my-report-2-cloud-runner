@@ -68,11 +68,13 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,p
     await work.add(decision.card_id);
     return {...decision,text_hash:hash};
   }
-  async function dispatch(card_id,{preparation_token=null}={}){
+  async function dispatch(card_id,{preparation_token=null,native_stage=null}={}){
+    const db=native_stage?store.withStage(native_stage):store;
+    const finishRequired=(card,changes)=>finish(card,changes,native_stage);
     const prepared=preparation_token&&preparations.get(preparation_token);
     if(preparation_token){preparations.delete(preparation_token);if(!prepared)throw new BudgetRefusal('PUBLICATION_PREPARATION_TOKEN_NOT_OWNED');}
     const owner=crypto.randomUUID(),now=clock();
-    const card=await store.atomic('pump:card:'+card_id,current=>{
+    const card=await db.atomic('pump:card:'+card_id,current=>{
       if(!current)return {state:current,result:{skip:'CARD_NOT_FOUND'}};
       if(current.state==='SENDING'&&current.claim_until<=now){const possible=current.delivery_schema!=='PUMP_DELIVERY_V2'||Number.isSafeInteger(current.send_started_ts);current.state=possible?'UNKNOWN':'ERROR';current.updated_ts=now;current.reason=possible?'SENDER_INTERRUPTED_AFTER_POSSIBLE_SEND':'SENDER_INTERRUPTED_BEFORE_SEND';return {state:current,result:{skip:current.state}};}
       if(!['READY','RETRYABLE'].includes(current.state))return {state:current,result:{skip:current.state}};
@@ -87,35 +89,37 @@ export function createDelivery({store,send,recipient,clock=Date.now,revalidate,p
     let fresh;try{
       if(prepared){const {source_input_key,...a}=card.analysis;
         if(!same(a,prepared.analysis)||source_input_key!=='pump:analysis:'+await textHash(JSON.stringify(prepared.analysis)))throw new BudgetRefusal('PUBLICATION_PREPARATION_ORIGINAL_CONFLICT');}
-      fresh=await revalidate(card,prepared?{prepared_input:prepared.input}:undefined);
-    }catch{await finish(card,{state:'ERROR',reason:'RECHECK_FAILED_BEFORE_SEND'});return {state:'ERROR',card_id};}
-    if(!fresh?.valid){await finish(card,{state:'STALE',reason:fresh?.reason??'SCENARIO_RECHECK_FAILED'});return {state:'STALE',card_id};}
-    if(await textHash(card.text)!==card.text_hash){await finish(card,{state:'ERROR',reason:'SAVED_TEXT_HASH_MISMATCH'});throw new BudgetRefusal('SAVED_TEXT_HASH_MISMATCH');}
-    if(card.expires_ts<=clock()||card.mode==='AUTO'&&!automaticWindowOpen(clock())){await finish(card,{state:'STALE',reason:'PUBLICATION_WINDOW_CLOSED'});return {state:'STALE',card_id};}
+      fresh=await revalidate(card,{...(prepared?{prepared_input:prepared.input}:{}),native_stage});
+    }catch{await finishRequired(card,{state:'ERROR',reason:'RECHECK_FAILED_BEFORE_SEND'});return {state:'ERROR',card_id};}
+    if(!fresh?.valid){await finishRequired(card,{state:'STALE',reason:fresh?.reason??'SCENARIO_RECHECK_FAILED'});return {state:'STALE',card_id};}
+    if(await textHash(card.text)!==card.text_hash){await finishRequired(card,{state:'ERROR',reason:'SAVED_TEXT_HASH_MISMATCH'});throw new BudgetRefusal('SAVED_TEXT_HASH_MISMATCH');}
+    if(card.expires_ts<=clock()||card.mode==='AUTO'&&!automaticWindowOpen(clock())){await finishRequired(card,{state:'STALE',reason:'PUBLICATION_WINDOW_CLOSED'});return {state:'STALE',card_id};}
     let reply;
-    await store.atomic('pump:card:'+card.card_id,current=>{if(current?.state!=='SENDING'||current.owner!==card.owner)throw new BudgetRefusal('DELIVERY_CLAIM_NOT_OWNED');return {state:{...current,send_started_ts:clock()},result:true};});
-    try{reply=await send({text:card.text,recipient:card.recipient,card_id:card.card_id,text_hash:card.text_hash});}
-    catch(error){const before=error?.send_attempted===false;await finish(card,{state:before?'ERROR':'UNKNOWN',reason:before?'SEND_REFUSED_BEFORE_HTTP':'TELEGRAM_ACK_UNKNOWN'});return {state:before?'ERROR':'UNKNOWN',card_id};}
+    await db.atomic('pump:card:'+card.card_id,current=>{if(current?.state!=='SENDING'||current.owner!==card.owner)throw new BudgetRefusal('DELIVERY_CLAIM_NOT_OWNED');return {state:{...current,send_started_ts:clock()},result:true};});
+    try{reply=await send({text:card.text,recipient:card.recipient,card_id:card.card_id,text_hash:card.text_hash,native_stage});}
+    catch(error){const before=error?.send_attempted===false;await finishRequired(card,{state:before?'ERROR':'UNKNOWN',reason:before?'SEND_REFUSED_BEFORE_HTTP':'TELEGRAM_ACK_UNKNOWN'});return {state:before?'ERROR':'UNKNOWN',card_id};}
     const message=reply?.body?.result,id=message?.message_id;
     if(reply?.ok===true&&reply.body?.ok===true&&positiveMessageId(id)&&String(message.chat?.id)===card.recipient&&(!Object.hasOwn(message,'text')||message.text===card.text)){
       const receipt={message_id:String(id),recipient:card.recipient,card_id,text_hash:card.text_hash,confirmed_ts:clock(),telegram_date:message.date??null};
       if(Number.isSafeInteger(reply.http_started_ts)&&Number.isSafeInteger(reply.http_ack_received_ts))Object.assign(receipt,{http_started_ts:reply.http_started_ts,http_ack_received_ts:reply.http_ack_received_ts,http_clock_basis:reply.http_clock_basis??null});
       if(reply.liquidation_freshness)receipt.liquidation_freshness=reply.liquidation_freshness;
-      await finish(card,{state:'SENT',message_id:String(id),receipt});
-      const saved=await store.get('pump:card:'+card_id);
+      await finishRequired(card,{state:'SENT',message_id:String(id),receipt});
+      const saved=await db.get('pump:card:'+card_id);
       if(saved?.state!=='SENT'||!same(saved.receipt,receipt)||saved.text!==card.text||saved.text_hash!==card.text_hash)throw new BudgetRefusal('TELEGRAM_RECEIPT_READBACK_FAILED');
       return {state:'SENT',card_id,message_id:String(id),receipt_readback:true};
     }
     const retryable=reply?.body?.ok===false&&reply?.status===429;
     const knownRejected=reply?.body?.ok===false&&Number.isInteger(reply?.status)&&reply.status>=400&&reply.status<500;
-    await finish(card,{state:retryable?'RETRYABLE':knownRejected?'ERROR':'UNKNOWN',reason:retryable?'TELEGRAM_RATE_LIMIT':knownRejected?'TELEGRAM_REJECTED':'TELEGRAM_ACK_UNKNOWN',retry_after_ts:retryable?clock()+Math.max(1000,Number(reply.body.parameters?.retry_after??60)*1000):null});
+    await finishRequired(card,{state:retryable?'RETRYABLE':knownRejected?'ERROR':'UNKNOWN',reason:retryable?'TELEGRAM_RATE_LIMIT':knownRejected?'TELEGRAM_REJECTED':'TELEGRAM_ACK_UNKNOWN',retry_after_ts:retryable?clock()+Math.max(1000,Number(reply.body.parameters?.retry_after??60)*1000):null});
     return {state:retryable?'RETRYABLE':knownRejected?'ERROR':'UNKNOWN',card_id};
   }
-  async function finish(card,changes){return store.atomic('pump:card:'+card.card_id,current=>{if(current?.state!=='SENDING'||current.owner!==card.owner)throw new BudgetRefusal('DELIVERY_CLAIM_NOT_OWNED');return {state:{...current,...changes,owner:null,claim_until:null,updated_ts:clock()},result:true};});}
+  async function finish(card,changes,native_stage=null){return (native_stage?store.withStage(native_stage):store).atomic('pump:card:'+card.card_id,current=>{if(current?.state!=='SENDING'||current.owner!==card.owner)throw new BudgetRefusal('DELIVERY_CLAIM_NOT_OWNED');return {state:{...current,...changes,owner:null,claim_until:null,updated_ts:clock()},result:true};});}
   async function pending({limit=20}={}){const page=await work.page({limit});if(!page.ready)throw new BudgetRefusal('WORK_INDEX_MIGRATING');return page.items.map(row=>row.id);}
-  async function acknowledge(card_id){
-    await store.atomic('pump:card:'+card_id,card=>{if(!terminal(card))throw new BudgetRefusal('TERMINAL_DELIVERY_REQUIRED');return {state:{...card,publication_registered:true},result:true};});
-    return work.complete(card_id,{evidence_key:'pump:card:'+card_id});
+  async function acknowledge(card_id,{native_stage=null}={}){
+    const db=native_stage?store.withStage(native_stage):store;
+    const requiredWork=native_stage?createWorkIndex({store:db,kind:'delivery',targetKey:id=>'pump:card:'+id,completed:card=>terminal(card)&&card.publication_registered===true&&(card.state!=='SENT'||positiveMessageId(card.message_id)&&card.receipt?.text_hash===card.text_hash&&card.receipt?.recipient===card.recipient)}):work;
+    await db.atomic('pump:card:'+card_id,card=>{if(!terminal(card))throw new BudgetRefusal('TERMINAL_DELIVERY_REQUIRED');return {state:{...card,publication_registered:true},result:true};});
+    return requiredWork.complete(card_id,{evidence_key:'pump:card:'+card_id});
   }
   async function drain({limit=20}={}){
     const ids=await pending({limit}),results=[];

@@ -1,5 +1,8 @@
 import {BudgetRefusal,RESOURCE_LIMITS,utcDay} from './budget.mjs';
-const workPointer=key=>typeof key==='string'&&/^pump:work-index:v1:(manual|delivery|journal|outcomes):ready:[0-9]{16}$/.test(key);
+const nativeStates=new WeakMap();
+const stageFields=['requests','rows_read','rows_written'];
+const stageNat=n=>Number.isSafeInteger(n)&&n>=0;
+const workPointer=key=>typeof key==='string'&&(/^pump:work-index:v1:(manual|delivery|journal|outcomes):ready:[0-9]{16}$/.test(key)||/^pump:native-tail-recovery:v1:ready:[a-f0-9]{64}$/.test(key));
 
 export class MemoryStore {
   constructor(){this.rows=new Map();this.chain=Promise.resolve();}
@@ -19,6 +22,7 @@ export class MemoryStore {
 export class D1Store {
   constructor({db,admission,clock=Date.now,initial_usage=null,finalization_reserve=null}){
     if(!db?.prepare||!admission?.evidence_ref||!Number.isSafeInteger(admission.expires_ts)||admission.expires_ts<=clock()||!Number.isSafeInteger(admission.max_rows_read)||!Number.isSafeInteger(admission.max_rows_written))throw new BudgetRefusal('NATIVE_SQL_ADMISSION_REQUIRED');
+    nativeStates.set(this,{holds:new Map(),pending:{requests:0,rows_read:0,rows_written:0}});
     this.db=db;this.admission=admission;this.clock=clock;this.cost=initial_usage?{...initial_usage}:{requests:0,rows_read:0,rows_written:0,unknown_ops:0};
     // The confirmed Workers Paid plan permits1000 D1 queries per invocation.
     // Leave platform headroom and protect the finalization ACK/readback too.
@@ -28,19 +32,88 @@ export class D1Store {
     if(!Object.values(this.finalization_reserve).every(n=>Number.isSafeInteger(n)&&n>=0))throw new BudgetRefusal('INVALID_FINALIZATION_RESERVE');
     if(!Object.values(this.cost).every(n=>Number.isSafeInteger(n)&&n>=0))throw new BudgetRefusal('INVALID_INITIAL_NATIVE_USAGE');
   }
+  stageTotals(){
+    const own=nativeStates.get(this);if(!own)throw new BudgetRefusal('ACTUAL_NATIVE_STORE_REQUIRED');
+    const held={requests:0,rows_read:0,rows_written:0};
+    for(const r of own.holds.values())for(const k of stageFields)held[k]+=r.remaining[k];
+    return {held,pending:{...own.pending}};
+  }
   check(extraRead=1,extraWrite=0,extraRequests=0){
     if(this.admission.expires_ts<=this.clock()||this.cost.unknown_ops>0)throw new BudgetRefusal('NATIVE_SQL_ADMISSION_EXPIRED_OR_UNKNOWN');
-    if(this.cost.requests+extraRequests+(this.finalization_reserve.requests??0)>this.max_requests)throw new BudgetRefusal('NATIVE_SQL_QUERY_COUNT_PROTECTED');
-    if(this.cost.rows_read+extraRead+this.finalization_reserve.rows_read>this.admission.max_rows_read||this.cost.rows_written+extraWrite+this.finalization_reserve.rows_written>this.admission.max_rows_written)throw new BudgetRefusal('NATIVE_SQL_RUN_ENVELOPE_EXHAUSTED');
+    const {held,pending}=this.stageTotals(),extra={requests:extraRequests,rows_read:extraRead,rows_written:extraWrite};
+    const caps={requests:this.max_requests,rows_read:this.admission.max_rows_read,rows_written:this.admission.max_rows_written};
+    for(const k of stageFields)if(!stageNat(extra[k])||this.cost[k]+pending[k]+held[k]+extra[k]+(this.finalization_reserve[k]??0)>caps[k])
+      throw new BudgetRefusal(k==='requests'?'NATIVE_SQL_QUERY_COUNT_PROTECTED':'NATIVE_SQL_RUN_ENVELOPE_EXHAUSTED');
   }
-  beginFinalization(){this.check(0,0);this.finalization_reserve={rows_read:0,rows_written:0};}
-  async query(sql,args=[],{read=1,write=0}={}){
-    this.check(read,write,1);let result;
-    try{result=await this.db.prepare(sql).bind(...args).all();}catch(error){this.cost.requests++;this.cost.unknown_ops++;throw error;}
+  reserveStage({run_id,phase,workload_id,envelope,expires_ts,min_time_ms=0}={}){
+    const own=nativeStates.get(this);
+    if(!own||typeof run_id!=='string'||!this.admission.evidence_ref.endsWith(':'+run_id)||typeof phase!=='string'||!phase||
+      typeof workload_id!=='string'||!workload_id||!stageFields.every(k=>stageNat(envelope?.[k]))||
+      !Number.isSafeInteger(expires_ts)||expires_ts>this.admission.expires_ts||expires_ts<=this.clock()+min_time_ms)
+      throw new BudgetRefusal('NATIVE_STAGE_ACTUAL_ADMISSION_REQUIRED');
+    this.check(envelope.rows_read,envelope.rows_written,envelope.requests);
+    const token=Object.freeze({});own.holds.set(token,{run_id,phase,workload_id,expires_ts,remaining:{...envelope},pending:0,failed:false});
+    return token;
+  }
+  stageStatus(token){
+    const r=nativeStates.get(this)?.holds.get(token);if(!r)throw new BudgetRefusal('NATIVE_STAGE_NOT_OWNED');
+    return structuredClone({run_id:r.run_id,phase:r.phase,workload_id:r.workload_id,expires_ts:r.expires_ts,remaining:r.remaining,pending:r.pending,failed:r.failed});
+  }
+  releaseStage(token){
+    const own=nativeStates.get(this),r=own?.holds.get(token);
+    if(!r||r.pending||r.failed||this.cost.unknown_ops>0)throw new BudgetRefusal('NATIVE_STAGE_RELEASE_NOT_KNOWN');
+    own.holds.delete(token); // Only unused local headroom; ledger/spends are never reduced.
+  }
+  withStage(token){
+    this.stageStatus(token);const actual=this,view=Object.create(this);
+    Object.defineProperties(view,{
+      query:{value:(sql,args=[],options={})=>actual.query(sql,args,{...options,native_stage:token})},
+      check:{value:(...args)=>actual.check(...args)},
+      usage:{value:()=>actual.usage()},
+      withStage:{value:t=>actual.withStage(t)},
+      stageTotals:{value:()=>actual.stageTotals()},
+      nativeRemaining:{value:()=>actual.stageStatus(token).remaining},
+      reserveStage:{value:()=>{throw new BudgetRefusal('NATIVE_STAGE_CANNOT_DELEGATE');}},
+      releaseStage:{value:()=>{throw new BudgetRefusal('NATIVE_STAGE_CANNOT_RELEASE_PARENT');}},
+      beginFinalization:{value:()=>{throw new BudgetRefusal('NATIVE_STAGE_CANNOT_FINALIZE_RUN');}}
+    });return Object.freeze(view);
+  }
+  beginFinalization(){
+    this.check(0,0);
+    if(nativeStates.get(this).holds.size||nativeStates.get(this).pending.requests)throw new BudgetRefusal('NATIVE_STAGES_MUST_CLOSE_BEFORE_FINALIZATION');
+    this.finalization_reserve={rows_read:0,rows_written:0};
+  }
+  async query(sql,args=[],{read=1,write=0,native_stage=null}={}){
+    const own=nativeStates.get(this),r=native_stage?own?.holds.get(native_stage):null,hint={requests:1,rows_read:read,rows_written:write};
+    if(!own||!stageFields.every(k=>stageNat(hint[k])))throw new BudgetRefusal('ACTUAL_NATIVE_QUERY_REQUIRED');
+    if(native_stage){
+      if(!r||r.failed||r.expires_ts<=this.clock()||!stageFields.every(k=>r.remaining[k]>=hint[k]))throw new BudgetRefusal('NATIVE_STAGE_EXHAUSTED_OR_NOT_OWNED');
+      this.check(0,0,0);
+      for(const k of stageFields)r.remaining[k]-=hint[k];r.pending++;
+    }else this.check(read,write,1);
+    // Claim in-flight hints synchronously, before any await. Other promises see
+    // both pending usage and all remaining holds; optional work cannot borrow.
+    for(const k of stageFields)own.pending[k]+=hint[k];
+    let result;
+    try{result=await this.db.prepare(sql).bind(...args).all();}
+    catch(error){
+      for(const k of stageFields)own.pending[k]-=hint[k];if(r){r.pending--;r.failed=true;}
+      this.cost.requests++;this.cost.unknown_ops++;throw error;
+    }
+    for(const k of stageFields)own.pending[k]-=hint[k];if(r)r.pending--;
     this.cost.requests++;
-    if(result?.success===false||!['rows_read','rows_written'].every(k=>Number.isSafeInteger(result?.meta?.[k])&&result.meta[k]>=0)){this.cost.unknown_ops++;throw new BudgetRefusal('NATIVE_SQL_COST_ACK_UNKNOWN');}
+    if(result?.success===false||!['rows_read','rows_written'].every(k=>stageNat(result?.meta?.[k]))){
+      if(r)r.failed=true;this.cost.unknown_ops++;throw new BudgetRefusal('NATIVE_SQL_COST_ACK_UNKNOWN');
+    }
     this.cost.rows_read+=result.meta.rows_read;this.cost.rows_written+=result.meta.rows_written;
-    this.check(0,0);return result;
+    if(r){
+      for(const k of ['rows_read','rows_written']){
+        const delta=result.meta[k]-hint[k];
+        if(delta>r.remaining[k]){r.failed=true;throw new BudgetRefusal('NATIVE_STAGE_ACTUAL_META_EXCEEDED');}
+        r.remaining[k]-=delta;
+      }
+    }
+    this.check(0,0,0);return result;
   }
   async install(){
     await this.query('CREATE TABLE IF NOT EXISTS pump_report_state_v1 (state_key TEXT PRIMARY KEY,value_json TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 0,updated_ts INTEGER NOT NULL)',[],{read:20,write:20});

@@ -75,7 +75,7 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     if (!policy || !admission?.provider_policy_version || admission.provider_policy_version!==policy.version || !Number.isSafeInteger(admission.expires_ts) || admission.expires_ts<=now || !policy.evidence_ref || !integer(policy.project_daily_cap) || !integer(policy.project_monthly_cap) || !integer(policy.per_minute_cap)) throw new BudgetRefusal('PROVIDER_ADMISSION_REQUIRED',{provider});
     return policy;
   };
-  async function reserve({provider,family='CORE',purpose='CORE',candidate_id=null,lane=mode==='STATISTICS'?'statistics':'hot',request_id,cost=1}) {
+  async function reserve({provider,family='CORE',purpose='CORE',candidate_id=null,lane=mode==='STATISTICS'?'statistics':'hot',request_id,cost=1,native_stage=null}) {
     assertWorkWindow();
     if(candidate_id&&closedSurplusCandidates.has(candidate_id)&&!(mode==='STATISTICS'&&lane==='statistics'&&provider==='BINGX'&&family==='USDT_M'&&purpose==='CORE'))throw new BudgetRefusal('SURPLUS_CANDIDATE_ALREADY_CLOSED');
     if(activeQuoteNoMap&&family==='LIQUIDATIONS')throw new BudgetRefusal('SURPLUS_QUOTED_MAP_NOT_ALLOWED');
@@ -99,8 +99,9 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     // Hold the in-process run envelope before awaiting the durable provider CAS.
     // Concurrent different-provider requests cannot oversubscribe a run.
     run.total+=cost;run.lanes[lane]+=cost;if(family==='LIQUIDATIONS')run.liquidations+=cost;if(candidate_id)inc(run.candidates,candidate_id,cost);
+    const requiredStore=native_stage?store.withStage(native_stage):store;
     let row;
-    try {row=await store.atomic('pump:resources',state=>{
+    try {row=await requiredStore.atomic('pump:resources',state=>{
       state??={schema:'PUMP_SHARED_RESOURCE_V1',days:{},providers:{},outstanding:{},unknown:{}};
       if(state.outstanding[request_id]||state.unknown[request_id])throw new BudgetRefusal('REQUEST_ALREADY_RESERVED');
       const p=state.providers[provider]??={days:{},months:{},recent:[]};
@@ -145,9 +146,9 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
     run.receipts.push(row);
     return row;
   }
-  async function finalize(receipt,{state='CONFIRMED',http_status=null,retry_after_ms=null,temporary_failure=false,successful_response=false,network_attempted=null}={}) {
+  async function finalize(receipt,{state='CONFIRMED',http_status=null,retry_after_ms=null,temporary_failure=false,successful_response=false,network_attempted=null,native_stage=null}={}) {
     if(!['CONFIRMED','UNKNOWN'].includes(state))throw new BudgetRefusal('INVALID_RECEIPT_STATE');
-    await store.atomic('pump:resources',current=>{
+    await (native_stage?store.withStage(native_stage):store).atomic('pump:resources',current=>{
       const held=current?.outstanding?.[receipt.request_id];
       if(!held||held.run_id!==run_id)throw new BudgetRefusal('RESERVATION_NOT_OWNED');
       // Counts are monotonic: no HTTP attempt is refunded, including errors.
@@ -254,13 +255,13 @@ export function createUnifiedBudget({store,run_id,mode,clock=Date.now,policies,l
       return {state:current,result:{...result,candidate_quota:{period_start:Number(pacing.key),maximum:pacing.maximum,base_per_period:allocation.candidates_per_period,carried_in:pacing.carried_in,issued:bucket.candidate_count+1,remaining:pacing.maximum-bucket.candidate_count-1,day_issued:pacing.issued_before+bucket.candidate_count+1,never_refunded:true}}};
     });
   }
-  async function closeCandidate({candidate_id,surplus_grant_id=null}={}){
+  async function closeCandidate({candidate_id,surplus_grant_id=null,native_stage=null}={}){
     if(!surplus_grant_id)return null;
     if(activeSurplus!==surplus_grant_id)throw new BudgetRefusal('SURPLUS_GRANT_NOT_OWNED');
     activeSurplus=null;activeQuoteNoMap=false;closedSurplusCandidates.add(candidate_id);
     const usage=typeof store.usage==='function'?store.usage():null;
     if(!usage||usage.unknown_ops>0||store.admission?.expires_ts<=clock())return {state:'UNKNOWN',hold_retained:true};
-    return store.atomic('pump:resources',state=>{
+    return (native_stage?store.withStage(native_stage):store).atomic('pump:resources',state=>{
       const grant=surplusGrants(state)[surplus_grant_id];
       if(!grant||grant.run_id!==run_id||grant.candidate_id!==candidate_id)throw new BudgetRefusal('SURPLUS_GRANT_NOT_OWNED');
       const unresolved=run.unknown>0||Object.values(state.outstanding??{}).some(r=>r.surplus_grant_id===surplus_grant_id)||Object.values(state.unknown??{}).some(r=>r.surplus_grant_id===surplus_grant_id);

@@ -1,3 +1,4 @@
+import {createNativeTailGuard} from './native-tail-guard.mjs';
 import {createPumpSources} from '../sources/index.mjs';
 import {createCandidateCostQuoteBridge} from './candidate-cost-quote-bridge.mjs';
 import {requestUrl} from '../sources/bingx.mjs';
@@ -142,6 +143,7 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
   const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,run_purpose,clock,policy,future_schedule:production?DISCOVERY_PLAN:null}),store=native.store;
   try{
   if(mode!=='LOOKUP')await store.install();
+  const native_tail=production?createNativeTailGuard({store,run_id,mode,clock}):null;
   const feasibility=PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&mode==='CONTROL'&&run_id===SOURCE_FEASIBILITY_ID;
   const candidateCostBinding=Object.freeze({implementation_sha256:IMPLEMENTATION_PIN.sha256,registry_sha256:await textHash(JSON.stringify(Object.entries(IMPLEMENTATION_PIN.modules??{}).filter(([n])=>n.startsWith('registry/')||n==='sources/index.mjs').sort(([a],[b])=>a.localeCompare(b)))),cost_contract:'BINGX10_TG1_MAP1_ALLOC12_V1'});
   const candidateCostBridge=createCandidateCostQuoteBridge(candidateCostBinding);
@@ -160,20 +162,21 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
   candidateCostBridge.bind(sources);
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),prepare:context=>preparePumpPublication({...context,sources,clock}),revalidate:async (card,context)=>{
     if(card.analysis.kind==='DELIVERY_DIAGNOSTIC')return {valid:mode==='DELIVERY_CHECK'&&card.analysis.diagnostic_id===TELEGRAM_DIAGNOSTIC_ID&&card.expires_ts>clock()&&card.text===TELEGRAM_DIAGNOSTIC_TEXT};
-    return revalidatePumpCard({card,store,sources,clock,prepared_input:context?.prepared_input??null});
-  },send:async ({text,recipient,card_id})=>{
-    const savedCard=await store.get('pump:card:'+card_id);
+    return revalidatePumpCard({card,store:context?.native_stage?store.withStage(context.native_stage):store,sources,clock,prepared_input:context?.prepared_input??null});
+  },send:async ({text,recipient,card_id,native_stage=null})=>{
+    const requiredStore=native_stage?store.withStage(native_stage):store;
+    const savedCard=await requiredStore.get('pump:card:'+card_id);
     const refusal=ownerPublicationRefusal(savedCard?.analysis);if(refusal&&savedCard?.analysis?.kind!=='DELIVERY_DIAGNOSTIC')throw Object.assign(Error(refusal),{code:refusal,send_attempted:false});
     const diagnostic=mode==='DELIVERY_CHECK'&&text===TELEGRAM_DIAGNOSTIC_TEXT&&PROVIDER_STAGE==='QUALIFICATION_ONLY';
     let acceptedManual=false;
     if(PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&mode==='MANUAL'&&run_id===MANUAL_ACCEPTANCE_ID){const card=await store.get('pump:card:'+card_id);acceptedManual=card?.mode==='MANUAL'&&card.analysis?.ready===true&&card.analysis.run_id===run_id&&card.analysis.instrument?.native_symbol===MANUAL_ACCEPTANCE_SYMBOL+'-USDT';}
     if(!diagnostic&&!acceptedManual&&(env.PUMP_REPORT_DELIVERY_ENABLED!=='1'||PROVIDER_STAGE!=='PRODUCTION_QUALIFIED'))throw Object.assign(Error('DELIVERY_NOT_ADMITTED'),{code:'DELIVERY_NOT_ADMITTED',send_attempted:false});
     const token=String(env.TELEGRAM_BOT_TOKEN??'');if(!token||!recipient||recipient==='UNCONFIGURED')throw Object.assign(Error('TELEGRAM_BINDING_MISSING'),{send_attempted:false});
-    return sendSavedTelegram({budget,fetch_impl,token,recipient,text,card:savedCard,clock});
+    return sendSavedTelegram({budget,fetch_impl,token,recipient,text,card:savedCard,clock,native_tail,native_stage});
   }});
-  const retained_features=createRetainedCapsuleWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED'});
-  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features,assess_source_evidence:createSourceEvidenceAdmission(identityRegistry),await_source_window:args=>broker.awaitProviderWindow(args)});
-  return {native,store,budget,broker,sources,delivery,runner,captured,privateCapture};
+  const retained_features=createRetainedCapsuleWriter({store:native_tail?.projectionStore??store,projection_budget:native_tail?.projection_budget??null,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED'});
+  const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features,native_tail,assess_source_evidence:createSourceEvidenceAdmission(identityRegistry),await_source_window:args=>broker.awaitProviderWindow(args)});
+  return {native,store,budget,broker,sources,delivery,runner,captured,privateCapture,native_tail};
   }catch(error){error.pumpNative=native;throw error;}
 }
 

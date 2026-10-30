@@ -6,8 +6,14 @@ const sameLinkCore=(current,next)=>current?.schema==='pump-summary-capsule-link-
   &&digest(current.protected_refs?.sha256)
   &&current.protected_refs.key==='pump:protected-refs:v2:'+current.protected_refs.sha256
   &&Object.keys(current.protected_refs).length===2;
-export function createRetainedCapsuleWriter({store,implementation_sha256,evidence_class}){
+export function createRetainedCapsuleWriter({store,implementation_sha256,evidence_class,projection_budget=null}){
   if(!store?.atomic||!digest(implementation_sha256)||typeof evidence_class!=='string')throw Error('PINNED_RETAINED_CAPSULE_CONTEXT_REQUIRED');
+  if(projection_budget!==null&&typeof projection_budget?.run!=='function')throw Error('RETAINED_PROJECTION_BUDGET_RUN_REQUIRED');
+  // SOURCE owns the opaque guard, actual D1 admission, stage floor and holds.
+  // This hook forecasts the complete public operation once. It is not an IO
+  // admission and never catches corruption, unknown ACK or readback failures.
+  const runProjection=(descriptor,work)=>projection_budget===null?work():
+    projection_budget.run(Object.freeze(descriptor),work);
   async function immutable(key,value,{preserve_link_refs=false}={}){
     const retained=await store.atomic(key,current=>{
       // A later, more complete reference projection cannot rewrite an already
@@ -72,12 +78,12 @@ export function createRetainedCapsuleWriter({store,implementation_sha256,evidenc
     const sha256=await capsuleDigest(value),key='pump:protected-refs:v2:'+sha256;
     await immutable(key,{key,sha256,projection:value});return {key,sha256};
   }
-  async function remember(analysis_key){
+  async function rememberWork(analysis_key){
     const result=await original(analysis_key);if(result.status!=='SAVED')return {status:result.status,analysis_key};
     const refs=await projection({saved:result.saved,analysis_key});
     return {status:'SAVED',feature_key:result.prepared.key,feature_sha256:result.prepared.sha256,protected_refs:refs};
   }
-  async function record(signal,summary_record){
+  async function recordWork(signal,summary_record){
     if(!signal?.analysis_key||summary_record?.origin?.signal_id!==signal.signal_id||!same(summary_record.origin,signal.origin))throw Error('RETAINED_OUTCOME_SIGNAL_BINDING_REQUIRED');
     const row=await original(signal.analysis_key);
     if(row.status!=='SAVED')return {status:row.status,analysis_key:signal.analysis_key};
@@ -91,5 +97,12 @@ export function createRetainedCapsuleWriter({store,implementation_sha256,evidenc
     const link={schema:'pump-summary-capsule-link-v3-seed-window-20261030',projection_revision:FEATURE_PROJECTION_REVISION,summary_record_id:summary_record.record_id,analysis_key:signal.analysis_key,feature_key:row.prepared.key,feature_sha256:row.prepared.sha256,outcome_key:prepared.key,outcome_sha256:prepared.sha256,protected_refs:refs,originals_required:true,global_reference_closure:false};
     const retained=await immutable('pump:summary-capsule-link:v3:'+FEATURE_PROJECTION_REVISION+':'+summary_record.record_id.slice(-64),link,{preserve_link_refs:true});return {status:'SAVED',...retained};
   }
+  // No nested hook in original(), projection(), or immutable(). Partial,
+  // acknowledged rows remain immutable recovery inputs on a later invocation.
+  const remember=analysis_key=>runProjection({kind:'REMEMBER',analysis_key},
+    ()=>rememberWork(analysis_key));
+  const record=(signal,summary_record)=>runProjection({kind:'RECORD',
+    analysis_key:signal?.analysis_key,summary_record_id:summary_record?.record_id},
+    ()=>recordWork(signal,summary_record));
   return {remember,record,implementation_sha256,evidence_class};
 }

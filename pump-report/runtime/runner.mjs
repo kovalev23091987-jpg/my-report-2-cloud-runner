@@ -15,7 +15,7 @@ const instrumentKey=instrument=>instrument.instrument_id;
 const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
 const globalBudgetReason=result=>[...(result.analysis?.reasons??[]),result.source_coverage?.reason,...Object.values(result.source_coverage?.facts??{}).map(f=>f.reason)].some(reason=>/PROTECTED_DAY|MONTH_EXHAUSTED|RUN_HTTP|RUN_MANUAL|PROVIDER_SECOND|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL|AUTOMATIC_WINDOW_CLOSED/.test(typeof reason==='string'?reason:reason?.code??''));
 
-export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED',run_purpose='UNCLASSIFIED',retained_features=null,await_source_window=async()=>{},assess_source_evidence=()=>({eligible:true})}){
+export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile=START_PROFILE,clock=Date.now,evidence_class='UNCLASSIFIED',run_purpose='UNCLASSIFIED',retained_features=null,native_tail=null,await_source_window=async()=>{},assess_source_evidence=()=>({eligible:true})}){
   if(!store?.atomic||!sources?.getCore||!analyzePump||!evaluateOutcome||!budget||!delivery)throw Error('PUMP_RUNNER_DEPENDENCIES_REQUIRED');
   const prequeueNear=(reported,change)=>(typeof reported==='number'&&reported>=profile.automatic_growth.day_pct*profile.prequeue_threshold_fraction)||(change!==null&&change>=profile.automatic_growth.short_pct*profile.prequeue_threshold_fraction);
   const manualResultKey=id=>'pump:manual-result:'+id;
@@ -36,15 +36,25 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     await manualWork.add(request_id);
     return {status:'QUEUED',request_id};
   }
-  async function claimManual(executor_owner){
-    const page=await manualWork.page({limit:4});if(!page.ready)throw Error('WORK_INDEX_MIGRATING');
-    for(const {id} of page.items){const existing=await store.get('pump:manual:'+id);if(existing?.status==='COMPLETE'){await manualWork.complete(id,{evidence_key:manualResultKey(id)});continue;}
-      const job=await store.atomic('pump:manual:'+id,current=>{
+  async function claimManual(executor_owner,{native_ticket=null,request_id=null}={}){
+    const db=native_ticket?native_tail.queuedManualStore(native_ticket):store;
+    const work=native_ticket?createWorkIndex({store:db,kind:'manual',targetKey:id=>'pump:manual:'+id,completed:async saved=>saved.status==='COMPLETE'&&await db.get(manualResultKey(saved.request_id))!==null}):manualWork;
+    // Native AUTO already selected one initialized pointer. Do not page four
+    // rows or migrate another index while spending the completion envelope.
+    const page=native_ticket?{ready:true,items:[{id:request_id}]}:await manualWork.page({limit:4});if(!page.ready)throw Error('WORK_INDEX_MIGRATING');
+    for(const {id} of page.items){const existing=await db.get('pump:manual:'+id);if(existing?.status==='COMPLETE'){await work.complete(id,{evidence_key:manualResultKey(id)});continue;}
+      const job=await db.atomic('pump:manual:'+id,current=>{
       if(current?.status!=='PENDING'&&!(current?.status==='PROCESSING'&&current.executor_owner!==executor_owner))return {state:current,result:null};
       return {state:{...current,status:'PROCESSING',executor_owner,started_ts:clock()},result:current};
     });if(job)return job;}return null;
   }
-  async function finishManual(job,result){await store.set(manualResultKey(job.request_id),result);await store.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));await manualWork.complete(job.request_id,{evidence_key:manualResultKey(job.request_id)});}
+  async function finishManual(job,result,{native_ticket=null}={}){
+    const db=native_ticket?native_tail.queuedManualStore(native_ticket):native_tail?native_tail.endStore():store;
+    const work=native_tail?createWorkIndex({store:db,kind:'manual',targetKey:id=>'pump:manual:'+id,completed:async saved=>saved.status==='COMPLETE'&&await db.get(manualResultKey(saved.request_id))!==null}):manualWork;
+    await db.set(manualResultKey(job.request_id),result);
+    await db.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));
+    await work.complete(job.request_id,{evidence_key:manualResultKey(job.request_id)});
+  }
   async function getManualResult(id){return store.get(manualResultKey(id));}
 
   async function updateDiscovery(catalog,run_id){
@@ -103,34 +113,41 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     await store.atomic(key,current=>{if(retained_features&&current&&(JSON.stringify(current.analysis)!==JSON.stringify(analysis)||JSON.stringify(current.input)!==JSON.stringify(input)))throw Error('IMMUTABLE_ANALYSIS_INPUT_CONFLICT');return {state:current??{analysis,input,saved_ts:clock(),...(retained_features?{implementation_sha256:retained_features.implementation_sha256,evidence_class:retained_features.evidence_class}:{})},result:true};});
     return key;
   }
-  async function indexAnalysis(analysis,input,key){
-    await store.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});
+  async function indexAnalysis(analysis,input,key,{native_ticket=null}={}){
+    if(native_tail&&!native_ticket&&analysis.ready)throw new BudgetRefusal('DEFERRED_NATIVE_REQUIRED_INDEX');
+    const db=native_ticket?native_tail.requiredStore(native_ticket):store;
+    await db.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});
     const wave=analysis.next_wave??analysis.previous_wave??null;
     // Queue expiry and retained wave advance together. The active array is only
     // a derived hint and can safely lag this atomic pair after an interruption.
-    await store.atomicPair(['pump:wave:'+instrumentKey(input.instrument),'pump:candidate-queue'],([currentWave,queue])=>{
+    await db.atomicPair(['pump:wave:'+instrumentKey(input.instrument),'pump:candidate-queue'],([currentWave,queue])=>{
       queue??={};const id=instrumentKey(input.instrument);
       if(input.mode!=='MANUAL'||queue[id])queue[id]={...(queue[id]??{first_seen:clock(),instrument_id:id}),last_checked_ts:clock(),next_check_ts:clock()+profile.candidate_recheck_ms,last_status:analysis.status,active_wave:Boolean(wave&&!['CANCELLED','EXPIRED'].includes(analysis.wave_state)&&(wave.expires_ts??0)>clock()),
         ...analysisQueueEvidence(analysis,input,profile),entry_zones:(analysis.plan?.entry_zones??[]).map(z=>({lower:z.lower,upper:z.upper}))};
       return {states:[wave??currentWave,queue],result:true};
     });
-    await store.atomic('pump:active-instruments',current=>{
+    await db.atomic('pump:active-instruments',current=>{
       const set=new Set(current??[]);if(wave&&analysis.wave_state!=='CANCELLED'&&(wave.expires_ts??0)>clock()){if(input.mode==='AUTO'||set.has(instrumentKey(input.instrument)))set.add(instrumentKey(input.instrument));}else set.delete(instrumentKey(input.instrument));
       return {state:[...set],result:true};
     });
     // Persist wave/latest/watch queue before fallible heavy feature projection.
-    if(retained_features&&analysis.ready)await retained_features.remember(key);
-    await observations.remember(analysis,input,key);
+    // Raw READY first; a heavy-projection refusal cannot lose its denominator.
+    await observations.remember(analysis,input,key,{defer_index:!!native_tail,native_stage:native_ticket?native_tail.requiredToken(native_ticket):null});
+    if(retained_features&&analysis.ready){
+      const projected=await retained_features.remember(key);
+      if(projected?.status!=='SAVED')throw Object.assign(new BudgetRefusal(projected?.status==='DEFERRED_NATIVE_PROJECTION'?'DEFERRED_NATIVE_PROJECTION':'RETAINED_PROJECTION_NOT_SAVED'),{projection:projected});
+    }
   }
   async function checkInstrument(instrument,{run_id,mode,publish=true,assert_execution=async()=>{}}){
     if(ownerInstrumentExcluded(instrument))return {status:'OWNER_ASSET_DELIVERY_EXCLUDED',symbol:instrument.base,delivery:null};
     const evidence=assess_source_evidence(instrument);
     if(!evidence.eligible)return {status:'DEFERRED_SOURCE_EVIDENCE',source_coverage:{status:'NOT_CHECKED',reason:evidence.reason,asset_remains_in_discovery:true},delivery:null};
+    native_tail?.noteCandidate();
     budget.setMode(mode);
     await assert_execution();
     const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider,candidate_id:instrument.instrument_id,source_cost_token:candidateAdmissionQuote(sources,instrument,run_id)});
     if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail,...(admitted.surplus_limit?{surplus_limit:admitted.surplus_limit}:{})},delivery:null};
-    let checked_result=null,failure_stage='SOURCE_WINDOW';
+    let checked_result=null,failure_stage='SOURCE_WINDOW',native_ticket=null;
     try {
     // After catalog/discovery, wait BEFORE the fresh phase. Cold upper bound:
     // overview1 + day1 + price(primary/fallback)2 + candles/book2 + optional2
@@ -179,27 +196,38 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     // The anchor's actual recorded_ts must precede the publication event.
     // Persist only its row now; derived work-index operations follow dispatch.
     failure_stage='JOURNAL_ANCHOR';
-    if(analysis.ready)await observations.remember(analysis,input,analysis_key,{defer_index:true});
+    if(analysis.ready&&native_tail)await native_tail.persistReady({analysis_key,analysis,input,
+      remember:options=>observations.remember(analysis,input,analysis_key,options)});
+    else if(analysis.ready)await observations.remember(analysis,input,analysis_key,{defer_index:true});
     try {
     failure_stage='PUBLICATION';
     const preflightRefused=preparation&&!preparation.skipped&&preparation.accepted!==true;
     const publicationRefusal=ownerPublicationRefusal(analysis);
+    let native_claim_deferred=false;
+    if(native_tail&&analysis.ready){
+      try{native_ticket=native_tail.claimCandidate({analysis_key,may_send:publish&&!publicationRefusal&&!preflightRefused&&(mode==='MANUAL'||analysis.automatic_eligible)});}
+      catch(error){
+        if(!['NATIVE_SQL_QUERY_COUNT_PROTECTED','NATIVE_SQL_RUN_ENVELOPE_EXHAUSTED','NATIVE_STAGE_ACTUAL_ADMISSION_REQUIRED'].includes(error?.code)||store.usage().unknown_ops)throw error;
+        native_claim_deferred=true;delivered={state:'DEFERRED',reason:error.code};
+      }
+    }
     if(preflightRefused)delivered={state:'STALE',reason:preparation.reason??'PUBLICATION_PREFLIGHT_REFUSED'};
     if(publish&&analysis.ready&&publicationRefusal)delivered={state:'SUPPRESSED',reason:publicationRefusal};
-    if(publish&&analysis.ready&&!publicationRefusal&&!preflightRefused&&(mode==='MANUAL'||analysis.automatic_eligible)){
+    if(!native_claim_deferred&&publish&&analysis.ready&&!publicationRefusal&&!preflightRefused&&(mode==='MANUAL'||analysis.automatic_eligible)){
       await assert_execution();
       const expires=Math.min(...['price','orderbook','candles'].map(key=>input.facts[key]?.expires_ts??0));
       if(expires>clock()){
         const card=await delivery.enqueue({...analysis,source_input_key:analysis_key},{mode,expires_ts:expires,update_kind:analysis.update_kind??null});
         card_id=card.card_id;
-        delivered=await delivery.dispatch(card.card_id,{preparation_token:preparation?.preparation_token??null});
+        delivered=await delivery.dispatch(card.card_id,{preparation_token:preparation?.preparation_token??null,native_stage:native_ticket?native_tail.requiredToken(native_ticket):null});
       }else delivered={state:'STALE',reason:'MANDATORY_FACT_EXPIRED_BEFORE_PUBLICATION'};
     }
     } finally {
-      try{failure_stage='ANALYSIS_INDEX';await indexAnalysis(analysis,input,analysis_key);}
+      try{failure_stage='ANALYSIS_INDEX';await indexAnalysis(analysis,input,analysis_key,{native_ticket});}
       catch(error){if(!delivered)throw error;bookkeeping_error=error.code??'POST_PUBLICATION_INDEX_FAILED';}
     }
-    if(card_id&&!bookkeeping_error){try{await recordPublished(card_id,{analysis_registered:true});}catch(error){bookkeeping_error=error.code??'POST_PUBLICATION_REGISTRATION_FAILED';}}
+    if(card_id&&native_tail)bookkeeping_error??='NATIVE_REGISTRATION_PENDING';
+    else if(card_id&&!bookkeeping_error){try{await recordPublished(card_id,{analysis_registered:true});}catch(error){bookkeeping_error=error.code??'POST_PUBLICATION_REGISTRATION_FAILED';}}
     checked_result={analysis_key,analysis,delivery:delivered,source_coverage:core.coverage,...(bookkeeping_error?{bookkeeping_error}:{}),...(admitted?.candidate_quota?{candidate_quota:admitted.candidate_quota}:{})};
     return checked_result;
     } catch(error) {
@@ -207,9 +235,10 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       throw error;
     } finally {
       if(admitted?.surplus_grant_id){
-        try{await budget.closeCandidate({candidate_id:instrument.instrument_id,surplus_grant_id:admitted.surplus_grant_id});}
+        try{await budget.closeCandidate({candidate_id:instrument.instrument_id,surplus_grant_id:admitted.surplus_grant_id,native_stage:native_tail?.endToken()??null});}
         catch(error){if(!checked_result?.delivery)throw error;const reason=error.code??'POST_PUBLICATION_CANDIDATE_CLOSE_FAILED';checked_result.bookkeeping_error??=reason;checked_result.candidate_close_error=reason;}
       }
+      if(native_ticket)await native_tail.finishCandidate(native_ticket,{card_id:checked_result?.delivery?.card_id??null,delivery_state:checked_result?.delivery?.state??null});
     }
   }
   async function recordPublished(card_id,{analysis_registered=false}={}){
@@ -231,31 +260,90 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     }
     if(['SENT','UNKNOWN','ERROR','STALE','SUPPRESSED'].includes(card.state))await delivery.acknowledge(card_id);
   }
-  async function checkOutcomes({run_id}){
+  async function repairNativeReference(reference,db,native_stage){
+    const key=reference?.analysis_key,saved=typeof key==='string'?await db.get(key):null;
+    if(!saved?.analysis||!saved.input||key!=='pump:analysis:'+await textHash(JSON.stringify(saved.analysis)))throw Error('NATIVE_RECOVERY_ORIGINAL_HASH_REQUIRED');
+    const raw=createOutcomeJournal({store:db,profile,clock,evidence_class,retained_features:null});
+    await raw.remember(saved.analysis,saved.input,key,{defer_index:false,ready_reference:reference});
+    let card=null;
+    const ids=reference.card_id?[reference.card_id]:[
+      'PUMP:'+await textHash(saved.analysis.instrument.instrument_id+'|'+saved.analysis.wave_id+'|'+await textHash(saved.analysis.card_text)),
+      'PUMP:'+await textHash(saved.analysis.instrument.instrument_id+'|'+saved.analysis.wave_id+'|'+await textHash(saved.analysis.card_text)+'|'+key)];
+    for(const id of ids){const candidate=await db.get('pump:card:'+id);if(candidate?.analysis?.source_input_key===key){card=candidate;break;}}
+    // Settle interrupted/expired saved work without any call to dispatch.
+    // Cost delta versus F696 RECOVER_ONE: <=one singleAtomic plus one get,
+    // <=11Q/11Rhint/10Whint. SOURCE/ROOT must include it in its frozen plan.
+    if(card&&(card.state==='SENDING'&&Number.isSafeInteger(card.claim_until)&&card.claim_until<=clock()||
+      ['READY','RETRYABLE'].includes(card.state)&&Number.isSafeInteger(card.expires_ts)&&card.expires_ts<=clock())){
+      const cardKey='pump:card:'+card.card_id;
+      await db.atomic(cardKey,current=>{
+        if(!current)return {state:current,result:true};
+        const at=clock();
+        if(current.state==='SENDING'&&Number.isSafeInteger(current.claim_until)&&current.claim_until<=at){
+          const possible=current.delivery_schema!=='PUMP_DELIVERY_V2'||Number.isSafeInteger(current.send_started_ts);
+          return {state:{...current,state:possible?'UNKNOWN':'ERROR',owner:null,claim_until:null,
+            updated_ts:at,reason:possible?'SENDER_INTERRUPTED_AFTER_POSSIBLE_SEND':'SENDER_INTERRUPTED_BEFORE_SEND'},result:true};
+        }
+        if(['READY','RETRYABLE'].includes(current.state)&&Number.isSafeInteger(current.expires_ts)&&current.expires_ts<=at)
+          return {state:{...current,state:'STALE',updated_ts:at,reason:'CARD_EXPIRED_DURING_SAVED_RECOVERY'},result:true};
+        return {state:current,result:true};
+      });
+      card=await db.get(cardKey);
+      if(!card||card.analysis?.source_input_key!==key)throw Error('NATIVE_RECOVERY_CARD_READBACK_REQUIRED');
+    }
+    let registration=null;
+    if(card&&['SENT','UNKNOWN','ERROR','STALE'].includes(card.state))registration=await raw.publication(card.card_id,{defer_heavy:true});
+    else if(!card)registration=await raw.sync('pump:journal:'+saved.analysis.instrument.instrument_id+':'+saved.analysis.wave_id,{defer_heavy:true});
+    if(registration?.status==='QUARANTINED')throw Error('NATIVE_RECOVERY_JOURNAL_QUARANTINED');
+    if(!card&&!registration?.summary_record_id)return false;
+    if(retained_features){
+      const remembered=await retained_features.remember(key);
+      if(remembered?.status!=='SAVED')return false;
+      if(registration?.summary_record_id){
+        const signal=await db.get(registration.signal_id),record=await db.get(registration.summary_record_id);
+        const projected=await retained_features.record(signal,record);
+        if(projected?.status!=='SAVED')return false;
+      }
+    }
+    // The work reference is acknowledged only after raw required registration
+    // and all requested feature projections have actually completed.
+    if(card){
+      if(!registration?.summary_record_id)return false;
+      await delivery.acknowledge(card.card_id,{native_stage});
+    }
+    return true;
+  }
+  async function checkOutcomes({run_id,limit=20,native_stage=null}){
+    const db=native_stage?store.withStage(native_stage):store;
+    const stageOutcomeWork=native_stage?createOutcomeWorkIndex({store:db}):outcomeWork;
+    const stageObservations=native_stage?createOutcomeJournal({store:db,profile,clock,evidence_class,retained_features,continuation_bounds:{fold_records:1}}):observations;
+
     if(!automaticWindowOpen(clock()))return [];
     budget.setMode('STATISTICS');
-    const page=await outcomeWork.page({limit:20}),results=[];if(!page.ready)return [{status:'DEFERRED',reason:'WORK_INDEX_MIGRATING'}];
+    const page=await stageOutcomeWork.page({limit}),results=[];if(!page.ready)return [{status:'DEFERRED',reason:'WORK_INDEX_MIGRATING'}];
     for(const {id:key} of page.items){
       if(store.admission&&typeof store.usage==='function'){const used=store.usage();if(used.rows_read+500>store.admission.max_rows_read||used.rows_written+30>store.admission.max_rows_written){results.push({status:'DEFERRED',reason:'STATISTICS_NATIVE_ENVELOPE_PROTECTED'});break;}}
-      const signal=await store.get(key);if(!signal)throw Error('SAVED_OUTCOME_SIGNAL_MISSING');
+      const signal=await db.get(key);if(!signal)throw Error('SAVED_OUTCOME_SIGNAL_MISSING');
       if(!productionRecord({origin:signal.origin})){
         const evidence_key='pump:work-exclusion:outcomes:'+await textHash(key);
-        await store.set(evidence_key,{schema:'PUMP_OUTCOME_WORK_EXCLUSION_V1',signal_id:signal.signal_id,origin:signal.origin,reason:'TEST_OR_UNCLASSIFIED_ORIGIN_RETAINED_FOR_AUDIT'});
-        await outcomeWork.complete(key,{evidence_key});results.push({signal_id:signal.signal_id,status:'SKIPPED_NON_PRODUCTION',reason:'TEST_OR_UNCLASSIFIED_ORIGIN_RETAINED_FOR_AUDIT'});continue;
+        await db.set(evidence_key,{schema:'PUMP_OUTCOME_WORK_EXCLUSION_V1',signal_id:signal.signal_id,origin:signal.origin,reason:'TEST_OR_UNCLASSIFIED_ORIGIN_RETAINED_FOR_AUDIT'});
+        await stageOutcomeWork.complete(key,{evidence_key});results.push({signal_id:signal.signal_id,status:'SKIPPED_NON_PRODUCTION',reason:'TEST_OR_UNCLASSIFIED_ORIGIN_RETAINED_FOR_AUDIT'});continue;
       }
       if(signal.deadline_ts>clock())continue;
-      const saved=await store.get('pump:outcome:'+signal.signal_id);if(saved?.status==='HIT'||saved?.status==='MISS'){const evidence_key=await observations.record(signal,saved);await outcomeWork.complete(key,{evidence_key});continue;}
+      const saved=await db.get('pump:outcome:'+signal.signal_id);if(saved?.status==='HIT'||saved?.status==='MISS'){const evidence_key=await stageObservations.record(signal,saved);await stageOutcomeWork.complete(key,{evidence_key});continue;}
       const summary=budget.summary();if(summary.lanes.statistics>=summary.limits.lanes.statistics||summary.total>=summary.limits.http_per_run){results.push({status:'DEFERRED',reason:'STATISTICS_HTTP_BUDGET_EXHAUSTED'});break;}
       if(typeof sources.getOutcomeHistory!=='function'){results.push({signal_id:signal.signal_id,status:'UNKNOWN',reason:'OUTCOME_HISTORY_ROUTE_NOT_CONNECTED'});continue;}
       const history=await sources.getOutcomeHistory({instrument:signal.instrument,run_id,start_ts:signal.t0,end_ts:signal.deadline_ts});
       if(/BUDGET|RESERVE|EXHAUSTED|BACKOFF/.test(history.coverage?.reason??history.facts?.candles?.reason??'')){results.push({signal_id:signal.signal_id,status:'DEFERRED',reason:history.coverage?.reason??history.facts.candles.reason});break;}
       const outcome=evaluateOutcome({signal,candles:history.facts?.candles?.value??[],price_points:[],as_of_ts:clock()});
-      await store.set('pump:outcome:'+signal.signal_id,outcome);const evidence_key=await observations.record(signal,outcome);results.push(outcome);
-      if(['HIT','MISS'].includes(outcome.status))await outcomeWork.complete(key,{evidence_key});
+      await db.set('pump:outcome:'+signal.signal_id,outcome);const evidence_key=await stageObservations.record(signal,outcome);results.push(outcome);
+      if(['HIT','MISS'].includes(outcome.status))await stageOutcomeWork.complete(key,{evidence_key});
     }
+    if(native_stage)await stageObservations.catchUp({max_records:1,maturity_limit:1});
     return results;
   }
   function capacity(){
+    if(native_tail&&!native_tail.canCheckCandidate())return false;
     const summary=budget.summary(),manual=summary.mode==='AUTO'?summary.limits.manual_http_run_reserve:0;
     const candidate=profile.core_http_upper_bound+(profile.optional_http_upper_bound??2)+(profile.map_http_upper_bound??1)+profile.delivery_http_reserve;
     const http=summary.total+candidate+manual<=summary.limits.http_per_run&&summary.lanes.hot+candidate+manual<=summary.limits.lanes.hot;
@@ -266,12 +354,15 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
 
   async function execute({mode='AUTO',symbol=null,run_id=crypto.randomUUID(),publish=true,request_id=crypto.randomUUID(),context_symbol=null}={}){
     if(mode==='AUTO'&&!automaticWindowOpen(clock()))return {status:'OUTSIDE_AUTOMATIC_WINDOW',run_id};
-    let manual;if(mode==='MANUAL'){manual=await enqueueManual(symbol,{request_id,publish,context_symbol});if(manual.status!=='QUEUED')return manual;}
-    const owner=crypto.randomUUID(),claimed=await store.atomic('pump:executor',current=>{
+    native_tail?.beginRun({operation_mode:mode});
+    let manual;if(mode==='MANUAL'){try{manual=await enqueueManual(symbol,{request_id,publish,context_symbol});}catch(error){if(store.usage?.().unknown_ops===0)native_tail?.endRun();throw error;}if(manual.status!=='QUEUED'){native_tail?.endRun();return manual;}}
+    const owner=crypto.randomUUID();let claimed;
+    try{claimed=await store.atomic('pump:executor',current=>{
       if(current?.owner&&current.expires_ts>clock())return {state:current,result:false};
       return {state:{owner,run_id,expires_ts:clock()+profile.executor_lease_ms},result:true};
     });
-    if(!claimed)return manual??{status:'EXECUTOR_BUSY',run_id};
+    }catch(error){if(store.usage?.().unknown_ops===0)native_tail?.endRun();throw error;}
+    if(!claimed){native_tail?.endRun();return manual??{status:'EXECUTOR_BUSY',run_id};}
     const assert_execution=async()=>{
       const valid=await store.atomic('pump:executor',current=>{
         if(current?.owner!==owner||current.expires_ts<=clock())return {state:current,result:false};
@@ -290,22 +381,34 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       const unresolved=(catalog.unqualified??[]).filter(row=>['CRYPTO_ASSET_IDENTITY_UNQUALIFIED','CATALOG_REGISTRY_IDENTITY_MISMATCH','MISSING_OR_DUPLICATE_NATIVE_SYMBOL','INVALID_CATALOG_ROW'].includes(row.reason));
       if(unresolved.length){result.status='INCOMPLETE';result.errors.push({reason:'UNIVERSE_QUALIFICATION_INCOMPLETE',unqualified:unresolved.length});}
       if(mode==='AUTO'&&catalog.instruments.length)result.coverage=await updateDiscovery(catalog,run_id);
-      let job;
+      let job,queuedManualAttempts=0;
       for(;;){
         try{await assert_execution();}catch{result.status='INCOMPLETE';result.errors.push('EXECUTOR_LEASE_EXPIRED');break;}
         const pending=await manualWork.page({limit:1,advance:false});if(!pending.ready){result.status='INCOMPLETE';result.errors.push('WORK_INDEX_MIGRATING');break;}
-        const hasManual=pending.scanned>0;
+        const queuedNative=!!native_tail&&mode==='AUTO',hasManual=queuedNative?pending.items.length>0:pending.scanned>0;
+        if(queuedNative&&hasManual&&queuedManualAttempts>=1){result.status='INCOMPLETE';result.errors.push('QUEUED_MANUAL_CARRIED_ONE_PER_NATIVE_RUN');break;}
         budget.setMode(hasManual?'MANUAL':mode);
         if(!capacity()){result.status='INCOMPLETE';result.errors.push('RUN_RESOURCES_DEFERRED');break;}
-        job=await claimManual(owner);
+        let manualTicket=null;
+        if(queuedNative&&hasManual){
+          try{manualTicket=native_tail.claimQueuedManual({request_id:pending.items[0].id});}
+          catch(error){
+            if(!['NATIVE_SQL_QUERY_COUNT_PROTECTED','NATIVE_SQL_RUN_ENVELOPE_EXHAUSTED','NATIVE_STAGE_ACTUAL_ADMISSION_REQUIRED'].includes(error?.code)||store.usage().unknown_ops>0)throw error;
+            result.status='INCOMPLETE';result.errors.push('QUEUED_MANUAL_TAIL_DEFERRED');break;
+          }
+          queuedManualAttempts++;
+        }
+        try{
+        job=queuedNative&&!hasManual?null:await claimManual(owner,{native_ticket:manualTicket,request_id:manualTicket?pending.items[0].id:null});
         if(job){
           const matches=catalog.instruments.filter(i=>symbolKey(i.native_symbol)===job.symbol||i.base.toUpperCase()===job.symbol);
           let answer;
           if(ownerInstrumentExcluded(job.symbol))answer={status:'OWNER_ASSET_DELIVERY_EXCLUDED',symbol:job.symbol};
           else if(matches.length!==1)answer={status:matches.length?'AMBIGUOUS_SYMBOL':'INSTRUMENT_NOT_QUALIFIED',symbol:job.symbol,candidates:matches.map(i=>i.native_symbol)};
           else try{answer=await checkInstrument(matches[0],{run_id,mode:'MANUAL',publish:job.publish,assert_execution});}catch(error){answer={status:'ERROR',reason:error.code??'MANUAL_ANALYSIS_ERROR'};}
-          await finishManual(job,answer);result.manual.push({request_id:job.request_id,result:answer});if(answer.bookkeeping_error)break;continue;
+          await finishManual(job,answer,{native_ticket:manualTicket});result.manual.push({request_id:job.request_id,result:answer});if(answer.bookkeeping_error)break;continue;
         }
+        }finally{if(manualTicket)native_tail.releaseQueuedManual(manualTicket);}
         if(mode!=='AUTO'||!automaticWindowOpen(clock()))break;
         budget.setMode('AUTO');const instrument=await selectAutomatic(catalog,result);if(!instrument)break;
         try{const checked=await checkInstrument(instrument,{run_id,mode:'AUTO',publish,assert_execution});if(checked.status==='DEFERRED'&&!checked.analysis){result.status='INCOMPLETE';(result.deferred??=[]).push({instrument_id:instrument.instrument_id,...checked});result.errors.push('SOURCE_BUDGET_DEFERRED');break;}result.checked.push(checked);if(checked.bookkeeping_error)break;if(globalBudgetReason(checked)){result.status='INCOMPLETE';result.errors.push('SOURCE_BUDGET_DEFERRED');break;}}
@@ -319,7 +422,10 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       }
       const bookkeeping_errors=[...result.checked,...result.manual.map(row=>row.result)].filter(row=>row.bookkeeping_error);
       if(bookkeeping_errors.length){result.status='INCOMPLETE';result.errors.push(...bookkeeping_errors.map(row=>({analysis_key:row.analysis_key,reason:row.bookkeeping_error,delivery_state:row.delivery?.state??null})));}
-      else {
+      if(native_tail){
+        result.native_recovery=await native_tail.repairOne(repairNativeReference);
+        if(automaticWindowOpen(clock()))result.outcomes=await native_tail.outcomeOne(token=>checkOutcomes({run_id,limit:1,native_stage:token}));
+      }else if(!bookkeeping_errors.length) {
       // Repair a receipt-backed signal after a prior process stopped between
       // the durable SENT acknowledgement and outcome registration.
       const deliveryIds=await delivery.pending({limit:20});for(const id of deliveryIds)await recordPublished(id);
@@ -331,8 +437,15 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
       if(result.coverage?.status==='INCOMPLETE'||result.errors.length)result.status='INCOMPLETE';
       const ready=result.checked.filter(r=>r.analysis?.ready&&r.analysis.automatic_eligible).length;
       result.discovery_result=result.status==='INCOMPLETE'?'INCOMPLETE_COVERAGE_OR_RESOURCES':ready?'READY_IDEAS_FOUND':'NO_READY_IDEAS_IN_CHECKED_SCOPE';
-      result.resources=budget.summary();await store.set('pump:run:'+run_id,result);return manual?{...result,request_id:manual.request_id,manual_result:await getManualResult(manual.request_id)}:result;
-    }finally{await store.atomic('pump:executor',current=>({state:current?.owner===owner?{owner:null,run_id,released_ts:clock()}:current,result:true}));}
+      result.resources=budget.summary();result.end_run_write_attempted=true;await (native_tail?native_tail.endStore():store).set('pump:run:'+run_id,result);return manual?{...result,request_id:manual.request_id,manual_result:await getManualResult(manual.request_id)}:result;
+    }catch(error){
+      result.status='INCOMPLETE';result.errors.push(error?.code??'RUN_INTERRUPTED');
+      if(store.usage?.().unknown_ops===0&&!result.end_run_write_attempted){result.end_run_write_attempted=true;await (native_tail?native_tail.endStore():store).set('pump:run:'+run_id,result);}
+      throw error;
+    }finally{
+      await (native_tail?native_tail.endStore():store).atomic('pump:executor',current=>({state:current?.owner===owner?{owner:null,run_id,released_ts:clock()}:current,result:true}));
+      native_tail?.endRun();
+    }
   }
   return {execute,enqueueManual,getManualResult,checkInstrument,checkOutcomes,getSummary:observations.summary};
 }
