@@ -1,0 +1,140 @@
+{
+  "schema": "F684_SOURCE_MAPPING_CLOCKS_IMPLEMENTATION_HANDOFF_V1",
+  "base_main": "1441ae512b446187cec07da65988628cc2a466d5",
+  "qualification_authority": {
+    "main": "f9e8db9662c821e32cbe21350a917c7d97f952a0",
+    "fresh17_FULL": true,
+    "all4equal": true,
+    "root_owner": "CODEX:PUMP_PUBLICATION_RECOVERY_BUNDLE_20261030:1793351690000",
+    "root_expires_ts": 1793357090000,
+    "fence": false,
+    "zone_blob": "02542b09ff5f157d701c79489369bce68456ca41"
+  },
+  "implementation_commit": "5748b023c8aa73719172b1dd0271f64abec9ba5d",
+  "own_lease_acquire": "fdea73d11c5d58757698e4005d121ac8a83c12af",
+  "scope": "Apply accepted exact F683 patch to SOURCE's two files only, one coupled affected offline qualification, precise connected component bound. ROOT runtime recovery is outside this package.",
+  "source_after": [
+    {
+      "path": "pump-report/sources/liquidations.mjs",
+      "bytes": 6997,
+      "sha256": "d2014941a4c93ad472932180b4bb06114398b02d93bc2955da8f65c943a17002"
+    },
+    {
+      "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+      "bytes": 13991,
+      "sha256": "e6315d844a183fecdc78bda293a248b19796d8ebd4a88a10b1ce3448dacf8c58"
+    }
+  ],
+  "applied_patch": {
+    "path": "pump-report/handoffs/sources/F684_APPLIED_SOURCE_MAPPING_CLOCKS.patch",
+    "sha256": "d970ed48f32024ce02520e0ec37141ddbd9712cddf8db8b8f848a2ce7b98b78f",
+    "exact_F683_bytes": true,
+    "base_git_blobs": {
+      "pump-report/sources/liquidations.mjs": "9364bbc269de4371debdf179539e92f44f47d8b3",
+      "pump-report/sources/hyperliquid-observed-positions.mjs": "47f044d8eec5ab52e2cb6a4f2ceb95af4a873e13"
+    }
+  },
+  "changes": {
+    "Swole": "Propagate qualified mapping event_ts/expires_ts inside existing price_comparability; preserve native_expires_ts; effective zone expiry=min(native model expiry,mapping explicit expiry,mapping event+priceTTL). Parse already-supported timestamp strings to numeric ms before arithmetic.",
+    "Hyperliquid": "Propagate qualified mapping event_ts/expires_ts inside existing price_comparability. Existing min-expiry, source clocks, proof, units and account-subset semantics unchanged.",
+    "unqualified": "Expired/future/missing mapping evidence or clock remains UNKNOWN/unusable with null normalized mapping clocks. Source event never replaced by receipt. No route/registry/HOLD SOL/BTC activation."
+  },
+  "qualification": {
+    "admission_path": "pump-report/handoffs/sources/F684_POSITIVE_OFFLINE_NODE_ADMISSION_V1.json",
+    "admission_commit": "5748b023c8aa73719172b1dd0271f64abec9ba5d",
+    "positive_FULL_before_process": true,
+    "processes_reserved": 1,
+    "processes_consumed": 1,
+    "retried": false,
+    "test_path": "pump-report/tests/sources/F684-source-mapping-clocks-connected-once.mjs",
+    "test_sha256": "161b57b3a42c2ad0d9ed707a902bee30209e95add87f05b160b37a3c7e5a6888",
+    "started": "2026-10-30 09:23:18 UTC",
+    "finished": "2026-10-30 09:23:18 UTC",
+    "exit_code": 0,
+    "wall_seconds": 0.084507416,
+    "result_path": "pump-report/handoffs/sources/F684_AFFECTED_CASE_RESULT_V1.json",
+    "result": {
+      "schema": "F684_AFFECTED_CASE_RESULT_V1",
+      "case": "SOURCE_MAPPING_CLOCKS_AND_COMPONENT_BOUND",
+      "status": "PASS",
+      "sweeps": [
+        "Swole source/mapping clocks survive selected lineage; numeric strings and min expiry; delayed selection rejects expired mapping",
+        "Expired/future/unknown mapping never promoted; fresh receipt cannot rejuvenate source",
+        "HL existing native/mapping clamp unchanged; nested clock lineage retained; units/subset remain; invalid mapping rejected",
+        "Connected getLiquidations single routing response yields 2000 components in one selected zone; all2000 visited without truncation"
+      ],
+      "Node_processes": 1,
+      "fixture_broker_calls": 1,
+      "actual_provider_HTTP": 0,
+      "native_SQL": 0,
+      "Cloudflare": 0,
+      "Telegram": 0,
+      "selected_components_visited": 2000,
+      "canonical_route_activation": 0
+    },
+    "method": "Direct single Node process (no node --test subprocess), explicit self-contained controlled fixtures; global fetch fails if called; no engine or old suites."
+  },
+  "components_bound": {
+    "connected_max_total_components": 2000,
+    "connected_max_components_in_one_selected_zone": 2000,
+    "selected_zones_max": 6,
+    "Swole": {
+      "requests_per_getLiquidations": 1,
+      "max_rows_per_liquidated_side": 1000,
+      "sides": 2,
+      "max_normalized_zones": 2000,
+      "pointers": "pump-report/sources/liquidations.mjs:35-43,51-71; pump-report/sources/index.mjs:425-452",
+      "verified_connected_fixture": "One synthetic broker response at both row caps produced2000 normalized rows and one merged selected zone with2000 components. Every component was visited and its mapping clocks/expiry checked."
+    },
+    "Hyperliquid": {
+      "connected_requests_max": 1,
+      "connected_target_rows_per_account_max": 1,
+      "connected_zones_max": 1,
+      "pointers": "pump-report/sources/index.mjs:20,435-440; hyperliquid-observed-positions.mjs:11-18,52-53,128-144",
+      "detail": "getLiquidations clamps http_limit by SOURCE_HTTP_PLAN.liquidation_hyperliquid_per_candidate_max=1, regardless of up to2 admitted accounts. Collector alone accepts up to2; that is not the connected runtime ceiling."
+    },
+    "Orderly": {
+      "connected_page_max": 1,
+      "rows_max": 500,
+      "qualified_zones_max": 0,
+      "pointers": "pump-report/sources/index.mjs:428-434; orderly-observed-positions.mjs:59-60,121-135",
+      "detail": "Bounded diagnostic observations remain zones[]/event_tsnull/usablefalse."
+    },
+    "routing": "getLiquidations selects one route family and returns its result: first verified Swole, else configured Orderly, else HL, else diagnostic Orderly/no route. It does not combine multiple provider results or accumulate prior calls. Failed Swole does not automatically append HL.",
+    "selector": "selectZones overrides each input row's components with one original lineage, deduplicates and clusters by concatenation, then picks at most3 per side. Components across selected clusters are subsets of the at-most2000 original eligible rows, not6x2000. Duplicate rows/zone IDs still appear as lineage components and must be checked.",
+    "validator_requirement": "Inspect every component, with connected bound2000 TOTAL across selected output. Do not truncate at arbitrary64/100/etc, sample, or trust only representative parent. Malformed/over-bound external lineage must fail qualification rather than be silently clipped. The cap is proven for connected source path, not arbitrary direct selectZones(map) input, which has no own row bound.",
+    "no_new_limit_or_truncation_added": true,
+    "pointers": "pump-report/analytics/zones.mjs:6-9,31-43,45-65,66-79"
+  },
+  "consumer_boundary": {
+    "selected_lineage_verified": true,
+    "analytics_blob": "02542b09ff5f157d701c79489369bce68456ca41",
+    "meaning": "Existing selected components retain source event/received/effective expiry and full nested price_comparability. Parent expiry is min(all components). Source patch alone is not the final publication validator or Telegram/native acceptance.",
+    "ROOT_owns": "Final send-time check after waits; immutable text/hash/plan consistency and permitted mapless path; every selected component proof. No runtime recovery changes here."
+  },
+  "owner_policy": {
+    "signal_without_map_allowed": true,
+    "displayed_map_freshness_from_source_clock": true,
+    "late_pullback_age_over4h_alone_not_refusal": true,
+    "new_seed_end_cutoff": false,
+    "unlimited_TTL_extension": false,
+    "statistics_plus4h_unchanged": true,
+    "frequency_reduced": false
+  },
+  "budget_preserved": "BingX900/27900,10/min1/sec80% planned; Telegram47/1457;3fullmanual/day; unchanged caps, units, identity, spent/UNKNOWN/CLOSEDholds/reserves,9pauses2OWNERdeferrals, saved-only rule. Synthetic broker call1 is not a real paid provider request.",
+  "operations": {
+    "Node_processes": 1,
+    "actual_provider_HTTP": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "Telegram": 0,
+    "new_sources": 0,
+    "search": 0,
+    "new_connections": 0,
+    "main_changes": 0,
+    "runtime_changes": 0,
+    "shared_contract_changes": 0,
+    "route_activation": 0
+  },
+  "integration": "ROOT integrates exact two source after hashes plus affected testcase/handoffs; source base blobs are pinned. Frozen branch commit qualifies this source change only. No production install or whole-TZ completion claim."
+}
