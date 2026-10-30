@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
-import {applyRuntimePolicyPatches} from './runtime-policy-patches.mjs';
+import {applyRuntimePolicyPatches,applyRealizedEmptyBudgetGuard} from './runtime-policy-patches.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url));
 const runtime=path.resolve(process.argv[2]||'runtime');
 const sha=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex');
@@ -17,6 +17,8 @@ const files=[
  'main-official-event-sources.json',
  'runner-main.mjs',
  'src/same-run-delivery-proof.mjs',
+ 'src/maintenance-cadence-receipt.mjs',
+ 'src/run-budget-context.mjs',
  'src/pre-analysis-failure-receipt.mjs',
  'src/failed-d1-run-accounting.mjs',
  'src/approved-htx-analysis-scope.mjs',
@@ -33,6 +35,9 @@ const files=[
  'src/published-token-calendar.mjs',
  'src/funding-directional-policy.mjs',
  'src/htx-trade-json.mjs','src/htx-signed-tape.mjs',
+ 'src/anomaly-native-domain.mjs','migrations/20261021_anomaly_domain.sql',
+ 'src/anomaly-native-ingress.mjs',
+ 'src/anomaly-native-due-watch.mjs',
  'src/verified-futures-flow-binding.mjs',
  'src/htx-volume-profile.mjs',
  'src/cross-venue-volume-profile.mjs',
@@ -95,7 +100,7 @@ const files=[
  'src/discovery-candidate-score.mjs',
  'src/two-candidate-policy.mjs',
  'src/scheduled-evidence-budget.mjs',
- 'src/triggered-entry-recheck.mjs','src/recheck-scheduler.mjs','src/original-idea-recheck.mjs','src/original-idea-terminal.mjs','src/owner-strategy-fit-shadow.mjs','src/owner-strategy-fact-mapping.mjs',
+ 'src/triggered-entry-recheck.mjs','src/recheck-scheduler.mjs','src/original-idea-recheck.mjs','src/original-idea-terminal.mjs','src/original-task-followup-audit.mjs','src/owner-telegram-expiry-policy.mjs','src/owner-strategy-fit-shadow.mjs','src/owner-strategy-fact-mapping.mjs',
  'src/bounded-hot-maintenance.mjs',
  'src/htx-asset-identity.mjs',
  'src/coinpaprika-htx-identity.mjs','src/coinpaprika-market-supply.mjs',
@@ -122,7 +127,7 @@ const files=[
  'src/gdelt-official-discovery.mjs',
  'src/shadow-market-pilot.mjs',
  'src/blockscout-index-evidence.mjs',
- 'src/gate-four-hour-flow.mjs','src/gate-flow-collector.mjs','src/gate-futures-trade-sample.mjs','src/gate-futures-trade-collector.mjs','src/gate-public-taker-reference.mjs','src/flow-turnover-baseline.mjs','src/flow-turnover-collector.mjs','src/backpack-four-hour-flow.mjs','src/backpack-flow-collector.mjs','src/kraken-four-hour-flow.mjs','src/kraken-flow-collector.mjs','src/bitfinex-native-four-hour-flow.mjs','src/bitfinex-native-flow-collector.mjs','src/kraken-public-taker-reference.mjs','src/poloniex-native-four-hour-flow.mjs','src/poloniex-native-flow-collector.mjs','src/n05-source-headroom.mjs','src/public-venue-source-budget.mjs','src/verified-asset-route-identity.mjs','src/binance-native-four-hour-flow.mjs','src/binance-native-flow-collector.mjs','src/external-n05-flow-collector.mjs','src/bitget-four-hour-flow.mjs','src/bitget-n12-bounded-trade-sample.mjs','src/bitget-flow-collector.mjs','src/n12-native-public-trade-sample.mjs','src/n12-kucoin-token-trade-sample.mjs','src/n12-native-public-trade-collector.mjs','src/joint-spot-futures-flow.mjs','src/candidate-evidence-v2-runtime.mjs','src/public-venue-source-priority.mjs','src/n15-initial-source-preference.mjs','src/source-closure-diagnostics.mjs',
+ 'src/gate-four-hour-flow.mjs','src/gate-flow-collector.mjs','src/gate-n12-bounded-trade-sample.mjs','src/gate-futures-trade-sample.mjs','src/gate-futures-trade-collector.mjs','src/gate-public-taker-reference.mjs','src/flow-turnover-baseline.mjs','src/flow-turnover-collector.mjs','src/backpack-four-hour-flow.mjs','src/backpack-flow-collector.mjs','src/kraken-four-hour-flow.mjs','src/kraken-flow-collector.mjs','src/kraken-n10-price-path.mjs','src/kraken-n12-bounded-trade-sample.mjs','src/kraken-memory-reuse.mjs','src/kraken-n10-memory-context.mjs','src/bitfinex-native-four-hour-flow.mjs','src/bitfinex-native-flow-collector.mjs','src/bitfinex-n10-price-path.mjs','src/bitfinex-n10-memory-context.mjs','src/n12-composite-first-known.mjs','src/bitfinex-n12-bounded-trade-sample.mjs','src/kraken-public-taker-reference.mjs','src/poloniex-native-four-hour-flow.mjs','src/poloniex-native-flow-collector.mjs','src/n05-source-headroom.mjs','src/public-venue-source-budget.mjs','src/verified-asset-route-identity.mjs','src/binance-native-four-hour-flow.mjs','src/binance-native-flow-collector.mjs','src/external-n05-flow-collector.mjs','src/bitget-four-hour-flow.mjs','src/bitget-n12-bounded-trade-sample.mjs','src/bitget-flow-collector.mjs','src/n12-native-public-trade-sample.mjs','src/n12-kucoin-token-trade-sample.mjs','src/n12-native-public-trade-collector.mjs','src/n12-cached-trade-scope.mjs','src/joint-spot-futures-flow.mjs','src/candidate-evidence-v2-runtime.mjs','src/public-venue-source-priority.mjs','src/n15-initial-source-preference.mjs','src/source-closure-diagnostics.mjs',
  'src/htx-large-trades-evidence.mjs','src/n12-market-trades.mjs','src/coinpaprika-sector-evidence.mjs','src/coingecko-sector-evidence.mjs','src/sector-context.mjs','src/block-result-context.mjs','src/finalized-chain-events.mjs','src/native-evm-finalized-context.mjs',
  'src/durable-command-queue.mjs',
  'src/strict-delivery-binding.mjs',
@@ -155,6 +160,7 @@ const files=[
 ];
 for(const rel of files){const from=path.join(here,'files',rel),to=path.join(runtime,rel);fs.mkdirSync(path.dirname(to),{recursive:true});fs.copyFileSync(from,to);}
 fs.copyFileSync(path.join(here,'../runner/r8-20-prospective-validation-sidecar.mjs'),path.join(runtime,'r8-20-prospective-validation-sidecar.mjs'));
+fs.copyFileSync(path.join(here,'../anomaly-research/observer/observer.mjs'),path.join(runtime,'src/anomaly-record-observer.mjs'));
 fs.copyFileSync(path.join(here,'files/src/retained-history.mjs'),path.join(runtime,'retained-history.mjs'));
 fs.copyFileSync(path.join(here,'files/src/private-canonical-history.mjs'),path.join(runtime,'private-canonical-history.mjs'));
 fs.copyFileSync(path.join(here,'../runner/private-archive-d1-api.mjs'),path.join(runtime,'private-archive-d1-api.mjs'));
@@ -162,6 +168,8 @@ fs.copyFileSync(path.join(here,'../runner/private-archive-pool.mjs'),path.join(r
 fs.copyFileSync(path.join(here,'../runner/canonical-cold-archive.mjs'),path.join(runtime,'canonical-cold-archive.mjs'));
 fs.copyFileSync(path.join(here,'../runner/private-canonical-prefetch.mjs'),path.join(runtime,'private-canonical-prefetch.mjs'));
 fs.copyFileSync(path.join(here,'../runner/native-query-cost-journal.mjs'),path.join(runtime,'native-query-cost-journal.mjs'));
+for(const file of ['verified-native-day-reconciliation.mjs','native-day-reconciliation-tokens.mjs'])fs.copyFileSync(path.join(here,'../runner',file),path.join(runtime,file));
 const policyPatches=applyRuntimePolicyPatches(runtime);
-console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));
+const realizedEmptyGuard=applyRealizedEmptyBudgetGuard(runtime);
+console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches,realized_empty_budget_guard:realizedEmptyGuard}));
 

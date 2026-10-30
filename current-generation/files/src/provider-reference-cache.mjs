@@ -7,7 +7,7 @@ const digest=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('
 
 // Cache transport bodies, never candidate evidence. Callers revalidate exact
 // identity/category membership and quote clocks for each requested market.
-export function createProviderReferenceReader({db,source,run_id,request_admit,fetch_impl=globalThis.fetch,now=Date.now(),clock=()=>now,daily_cap,minute_provider=null,minute_cap=9}={}){
+export function createProviderReferenceReader({db,source,run_id,request_admit,fetch_impl=globalThis.fetch,now=Date.now(),clock=()=>now,daily_cap,minute_provider=null,minute_cap=9,budget_observe=null}={}){
  const receipts=[];let calls=0,denied=null,backoff=null,sequence=0;
  const stopForNativeUsage=()=>{if(!nativeSourceUsageUnclosed(db))return false;denied={allowed:false,status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',attempts:0};return true;};
  async function get(route,url,{ttl_ms=0,max_bytes=2*1024*1024,shape=()=>true,bypass_cache=false,max_cache_bytes=max_bytes,same_run_batch=false}={}){
@@ -40,16 +40,21 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
   // A known exhausted source must not consume the caller's shared envelope.
   // Durable reservation below remains the authority when concurrent callers
   // compete for the last unit; this read never releases or resets a quota.
-  const day_utc=new Date(readTs).toISOString().slice(0,10);
+  const day_utc=new Date(readTs).toISOString().slice(0,10),budgetAttempt=sequence;
+  // Optional synchronous technical observer. It never receives URLs/bodies,
+  // never changes the return/cache payload, and never admits or refunds work.
+  const observeBudget=(phase,fields)=>{if(typeof budget_observe!=='function')return;try{budget_observe({source,run_id,route,reference_key:key,attempt_sequence:budgetAttempt,query_window_end_ts:readTs,day_utc,phase,native_usage_guard_passed:true,...fields});}catch{}};
   if(stopForNativeUsage())return null;
   const usage=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(source,day_utc).first();
   if(stopForNativeUsage())return null;
+  observeBudget('DAY_PREFLIGHT_ROW',{row_presence:usage===null?'ABSENT':usage&&typeof usage==='object'?'RETURNED':'UNKNOWN',reported_used_units:usage?.attempts,configured_cap:daily_cap});
   if(Number(usage?.attempts)>=daily_cap){denied={allowed:false,status:'DAILY_CAP_OR_DUPLICATE',source,day_utc,attempts:0};return null;}
   if(minute_provider){
    await installProviderMinuteLedger(db);
    if(stopForNativeUsage())return null;
    const rolling=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind(String(minute_provider).toUpperCase(),readTs-60000,readTs).first();
    if(stopForNativeUsage())return null;
+   observeBudget('MINUTE_PREFLIGHT_ROW',{row_presence:rolling===null?'ABSENT':rolling&&typeof rolling==='object'?'RETURNED':'UNKNOWN',provider:String(minute_provider).toUpperCase(),reported_used_units:rolling?.units,configured_cap:minute_cap});
    if(!Number.isSafeInteger(Number(rolling?.units))||Number(rolling.units)>=minute_cap){denied={allowed:false,status:'PROVIDER_RATE_LIMIT_LOCAL',source,attempts:0};return null;}
   }
   const reservation_id=`EV2:${source}:${run_id}:${await digest(url)}:${sequence++}`;
@@ -58,10 +63,12 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
   if(whole?.allowed!==true||whole?.duplicate===true){denied={...whole,allowed:false,status:whole?.duplicate===true?'ALREADY_RESERVED_NO_REDISPATCH':whole?.status||'ADMISSION_REQUIRED'};return null;}
   const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id,attempts:1,daily_cap,now:readTs});
   if(stopForNativeUsage())return null;
+  observeBudget('DAY_RESERVATION_REPLY',{returned_allowed:daily.allowed,returned_status:daily.status,reported_own_reserved_units:daily.attempts,configured_cap:daily_cap});
   if(!daily.allowed){denied=daily;return null;}
   if(minute_provider){
    const minute=await reserveProviderMinuteUnits(db,{provider:minute_provider,reservation_id,units:1,now:readTs,cap:minute_cap});
    if(stopForNativeUsage())return null;
+   observeBudget('MINUTE_RESERVATION_REPLY',{provider:minute.provider,returned_allowed:minute.allowed,returned_status:minute.status,reported_used_units:minute.rolling_units,reported_own_reserved_units:minute.reserved_units,configured_cap:minute.cap,minute_bucket:minute.minute_bucket});
    if(!minute.allowed){denied={...minute,status:'PROVIDER_RATE_LIMIT_LOCAL'};return null;}
   }
   calls++;

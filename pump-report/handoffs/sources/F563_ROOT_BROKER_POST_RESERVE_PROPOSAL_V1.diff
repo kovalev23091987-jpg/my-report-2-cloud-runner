@@ -1,0 +1,10 @@
+--- a/pump-report/runtime/budget.mjs
++++ b/pump-report/runtime/budget.mjs
+@@
+       try {
++        const fetchRemaining=deadline-clock();
++        if(fetchRemaining<=0){await budget.finalize(receipt,{http_status:null});throw new BudgetRefusal('SOURCE_DEADLINE_EXPIRED');}
+         const request_started_ts=clock();
+@@
+-        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers,...(method==='POST'?{'content-type':'application/json'}:{})},...(method==='POST'?{body:route.body_text}:{}),redirect:'manual',signal:AbortSignal.timeout(remaining)});
++        response=await fetch_impl(target.toString(),{method,headers:{accept:'application/json',...headers,...(method==='POST'?{'content-type':'application/json'}:{})},...(method==='POST'?{body:route.body_text}:{}),redirect:'manual',signal:AbortSignal.timeout(fetchRemaining)});

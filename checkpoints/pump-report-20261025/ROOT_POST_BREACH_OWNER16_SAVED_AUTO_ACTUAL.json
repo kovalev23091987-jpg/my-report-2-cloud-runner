@@ -1,0 +1,179 @@
+{
+  "schema": "ROOT_POST_BREACH_OWNER16_SAVED_AUTO_ACTUAL_V1",
+  "state": "FINALIZED",
+  "raw_private_retained": true,
+  "raw_sha256": "6482fee38ba4bebb391d7bdfc59c331dc982f11743ff978356540ffaab8af12a",
+  "raw_bytes": 1628095,
+  "implementation_sha256": "265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854",
+  "observation_started_ts": 1793282935196,
+  "completed_ts": 1793282940604,
+  "native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-post-breach-auto-acceptance-20261029-extra16",
+    "usage": {
+      "requests": 13,
+      "rows_read": 114,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 114,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "selector": {
+    "basis": "LATEST_TWO_QUEUE_CHECKED_AFTER_INSTALL_THEN_EXACT_INDEX_AND_ORIGINAL_BINDING",
+    "after_install_ts": 1793282642334,
+    "selected_instrument_ids": [
+      "BINGX:USDT_M:101872:BEAT-USDT",
+      "BINGX:USDT_M:104258:VEIL-USDT"
+    ],
+    "observed_ts": 1793282937599,
+    "not_a_wholemarket_or_completedrun_claim": true
+  },
+  "selected_run_binding": {
+    "basis": "NEWEST_STRICT_BOUND_CURRENT_AUTO_ORIGINAL",
+    "status": "SELECTED_RUN_RESULT_NOT_SAVED",
+    "run_read": true,
+    "selected_run_id": "ccb1b0e5-7ddc-4280-b24a-390830d9ba16",
+    "selected_analysis_key": "pump:analysis:c165785fd3ceb6c40a85cde818e1607ec6d79b0d93f9a9ec8dd8ae42bda7f2da",
+    "all_selected_originals_same_run": true,
+    "other_selected_run_ids_unread": [],
+    "completed_saved_result_bound": false,
+    "whole_market_or_history_claimed": false,
+    "saved_run_status": null
+  },
+  "ordinary_AUTO_run_completed_claimed": false,
+  "first_genuine_same_original_SENT_observed": false,
+  "delivery_scope": {
+    "schema": "PUMP_SAVED_AUTO_OBSERVATION_V1",
+    "read_started_ts": 1793282939582,
+    "observed_ts": 1793282940139,
+    "implementation_sha256": "265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854",
+    "scope": {
+      "cards_read": 4,
+      "limit": 20,
+      "after_key": "pump:card:",
+      "next_after_key": "pump:card:PUMP:7505b17ae7bb53dcc63ee96978539b3345e18cc4aa8f6ea54b675e45d3c8510b",
+      "page_exhausted": true,
+      "whole_history_claimed": false,
+      "whole_market_claimed": false,
+      "executor_context_requested": false,
+      "confirmed_not_before_ts": 1793282642334
+    },
+    "latest_executor_status": "NOT_READ_DELIVERY_ONLY",
+    "latest_run_id": null,
+    "latest_run_status": null,
+    "first_genuine_same_original_SENT_observed": false,
+    "status": "NO_PRODUCTION_AUTO_SENT_IN_READ_SCOPE",
+    "market_HTTP": 0,
+    "Telegram": 0
+  },
+  "candidates": [
+    {
+      "symbol": "BEAT-USDT",
+      "binding_status": "BOUND_SAVED_AUTO_CANDIDATE_ORIGINAL",
+      "analysis_ts": 1793282876512,
+      "ready": false,
+      "status": "REJECTED",
+      "reasons": [
+        "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
+      ],
+      "current_threshold_passed": true,
+      "automatic_eligible": true,
+      "wave_state": "CALM_PULLBACK",
+      "rules_version": "pump-analytics-v8-post-breach-20261029",
+      "profile_version": "pump-report-start-v2-seed4h-20261029",
+      "plan_code": "NO_ENTRY_MEETS_OWNER_MINIMUM",
+      "best_candidate_minimum_potential_pct": 2.7547351066453674,
+      "required_minimum_pct": 10,
+      "spread_pct": 0.010006504227744158,
+      "liquidity_status": "USABLE",
+      "growth_pct_by_window_ms": {
+        "300000": -1.2277227722772288,
+        "900000": -1.636758035890351,
+        "3600000": 2.3074556455748185,
+        "86400000": 25.185092232400553
+      },
+      "mandatory_fact_statuses": {
+        "price": "USABLE",
+        "ticker_24h": "INCOMPLETE",
+        "candles": "USABLE",
+        "orderbook": "USABLE",
+        "growth_24h": "USABLE",
+        "price_structure": "USABLE"
+      },
+      "activity_current_ratio": null,
+      "liquidation_map_status": "NOT_CHECKED",
+      "liquidation_map_reason": "OPTIONAL_MAP_NOT_REQUESTED",
+      "map_absence_not_refusal": true
+    },
+    {
+      "symbol": "VEIL-USDT",
+      "binding_status": "BOUND_SAVED_AUTO_CANDIDATE_ORIGINAL",
+      "analysis_ts": 1793282812970,
+      "ready": false,
+      "status": "REJECTED",
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "current_threshold_passed": true,
+      "automatic_eligible": false,
+      "wave_state": null,
+      "rules_version": "pump-analytics-v8-post-breach-20261029",
+      "profile_version": "pump-report-start-v2-seed4h-20261029",
+      "plan_code": "CURRENT_ACTIVITY_NOT_CONFIRMED",
+      "best_candidate_minimum_potential_pct": null,
+      "required_minimum_pct": 10,
+      "spread_pct": 1.9933554817275798,
+      "liquidity_status": "INSUFFICIENT",
+      "growth_pct_by_window_ms": {
+        "300000": 0,
+        "900000": -2.614379084967311,
+        "3600000": -1.9736842105263164,
+        "86400000": 49
+      },
+      "mandatory_fact_statuses": {
+        "price": "USABLE",
+        "ticker_24h": "INCOMPLETE",
+        "candles": "USABLE",
+        "orderbook": "USABLE",
+        "growth_24h": "USABLE",
+        "price_structure": "USABLE"
+      },
+      "activity_current_ratio": 1.2000037087598534,
+      "liquidation_map_status": "NOT_CHECKED",
+      "liquidation_map_reason": "OPTIONAL_MAP_NOT_REQUESTED",
+      "map_absence_not_refusal": true
+    }
+  ],
+  "known_engineering_UTC29_after16": {
+    "LOOKUP_runs": 16,
+    "SQL": 129,
+    "rows_read": 678,
+    "rows_written": 64,
+    "unknown_ops": 0,
+    "ordinary_AUTO_and_whole_account_excluded": true
+  },
+  "approved15_16_spent": [
+    15,
+    16
+  ],
+  "further_LOOKUP_authority": false,
+  "logical_CF_new_package_spent": 43,
+  "old_logical_CF43_spent_retained": true,
+  "physical_CF_OAuth_HTTP": "UNKNOWN_NONZERO_RETAINED",
+  "old_unknowns_holds_caps_9pauses_2deferrals_preserved": true,
+  "AUTO_not_paused_by_lookup": true,
+  "post_breach_transition_exercised_by_these_originals": false,
+  "project_resource_snapshot": {
+    "not_whole_account_day": true,
+    "BINGX_day_used": 331,
+    "BINGX_month_used": 1815,
+    "old_provider_unknowns_preserved": true,
+    "issued_floors_and_CLOSED_unused_holds_retained": true
+  }
+}

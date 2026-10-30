@@ -1,0 +1,247 @@
+{
+  "schema": "F616_OFFLINE_CATALOG_CONSUMER_PREPARATION_RECEIPT_V1",
+  "status": "PREPARED_ONLY_NO_ACTUAL_CAPTURE_NO_NODE",
+  "frozen_utc": "2026-10-26T19:39:39.484509+00:00",
+  "authority": {
+    "schema": "F616_AUTHORITY_RECEIPT_V1",
+    "acquire_main": "70ff1019f931387586ff50e52ae2d27d4124e592",
+    "final_main": "993a61b5b2c08c13143e4db421346eb07d4bd2c1",
+    "own_owner": "CODEX:SOURCES:01a171fd:1793042925000",
+    "own_acquire_commit": "d39e77f12c96ea9a700f7ca8793cac42c582bc93",
+    "own_acquire_FULL": {
+      "utc": "2026-10-26 19:29:35 UTC",
+      "exact_server_bytes": true,
+      "head_matches": true
+    },
+    "own_rebind_commit": "ad895b0014296b53c5a8eb6fc670079ec355c471",
+    "own_rebind_FULL": {
+      "utc": "2026-10-26 19:36:07 UTC",
+      "exact_server_bytes": true,
+      "head_matches": true,
+      "original_expiry_unchanged": true
+    },
+    "own_original_expires_ts": 1793044125000,
+    "root_owner": "CODEX:PUMP_LIVE_INTEGRATION:1793041654943",
+    "root_expires_ts": 1793046454943,
+    "guard_git_blobs": {
+      "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+      "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "41af5ede6bd7178d08f58fcd6dd44bf45a20b9f5",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "30f69e0376a30d3fa61eef447f6e08f3fe042d7f",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "8ce7e0d5c373203ca8fa26a550427ca0b2a36b5e",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "7fab357171f6738b234c9b103382ce124d250579",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "435414ceff9e91907c6d5da2ababe64638cd9561",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+      "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+      "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+      "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "874f690c733e3500cb993d45d248ba65ac75a6a2",
+      "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "d6969c796ee0010c7f0699e35e850dc1bd25bd25",
+      "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
+      "pump-report/CONTRACT_RU.md": "ba478eaae100074f8e92dce050b721bed49ac7ed",
+      "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
+      "checkpoints/pump-report-20261025/OWNER_UNIFIED_LAUNCH_AND_SOURCES_AMENDMENTS.json": "7500f72e1610fbe5b5ecd2db764dc5b5850d95fb",
+      "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json": "96f5022f74e45eefc056628aaf0d95df13426894"
+    },
+    "authority_documents_FULL": 17,
+    "register_FULL_chars": 1040240,
+    "all4_equal": true
+  },
+  "module": {
+    "path": "pump-report/sources/catalog-snapshot-review.mjs",
+    "bytes": 9425,
+    "sha256": "a134c25efabb57128dcd1454beb8aa4317cb7200bdc6340de822bfeb55e49074",
+    "production_imported": false,
+    "Node_or_syntax_check_executed": false
+  },
+  "reuse": {
+    "F551": "stableCapturedJSON and external pinned-file/hash discipline; no bulk price parser executed.",
+    "F568": "Exact native contractId/symbol/asset/currency/status matching semantics and saved-scope reconciliation; no production source replay, prices or CORE review.",
+    "F552_negative": "Existing isExactSavedNonTargetDecision proof+five-field tuple validator. Future caller supplies complete frozen current negatives, not only historical380.",
+    "future_new_identity_review": "Existing generateSavedNativeBindingProposals may be consumed later only with independent primary economic proof and explicit ROOT review; not called here.",
+    "dependencies": [
+      {
+        "path": "pump-report/sources/captured-bulk-price-coverage.mjs",
+        "bytes": 10471,
+        "sha256": "d3d2d2016e942a46e43a793fcdd935f08941b3bf5806fed9df8a750d2503e463"
+      },
+      {
+        "path": "pump-report/sources/captured-production-manual-review.mjs",
+        "bytes": 15842,
+        "sha256": "87dc42f5437b6c78d5b791b12058872ec4f1813e597c8a6d8321e6f233a05bd7"
+      },
+      {
+        "path": "pump-report/sources/saved-nontarget-decisions.mjs",
+        "bytes": 4948,
+        "sha256": "047bc88522f641ffc0f5d98d058494e0345f2c60713241e5484a5164fb59933b"
+      },
+      {
+        "path": "pump-report/operator/saved-catalog-snapshot.mjs",
+        "bytes": 2880,
+        "sha256": "643de7ce595018e1fd7a7f5f165048ff8500daef94071c71b616eba4240c92ed"
+      },
+      {
+        "path": "pump-report/runtime/catalog-snapshot.mjs",
+        "bytes": 3119,
+        "sha256": "922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8"
+      },
+      {
+        "path": "pump-report/sources/native-binding-proposals.mjs",
+        "bytes": 11756,
+        "sha256": "6ed4ce8c014b1c9963b97fb0ccdb9a024d0982989e6b0526ec7f2644bda68267"
+      },
+      {
+        "path": "pump-report/contracts/index.mjs",
+        "bytes": 6230,
+        "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08"
+      }
+    ]
+  },
+  "input_contract": {
+    "entry": "prepareCatalogSnapshotReview({observer,expected,selected_scope,negative_decisions,sha256,evidence_mode})",
+    "snapshot_branch": "observer.catalog_snapshot.private_evidence.snapshot only",
+    "external_file_gate": "Before invoking consumer, ROOT-admitted future wrapper pins exact private capture bytes/SHA/size and frozen input files following F551. This function validates expected snapshot/body digests; it neither verifies an external admission nor creates one.",
+    "expected_required": [
+      "implementation_sha256",
+      "snapshot_json_sha256",
+      "body_sha256",
+      "selected_scope_canonical_sha256",
+      "negative_decisions_canonical_sha256",
+      "observed_ts",
+      "as_of_ts",
+      "received_ts",
+      "receipt_id"
+    ],
+    "digest_bases": {
+      "body_sha256": "SHA256(JSON.stringify(snapshot.body) UTF8), ROOT parsed JSON serialization, not wire bytes.",
+      "snapshot_json_sha256": "SHA256(JSON.stringify(snapshot) UTF8); full snapshot with original producer clocks/receipt.",
+      "saved_scope_and_negatives": "SHA256(stableCapturedJSON(parsed array) UTF8), distinct from original file byte SHA."
+    },
+    "selected_scope": "550 existing ROOT-accepted saved-scope F552 proposal records with tuple/native_contract_id/native_status_at_capture; exact digest required. Matching is saved membership, not new crypto/CORE proof.",
+    "negative_decisions": "Complete existing frozen exact-negative decisions with their original proof, digest-pinned; changed tuples or statuses do not inherit a prior negative decision.",
+    "hash_callback": "Frozen synchronous SHA256 function as in F551/F568, no IO.",
+    "evidence_modes": {
+      "OBSERVED": "Matching reader byte/clock/pin flags, OBSERVED record and BOUND_SAVED_NATIVE_CATALOG_AT_ORIGINAL_RECEIPT status required.",
+      "ARTIFICIAL_PREPARATION": "Only explicitly ARTIFICIAL record and BOUND_CATALOG_NON_OBSERVED_NOT_NATIVE, source_response_bound=false; cannot become native evidence."
+    },
+    "native_bounds": {
+      "rows": 2000,
+      "body_UTF8_bytes": 2097152,
+      "full_record_UTF8_bytes": 1900000,
+      "source_event_ts": null
+    }
+  },
+  "output_contract": {
+    "schema": "F616_CATALOG_FINITE_REVIEW_INPUT_V1",
+    "rows_fields": [
+      "row_index",
+      "native_tuple(contractId/symbol/asset/currency/status)",
+      "native_tuple_sha256",
+      "disposition",
+      "saved_decision_ref",
+      "new_identity_status",
+      "economic_classification=NOT_CHECKED_BY_THIS_CONSUMER",
+      "CORE_units_maps_qualified=false"
+    ],
+    "disposition_partition": [
+      "INVALID_NATIVE_ROW",
+      "DUPLICATE_NATIVE_IDENTITY_REVIEW_BLOCKED",
+      "NON_USDT_SETTLEMENT",
+      "INACTIVE_AT_CAPTURE",
+      "OWNER_EXCLUDED_BTC_ETH",
+      "OWNER_EXCLUDED_GOLD",
+      "SAVED_SELECTED_SCOPE_EXACT_TUPLE",
+      "KNOWN_EXACT_SAVED_NON_TARGET_TUPLE",
+      "ACTIVE_USDT_IDENTITY_PROPOSAL_NOT_CHECKED"
+    ],
+    "unknown_review_status": "PROPOSAL / NOT_CHECKED; no classifier inference from language/name/status alone.",
+    "counts_basis": "Only a future admitted exact capture passed through the consumer. No counts evaluated by F616.",
+    "batch_handoff": "ROOT may split only PROPOSAL rows into finite <=25-tuple review batches using row_index+tuple hash+capture digests. Independent primary identity/class evidence still required; no automatic activation.",
+    "never_exported": [
+      "prices",
+      "volumes",
+      "size/multiplier/precision unit claims",
+      "raw body",
+      "headers/secrets"
+    ],
+    "current_global_crypto_N": null,
+    "CORE_units_maps_qualification": false,
+    "registry_imports_or_mutations": 0,
+    "new_identity_decisions": 0
+  },
+  "prepared_example_status_only": {
+    "actual_capture_path": null,
+    "expected_current_pin": null,
+    "snapshot_json_sha256": null,
+    "body_sha256": null,
+    "review_counts": null,
+    "selected_known550_current_matches": null,
+    "known_exact_negative_current_matches": null,
+    "unknown_active_USDT_current_count": null,
+    "current_global_N": null,
+    "reason": "NO_NEW_ACTUAL_OBSERVED_CAPTURE; do not fill from historical1278 or prior1294/249 summary."
+  },
+  "ROOT_build_context_notice_only": {
+    "built_modules": 72,
+    "built_pin": "690fae17addd12ee60e111738b255dce267f6cf2af6827d506c4bd724d51f031",
+    "artifact_sha256": "6a1b27dad3a35324b73589593864cbcf1cd99bdca7239d993cd398177eeaeaf4",
+    "deployment_or_current_snapshot_proof": false,
+    "adapter_pin_is_required_parameter_not_this_constant": true,
+    "production_build_does_not_wait_for_adapter": true
+  },
+  "old_fixture": {
+    "path": "pump-report/.private/evidence/pump-report-native-catalog-corrected.json",
+    "file_sha256": "7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5",
+    "file_bytes": 606669,
+    "body_rows": 1278,
+    "producer_received_ts": 1792931870932,
+    "producer_receipt_id": "0320c4b0-ce38-48dc-a275-88a6770ec2b1",
+    "producer_received_msk": "2026-10-25 15:37:50.932 MSK",
+    "old_original_reread_by_F616": false,
+    "synthetic_snapshot_wrapper_if_prepared_later": "Must be explicitly ARTIFICIAL_PREPARATION, preserving genuine old body/receipt/receive; never relabel as new OBSERVED.",
+    "new_capture_or_globalN_proof": false
+  },
+  "finite_consumer_cases_for_future_separate_admission": [
+    "Exact new OBSERVED capture+trusted digests yields metadata only; saved membership/negative/proposal row counts partition the original array.",
+    "Altered body/full snapshot/receipt/clock/pin or frozen scope/negative digest rejects before output.",
+    "Non-OBSERVED record rejects default mode; explicit ARTIFICIAL wrapper stays preparation only with current_N=null.",
+    "Unicode/native numeric-prefix symbol is preserved exactly without language, prefix multiplier or ticker-only identity inference.",
+    "New/changed status1 USDT tuple stays PROPOSAL/NOT_CHECKED; changed negative tuple does not inherit old classification.",
+    "Duplicate native symbol or contractId blocks all colliding row promotion; invalid/non-USDT/inactive and owner exclusions remain separate.",
+    "No IO/source replay/CORE/units/maps import and no prices/raw exports."
+  ],
+  "cases_executed": 0,
+  "SOURCE12_or_AN_BV_repeated": false,
+  "static_preparation_checks": {
+    "checks": {
+      "only_offline_preparation": true,
+      "reuse_F551_stable_json": true,
+      "reuse_exact_negative_validator": true,
+      "expected_pin_parameter_no_today_pin_literal": true,
+      "exact_new_reader_branch": true,
+      "immutable_snapshot_body_digests": true,
+      "original_receipt_clocks_checked": true,
+      "OBSERVED_and_ARTIFICIAL_separated": true,
+      "saved550_not_currentN": true,
+      "full_current_negative_bundle_not_fixed380": true,
+      "unknowns_proposal_not_checked": true,
+      "no_language_filter": true,
+      "no_source_engine_native_IO_calls": true,
+      "no_price_volume_size_field_access": true,
+      "output_native_proof_not_created": true,
+      "safe_nonJSON_error_no_raw": true
+    },
+    "passed": 16,
+    "failed": 0,
+    "not_runtime_or_syntax_tests": true
+  },
+  "preserved": {
+    "source_qualification_spent": 24,
+    "source_qualification_cap": 24,
+    "remaining": 0,
+    "native14_authorized": false,
+    "16_500_30_expanded": false,
+    "old_caps_spends_unknowns_reserves_nine_pauses_two_OWNERdeferrals": true,
+    "registry_profile_criteria_units_changed": false
+  },
+  "own_release": "Follows freeze; exact CAS/FULL release reported separately."
+}

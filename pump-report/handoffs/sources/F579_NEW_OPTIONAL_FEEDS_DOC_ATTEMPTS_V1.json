@@ -1,0 +1,121 @@
+{
+  "schema": "F579_NEW_OPTIONAL_FEEDS_DOC_ATTEMPTS_V1",
+  "maximum_total": 10,
+  "maximum_search_queries": 3,
+  "spent_total": 10,
+  "spent_search_queries": 3,
+  "remaining_total": 0,
+  "remaining_search_queries": 0,
+  "maximum_body_bytes": 2000000,
+  "charge_before_IO": true,
+  "failures_nonrefundable": true,
+  "retries": 0,
+  "fanout": 0,
+  "source_vendor_execution": 0,
+  "native_market_metadata_RPC_SQL_TG_Worker": 0,
+  "admission_expires_ts": 1792992333834,
+  "attempts": [
+    {
+      "attempt": 1,
+      "kind": "SINGLE_NEW_PRIMARY_PUBLIC_FEED_SEARCH",
+      "candidate": "ASTER",
+      "query": "site:asterdex.github.io/aster-api-website futures market funding rate history fundingTime rate limits",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:45:25 UTC",
+      "status": "SPENT_NEW_PUBLIC_MARKET_PATHS_FOUND"
+    },
+    {
+      "attempt": 2,
+      "kind": "SINGLE_NEW_PRIMARY_PUBLIC_FEED_SEARCH",
+      "candidate": "APEX_OMNI",
+      "query": "ApeX Omni official public API trades quantity base currency timestamp funding history documentation",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:45:25 UTC",
+      "status": "SPENT_OMNI_PUBLIC_DOC_FAMILY_FOUND"
+    },
+    {
+      "attempt": 3,
+      "kind": "SINGLE_NEW_PRIMARY_PUBLIC_FEED_SEARCH",
+      "candidate": "EDGEX",
+      "query": "edgeX official public API trades open interest quantity timestamp rate limit documentation",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:45:25 UTC",
+      "status": "SPENT_EDGEX_V2_PUBLIC_NO_AUTH_FAMILY_FOUND"
+    },
+    {
+      "attempt": 4,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "ASTER",
+      "url": "https://asterdex.github.io/aster-api-website/futures/market-data/",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:46:54 UTC",
+      "status": "SPENT_PUBLIC_TRADES_FUNDING_HISTORY_AND_CONFIG_DOC"
+    },
+    {
+      "attempt": 5,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "APEX_OMNI",
+      "url": "https://api-docs.omni.apex.exchange/",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:46:54 UTC",
+      "status": "SPENT_OMNI_HOURLY_FUNDING_AND_RATE_LIMIT_GUIDE"
+    },
+    {
+      "attempt": 6,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_FILE",
+      "candidate": "EDGEX",
+      "repository": "edgex-org/edgex-gitbook",
+      "path": "SUMMARY.md",
+      "ref": "main",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:46:54 UTC",
+      "status": "SPENT_CURRENT_V2_DOC_INDEX_FOUND"
+    },
+    {
+      "attempt": 7,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_FILE",
+      "candidate": "EDGEX",
+      "repository": "edgex-org/edgex-gitbook",
+      "path": "api-v2/public-api/funding-api.md",
+      "ref": "main",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:48:14 UTC",
+      "status": "SPENT_V2_PUBLIC_FUNDING_CLOCK_INTERVAL_SETTLEMENT_FIELDS"
+    },
+    {
+      "attempt": 8,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_FILE",
+      "candidate": "EDGEX",
+      "repository": "edgex-org/edgex-gitbook",
+      "path": "api-v2/public-api/quote-api.md",
+      "ref": "main",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:48:14 UTC",
+      "status": "SPENT_V2_PUBLIC_QUOTE_OI_UNIT_UNSPECIFIED"
+    },
+    {
+      "attempt": 9,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_SECTION_FIND",
+      "candidate": "APEX_OMNI",
+      "ref_id": "turn109view0",
+      "pattern": "## GET Funding Rate History",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:48:14 UTC",
+      "status": "SPENT_OMNI_HISTORY_CLOCK_UNIT_UNSPECIFIED"
+    },
+    {
+      "attempt": 10,
+      "kind": "SINGLE_PRIMARY_STATIC_RATE_UNIT_DOC",
+      "candidate": "EDGEX",
+      "repository": "edgex-org/edgex-gitbook",
+      "path": "trading/funding-fees.md",
+      "ref": "main",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:50:35 UTC",
+      "status": "SPENT_VENDOR_FUNDING_RATE_DEFINITION_AND_DYNAMIC_INTERVAL_FOUND"
+    }
+  ],
+  "final_status": "CLOSED_10_OF10_SPENT_3OF3_SEARCH_NATIVE0",
+  "unused_total": 0,
+  "no_refund_rearm_or_native_grant": true
+}

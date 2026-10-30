@@ -1,0 +1,12 @@
+--- a/current-generation/files/src/market-history-reader.mjs
++++ b/current-generation/files/src/market-history-reader.mjs
+@@ -186,7 +186,8 @@
+   return {series:dedup,rowsRead:rowsOf(result).length,parseErrors,expected:Math.max(1,Math.floor(hours*3))};
+ }
+ 
+-export async function readMarketHistoryForContract({db,contract,now_ts=Date.now(),hours=6,actor='HUB_PUBLIC_COLLECTOR',preferred_generation=null}={}) {
++export async function readMarketHistoryForContract({db,contract,now_ts=Date.now(),hours=6,actor='HUB_PUBLIC_COLLECTOR',preferred_generation=null,venue='HTX',instrument_identity=null}={}) {
++  if(venue!=='HTX'||instrument_identity!==null)return {version:MARKET_HISTORY_READER_VERSION,status:'NOT_CLOSED',source:null,contract,venue,series:[],reason:'VENUE_QUALIFIED_HISTORY_NAMESPACE_NOT_INSTALLED',legacy_HTX_history_reused:false,additional_SQL:0};
+   const normalized = normalizedContract(contract), now = finite(now_ts), span = Math.min(168,Math.max(.25,finite(hours)??6));
+   if (!db?.prepare || !normalized || !Number.isSafeInteger(now)) return {version:MARKET_HISTORY_READER_VERSION,status:'NOT_CLOSED',reason:'HISTORY_INPUT_INVALID',series:[]};
+   const start = now-span*60*60_000-SLOT_MS, end = now;

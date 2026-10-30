@@ -157,7 +157,7 @@ jobs:
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "65a2f7d46b6acfcc083aea084f1fc8aff5f73f63cd82de882e743d7a5be27c09"
+      REPORT2_EXPECTED_WORKER_SHA: "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -191,6 +191,9 @@ jobs:
       REPORT2_OXARCHIVE_COST_PROBE: ${{ inputs.oxarchive_cost_probe || 'false' }}
       REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
       REPORT2_CROSS_EXCHANGE_VALIDATION_LANE: ${{ inputs.cross_exchange_validation_lane || '' }}
+      REPORT2_LIQ_ACCESS_PATH_ONCE: ${{ vars.REPORT2_LIQ_ACCESS_PATH_ONCE || '' }}
+      REPORT2_ANOMALY_DOMAIN_COST_BOUNDS: ${{ vars.REPORT2_ANOMALY_DOMAIN_COST_BOUNDS }}
+      REPORT2_LIQ_ACCESS_PATH_NATURAL: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.scheduled_recovery_run == true && inputs.reason == 'SCHEDULED_CADENCE_RECOVERY' && inputs.manual_run_authorized != true && inputs.trigger_only_run != true)) && '1' || '0' }}
       REPORT2_RUN_SOURCE: ${{ (github.event_name == 'schedule' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true) && 'schedule' || 'manual' }}
       REPORT2_TRIGGER_ONLY_RUN: ${{ inputs.trigger_only_run == true && '1' || '0' }}
       REPORT2_TRIGGER_KICK_TASK_ID: ${{ inputs.trigger_task_id || '' }}
@@ -468,6 +471,9 @@ jobs:
             runtime/automatic-delivery-audit.json
             runtime/known-d1-day-guard.json
             runtime/report2-failure-accounting.json
+            runtime/report2-liquidation-access-path.json
+            runtime/report2-anomaly-domain-receipts.json
+            runtime/report2-completion-accounting.json
             runtime/raw24h-control-readback.json
             runtime/private-canonical-archive-receipt.json
           if-no-files-found: warn

@@ -1,0 +1,86 @@
+{
+  "schema": "ROOT_BZ23_OPTIONAL_MAP_REFERENCE_OVERFLOW_QUALIFICATION_V3",
+  "status": "QUALIFIED_ONE_NEW_CASE_PASS_SOURCE_F646_STATIC_PASS_NOT_DEPLOYED",
+  "authority_main": "05e5274a1ebc992d520ae51da3182b3c4c99a90b",
+  "frozen_files": {
+    "pump-report/analytics/feature-capsule.mjs": "51bbe3753a85a7aa496a8748f7a62435d0f880c8720dc5015e4944d86c35fe7f",
+    "pump-report/tests/analytics/package-bz23/optional-map-reference-overflow-once-v3.mjs": "def1dd40fbcd3165eaa8e40df8bed25b001835c32d4b9ff5fbb159e62e8c19f8",
+    "pump-report/runtime/retained-capsules.mjs": "688aaec7d1414dd1699a08c9d60b0b529bb2a5496db8d9cae6c62bc71faeaed8",
+    "pump-report/runtime/store.mjs": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf",
+    "pump-report/contracts/index.mjs": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08",
+    "pump-report/analytics/math.mjs": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c"
+  },
+  "cause": "IndependentF645 distinct257rawmaprefs globaledgeoverflow and ROOT pre-execution valid-core reservedflagheadroom finding",
+  "case": {
+    "path": "checkpoints/pump-report-20261025/ROOT_BZ23_OPTIONAL_MAP_OVERFLOW_CONNECTED_CASE_V3.json",
+    "sha256": "07cac12e1e206db3b6246fccad0856c24ced452a887c0f3beee7ca37aa9a82c7",
+    "new_executions": 1,
+    "V2_repeated": false,
+    "results": [
+      {
+        "name": "DISTINCT_257",
+        "bound": "EDGES",
+        "projected_edges": 256,
+        "projected_UTF8_bytes": 42745,
+        "writer_status": "SAVED",
+        "original_and_READY_plan_unchanged": true
+      },
+      {
+        "name": "LONG_UTF8_257",
+        "bound": "UTF8_BYTES",
+        "projected_edges": 91,
+        "projected_UTF8_bytes": 64678,
+        "writer_status": "SAVED",
+        "original_and_READY_plan_unchanged": true
+      },
+      {
+        "name": "MALFORMED_OPTIONAL",
+        "bound": "MALFORMED",
+        "projected_edges": 44,
+        "projected_UTF8_bytes": 9174,
+        "writer_status": "SAVED",
+        "original_and_READY_plan_unchanged": true
+      }
+    ],
+    "valid_core_insufficient_flag_headroom_PASS": true
+  },
+  "code_only_projection_optional_inventory_changed": true,
+  "strict_core_and_selected_errors_preserved": true,
+  "old_originals_capsules_links_not_migrated": true,
+  "retained_runtime_688_unchanged_from_V2_pass": true,
+  "originals_required": true,
+  "global_reference_closure": false,
+  "archive_reader_verified": false,
+  "delete_allowed": false,
+  "approved_delete_ttl_ms": null,
+  "actual_native_SQL": 0,
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "engine_calls": 0,
+  "builds": 0,
+  "production_deployed": false,
+  "live": {
+    "pin": "2988e3fe8e5278d1b40baa25053a2a49e899d5414ead750181e1ed6bbf9aa5cc",
+    "modules": 75,
+    "artifact_sha256": "ff675daea75e751ecc104f293c2dc4d2d076b1f5fd638940671335483d7e31b2",
+    "AUTO": true,
+    "delivery": true
+  },
+  "first_genuine_current_AUTO": "OPEN",
+  "full_TZ_complete": false,
+  "final_source_review": {
+    "path": "pump-report/handoffs/sources/F646_FINAL_V3_STATIC_REFERENCE_BOUNDARY_MANIFEST_V1.json",
+    "sha256": "923d346f145f3642187de7413f909c3b5b143131f99058b073220e81a8183c7f",
+    "own_release_commit": "4bed1359b8b7038b14a11884c0f18a1c604c8559",
+    "scope": "Exact51bb/def1/688a static review; no SOURCE tests or native IO"
+  },
+  "final_analytics_manifest": {
+    "path": "pump-report/handoffs/analytics/package-bz23/revision-v3/BZ23_V3_FINAL_PREPARED_MANIFEST.json",
+    "sha256": "8580937789f59e1c771867b184d2c2c3d2640e89536c2d7fa64e32340d2b3112"
+  },
+  "repairs_closed": [
+    "F645 distinct257rawzone refs globaledge overflow",
+    "ROOT validcore fits but incomplete reasons reserve does not"
+  ],
+  "remaining": "Production packaging/installation not performed. Live75 remains fixed for genuine AUTO observation; global reference closure, archive reader, logical retention/200-cap protocol and physical capacity deferrals remain open."
+}

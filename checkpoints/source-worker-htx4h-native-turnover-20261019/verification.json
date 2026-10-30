@@ -1,0 +1,112 @@
+{
+  "schema": "HTX4H_NATIVE_TURNOVER_NEW_PACKAGE_VERIFICATION_V1",
+  "new_functional_qualification": {
+    "command": [
+      "/Users/mac/.nvm/versions/node/v24.21.0/bin/node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=tap",
+      "checkpoints/source-worker-htx4h-native-turnover-20261019/qualification.test.mjs"
+    ],
+    "pass": 31,
+    "fail": 0,
+    "exit_code": 0,
+    "attempts": 1,
+    "tap_sha256": "9bfb237d1bdde8db067c1282eba16f247f95008030ee30d6e5599dcf10fcd723",
+    "tests_repeated": 0,
+    "old_modules_executed": 0,
+    "consumer_observer_executed": false
+  },
+  "new_artifact_integrity": {
+    "pass": 18,
+    "fail": 0,
+    "checks": [
+      {
+        "name": "Actual new TAP31PASS0FAIL retained",
+        "pass": true
+      },
+      {
+        "name": "No skipped cancelled or todo new cases",
+        "pass": true
+      },
+      {
+        "name": "Qualified gzip exact SHA and bytes",
+        "pass": true
+      },
+      {
+        "name": "Qualified uncompressed exact SHA and bytes",
+        "pass": true
+      },
+      {
+        "name": "No gzip timestamp used as firstknowledge",
+        "pass": true
+      },
+      {
+        "name": "Byte reproducibility from stored DTO only; qualifier not executed",
+        "pass": true
+      },
+      {
+        "name": "37 contracts declared in both exact outputs",
+        "pass": true
+      },
+      {
+        "name": "Raw closed/forming count accounting",
+        "pass": true
+      },
+      {
+        "name": "Syntax only: htx4h-native-turnover.mjs",
+        "pass": true
+      },
+      {
+        "name": "Syntax only: qualify-cohort.mjs",
+        "pass": true
+      },
+      {
+        "name": "Syntax only: qualification.test.mjs",
+        "pass": true
+      },
+      {
+        "name": "Every staged file within own new prefix",
+        "pass": true
+      },
+      {
+        "name": "Staged whitespace integrity",
+        "pass": true
+      },
+      {
+        "name": "Existing shared file byte preserved: runner/htx-compact-4h-history.mjs",
+        "pass": true
+      },
+      {
+        "name": "Existing shared file byte preserved: tools/acquire-htx-compact-4h-history.mjs",
+        "pass": true
+      },
+      {
+        "name": "Existing shared file byte preserved: anomaly-research/observer/observer.mjs",
+        "pass": true
+      },
+      {
+        "name": "Clock/live/ENTRY limitations explicit",
+        "pass": true
+      },
+      {
+        "name": "No marketHTTP/nativeSQL/old tests rerun claimed",
+        "pass": true
+      }
+    ]
+  },
+  "qualified_archive": {
+    "path": "qualified-cohort.json.gz",
+    "bytes": 2025414,
+    "sha256": "cd8b11110d39d801767462ec4b49c660de10f1aa1c2893479370f95141ac1f54",
+    "uncompressed_bytes": 11498780,
+    "uncompressed_sha256": "bd28bbaa4c9efe32b00b33219b54bb09a632453ca83b49ac031757c236e13c11"
+  },
+  "actual_price_rows_preserved": 18162,
+  "source_HTTP": 0,
+  "native_SQL": 0,
+  "production_imported": false,
+  "native_body_completion_or_cache_ACK": false,
+  "native_CPU_heap_wire_day_capacity": "UNKNOWN",
+  "score_or_ENTRY_change": false
+}

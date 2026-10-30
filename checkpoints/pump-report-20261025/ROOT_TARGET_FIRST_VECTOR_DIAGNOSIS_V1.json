@@ -1,0 +1,79 @@
+{
+  "schema": "ROOT_ONE_FIRST_TARGET_VECTOR_DIAGNOSIS_V1",
+  "status": "DIAGNOSED_ONE_CALL_NOT_QUALIFICATION",
+  "authority_main": "beb9403bc78a8f3e217000bad06739655ba4084a",
+  "Node_processes": 1,
+  "pure_selector_calls": 1,
+  "engine": 0,
+  "build": 0,
+  "native_SQL": 0,
+  "Cloudflare": 0,
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "expected": {
+    "selected_price": 130.2,
+    "selected_kind": "HISTORICAL_OUTER_RANGE",
+    "intermediate114_2": "MINOR_HIGHER_LOW_REACTION; subsequent109.8 intact throughasof",
+    "card": "historical range explanation + intermediate levels + not automatically passed",
+    "selection_before10": true
+  },
+  "input_summary": {
+    "price": 113,
+    "at": 1800001381000,
+    "impulse": {
+      "start_ts": 1800000660000,
+      "end_ts": 1800000900000,
+      "low": 100
+    },
+    "wave": {
+      "state": "CALM_PULLBACK",
+      "created_ts": null,
+      "expires_ts": null,
+      "invalidation_price": 100
+    },
+    "profile": {
+      "candle_interval_ms": 60000,
+      "pivot_radius_bars": 2
+    },
+    "core": {
+      "rows": 12,
+      "first": {
+        "open_ts": 1800000660000,
+        "close_ts": 1800000720000,
+        "open": 100.5,
+        "close": 108,
+        "high": 108.2,
+        "low": 100,
+        "closed": true
+      },
+      "last": {
+        "open_ts": 1800001320000,
+        "close_ts": 1800001380000,
+        "open": 113,
+        "close": 113,
+        "high": 113.2,
+        "low": 112.8,
+        "closed": true
+      },
+      "fact_status": "USABLE",
+      "fact_id": "ARTIFICIAL:CORE",
+      "event_ts": 1800001380000,
+      "received_ts": 1800001380500,
+      "expires_ts": 1800001470000
+    },
+    "history": {
+      "qualified": true,
+      "rows": 23,
+      "fact_id": "ARTIFICIAL:HISTORY",
+      "event_ts": 1800001380000,
+      "received_ts": 1800001380500,
+      "expires_ts": 1800001470000
+    }
+  },
+  "result": {
+    "allowed": false,
+    "reason": "TARGET_CONTEXT_OR_WAVE_NOT_ACTIVE"
+  },
+  "unchanged_product_and_fixture": true,
+  "failed_original_case_not_replayed": true
+}

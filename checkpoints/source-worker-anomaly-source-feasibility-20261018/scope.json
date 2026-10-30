@@ -1,0 +1,64 @@
+{
+  "schema": "REPORT2_SOURCE_WORKER_ANOMALY_SOURCE_FEASIBILITY_SCOPE_V1",
+  "base": "39e465fce18410e69b15218ea133a7baa3adf3de",
+  "branch": "work/report2-sources-early-source-feasibility-20261018",
+  "lease_acquired_commit": "d89d5acf237fc50ba38c2edea77446bbf442ee23",
+  "lease_owner": "CODEX:SOURCES:01a14e11:1792326601577",
+  "lease_expires_ts": 1792331401577,
+  "lease_exact_readback": true,
+  "scope": "Only saved source evidence and code/documentation audit; independent Блок аномалий not activated. LIQ remains integrated in main. No main/provider/shared changes.",
+  "files": [
+    {
+      "path": "checkpoints/source-worker-anomaly-source-feasibility-20261018/analysis.json",
+      "sha256": "a69ee46f4d00f02872bce31c5b5ba53137ee21d12858e432a5b719dd5e4f4282"
+    },
+    {
+      "path": "checkpoints/source-worker-anomaly-source-feasibility-20261018/audit.mjs",
+      "sha256": "e307e46408d8ebcef2eb9b2e1724a1b7474e32d1cb5a5cb72f3e4df4708a4524"
+    }
+  ],
+  "validation": {
+    "script": "node checkpoints/source-worker-anomaly-source-feasibility-20261018/audit.mjs",
+    "syntax": "node --check checkpoints/source-worker-anomaly-source-feasibility-20261018/audit.mjs",
+    "new_original_assertions": "CT/BR raw canonical hashes+run/snapshot/fingerprint; natural artifact digest+head/run; exact closed15x1m grids, volumes,5x3m/3x5m recomputation; no same-event spot pair; no retained raw candle arrays in compact APR/TIA",
+    "initial_script_path_correction": "First analysis stopped before output because closed-minute-decomposition lives in unified-entry-signal-delta/overlay/src, not current-generation/files/src. Corrected audit reference only; runtime unchanged.",
+    "accepted_runtime_tests_repeated": 0,
+    "source_probes_repeated": 0,
+    "byte_reproduction": "PASS: second deterministic output cmp-identical to committed analysis.json",
+    "syntax_status": "PASS"
+  },
+  "findings": {
+    "actual_CT_BR_normalized_futures_1m_rows": 30,
+    "exact_derived_3m_rows": 10,
+    "exact_derived_5m_rows": 6,
+    "complete_retained_same_event_futures_spot_pairs": 0,
+    "compact_APR_TIA_raw_candles_retained": 0,
+    "four_asset_predictive_accuracy": null,
+    "meaning": "Retained-data scope and missing labels, not current market coverage or native delivery."
+  },
+  "coordinator_next": [
+    "Use exact retained-data limits in independent Блок аномалий source/admission contract. Main report/manual reserve remain protected.",
+    "New independent providers qualified centrally; MEXC/BingX DOC_ONLY pending. Futures-first, spot preferred/nonblocking; independent source sufficiency still required, no acquisition here.",
+    "Separate first-known/timeframe memory and later outcomes incl failures/no-move/controls, horizon up to owner month example; existing7d is not auto-expiry authority.",
+    "Do not repeat39123622796 or force natural full to fill artifact gaps. No trade direction or intent inferred from colour/volume."
+  ],
+  "frozen_451_452_untouched": true,
+  "old_accepted_no_rerun": true,
+  "effects": {
+    "new_provider_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "runtime_files_changed": 0,
+    "shared_files_changed": 0,
+    "old_accepted_runtime_tests_reexecuted": 0,
+    "strategy_or_caps_changed": false,
+    "unknown_reset": false,
+    "observer_activated": false,
+    "current_live_coverage_qualified": false,
+    "predictive_accuracy_qualified": false
+  },
+  "next_worker_independent_scope": "Global primary-documentation source shortlist for new anomaly block: MEXC/BingX/CoinEx/Phemex/BitMart/Bitunix first, global exchanges and useful services/plugins, candles15m-1w/1m drilldown/taker/OI/history/identity/sharedcaps/cloud. Fresh own scoped offline lease. No acquisition/key/payments/live.",
+  "latest_owner_clarification": "FUTURES_FIRST supersedes prior mandatory spot: expand/seek spot but missing/conflicting spot does not block independently sufficient futures fact/confirmation/notice. No spot gate or runtime activation."
+}

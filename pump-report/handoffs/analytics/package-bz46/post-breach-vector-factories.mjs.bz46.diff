@@ -1,0 +1,24 @@
+--- BZ45/pump-report/tests/analytics/package-bz45/post-breach-vector-factories.mjs
++++ BZ46/pump-report/tests/analytics/package-bz45/post-breach-vector-factories.mjs
+@@ -84,7 +84,20 @@
+     {name:'invalid_anchor_on_new_previous_cannot_reset',make:()=>make(),
+       continueWith:firstNextWave=>{const x=make({laterMinutes:5});x.input.previous_wave=clone(firstNextWave);
+         x.input.previous_wave.lifetime_anchor_ts+=minute;return x;},
+-      expect:{reason:'WAVE_LIFETIME_METADATA_INVALID',no_reanchor:true,previous_deep_equal_before_after:true}}
++      expect:{reason:'WAVE_LIFETIME_METADATA_INVALID',no_reanchor:true,previous_deep_equal_before_after:true}},
++    // BZ46 narrow additions. Existing 14 descriptors/expected remain unchanged.
++    {name:'partial_cold_metadata_cannot_prove_cause',make:()=>{const x=make(),p=x.input.previous_wave;
++      p.invalidation_price=96;p.cold_first_structural_base={wave_id:p.wave_id,invalidation_price:96,
++        invalidation_observation_start:p.impulse.end_ts,structural_anchor_ts:p.impulse.end_ts,
++        first_input_asof_ts:p.created_ts+1000,source_received_ts:p.created_ts+500};return x;},
++      expect:{proved_cause:null}},
++    {name:'cold_low_pivot_wrong_fact_link_cannot_prove_cause',make:()=>{const x=make(),p=x.input.previous_wave;
++      p.invalidation_price=96;p.cold_first_structural_base={kind:'COLD_FIRST_STRUCTURAL_BASE_V1',
++        wave_id:p.wave_id,invalidation_price:96,invalidation_observation_start:p.impulse.end_ts,
++        structural_anchor_ts:p.impulse.end_ts,first_input_asof_ts:p.created_ts+1000,source_received_ts:p.created_ts+500,
++        source_fact_id:'ARTIFICIAL:BZ46:COLD_FACT',base_pivot:{kind:'LOW',price:96,event_ts:p.impulse.end_ts-minute,
++          known_ts:p.impulse.end_ts,fact_id:'ARTIFICIAL:BZ46:WRONG_COLD_FACT'}};return x;},
++      expect:{proved_cause:null}}
+   ];
+ }
+ 

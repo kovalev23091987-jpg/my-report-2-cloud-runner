@@ -1,0 +1,46 @@
+{
+  "schema": "BL_REV2_ONE_CONNECTED_CASE_ACTUAL_V1",
+  "status": "FAIL_NO_RERUN",
+  "evidence_class": "ARTIFICIAL_ONLY",
+  "Node": 1,
+  "new_cases": 1,
+  "phases": [
+    {
+      "name": "OFF_original_deny",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "EVEN_DAY_CANDIDATE_ALLOCATION"
+      }
+    },
+    {
+      "name": "blocked_manual_global",
+      "answer": {
+        "allowed": true,
+        "scope": "CONDITIONAL_UNASSIGNED_WHOLE_OPERATION_HOLD",
+        "surplus_grant_id": "BL_ARTIFICIAL_2|BINGX:USDT_M:ARTIFICIAL_BL_A",
+        "candidate_quota": {
+          "kind": "UNASSIGNED_SURPLUS",
+          "logical_spent": true,
+          "never_refunded": true,
+          "idempotent": false,
+          "http_upper_bound": 12
+        }
+      }
+    }
+  ],
+  "real_HTTP": 0,
+  "MCP": 0,
+  "native_SQL": 0,
+  "TG": 0,
+  "deploy": 0,
+  "engine": 0,
+  "old_tests": 0,
+  "REV1_executed": false,
+  "currentStep": "blocked_manual_global",
+  "error": {
+    "name": "AssertionError",
+    "message": "manual_global\n\ntrue !== false\n",
+    "stack": "AssertionError [ERR_ASSERTION]: manual_global\n\ntrue !== false\n\n    at file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-bingx-migration-20261024/pump-report/tests/analytics/bl-surplus-connected-once.mjs:82:43"
+  }
+}

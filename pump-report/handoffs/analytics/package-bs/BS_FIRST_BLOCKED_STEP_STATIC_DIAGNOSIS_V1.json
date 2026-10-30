@@ -1,0 +1,56 @@
+{
+  "schema": "BS_FIRST_BLOCKED_STEP_STATIC_DIAGNOSIS_V1",
+  "status": "FIRST_ATTEMPT_PRESERVED_FIXTURE_PLANNED_ALLOCATION_EXHAUSTED",
+  "Node_total_so_far": 1,
+  "real_engine_calls": 0,
+  "MOCK_send": 0,
+  "actual_Telegram": 0,
+  "nativeSQL": 0,
+  "sourceHTTP": 0,
+  "actual_return": {
+    "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+    "status": "DEFERRED",
+    "source_coverage": {
+      "status": "NOT_CHECKED",
+      "reason": "PROTECTED_DAY_RESERVE",
+      "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION"
+    },
+    "delivery": null
+  },
+  "original_analysis_clock": 1793008557222,
+  "future_window_end_ts": 1793034000000,
+  "unchanged_policy": {
+    "project_day": 900,
+    "protected_fixed": 102,
+    "planned_fraction": 0.8,
+    "candidate_upper": 12,
+    "discovery_http_per_tick": 2,
+    "future_candidate_http_per_slot": 12
+  },
+  "synthetic_fixture": {
+    "days_spent": 500,
+    "automatic_plan_limit": 238,
+    "future_light_ticks": 84,
+    "future_light_HTTP": 168,
+    "future_deep_slots": 7,
+    "future_deep_HTTP": 84,
+    "candidate_plus_future_HTTP": 264,
+    "planned_margin": -26,
+    "whole_day_with_fixed": 866,
+    "whole_day_margin": 34
+  },
+  "cause": "Analytics fixture proposal underestimated two HTTP per remaining light tick; 500 synthetic day spend leaves planned238 but candidate+future264. Real budget correctly refused before engine; no production bug proved. BASEcount1 expectation was not reached.",
+  "minimal_possible_fixture_revision_FOR_ROOT_REVIEW_ONLY": {
+    "synthetic_days_spent": 350,
+    "planned_limit": 358,
+    "forecast_HTTP_unchanged": 264,
+    "all_actual_counters_and_caps_unchanged": true,
+    "not_actual_refund": true,
+    "execution_not_admitted": true
+  },
+  "source_clocks_and_original_inputs_unchanged": true,
+  "first_harness_sha256": "80d0e36d81d6671d2fdaedc7bb803593036801e38a266494c0675a97f4a6a783",
+  "first_result_sha256": "a58873427532812f60a052c91dfdc7858761c91b7b01d8793d9871f92871e4a7",
+  "private_full_result_sha256": "6a5a8cf7199a382a83618edc37c5f9caf70d82b2091b75b9c2b14d3ce2bf9d9e",
+  "rerun": false
+}

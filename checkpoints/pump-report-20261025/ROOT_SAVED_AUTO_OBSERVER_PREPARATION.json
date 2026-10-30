@@ -1,0 +1,107 @@
+{
+  "schema": "PUMP_ROOT_SAVED_AUTO_OBSERVER_PREPARATION_V1",
+  "authority_main": "d6c95e067c4820f815c31b02583b210ab62d1330",
+  "recorded_ts": 1792983532196,
+  "status": "ONE_NATIVE_LOOKUP_TRANSPORT_FINALIZED_POSITIVE_SENT_PENDING",
+  "reason": "No additional startupmanual or market fetch to observe first normal AUTO/SENT; read immutable saved state with existing shared LOOKUP governor",
+  "files": [
+    {
+      "path": "pump-report/operator/saved-auto-observation.mjs",
+      "sha256": "73d87f304f75eca4800ad5763bd14a2e269158fc00157a4cc7749ab8a60e7a3c"
+    },
+    {
+      "path": "pump-report/operator/observe-production-once.mjs",
+      "sha256": "a6d41b9b801eb83436d6c2e33e5c323f68026df9663bd8745715a44be6eb1222"
+    },
+    {
+      "path": "pump-report/operator/SAVED_AUTO_OBSERVATION_RU.md",
+      "sha256": "00249349aae03952b9453ecc12396c85a18c021ccf0c89b0fd948d8d97593d92"
+    },
+    {
+      "path": "pump-report/tests/runtime/saved-auto-observation-connected.test.mjs",
+      "sha256": "53705e56aa9882c89872f733bf3971f5ee9af1cdf9247a10492f9b0c619a3556"
+    },
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_SAVED_AUTO_OBSERVER_EXPECTED_RECIPIENT.tap",
+      "sha256": "f4cf34782f948c4047ea6436f73efda302727d68a8201cec633148bfd08ca6d0"
+    }
+  ],
+  "admission_schema": "PUMP_PRODUCTION_OBSERVATION_ADMISSION_V1",
+  "native_envelope": {
+    "rows_read": 500,
+    "rows_written": 30,
+    "queries_max": 16,
+    "existing_LOOKUP_limit_day": 10
+  },
+  "read_scope": {
+    "latest_executor": 1,
+    "its_saved_run": 1,
+    "indexed_card_page": 20,
+    "selected_card": 1,
+    "selected_original": 1,
+    "whole_history_claimed": false,
+    "whole_market_claimed": false
+  },
+  "qualification": {
+    "new_unique_ARTIFICIAL_cases_total": 2,
+    "suite_invocations": 3,
+    "passed_case_executions_total": 4,
+    "latest_PASS": 2,
+    "latest_reason": "One new AO regression plus one affected observer case; not old full-suite replay",
+    "Cloudflare_D1_REST_native_qualification": {
+      "scope": "One bounded saved-state LOOKUP",
+      "actual_ref": "checkpoints/pump-report-20261025/ROOT_FIRST_SAVED_AUTO_OBSERVATION_ACTUAL.json",
+      "usage": {
+        "requests": 7,
+        "rows_read": 10,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "market_HTTP": 0,
+      "Telegram": 0,
+      "positive_SENT_not_proven": true
+    }
+  },
+  "current_server": "UNCHANGED_LIVE66",
+  "new_provider_market_HTTP": 0,
+  "new_native_SQL": 0,
+  "new_Telegram": 0,
+  "CONTROL_grant_or_startup_manual_rearmed": false,
+  "positive_exact_admission_and_fresh_FULL_artifact_and_own_lease_required_before_any_actual_SQL": true,
+  "old_caps_unknowns_reserves9pauses2OWNERdeferrals_preserved": true,
+  "recipient_binding": {
+    "required": "expected_recipient_sha256",
+    "source": "Independently approved target/previous confirmed receipt, never derived from the inspected card",
+    "wrong_target_rejected_in_new_expanded_check": true
+  },
+  "expired_lease_local_patch_review": {
+    "prepared_locally_before_authority_stop": true,
+    "published_under_expired_lease": false,
+    "tests_under_expired_lease": 0,
+    "new_distinct_own_lease": "CODEX:PUMP_LIVE_INTEGRATION:1792981958174",
+    "re_reviewed_and_new_check_PASS": true
+  },
+  "AO_independent_finding": {
+    "manifest": "pump-report/handoffs/analytics/package-ao/PACKAGE_AO_SAVED_AUTO_OBSERVER_REVIEW_FINAL_V1.json",
+    "sha256": "03395856f7af0c41521a659d1632e19df589dd494ce92a1054e393e405638b45",
+    "issue": "P2 exact PK value card_id not rechecked after page selection",
+    "fixed": "Repeated card_id equality to selected ID/key before original read",
+    "regression": "Page ID A / exact-PK value ID B rejected before original read",
+    "new_unique_regression": 1,
+    "affected_previous_case_PASS": 1
+  },
+  "latest_changed_files": [
+    {
+      "path": "pump-report/operator/saved-auto-observation.mjs",
+      "sha256": "8dcb9d220360494a4aaa86d01a3c3870458d376ecfbc5480a9db84825e352a74"
+    },
+    {
+      "path": "pump-report/tests/runtime/saved-auto-observation-connected.test.mjs",
+      "sha256": "7067f00b91453080c6dfc1e7cf189b737c746b8e523bd00295b2e93d42f79ddc"
+    },
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_SAVED_AUTO_OBSERVER_AO_PK_BINDING.tap",
+      "sha256": "4303735a9de8a0db5b18a49127145823b51d9925d58fb2f4b512a12b073f9753"
+    }
+  ]
+}

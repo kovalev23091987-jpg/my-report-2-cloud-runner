@@ -1,0 +1,1728 @@
+{
+  "schema": "PROVIDER_MINUTE_FUTURE_VISIBILITY_CONTROLLED_RESULT_V1",
+  "status": "CONTROLLED_COMPONENT_COMPLETED",
+  "controls": [
+    "COINPAPRIKA_IDENTITY:short-out-of-order-new-id",
+    "COINGECKO:short-out-of-order-new-id",
+    "empty-valid-prestate-unchanged",
+    "same-provider-future-denies-new-id",
+    "other-provider-future-does-not-block",
+    "future-legacy-real-unit-remains-conservative",
+    "future-legacy-text-clock-remains-conservative",
+    "identical-future-id-legacy-readback-is-explicitly-unfixed",
+    "weighted-preexisting-cap-denial-unchanged",
+    "equal-timestamp-unit-boundary-unchanged",
+    "existing-native-unknown-and-invalid-input-refuse-before-SQL",
+    "actual-CP-reference-chain-atomic-denial-keeps-day-and-whole-reservations"
+  ],
+  "control_count": 12,
+  "witnesses": [
+    {
+      "name": "COINPAPRIKA_IDENTITY:short-out-of-order-new-id",
+      "baseline": {
+        "a": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 2,
+          "cap": 2
+        },
+        "b": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 2,
+          "cap": 2
+        },
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "A",
+            "units": 1,
+            "created_ts": 1792497600000
+          },
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "B",
+            "units": 1,
+            "created_ts": 1792497601000
+          },
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "SEED",
+            "units": 1,
+            "created_ts": 1792497590000
+          }
+        ],
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "A",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "B",
+              1,
+              1792497601000,
+              1792497541000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "B"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497541000,
+              1792497601000
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "A"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "executed": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "B",
+              1,
+              1792497601000,
+              1792497541000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "B"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497541000,
+              1792497601000
+            ]
+          },
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "A",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "A"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "logical_schedule": "CONTROLLED seed dispatch T-10s; B dispatch T+1s; A dispatch T+2s only if allowed; NOT native wall duration"
+      },
+      "candidate": {
+        "a": {
+          "allowed": false,
+          "status": "ROLLING_60S_CAP_REACHED",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 0,
+          "rolling_units": 1,
+          "cap": 2
+        },
+        "b": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 2,
+          "cap": 2
+        },
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "B",
+            "units": 1,
+            "created_ts": 1792497601000
+          },
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "SEED",
+            "units": 1,
+            "created_ts": 1792497590000
+          }
+        ],
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "A",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "B",
+              1,
+              1792497601000,
+              1792497541000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "B"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497541000,
+              1792497601000
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "A"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "executed": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "B",
+              1,
+              1792497601000,
+              1792497541000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "B"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497541000,
+              1792497601000
+            ]
+          },
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "A",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "A"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "logical_schedule": "CONTROLLED seed dispatch T-10s; B dispatch T+1s; A dispatch T+2s only if allowed; NOT native wall duration"
+      }
+    },
+    {
+      "name": "COINGECKO:short-out-of-order-new-id",
+      "baseline": {
+        "a": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINGECKO",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 9,
+          "cap": 9
+        },
+        "b": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINGECKO",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 9,
+          "cap": 9
+        },
+        "rows": [
+          {
+            "provider": "COINGECKO",
+            "reservation_id": "A",
+            "units": 1,
+            "created_ts": 1792497600000
+          },
+          {
+            "provider": "COINGECKO",
+            "reservation_id": "B",
+            "units": 1,
+            "created_ts": 1792497601000
+          },
+          {
+            "provider": "COINGECKO",
+            "reservation_id": "SEED",
+            "units": 8,
+            "created_ts": 1792497590000
+          }
+        ],
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINGECKO",
+              1792497600000,
+              "A",
+              1,
+              1792497600000,
+              1792497540000,
+              9
+            ]
+          },
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINGECKO",
+              1792497600000,
+              "B",
+              1,
+              1792497601000,
+              1792497541000,
+              9
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINGECKO",
+              "B"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINGECKO",
+              1792497541000,
+              1792497601000
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINGECKO",
+              "A"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINGECKO",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "executed": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINGECKO",
+              1792497600000,
+              "B",
+              1,
+              1792497601000,
+              1792497541000,
+              9
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINGECKO",
+              "B"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINGECKO",
+              1792497541000,
+              1792497601000
+            ]
+          },
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINGECKO",
+              1792497600000,
+              "A",
+              1,
+              1792497600000,
+              1792497540000,
+              9
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINGECKO",
+              "A"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINGECKO",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "logical_schedule": "CONTROLLED seed dispatch T-10s; B dispatch T+1s; A dispatch T+2s only if allowed; NOT native wall duration"
+      },
+      "candidate": {
+        "a": {
+          "allowed": false,
+          "status": "ROLLING_60S_CAP_REACHED",
+          "provider": "COINGECKO",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 0,
+          "rolling_units": 8,
+          "cap": 9
+        },
+        "b": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINGECKO",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 9,
+          "cap": 9
+        },
+        "rows": [
+          {
+            "provider": "COINGECKO",
+            "reservation_id": "B",
+            "units": 1,
+            "created_ts": 1792497601000
+          },
+          {
+            "provider": "COINGECKO",
+            "reservation_id": "SEED",
+            "units": 8,
+            "created_ts": 1792497590000
+          }
+        ],
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINGECKO",
+              1792497600000,
+              "A",
+              1,
+              1792497600000,
+              1792497540000,
+              9
+            ]
+          },
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINGECKO",
+              1792497600000,
+              "B",
+              1,
+              1792497601000,
+              1792497541000,
+              9
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINGECKO",
+              "B"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINGECKO",
+              1792497541000,
+              1792497601000
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINGECKO",
+              "A"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINGECKO",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "executed": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINGECKO",
+              1792497600000,
+              "B",
+              1,
+              1792497601000,
+              1792497541000,
+              9
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINGECKO",
+              "B"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINGECKO",
+              1792497541000,
+              1792497601000
+            ]
+          },
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINGECKO",
+              1792497600000,
+              "A",
+              1,
+              1792497600000,
+              1792497540000,
+              9
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINGECKO",
+              "A"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINGECKO",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "logical_schedule": "CONTROLLED seed dispatch T-10s; B dispatch T+1s; A dispatch T+2s only if allowed; NOT native wall duration"
+      }
+    },
+    {
+      "name": "empty-valid-prestate-unchanged",
+      "baseline": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 1,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600000
+          }
+        ]
+      },
+      "candidate": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 1,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600000
+          }
+        ]
+      }
+    },
+    {
+      "name": "same-provider-future-denies-new-id",
+      "baseline": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 1,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "FUTURE",
+            "units": 1,
+            "created_ts": 1792497600001
+          },
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600000
+          }
+        ]
+      },
+      "candidate": {
+        "result": {
+          "allowed": false,
+          "status": "ROLLING_60S_CAP_REACHED",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 0,
+          "rolling_units": 0,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "FUTURE",
+            "units": 1,
+            "created_ts": 1792497600001
+          }
+        ]
+      }
+    },
+    {
+      "name": "other-provider-future-does-not-block",
+      "baseline": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 1,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600000
+          },
+          {
+            "provider": "OTHER_PROVIDER",
+            "reservation_id": "FUTURE",
+            "units": 1,
+            "created_ts": 1792497600001
+          }
+        ]
+      },
+      "candidate": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 1,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600000
+          },
+          {
+            "provider": "OTHER_PROVIDER",
+            "reservation_id": "FUTURE",
+            "units": 1,
+            "created_ts": 1792497600001
+          }
+        ]
+      }
+    },
+    {
+      "name": "future-legacy-real-unit-remains-conservative",
+      "baseline": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 1,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600000
+          },
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "REAL",
+            "units": 0.5,
+            "created_ts": 1792497600001
+          }
+        ]
+      },
+      "candidate": {
+        "result": {
+          "allowed": false,
+          "status": "ROLLING_60S_CAP_REACHED",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 0,
+          "rolling_units": 0,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "REAL",
+            "units": 0.5,
+            "created_ts": 1792497600001
+          }
+        ]
+      }
+    },
+    {
+      "name": "future-legacy-text-clock-remains-conservative",
+      "baseline": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 1,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600000
+          },
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "TEXT_CLOCK",
+            "units": 1,
+            "created_ts": "UNKNOWN_CLOCK"
+          }
+        ]
+      },
+      "candidate": {
+        "result": {
+          "allowed": false,
+          "status": "ROLLING_60S_CAP_REACHED",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 0,
+          "rolling_units": 0,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "TEXT_CLOCK",
+            "units": 1,
+            "created_ts": "UNKNOWN_CLOCK"
+          }
+        ]
+      }
+    },
+    {
+      "name": "identical-future-id-legacy-readback-is-explicitly-unfixed",
+      "baseline": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 0,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600001
+          }
+        ]
+      },
+      "candidate": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 0,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600001
+          }
+        ]
+      }
+    },
+    {
+      "name": "weighted-preexisting-cap-denial-unchanged",
+      "baseline": {
+        "result": {
+          "allowed": false,
+          "status": "ROLLING_60S_CAP_REACHED",
+          "provider": "BINANCE",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 0,
+          "rolling_units": 5,
+          "cap": 6
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "BINANCE",
+              1792497600000,
+              "NEW",
+              2,
+              1792497600000,
+              1792497540000,
+              6
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "BINANCE",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "BINANCE",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "BINANCE",
+            "reservation_id": "WEIGHTED",
+            "units": 5,
+            "created_ts": 1792497599999
+          }
+        ]
+      },
+      "candidate": {
+        "result": {
+          "allowed": false,
+          "status": "ROLLING_60S_CAP_REACHED",
+          "provider": "BINANCE",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 0,
+          "rolling_units": 5,
+          "cap": 6
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "BINANCE",
+              1792497600000,
+              "NEW",
+              2,
+              1792497600000,
+              1792497540000,
+              6
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "BINANCE",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "BINANCE",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "BINANCE",
+            "reservation_id": "WEIGHTED",
+            "units": 5,
+            "created_ts": 1792497599999
+          }
+        ]
+      }
+    },
+    {
+      "name": "equal-timestamp-unit-boundary-unchanged",
+      "baseline": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 2,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "EQUAL",
+            "units": 1,
+            "created_ts": 1792497600000
+          },
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600000
+          }
+        ]
+      },
+      "candidate": {
+        "result": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "COINPAPRIKA_IDENTITY",
+          "minute_bucket": 1792497600000,
+          "reserved_units": 1,
+          "rolling_units": 2,
+          "cap": 2
+        },
+        "log": [
+          {
+            "op": "run",
+            "sql": "INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)\n    SELECT ?1,?2,?3,?4,?5\n    WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7\n    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)\n    ON CONFLICT DO NOTHING",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497600000,
+              "NEW",
+              1,
+              1792497600000,
+              1792497540000,
+              2
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              "NEW"
+            ]
+          },
+          {
+            "op": "first",
+            "sql": "SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3",
+            "params": [
+              "COINPAPRIKA_IDENTITY",
+              1792497540000,
+              1792497600000
+            ]
+          }
+        ],
+        "rows": [
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "EQUAL",
+            "units": 1,
+            "created_ts": 1792497600000
+          },
+          {
+            "provider": "COINPAPRIKA_IDENTITY",
+            "reservation_id": "NEW",
+            "units": 1,
+            "created_ts": 1792497600000
+          }
+        ]
+      }
+    },
+    {
+      "name": "existing-native-unknown-and-invalid-input-refuse-before-SQL",
+      "variants": [
+        {
+          "baseline": {
+            "result": {
+              "allowed": false,
+              "status": "ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE",
+              "provider": "COINPAPRIKA_IDENTITY",
+              "reserved_units": 0
+            },
+            "log": [],
+            "rows": []
+          },
+          "candidate": {
+            "result": {
+              "allowed": false,
+              "status": "ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE",
+              "provider": "COINPAPRIKA_IDENTITY",
+              "reserved_units": 0
+            },
+            "log": [],
+            "rows": []
+          }
+        },
+        {
+          "baseline": {
+            "result": {
+              "allowed": false,
+              "status": "INVALID_PROVIDER_MINUTE_RESERVATION",
+              "reserved_units": 0
+            },
+            "log": [],
+            "rows": []
+          },
+          "candidate": {
+            "result": {
+              "allowed": false,
+              "status": "INVALID_PROVIDER_MINUTE_RESERVATION",
+              "reserved_units": 0
+            },
+            "log": [],
+            "rows": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "actual-CP-reference-chain-atomic-denial-keeps-day-and-whole-reservations",
+      "baseline": {
+        "value": {},
+        "summary": {
+          "network_calls": 1,
+          "receipts": [
+            {
+              "route": "EXACT_COIN_METADATA",
+              "url": "https://api.coinpaprika.com/v1/coins/pepe-pepe",
+              "http_status": 200,
+              "status": "RECEIVED",
+              "received_ts": 1792525582115,
+              "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "actual_http": 1
+            }
+          ],
+          "admission": {
+            "allowed": true,
+            "status": "PER_TRANSPORT_RESERVED"
+          },
+          "provider_backoff": null,
+          "native_usage_unclosed": false
+        },
+        "transports": 1,
+        "whole": {
+          "used": {
+            "hot": 0,
+            "background": 1,
+            "statistics": 0
+          },
+          "total": 1,
+          "limits": {
+            "whole_job": 164,
+            "hot": 120,
+            "background": 28,
+            "statistics": 16,
+            "full_deep": 50,
+            "standard_supplemental": 8,
+            "liquidation_only": 8,
+            "hub_daily": 900
+          },
+          "remaining": 163
+        },
+        "daily": [
+          {
+            "source": "COINPAPRIKA_HTX_IDENTITY",
+            "day_utc": "2026-10-20",
+            "attempts": 1
+          }
+        ],
+        "reservations": [
+          {
+            "source": "COINPAPRIKA_HTX_IDENTITY",
+            "day_utc": "2026-10-20",
+            "attempts": 1
+          }
+        ]
+      },
+      "candidate": {
+        "value": null,
+        "summary": {
+          "network_calls": 0,
+          "receipts": [],
+          "admission": {
+            "allowed": false,
+            "status": "PROVIDER_RATE_LIMIT_LOCAL",
+            "provider": "COINPAPRIKA_IDENTITY",
+            "minute_bucket": 1792497600000,
+            "reserved_units": 0,
+            "rolling_units": 1,
+            "cap": 2
+          },
+          "provider_backoff": null,
+          "native_usage_unclosed": false
+        },
+        "transports": 0,
+        "whole": {
+          "used": {
+            "hot": 0,
+            "background": 1,
+            "statistics": 0
+          },
+          "total": 1,
+          "limits": {
+            "whole_job": 164,
+            "hot": 120,
+            "background": 28,
+            "statistics": 16,
+            "full_deep": 50,
+            "standard_supplemental": 8,
+            "liquidation_only": 8,
+            "hub_daily": 900
+          },
+          "remaining": 163
+        },
+        "daily": [
+          {
+            "source": "COINPAPRIKA_HTX_IDENTITY",
+            "day_utc": "2026-10-20",
+            "attempts": 1
+          }
+        ],
+        "reservations": [
+          {
+            "source": "COINPAPRIKA_HTX_IDENTITY",
+            "day_utc": "2026-10-20",
+            "attempts": 1
+          }
+        ]
+      }
+    }
+  ],
+  "fixture_provenance": "ALL_CONTROLLED_ACTUAL_MODULES_LOCAL_SQLITE_NOT_NATIVE_BILLING",
+  "scope": "NEW_INSERT_FUTURE_VISIBILITY_ONLY",
+  "legacy_identical_id_redispatch_fixed": false,
+  "complete_dispatch_holding_deadline_daymonth_cutover_closed": false,
+  "source_caps_namespaces_bindings_statement_count_preserved": true,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "native_rows_read_cost": null,
+  "native_savings": null,
+  "admission_authorized": false,
+  "Telegram": 0,
+  "prior_accepted_component_replayed": false
+}

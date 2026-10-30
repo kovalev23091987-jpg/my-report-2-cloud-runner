@@ -1,0 +1,125 @@
+{
+  "schema": "PROVIDER_GET_ENTRY_CLOCK_COUNTEREXAMPLES_V1",
+  "base": "0c763eb4d03ba66bad1b98d26ab45376da87942e",
+  "method": "STATIC_ONLY_UNEXECUTED",
+  "affected_callsites": [
+    {
+      "path": "current-generation/files/src/coingecko-sector-evidence.mjs",
+      "function": "collectCoingeckoSectorEvidence",
+      "source": "COINGECKO_SECTOR",
+      "live_clock_missing": true,
+      "production_sequence": [
+        "EXACT_COIN_METADATA",
+        "EXACT_CATEGORY_DIRECTORY",
+        "CATEGORY_QUOTES",
+        "optional EXACT_TARGET_QUOTE"
+      ],
+      "limit": {
+        "keyless_day": 48,
+        "demo_ordinary_day": 224,
+        "demo_manual_day": 256,
+        "protected_manual": 32,
+        "rolling60s": 9
+      }
+    },
+    {
+      "path": "current-generation/files/src/coinpaprika-htx-identity.mjs",
+      "function": "collectCoinpaprikaHtxIdentity",
+      "source": "COINPAPRIKA_HTX_IDENTITY",
+      "live_clock_missing": true,
+      "production_sequence": [
+        "HTX_MARKET_CATALOG",
+        "EXACT_COIN_METADATA"
+      ],
+      "limit": {
+        "day": 12,
+        "rolling60s": 2,
+        "configured_month_bound": 372
+      }
+    }
+  ],
+  "existing_live_callers": [
+    "collectCoinpaprikaSectorEvidence clock:Date.now",
+    "bindGateOfficialAssetIdentity clock (default Date.now)"
+  ],
+  "existing_reader_default": "clock:()=>now retained byteexact",
+  "path_to_grant": [
+    "get() readTs=clock()",
+    "read cache at readTs",
+    "day_utc=new Date(readTs)",
+    "daily preflight",
+    "rolling preflight created_ts>readTs-60000 AND <=readTs",
+    "whole request_admit with duplicate guard",
+    "reserveEvidenceSourceAttempts now:readTs",
+    "reserveProviderMinuteUnits now:readTs",
+    "guarded actual fetch"
+  ],
+  "counterexamples": [
+    {
+      "name": "late UTC day/month attribution",
+      "kind": "CONTROLLED code witness, no native occurrence claim",
+      "first_request": "dayD 23:59:59.900",
+      "first_response": "dayD+1 00:00:00.100",
+      "old_late_reservation_day": "D",
+      "proposed_late_reservation_day": "D+1",
+      "refund": false
+    },
+    {
+      "name": "rolling60 concurrent valid remaining-cap reservation",
+      "first_own_units": 1,
+      "concurrent_units": {
+        "COINGECKO": 8,
+        "COINPAPRIKA_IDENTITY": 1
+      },
+      "old_late_read": "prior get-start excludes concurrent created_ts",
+      "candidate_late_read": "live get-entry includes now-full window and denies before new whole/durable/fetch"
+    },
+    {
+      "name": "late or expired reference cache",
+      "old_clock_effect": "reject actually known new receipt or accept actually expired receipt",
+      "candidate": "read cache at current get entry; original receipt/source/firstknown retained"
+    }
+  ],
+  "outer_guard": {
+    "path": "current-generation/files/runner-main.mjs",
+    "sha256": "53cd3f8d5cf060a11fad8a343a546736b1db97d36eb1588b810ced2cc2602b85",
+    "installSourceProxyFetch": "BYK-only proxy; CG/CP forwarded nativeFetch without another provider minute/day clock guard",
+    "collectEvidenceRouteBlock": "counts actual guarded fetch and whole duplicates; does not correct durable provider readTs"
+  },
+  "prepared_assertion_groups": 36,
+  "callable_export": "runProviderAdmissionClockConnected({runtime_root,baseline_runtime_root,repo_root})",
+  "roots_end_in": "src",
+  "limitations": [
+    "readTs sampled at each get entry, not at every later SQL/transport boundary",
+    "No claim actual provider quota overrun/native cost reduction/current admission/manual grant/SENT",
+    "Direct collector fixture does not requalify whole manual24/background56/164 plan",
+    "N04/shared identity change is TEXT only for coordinator",
+    "Saved393699 raw exact evidence retained in separate frozen570, not fabricated into source arrays"
+  ],
+  "guards_sha256": {
+    "AGENTS.md": "179836d60cb5e5bba0cf33d180218a359cd7deb6cf615cd6a10824a9dfc016e5",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "05e204226e2f6b5878afcc9ade6902778cce6bbc553f14fed1f7e4bc9f9a6039",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "8e572aaadfade536d29d77de9cb798d2139efb253c4c36fff3b673e37e449a75",
+    "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "8f6c77d3bbe6da00612f9116ba27c3d2d5fa2aa76e31ff26dc07973f2381a903",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "c7bf31bfecb909f3e43a30fbe7a6b07b5f3aacdd7e30919c0e0676d70a9d510f",
+    "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+    "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+    "checkpoints/ACTIVE105_TELEGRAM_NATIVE_FAILURE_BOUNDARY_20261020.json": "71eba031903f21d2c1c4a2b5a8089907306bcd1f78df6448502825a41f8fc6c8",
+    "checkpoints/telegram-native-failure-20261020/boundary.json": "5c6a0adeed4b6d94c52a2498b4f50443d689000bb5e5c5ff2e4b4bafe5c359bf",
+    "checkpoints/telegram-native-failure-20261020/next-worker-queues.json": "ed38692590440ddf4b0065eb7a792b368955509a43e168c65111592dd1217d81"
+  },
+  "executed": {
+    "semantic_calls": 0,
+    "runtime_imports": 0,
+    "Node": 0,
+    "syntax": 0,
+    "SQLite": 0,
+    "git_apply": 0,
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "MAIN": 0,
+    "manual": 0,
+    "Telegram": 0,
+    "deploy": 0
+  }
+}

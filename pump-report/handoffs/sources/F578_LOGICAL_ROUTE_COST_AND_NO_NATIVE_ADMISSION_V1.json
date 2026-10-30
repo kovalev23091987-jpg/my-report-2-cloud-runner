@@ -1,0 +1,41 @@
+{
+  "schema": "F578_LOGICAL_ROUTE_COST_AND_NO_NATIVE_ADMISSION_V1",
+  "decision": "NO_NATIVE_PROPOSAL; SEMANTIC_PREREQUISITES_MISSING",
+  "prices": {
+    "MYX_public_contract_list": {
+      "logical_GET_count": 1,
+      "physical_HTTP": null,
+      "quota": null,
+      "OI_denominator_and_asof_missing": true
+    },
+    "MYX_full_position_population": {
+      "account_pair_side_reads": null,
+      "account_census": null,
+      "RPC_request_weight": null,
+      "upper_bound_cost": null,
+      "reason": "Single-account Solidity getter is not global population route."
+    },
+    "BLUEFIN_user_positions": {
+      "logical_GETs_for_one_authenticated_user": "ceil(Npositions/50)",
+      "global_population_count": null,
+      "current_public_production_family": null,
+      "free_auth_entitlement": null,
+      "public_OI_trade_route_cost": null
+    },
+    "ETHEREAL_product_page": {
+      "logical_GET_count": 1,
+      "physical_HTTP": null,
+      "rate_point_weight": null,
+      "complete_catalog_pages": null,
+      "latency": null,
+      "reason": "limit3 example is not complete coverage or direct OI-clock proof."
+    }
+  },
+  "actual_native_cost": 0,
+  "documentary_attempts_spent": 10,
+  "search_queries_spent": 3,
+  "not_a_reservation_or_cap_grant": true,
+  "best_remaining_documentary_target": "Ethereal current product openInterest unit + independent as-of semantics, then bounded consumer value review; inaccessible static spec URL may not be retried without materially new source and new authority/admission.",
+  "ROOT_boundary": "No new route/registry/policy/caps or account/key creation. Native admission requires a later explicit positive exact provider+whole-budget grant, useful confirmed semantics and fresh compatible authority.",
+  "no_new_local_liquidation_model": true
+}

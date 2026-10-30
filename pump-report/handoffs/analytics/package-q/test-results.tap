@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: Q01 SELL flat keeps observed sample prices, sell amount and zero sampled return without absorption inference
+ok 1 - Q01 SELL flat keeps observed sample prices, sell amount and zero sampled return without absorption inference
+  ---
+  duration_ms: 2.965375
+  type: 'test'
+  ...
+# Subtest: Q02 SELL falling reports the first-last sampled change and extrema without claiming a complete price path
+ok 2 - Q02 SELL falling reports the first-last sampled change and extrema without claiming a complete price path
+  ---
+  duration_ms: 0.481084
+  type: 'test'
+  ...
+# Subtest: Q03 BUY rising is ordered by source event time and keeps the same exact sample for quantities and prices
+ok 3 - Q03 BUY rising is ordered by source event time and keeps the same exact sample for quantities and prices
+  ---
+  duration_ms: 0.413583
+  type: 'test'
+  ...
+# Subtest: Q04 dedup conflicts, endpoint ties, partial rows and unknown facts fail closed with explicit null reasons
+ok 4 - Q04 dedup conflicts, endpoint ties, partial rows and unknown facts fail closed with explicit null reasons
+  ---
+  duration_ms: 1.285625
+  type: 'test'
+  ...
+# Subtest: Q05 connected optional sample can be the second truthful reason while strategy gates, clocks and mandatory Unicode card remain unchanged
+ok 5 - Q05 connected optional sample can be the second truthful reason while strategy gates, clocks and mandatory Unicode card remain unchanged
+  ---
+  duration_ms: 48.604292
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 110.234875

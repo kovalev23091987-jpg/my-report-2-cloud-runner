@@ -1,0 +1,59 @@
+--- a/current-generation/files/src/block-result-context.mjs
++++ b/current-generation/files/src/block-result-context.mjs
+@@ -2,6 +2,7 @@
+ import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
+ import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
+ import {validateBitfinexN12BoundedTradeSample} from './bitfinex-n12-bounded-trade-sample.mjs';
++import {validateGateN12BoundedTradeSample} from './gate-n12-bounded-trade-sample.mjs';
+ import {validateBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
+ import {validateN12NativePublicTrade} from './n12-native-public-trade-sample.mjs';
+ import {validateN12KucoinTokenTrade} from './n12-kucoin-token-trade-sample.mjs';
+@@ -294,6 +295,10 @@
+  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_GATE_FUTURES_TAKER_TRADES_BOUNDED'){
+   if(!validateGateFuturesTradeSample(row,now))return null;
+   return{source:'Gate / исходные фьючерсные сделки',label:'Направление последних сделок Gate',value:`Gate фьючерсы: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная монета и размер контракта проверены; выборка неполная, спот и общий межбиржевой вывод не подтверждены`};
++ }
++ if(row.block_id==='N12'&&row.metric_family==='ACTUAL_GATE_SPOT_TAKER_TRADES_BOUNDED'){
++  if(!validateGateN12BoundedTradeSample(row,now))return null;
++  return{source:'Gate / исходные спотовые сделки',label:'Направление последних сделок Gate',value:`Gate спот: ${row.valid_recent_rows} сделок, покупки ${fmt(row.buy_quote_turnover_usdt)}, продажи ${fmt(row.sell_quote_turnover_usdt)} USDT; точная монета и исходная сторона сделки проверены; выборка неполная, общий межбиржевой вывод не подтверждён`};
+  }
+  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_BITFINEX_TAKER_TRADES_BOUNDED'){
+   if(!validateBitfinexN12BoundedTradeSample(row,now))return null;
+--- a/current-generation/files/src/candidate-evidence-v2-runtime.mjs
++++ b/current-generation/files/src/candidate-evidence-v2-runtime.mjs
+@@ -375,7 +375,7 @@
+  const cgSector=retainCheckedSectorAbsence(params,routeBlock.results.SECTOR_COINGECKO||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0});
+  const supplementalSources=params?.supplemental_context?.sources||{};
+  const nansen=resolveNansenFlowPrimary(supplementalSources.NANSEN_FLOWS,params);
+- const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(bybitOptions.evidence||[]),...(binanceOptionInterest.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(routeBlock.results.JOINT_FLOW?.evidence||[]).filter(row=>row?.block_id==='N12'&&['BITFINEX_SPOT_TRADES','GATE_FUTURES_TRADES','BITGET_SPOT_TRADES','BITGET_FUTURES_TRADES','OKX_SPOT_TRADES','OKX_FUTURES_TRADES','KUCOIN_SPOT_TRADES','KUCOIN_FUTURES_TRADES'].includes(row?.provider_id)),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]&&!PAUSED_BLOCKS[row?.block_id]&&row?.block_id!=='N05');
++ const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(bybitOptions.evidence||[]),...(binanceOptionInterest.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(routeBlock.results.JOINT_FLOW?.evidence||[]).filter(row=>row?.block_id==='N12'&&['GATE_SPOT_TRADES','BITFINEX_SPOT_TRADES','GATE_FUTURES_TRADES','BITGET_SPOT_TRADES','BITGET_FUTURES_TRADES','OKX_SPOT_TRADES','OKX_FUTURES_TRADES','KUCOIN_SPOT_TRADES','KUCOIN_FUTURES_TRADES'].includes(row?.provider_id)),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]&&!PAUSED_BLOCKS[row?.block_id]&&row?.block_id!=='N05');
+  const wikimedia=PAUSED_BLOCKS.N06?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:routeBlock.results.WIKIMEDIA||{status:'EXACT_VERIFIED_PAGE_BINDING_REQUIRED',evidence:[],network_calls:0};
+  const htxAnnouncements=PAUSED_BLOCKS.N07?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:routeBlock.results.HTX_ANNOUNCEMENTS||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};
+  const pausedN01={status:'BLOCK_PAUSED_BY_OWNER',pause_reason:PAUSED_BLOCKS.N01,network_calls:0,evidence:[],check_completed:false,internal_only:true};
+--- a/current-generation/files/src/telegram-plain-facts.mjs
++++ b/current-generation/files/src/telegram-plain-facts.mjs
+@@ -1,6 +1,7 @@
+ import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
+ import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
+ import {validateBitfinexN12BoundedTradeSample} from './bitfinex-n12-bounded-trade-sample.mjs';
++import {validateGateN12BoundedTradeSample} from './gate-n12-bounded-trade-sample.mjs';
+ import {validateBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
+ import {validateN12NativePublicTrade} from './n12-native-public-trade-sample.mjs';
+ import {validateN12KucoinTokenTrade} from './n12-kucoin-token-trade-sample.mjs';
+@@ -63,6 +64,7 @@
+  }
+  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Gate'){
+   const g=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
++  if(validateGateN12BoundedTradeSample(g,c.observed_ts))return `Последние сделки Gate на споте: ${g.valid_recent_rows} сделок, покупки ${money(g.buy_quote_turnover_usdt)}, продажи ${money(g.sell_quote_turnover_usdt)} USDT. Это неполная выборка одной биржи, общее направление не подтверждено.`;
+   return validateGateFuturesTradeSample(g,c.observed_ts)?`Последние сделки Gate на фьючерсах: ${g.valid_recent_rows} сделок, покупки ${money(g.buy_quote_turnover_usdt)}, продажи ${money(g.sell_quote_turnover_usdt)} USDT. Это неполная выборка одной биржи, общее направление не подтверждено.`:`${f.label}: ${f.value} — ${f.source}.`;
+  }
+  if(f?.block_id!=='N12'||f.label!=='Направление последних сделок HTX')return `${f.label}: ${f.value} — ${f.source}.`;
+@@ -94,7 +96,7 @@
+  if(f?.block_id==='N12'&&['Направление последних сделок OKX','Направление последних сделок KuCoin'].includes(f.label)){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validN12PublicTrade(row,c.observed_ts);}
+  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitfinex'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitfinexN12BoundedTradeSample(row,c.observed_ts);}
+  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitget'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitgetN12BoundedTradeSample(row,c.observed_ts);}
+- if(f?.block_id==='N12'&&f.label==='Направление последних сделок Gate'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateGateFuturesTradeSample(row,c.observed_ts);}
++ if(f?.block_id==='N12'&&f.label==='Направление последних сделок Gate'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateGateFuturesTradeSample(row,c.observed_ts)||validateGateN12BoundedTradeSample(row,c.observed_ts);}
+  if(f?.block_id==='N05'&&f.field==='AVAILABLE_VENUE_TAKER_FLOW_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateAvailableFlowEvidence(row,c.observed_ts);}
+  if(f?.block_id==='N05'&&f.field==='JOINT_SPOT_FUTURES_AGREEMENT_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateJointFlowEvidence(row,c.observed_ts);}
+  if(f?.block_id!=='N12'||f.label!=='Направление последних сделок HTX')return false;

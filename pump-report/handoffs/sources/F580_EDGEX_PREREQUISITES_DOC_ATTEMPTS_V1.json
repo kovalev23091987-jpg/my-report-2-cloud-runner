@@ -1,0 +1,71 @@
+{
+  "schema": "F580_EDGEX_PREREQUISITES_DOC_ATTEMPTS_V1",
+  "maximum_total": 6,
+  "maximum_search_queries": 1,
+  "spent_total": 5,
+  "spent_search_queries": 1,
+  "remaining_total": 1,
+  "remaining_search_queries": 0,
+  "maximum_body_bytes": 2000000,
+  "charge_before_IO": true,
+  "failures_nonrefundable": true,
+  "retries": 0,
+  "fanout": 0,
+  "source_vendor_execution": 0,
+  "native_market_metadata_RPC_SQL_TG_Worker": 0,
+  "admission_expires_ts": 1792993525806,
+  "attempts": [
+    {
+      "attempt": 1,
+      "kind": "SINGLE_PRIMARY_OFFICIAL_SDK_SERIALIZER_SEARCH",
+      "query": "fundingRate",
+      "org": "edgex-Tech",
+      "topn": 8,
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 05:13:44 UTC",
+      "status": "SPENT_OFFICIAL_SDK_MATCHES_RAW_STRING_FIELD_NO_SCALE_PROOF"
+    },
+    {
+      "attempt": 2,
+      "kind": "SINGLE_PINNED_PRIMARY_SERIALIZER_MODEL_FILE",
+      "repository": "edgex-Tech/edgex-golang-sdk",
+      "path": "sdk/funding/types.go",
+      "ref": "a25b92ed45b44df330b2ab4533ff360c322642e3",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 05:14:11 UTC",
+      "status": "SPENT_PINNED_JSON_STRING_MODEL_NO_RATIO_PERCENT_ENCODING"
+    },
+    {
+      "attempt": 3,
+      "kind": "SINGLE_PRIMARY_CANONICAL_ASSET_DOC",
+      "candidate": "EDGEX_4STOCK_IDENTITY",
+      "url": "https://pro.edgex.exchange/en-US/news/article/4stock-on-edgex-stock-themed-bnb-meme-perpetual",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 05:14:42 UTC",
+      "status": "SPENT_PRIMARY_USDC_MARKET_AND_CITED_BEP20_ID_NOT_LIVE_INDEX_BINDING"
+    },
+    {
+      "attempt": 4,
+      "kind": "SINGLE_PRIMARY_CANONICAL_ASSET_DOC",
+      "candidate": "BINGX_4STOCK_IDENTITY",
+      "url": "https://bingx.com/en/support/articles/17534353436815",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 05:14:42 UTC",
+      "status": "SPENT_FUNDING_FREQUENCY_NOTICE_NO_CANONICAL_ASSET_ID"
+    },
+    {
+      "attempt": 5,
+      "kind": "SINGLE_PRIMARY_V2_METADATA_OPERATION_DOC",
+      "repository": "edgex-org/edgex-gitbook",
+      "path": "api-v2/public-api/metadata-api.md",
+      "ref": "main",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 05:15:44 UTC",
+      "status": "SPENT_EXACT_METADATA_OPERATION_AND_ID_GRAPH_FIELDS; ELIGIBILITY_GAPS_REMAIN"
+    }
+  ],
+  "final_status": "CLOSED_5_SPENT_1_UNUSED_SEARCH1OF1_NATIVE0_HOLD",
+  "unused_total": 1,
+  "no_refund_rearm_or_native_grant": true,
+  "stop_reason": "No serializer scale or canonical BingX identifier. Metadata path closed; further quota/SDK/display reads would not make path admissible inside known proof. No cap burning for count."
+}

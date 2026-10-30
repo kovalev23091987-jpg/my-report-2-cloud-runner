@@ -1,0 +1,95 @@
+{
+  "schema": "THIRD_EXISTING_CORRELATED_BRIDGE_ACTIVATION_PROTOCOL_V1",
+  "status": "FROZEN_FOR_ONE_TARGETED_STATIC_PEER_UNEXECUTED",
+  "base_main": "93492c3efc7a65d58b492f1891142fa680013023",
+  "agreed_SOURCE_API": {
+    "module": "runner/retention-bridge-provenance.mjs",
+    "pre_CF": "attestRetentionSQLBridgeCompatibility({repo_root})",
+    "required_status": "EXACT_TWO_CONSUMERS_CODE_ACTIVE_COMPATIBILITY",
+    "actual_read_scope": "Exact real filesystem module + both actual Paid consumer bytes + old native release + published stage summary; no injected expected/boolean",
+    "identity_session": "createRetentionSQLBridgeCompatibility({old_release_bytes,staged_receipt_bytes}).observe({call,configured_bridge_url,stage,clock})",
+    "maintenance_before_SQL_GET": 5,
+    "maintenance_after_SQL_GET": 4,
+    "maintenance_after_must_match_before_identity": true,
+    "logging_settings_allowed": false,
+    "admission": false
+  },
+  "stage_summary": {
+    "path": "checkpoints/report-producer-and-bridge-stage-connected-20261022/native-stage-receipt.json",
+    "bytes": 3694,
+    "sha256": "f010dc6368027ecc789d85d53609c96018fb7da961e9fad4a9e91e69996ac4a7",
+    "inner_proof_bytes": 6594,
+    "inner_proof_sha256": "85e815381e4ec8d2219928768d670b02c0c5f1e87332c89fdb6f93f8c20d2f22",
+    "artifact": 12440596410,
+    "artifact_ZIP_sha256": "afc58f96b07f5b272d8833307c467e4185b1ff09bd72a49f71613ece41fdd25f",
+    "raw_inner_proof_not_republished": true
+  },
+  "activation_API": "activateExistingCorrelatedBridge({plan,repo_root,adapter,guard,save,clock})",
+  "native_adapter_API": "createExistingCorrelatedActivationNativeAdapter({cf,configured_bridge_url,saveTransportIntent})",
+  "old_active_proof": "Existing observeRetentionSQLBridge with production RETENTION_SQL_BRIDGE_PROOF constant internal to native factory; no caller expected override. Fresh metadata binds prior native old version+etag, never fresh old content.",
+  "staged_proof": "Exact own known upload ACK bound 86f1 plus exact latest source c327 and immutable ac9d metadata/settings05120/runtimecf3b/threebindings",
+  "forward": "Saved intent + guard/headroom; at most one POSTdeployments targeting already-staged86f1, no POSTversions",
+  "known_ACK": "Native deployment response id/strategy/one100percent target86f1, fresh exact active id/version/etag/settings/crons/runtime/bindings/latest; no annotation/time ownership inference",
+  "unknown_ACK": "At most one bounded metadata observation; STOP, no second activation, no rollback, no ownership claim",
+  "rollback": "Only KNOWN forward ACK AND fresh exact same own deployment ID/version/etag/settings/crons/runtime/latest; guard and full tail reserve; saved intent; at most one POSTdeployments old7011 + exact readback. Unknown rollback ACK is unresolved even if old observed. No foreign overwrite and no automatic retry; API has no atomic deployment CAS, transient race not excluded",
+  "states": [
+    "EXISTING_CORRELATED_VERSION_ACTIVATED_NATIVE_METADATA_VERIFIED",
+    "EXISTING_ACTIVATION_NOT_STARTED",
+    "EXISTING_ACTIVATION_ACK_UNKNOWN_STOP",
+    "EXISTING_ACTIVATION_KNOWN_ACK_NOT_CLOSED",
+    "EXISTING_ACTIVATION_FOREIGN_CHANGE_STOP",
+    "EXISTING_ACTIVATION_OWN_ROLLBACK_VERIFIED",
+    "EXISTING_ACTIVATION_ROLLBACK_ACK_UNKNOWN_STOP",
+    "EXISTING_ACTIVATION_ROLLBACK_NOT_CLOSED"
+  ],
+  "author_execution": {
+    "Node": 0,
+    "imports": 0,
+    "syntax": 0,
+    "tests": 0,
+    "SQLite": 0,
+    "semantics": 0,
+    "native_CF": 0,
+    "SQL": 0,
+    "provider": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "forbidden": [
+    "POSTversions",
+    "reupload",
+    "DELETE",
+    "settingsPATCH",
+    "logsettingsPATCH",
+    "SQL",
+    "Worker invocation",
+    "provider HTTP",
+    "MAIN",
+    "Telegram",
+    "new backend/schema",
+    "unknown retry",
+    "old12/5/7/17/35/14/12/9 replay"
+  ],
+  "limits": [
+    "Per-invocation once plus workflow_attempt1; no global crash-durable once claim",
+    "No logging availability/recovery/old unknown reconciliation/day grant/report/SENT claim",
+    "Source Paid code acceptance is prerequisite, never native admission"
+  ],
+  "root_alone_future_native": true,
+  "fresh_authority_main": "40d45b862adeaee3178a1b83f12b43d000c1d106",
+  "new_callable": {
+    "export": "runExistingBridgeActivationConnected({repo_root})",
+    "prepared_groups": 12,
+    "prepared_variants": 26,
+    "execution": "UNEXECUTED"
+  },
+  "bounded_logging_projection": {
+    "input": "Already accepted initial settings+selected immutable old version; zero new IO",
+    "helpers": "Existing byte-unchanged correlatedLogsIntent + selectedVersionSettings/workerSettingsFingerprint",
+    "export": "Only selectedversion/baselineSHA/prospectiveSHA/flags",
+    "projected_not_native_poststate": true,
+    "logging_settings_admitted": false,
+    "unavailable_if_helper_refuses": true
+  },
+  "lease_acquirebase_is_not_later_merged_workflow_head": true
+}

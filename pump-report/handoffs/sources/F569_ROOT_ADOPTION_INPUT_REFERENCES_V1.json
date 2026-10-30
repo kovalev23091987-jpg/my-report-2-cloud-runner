@@ -1,0 +1,50 @@
+{
+  "schema": "F569_ROOT_ADOPTION_INPUT_REFERENCES_V1",
+  "private53_proposal": {
+    "path": "/private/tmp/pump-f569-classification53-private.json",
+    "sha256": "6bc1fbd51f0126cad3ad0d7f9362920b1313b91a4a33207dcb61bea0fb932142",
+    "bytes": 113069
+  },
+  "private_exact_carrier_review": {
+    "path": "/private/tmp/pump-f569-explicit-carrier-review-private.json",
+    "sha256": "b40936f9b43a1f0d2e3ec9650e961554516bb7ab59cebe29cbf64e48d2bb918d",
+    "mode": "0600"
+  },
+  "private_negative53_bundle": {
+    "path": "/private/tmp/pump-f569-negative53-bundle-private.json",
+    "sha256": "afc916b6863dc7504fe04b43f941614e1b2ad7f995203c6e1cd4005d7b0e1938",
+    "bytes": 88755,
+    "mode": "0600",
+    "ROOT_consumer_integration_not_executed_by_SOURCE": true
+  },
+  "private_historical_priority": {
+    "path": "/private/tmp/pump-f569-historical-manual-priority-private.json",
+    "sha256": "5437a279ddad15aea30def29dd4248e139b68521ac8482e0ddc6a1dc6a3e3220",
+    "bytes": 8388,
+    "semantic_scope": 541,
+    "historical_seed_count": 9,
+    "already_analyzed_seed_count": 0,
+    "fresh_now_seed_count": 0,
+    "READY_claims": 0,
+    "volume_rank_used": false,
+    "analytics_recomputed": false
+  },
+  "proposed_counts": {
+    "KNOWN_NON_TARGET": 53,
+    "FX": 34,
+    "INDEX": 4,
+    "COMMODITY_METAL": 15,
+    "VERIFIED_CRYPTO": 0,
+    "UNKNOWN": 0
+  },
+  "if_ROOT_adopts_only53": {
+    "old380_unchanged": true,
+    "known_non_target_after_review": 433,
+    "crypto_including_BTCETH_unchanged": 552,
+    "report_scope_unchanged": 550,
+    "all987_current_active_USDT_accounted": true
+  },
+  "integration": "Keep old380 bundle/evidence intact. Instantiate a separate exact53 classifier from the reviewed bundle and compose oldNegative.resolveCatalogDecision(row) ?? new53Negative.resolveCatalogDecision(row). Do not overwrite old380 proof SHA to fit a shared evidence object. ROOT owns registry/data/summary changes.",
+  "new_runtime_source_changes": 0,
+  "tests_replayed": 0
+}

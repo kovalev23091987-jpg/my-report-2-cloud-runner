@@ -1,0 +1,67 @@
+{
+  "schema": "REALIZED_EMPTY_BUDGET_GUARD_HASH_ANCHORED_PROPOSAL_V1",
+  "working_base": "81e3788eee417eef1e799947aeca4c12ba759cc9",
+  "fresh_guard_main": "06fe8b2f1aadc21e5d3382a002926a6b883849bb",
+  "target": {
+    "runtime_relative": "src/v3-realized-liquidation-sidecar.mjs",
+    "before_bytes": 6995,
+    "before_sha256": "a56b7b9f2908648c19bfc4ff30f1d2f22bc202365eef1a1a7c858a20360e648a",
+    "expected_after_bytes": 7497,
+    "full_after_sha256": null,
+    "full_after_sha256_reason": "Must be computed from actual private FULL baseline in central assembly; bounded reader has no complete original module"
+  },
+  "anchors": {
+    "empty_return_line_sha256": "87b8bdfd550ed6fc354c02389cec010beb27933a09f6b5b4b3de131eaf03a2ad",
+    "existing_budget_guard_line_sha256": "101e7285580ee15a8cf48f64bce554815123c54efe0f5e4446f973166ae58c8e",
+    "after_empty_block_sha256": "1af31db34d4202707df25d09d33b71ecad3ff981822d9d6ccae115f9eeb4b68d",
+    "before_empty_line_bytes": 237,
+    "after_empty_block_bytes": 739,
+    "original_fragment_text_exported": false
+  },
+  "recipe": {
+    "addition": "empty-budget-addition.js.txt",
+    "addition_bytes": 515,
+    "addition_sha256": "df8fdf4bc4b31f93468d082e616b92455d58b3bfe6e50d65c559d5197ad783e0",
+    "locate_unique_empty_and_guard_lines_by_sha256": true,
+    "insertion": "After the unique semicolon preceding the original empty return; copy original private prefix/suffix only in private memory",
+    "reuse_delta": "Replace the one existing usageDelta(before,after) expression in that private empty-return suffix with emptyUsage",
+    "reuse_guard": "Require exact existing three-predicate expression with alpha-renaming delta to emptyUsage and whitespace removed",
+    "non_empty_source_bytes_unchanged": true,
+    "candidate_comparison": "Full byte equality to generated expected candidate before application imports"
+  },
+  "full_runtime_file_count": 615,
+  "unchanged_accepted_dependencies": [
+    {
+      "runtime_relative": "runner-main.mjs",
+      "sha256": "14b6f52d52aff8760ab16d03487ae62144a97a46078030d73637f8c15bbfc756"
+    },
+    {
+      "runtime_relative": "src/htx-signed-tape.mjs",
+      "sha256": "1b9767db0c2d32cc99da161d7d74b5d2463aba975bb20e154fa45a99e6c2c086"
+    },
+    {
+      "runtime_relative": "src/anomaly-native-domain.mjs",
+      "sha256": "a7e4bebe19c9ffecc27aa3274b5d4d5157ed32529356f21cbcb56bb5a0684ede"
+    },
+    {
+      "runtime_relative": "migrations/20261021_anomaly_domain.sql",
+      "sha256": "aaa82c6a0b518c087e8f6b8aeee11d0d7456690cf57c8cae6afa68d7c9ba6592"
+    }
+  ],
+  "approved_private_input_receipt": {
+    "run": 39618013942,
+    "head": "c700a1f4ac4724a92f80dd8549b131101037ae51",
+    "artifact": 12352933199,
+    "contract_bytes": 10618,
+    "contract_sha256": "b677fb2d1c7ff1acd4056ec33f8b971dfd2481572d74f40506f660a43e93ea47",
+    "raw_private_input_exported": false
+  },
+  "lexical_original_SQL_hashes": [
+    "a97efc467dadea2780cd8248387257d4d1aced3295f438a35223d20474e0b38e",
+    "3474f12d8d1446bb8ad3c413cfe369331a703136503ffa612a0cbc3c323cbdd3"
+  ],
+  "lexical_SQL_hash_is_not_query_plan_or_cost": true,
+  "author_after_full_module_materialized": false,
+  "author_semantic_calls": 0,
+  "native_reduction_or_sending_claimed": false
+}

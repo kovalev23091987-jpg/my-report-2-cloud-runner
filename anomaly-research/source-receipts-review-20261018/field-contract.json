@@ -1,0 +1,224 @@
+{
+  "schema": "EXISTING_SOURCE_BUDGET_ZERO_SQL_FIELD_CONTRACT_V1",
+  "base": "07703e786565eb2e0bbb4727f70ef6680115c07b",
+  "source_sha256": {
+    "current-generation/files/runner-main.mjs": "50c345e9f70393243a377c7fc88fc322e183bd99bc851e1d28a21ca583085dc8",
+    "current-generation/files/src/unified-budget.mjs": "664ba92581f413ae57f62a785403a0f90f29975f015b0484d2dc7dd00e29175f",
+    "current-generation/files/src/two-candidate-policy.mjs": "5da3197efb29f176ad183b4f1f9cacf06c576978ce730699308f2d1a6312bcd5",
+    "current-generation/files/src/v3-adaptive-budget.mjs": "0beec135d9b71f20eae6b2ec94148aca8b4de3f6e47144c3a59f424070dc4ce6",
+    "runner/report2-d1-adapter.mjs": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614",
+    "runner/d1-preaction-budget-guard.mjs": "88fd742f0a9791efe9a8208ac96bea6212c9e12210e5000d243c5feca19f7e14",
+    "current-generation/files/src/liquidation-extension/install-source-allowances.mjs": "ae5d84593d17a7a899fb26d08d20051299815571d2c63a9fe4ad2ca0d527aed7",
+    "current-generation/files/src/liquidation-extension/d1-source-admission.mjs": "91e717a655112be1aba0d316829d7538bb418233b1da3dc282d16ffe888a9269",
+    "current-generation/files/src/liquidation-extension/run-source-budget.mjs": "d423c30a113d4f668ca30c04d486e90507e5bfb3d340b39d7ec0e50ca9f2ce83",
+    "current-generation/files/src/liquidation-extension/combined-runner-service.mjs": "d60d386fa689a88e18a223eea66fea81832d271b65751cf77b0a33351a71eaa2",
+    "current-generation/files/src/candidate-evidence-v2-runtime.mjs": "850edc9ac89a67b32bc721d93abaf01ab5c9b82067287c2c45b73359348631a0",
+    "current-generation/files/src/evidence-source-store.mjs": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38",
+    "current-generation/files/src/provider-minute-ledger.mjs": "af60f7e3cc6187cef4583c4df4e3ecbc5ae8f96e3bffff9bd037a1b22049c045",
+    "current-generation/files/src/public-venue-source-budget.mjs": "cc2e33cbe0b5028208039652ed747a3f1fa1a012298c65ce2b3318fa6b5a9747",
+    "current-generation/files/src/n12-native-public-trade-collector.mjs": "d0f521604e677ca3b94dc683f88f7a89738fdb57fc709ca092a1ad3a2457ff2b",
+    "current-generation/files/src/htx-asset-identity.mjs": "2f3cbfd67f3318eb1712271bf5ef2245ae35961501e3531501412179e37a930f",
+    "current-generation/files/src/liquidation-source-acquisition-audit.mjs": "595efecc950c7e4dda86a59673e908245dd1d886fa146ff10247b11474f89b00"
+  },
+  "narrow_accepted_direction": "Project unifiedHttpBudget.summary and reuse one existing after-analytics-release D1 snapshot plus existing day/run reservations; unread provider pools NULL; no new standalone reader",
+  "available_at_runner_completion": {
+    "unifiedHttpBudget.summary": {
+      "fields": [
+        "used.hot",
+        "used.background",
+        "used.statistics",
+        "total",
+        "limits.whole_job",
+        "limits.hot",
+        "limits.background",
+        "limits.statistics",
+        "remaining"
+      ],
+      "scope": "IN_MEMORY_THIS_RUN_RESERVED_SLOTS_NOT_ACTUAL_PROVIDER_HTTP",
+      "effective_merge": "HTTP_LIMITS + TWO_NODE_HTTP_LIMITS",
+      "extra_SQL_HTTP": 0
+    },
+    "existing_after_analytics_release_usage_snapshot": {
+      "fields": [
+        "requests",
+        "rows_read",
+        "rows_written",
+        "unknown_ops"
+      ],
+      "scope": "CURRENT_INVOCATION_AFTER_LEDGER_FINALIZATION_AND_ANALYTICS_LEASE_RELEASE",
+      "must_reuse_same_snapshot_for_original_and_technical_fields": true,
+      "exclude_from_new_technical_projection": [
+        "targets",
+        "unmeasured_receipts",
+        "SQL",
+        "params",
+        "error"
+      ],
+      "requests_semantics": "ATTEMPTED_SQL_STATEMENTS_BATCH_MEMBERS_SEPARATE_NOT_HTTP_TRANSPORTS",
+      "binding_scope": "Current adapter aggregate can include connected private-reader deltas; not single-database billing receipt"
+    },
+    "d1DayAdmission": {
+      "fields": [
+        "schema",
+        "allowed",
+        "status",
+        "reasons",
+        "daily.day_utc",
+        "daily.run_count",
+        "daily.reserved_rows_read",
+        "daily.reserved_rows_written",
+        "daily.measured_rows_read",
+        "daily.measured_rows_written",
+        "daily.unknown_ops",
+        "daily.unfinished_count",
+        "next_reservation.rows_read",
+        "next_reservation.rows_written",
+        "projected_reserved.rows_read",
+        "projected_reserved.rows_written",
+        "limits.rows_read",
+        "limits.rows_written"
+      ],
+      "scope": "EXISTING_PRE_RESERVATION_DAY_ADMISSION_NOT_FRESH_COMPLETION_BALANCE",
+      "old_unknown_preserved_separately_from_current_invocation": true
+    },
+    "d1RunReservation+d1ReservationReceipt": {
+      "fields": [
+        "rows_read",
+        "rows_written",
+        "budget_mode",
+        "status",
+        "reservation_id",
+        "day_utc"
+      ],
+      "scope": "OWN_ORIGINAL_RUN_ENVELOPE_AND_EXISTING_RESERVATION_RECEIPT_NOT_NEW_GRANT"
+    },
+    "already_computed_canonical_native_liquidation_audit": {
+      "path": "canonicalRunOutput.liquidation_source_acquisition_audit.shared_budget",
+      "fields": [
+        "reserved_http",
+        "actual_http",
+        "max_http_per_run"
+      ],
+      "absent_fields_NULL": [
+        "gross_reserved_http",
+        "claimed_http"
+      ],
+      "scope": "Earlier computed native service audit, not all LIQ/provider/job counts"
+    }
+  },
+  "other_existing_return_fields_not_full_balances": {
+    "installSourceAllowances": [
+      "status",
+      "generation",
+      "window_start_ts",
+      "window_end_ts",
+      "bindings.*.scope_id",
+      "bindings.*.config_fingerprint",
+      "providers",
+      "provider_operational_caps",
+      "liqflow_access",
+      "oxarchive_access",
+      "automatic_topup"
+    ],
+    "createD1SourceAdmission_success": [
+      "allowed",
+      "new_reservation",
+      "reservation_id",
+      "reserved[].scope_id",
+      "reserved[].provider",
+      "reserved[].units",
+      "atomic_batch_ack",
+      "exact_readback",
+      "automatic_topup"
+    ],
+    "createD1SourceAdmission_deny": [
+      "allowed",
+      "new_reservation",
+      "reason",
+      "reservation_not_created"
+    ],
+    "reserveEvidenceSourceAttempts": [
+      "allowed",
+      "status",
+      "source",
+      "day_utc",
+      "attempts"
+    ],
+    "reserveEvidenceSourceCredits": [
+      "allowed",
+      "status",
+      "source",
+      "day_utc",
+      "credits"
+    ],
+    "evidenceSourceAttemptHeadroom": [
+      "allowed",
+      "status",
+      "attempts",
+      "requested_attempts",
+      "source",
+      "day_utc",
+      "used",
+      "cap",
+      "read_only"
+    ],
+    "reserveProviderMinuteUnits_success": [
+      "allowed",
+      "status",
+      "provider",
+      "minute_bucket",
+      "reserved_units",
+      "rolling_units",
+      "cap"
+    ],
+    "publicVenueHasMinuteHeadroom": "BOOLEAN_ONLY_NO_RETURNED_USED_COUNT",
+    "collectCandidateEvidenceV2": [
+      "decision_ts",
+      "route_accounting[]",
+      "shared_http_envelope.cap",
+      "shared_http_envelope.reserved_attempts",
+      "shared_http_envelope.actual_http",
+      "source_health",
+      "sources"
+    ],
+    "liquidationSources.summary.shared_budget": [
+      "reserved_http",
+      "gross_reserved_http",
+      "claimed_http",
+      "actual_http",
+      "max_http",
+      "phase_started_ts",
+      "per_minute_limits",
+      "monthly_provider_reservations_not_refunded",
+      "provider_quota_provisioned"
+    ]
+  },
+  "not_currently_returned_or_complete": [
+    "Full source daily used/remaining from reserveEvidenceSourceAttempts",
+    "Allowance used_units/allowance_units/version cfg is internal to source admission, not returned to runner",
+    "Minute units result is transient and discarded by some current callers",
+    "Current source/provider/month/minute balances for unread routes",
+    "Whole-provider actual HTTP across all consumers"
+  ],
+  "new_projection_must_leave_NULL": [
+    "actual_provider_HTTP",
+    "source_daily_balances",
+    "provider_monthly_balances",
+    "rolling_minute_pools",
+    "unread_sources",
+    "global_remaining_budget"
+  ],
+  "projection_flags": {
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0,
+    "missing_is_zero": false,
+    "JSON_receipt_reissues_opaque_native_proof": false
+  },
+  "coordinator_natural39161429947_audit_repeated": false,
+  "own_tests_source_helper_SQL_provider_MAIN_Telegram_executed": 0,
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792353676947",
+  "lease_ref": "b817c5d0e54c2b0b1275fabbe3faed3424fb3b26",
+  "exact_readback": true
+}

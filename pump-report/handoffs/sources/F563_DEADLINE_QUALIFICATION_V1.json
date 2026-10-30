@@ -1,0 +1,22 @@
+{
+  "schema": "SOURCE_F563_DEADLINE_QUALIFICATION_V1",
+  "status": "PASS_SOURCE_WRAPPER_REAL_BROKER_PACING_CASE_ROOT_POST_RESERVE_GAP_OPEN",
+  "new_targeted_cases_passed": 1,
+  "failed": 0,
+  "duration_ms": 114.532166,
+  "test_log": "F563_DEADLINE_BROKER_TARGETED_TEST_V1.log",
+  "uses_actual_ROOT_createRequestBroker": true,
+  "fetch_and_budget": "ControlledMemoryOnly_NoNetwork_NoNativeAdmission",
+  "checked": [
+    "MapandgetOptionalforwardSAMEabsoluteDL",
+    "ActualbrokerrefusespacedstartbeyondDLwithoutwaiting/reserving/fetch",
+    "No nextOI/fundingafterDLrefusal",
+    "No latequeuedworkaftersetImmediate",
+    "Expired/invalidDLzeroBrokerIO",
+    "Validtrade/OIshareDLandretainoriginalfactTTL"
+  ],
+  "additional_related_controlled_diagnostic": "F563_ROOT_POST_RESERVE_DEADLINE_GAP_V1.json",
+  "Root_dependency": "Latefetchafterbudget.reserve reproduced; RootmustrecheckremainingandownfinalizationbeforeactualIO; no RootfileschangedbySOURCE",
+  "old_tests_replayed": 0,
+  "new_provider_HTTP_SQL_TG_deploy": 0
+}

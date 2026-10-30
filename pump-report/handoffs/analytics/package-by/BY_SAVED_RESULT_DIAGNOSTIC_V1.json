@@ -1,0 +1,65 @@
+{
+  "schema": "BY_SAVED_RESULT_CAUSAL_READ_V1",
+  "basis": "Read only already-saved output and immutable input in Python; no Node/import/engine/re-run",
+  "status": "COLD_PATH_BLOCK_PRESERVED",
+  "first_blocked_step": "ANALYTICS_NOT_READY",
+  "reason": [
+    "PLAN_INVALIDATED"
+  ],
+  "wave_state": "CANCELLED",
+  "current_threshold_passed": true,
+  "day_growth_usable": true,
+  "growth_windows": [
+    {
+      "window_ms": 300000,
+      "passed": false
+    },
+    {
+      "window_ms": 900000,
+      "passed": false
+    },
+    {
+      "window_ms": 3600000,
+      "passed": false
+    },
+    {
+      "window_ms": 86400000,
+      "passed": true
+    }
+  ],
+  "new_impulse_found": true,
+  "new_impulse_equals_original_previous_impulse": false,
+  "last_closed_tail_to_original_impulse_end_ms": 4680000,
+  "last_closed_tail_to_selected_impulse_end_ms": 2220000,
+  "profile_wave_search_ms": 3600000,
+  "current_price_below_selected_impulse_low": true,
+  "closed_rows_below_selected_impulse_low_after_end": 17,
+  "selected_invalidation_equals_selected_impulse_low": true,
+  "plan_present": false,
+  "saved_liquidity_status": "USABLE",
+  "engine_input_fact_count": 5,
+  "engine_input_fact_kinds": [
+    "price",
+    "ticker_24h",
+    "candles",
+    "orderbook",
+    "growth_24h"
+  ],
+  "all_retained_facts_exact": true,
+  "original_asof_unchanged": true,
+  "previous_wave_null": true,
+  "optional_not_requested_because_core_not_ready": true,
+  "source_boundary_calls": {
+    "catalog": 1,
+    "overview": 2,
+    "day": 1,
+    "core": 1,
+    "optional": 0,
+    "map": 0,
+    "delivery_recheck": 0
+  },
+  "private_pipeline_sha256": "106ba96cd24974d2911bf774c55c1352500d765dd83260fdc23e7386b7dbf0b3",
+  "native_AUTO_SENT": false,
+  "advance_pullback_plan_proved": false,
+  "historical_AUTO_intake_proved": false
+}

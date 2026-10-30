@@ -1,0 +1,78 @@
+{
+  "schema": "F597_MINIMAL_EVIDENCE_CHAIN_V1",
+  "status": "PARTIAL_PROOFS_NO_RUNTIME_PROMOTION",
+  "currency": {
+    "native_Hyperliquid_HYPE_contract": "HYPE-USD",
+    "native_price_currency": "USDC",
+    "native_price_unit": "USDC_PER_HYPE",
+    "basis": "HL_CONTRACT_SPEC",
+    "confidence": "DOCUMENTED_NATIVE_CONTRACT",
+    "collateral_not_used_as_quote_proof": true,
+    "provider_0x_mid_levels_unit": {
+      "proposed": "USDC_PER_HYPE",
+      "basis": [
+        "F596 price axis is native mark-centered",
+        "HL_CONTRACT_SPEC HYPE exception",
+        "HL_MARK same-contract mark construction"
+      ],
+      "status": "DERIVED_NATIVE_AXIS_INFERENCE_REQUIRES_ROOT_REVIEW",
+      "explicit_0x_currency_field": false,
+      "actual_unit_or_conversion_validation": false
+    },
+    "modeled_notional_currency": "USD_DOCUMENTED_SEPARATELY_F596",
+    "USDT_conversion_applied": false,
+    "USDC_equals_USD_assumed": false,
+    "USDC_equals_USDT_assumed": false,
+    "target_BingX_USDT_prices_qualified": false
+  },
+  "identity": {
+    "BingX_named_HYPE_asset_project": {
+      "project": "Hyperliquid",
+      "network": "Hyperliquid Layer1",
+      "official_site": "https://app.hyperliquid.xyz",
+      "docs": "https://hyperliquid.gitbook.io",
+      "status": "PRIMARY_PROJECT_NAME_NETWORK_SITE_FOUND",
+      "evidence": "BINGX_PROJECT"
+    },
+    "saved_exact_instrument": {
+      "instrument_id": "BINGX:USDT_M:100877:HYPE-USDT",
+      "contract_id": "100877",
+      "metadata_coin_id": 2338,
+      "coin_name": "HYPE",
+      "metadata_coinDisplayName": "HYPE",
+      "provenance": "F596_SAVED_HYPE_IDENTITY_CHECK_V1.json",
+      "contract_and_coin_id_same_namespace": false
+    },
+    "missing_bridge": "New page does not associate contractId100877 or metadata coinId2338 with its named Hyperliquid project. Saved exact native tuple and new project page are connected only through HYPE naming; strict canonical join remains UNKNOWN.",
+    "exact_BingX100877_to_Hyperliquid_project": "UNKNOWN",
+    "exact_BingX100877_to_0xHYPE": "UNKNOWN",
+    "Coinversa_alias_join": "NOT_PROMOTED",
+    "new_identity_promotions": 0
+  },
+  "preserved_gaps": [
+    "Exact contract-to-project identity",
+    "Provider price-axis inference review or explicit no-transform quote semantics",
+    "Bucket lower/upper/output-width alignment",
+    "Base-position clock and age policy",
+    "Fresh authorized actual",
+    "Exact numeric operation cost/hosted HTTP bounds and account reserves"
+  ],
+  "minimal_next_proof": "One primary BingX listing/instrument record binding the HYPE-USDT perpetual (or exact100877/2338 entity) to the Hyperliquid project/site/network. A new bounded documentary admission is needed; this grant is exhausted. No new source API attempt is authorized.",
+  "common550": {
+    "method": "Reuse existing common550 registry and batch once when primary identity bridge is accepted; no per-coin manual configurations/probes.",
+    "canonical_counts_raised": false,
+    "qualified_maps": 0,
+    "current_routes_added": 0
+  },
+  "preserved": {
+    "qualification_spent": 22,
+    "cap": 24,
+    "remaining": 2,
+    "LOOKUP_spent": 12,
+    "LOOKUP_remaining": 0,
+    "LOOKUP_default_cap": 10,
+    "old_unknowns_reserves": "UNCHANGED",
+    "pauses": 9,
+    "OWNER_deferrals": 2
+  }
+}

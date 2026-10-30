@@ -1,0 +1,296 @@
+{
+  "schema": "NATURAL_POST499_DIAGNOSTICS_AND_STRK_TERMINAL_ACCEPTANCE_V1",
+  "cloud_run": 39167567608,
+  "head": "0dc1c7e68064dd88f076546f12994603baba6199",
+  "run_id": "1792358587597-1792358599200",
+  "originals": [
+    {
+      "artifact": 12150558634,
+      "digest": "sha256:767027644c540b55b7c1d6c25c5d321cde9893956479320680ac53174098c42a",
+      "original_ZIP_bytes": 58957,
+      "members": {
+        "report2-run-result.json": "f1616e4c8b085451e3630789b9a52c01406f5428f4a3a259269f3000a2e70202",
+        "same-run-delivery-proof.json": "4de672d499d33768a6a21e5e53a11e6782c4454e9da760827cafb2c1f139c7fa",
+        "automatic-delivery-audit.json": "2043d5f69481148d38f929fcd10684b6f69719b8ad33cebf0549c46f19b689e3",
+        "known-d1-day-guard.json": "cb92abda06dd39c4fc3d65ac4ec08b28672b9fdc98396c8e321ac385fc0d32a1",
+        "report2-completion-accounting.json": "b454b1eb4c4e8af4437a26370eab4023004bbb8fba9891136af402ea218daa9f",
+        "private-canonical-archive-receipt.json": "7e40cb755e9f6e93ad5aba894e14af5315766d87abd66bf167b3a7a1adc8d105"
+      }
+    },
+    {
+      "artifact": 12150474112,
+      "digest": "sha256:b837207cb7b55898d49d3314dff2932e23401ecedf1c7b7684cf837ea8b6a127",
+      "original_ZIP_bytes": 1003,
+      "members": {
+        "telegram-info-proof.json": "ac8cd52fa0d5abda9c4cef804383c8a2ee6e27aa5efb3f20b111182aabca1079"
+      }
+    }
+  ],
+  "scope": "105 checked=99numeric+6exact official suspended status3",
+  "candidates": [
+    {
+      "contract": "CT-USDT",
+      "canonical_state": "OBSERVE",
+      "snapshot_id": "S392:CT-USDT:1792358685293",
+      "persisted": true,
+      "role_status": "CLOSED",
+      "origins": [
+        "GATE_OFFICIAL",
+        "HTX_OFFICIAL",
+        "OKX_OFFICIAL"
+      ],
+      "usable_metrics": 15,
+      "classified_metrics": 21,
+      "retained_diagnostic_fields_actual": true,
+      "not_raw_provider_or_all_checks_execution_proof": true
+    },
+    {
+      "contract": "BR-USDT",
+      "canonical_state": "REJECTED",
+      "snapshot_id": "S392:BR-USDT:1792358634435",
+      "persisted": true,
+      "role_status": "NOT_CLOSED",
+      "origins": [
+        "HTX_OFFICIAL"
+      ],
+      "usable_metrics": 1,
+      "classified_metrics": 11,
+      "retained_diagnostic_fields_actual": true,
+      "not_raw_provider_or_all_checks_execution_proof": true
+    }
+  ],
+  "new_retained_normalized_fact_diagnostics_actual": {
+    "receipt_count": 32,
+    "fields": [
+      "decision_usable",
+      "fact_contract_status",
+      "identity_status",
+      "identity_object_status",
+      "source_compatible",
+      "freshness_status",
+      "normalization_status"
+    ],
+    "max_details_unchanged": 64,
+    "default_source_compatible_true_is_not_new_proof": true,
+    "old_BTW_flags_backfilled": false
+  },
+  "current_run_same_run_SENT": false,
+  "latest_historical_canonical_same_run_SENT": {
+    "cloud_run": 39164519816,
+    "message_id": "222"
+  },
+  "original_terminal": {
+    "status": "ORIGINAL_TERMINAL_QUEUED",
+    "queued": true,
+    "task_id": "RCHK:1e5653d27f0bbd649b4b4f3453b3c7774d62c327",
+    "reason": "ORIGINAL_TTL_EXPIRED",
+    "idempotency_key": "STRK-USDT|SHORT|EDW:STRK-USDT:1792356174828:G3|IDEA_REMOVED|v3-telegram-shadow-r6",
+    "original_message_id": "222",
+    "network_message_id": "223",
+    "bound_receipt": {
+      "schema": "BOUND_DELIVERY_RECEIPT_V1",
+      "publication_id": "PUB:9d6dc6861873b361aecaead4df32aee7712e3e53",
+      "contract": "STRK-USDT",
+      "direction": "SHORT",
+      "wave_id": "EDW:STRK-USDT:1792356174828:G3",
+      "lifecycle_event": "IDEA_REMOVED",
+      "run_id": "ORIGINAL-TASK-TERMINAL:RCHK:1e5653d27f0bbd649b4b4f3453b3c7774d62c327",
+      "snapshot_id": "REMOVAL:STRK-USDT:1792358690559",
+      "observed_ts": 1792358690559,
+      "analytical_fingerprint": "d1c87fe4d934928af68bcc0ce403b9375e974186451eba81063a43730e9df131",
+      "presentation_hash": "bfa80655845323da12b4f02db96abf3caf02cefc427185eee24b318cbc86dd5c",
+      "source_run_id": "1792358587597-1792358599200",
+      "network_result": "CONFIRMED_SENT",
+      "dispatch_finalized": true,
+      "finalization_status": "SENT",
+      "dispatch_state": "SENT",
+      "task_at_delivery": null
+    },
+    "expiry_terminal_verified_at_this_cut": true,
+    "intermediate_light_checks_or_first_failure_reason_known": false,
+    "actual_ENTRY": false
+  },
+  "DATA_DB_point": {
+    "reservation": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "usage": {
+      "requests": 530,
+      "rows_read": 48982,
+      "rows_written": 371,
+      "unknown_ops": 0
+    },
+    "status": "KNOWN_CURRENT_POINT",
+    "remaining_at_this_cut": {
+      "rows_read": 5018,
+      "rows_written": 469
+    },
+    "reservation_exceeded": false,
+    "future_work_admitted": false
+  },
+  "HTTP_logical_reservations_only": {
+    "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+    "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+    "used": {
+      "hot": 84,
+      "background": 15,
+      "statistics": 0
+    },
+    "limits": {
+      "whole_job": 164,
+      "hot": 96,
+      "background": 56,
+      "statistics": 12
+    },
+    "total_reserved": 99,
+    "reported_remaining_slots": 65,
+    "consistent": true,
+    "admissible_extra_HTTP": null,
+    "actual_HTTP": null
+  },
+  "existing_budget_context": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792358587597-1792358599200",
+    "recorded_ts": 1792358699458,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 15,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 99,
+      "reported_remaining_slots": 65,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 530,
+        "rows_read": 48982,
+        "rows_written": 371,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 5018,
+        "rows_written": 469
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-18",
+      "reported_unknown_ops": 15,
+      "reserved_rows_read": 996000,
+      "reserved_rows_written": 17104,
+      "reconciliation": {
+        "status": "AGGREGATE_BILLABLE_COST_CLOSED",
+        "manifest_sha256": "d26225b9364e03822354cf3b424dbf575e717693b1e69984ee965c0a6c79ab23",
+        "historical_unknown_operations_preserved": 15,
+        "new_or_unmatched_unknown_authorized": false,
+        "serialized_copy_is_not_a_proof_token": true
+      }
+    },
+    "native_liquidation_service": {
+      "scope": "EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB",
+      "reserved_http": 1,
+      "gross_reserved_http": null,
+      "claimed_http": null,
+      "actual_http": 1,
+      "max_http_per_run": 4
+    },
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "statistics_maintenance": {
+    "schema": "LOW_PRIORITY_MAINTENANCE_CADENCE_RECEIPT_V1",
+    "source": "schedule",
+    "unified_enabled": true,
+    "scheduled_minute_utc": 23,
+    "low_priority_cadence_due": true,
+    "claim": {
+      "status": "CLOSED",
+      "claimed": true,
+      "due": true,
+      "job_key": "HOURLY_LOW_PRIORITY_STATS",
+      "interval_ms": 3600000,
+      "last_success_ts": 1792353851931,
+      "next_due_ts": null,
+      "lease_owner": "GITHUB_ACTIONS",
+      "lease_started_ts": 1792358696706,
+      "lease_expires_ts": 1792359296706
+    },
+    "completion": {
+      "status": "CLOSED",
+      "completed": true,
+      "success_recorded": false
+    },
+    "projection_SQL_added": 0,
+    "projection_HTTP_added": 0
+  },
+  "discovery_recall": {
+    "status": "CAPACITY_DEFERRED_LOW_PRIORITY",
+    "reasons": [
+      "RUN_READ_RESERVATION_EXCEEDED"
+    ],
+    "capacity_gate": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": false,
+      "status": "BLOCKED",
+      "reasons": [
+        "RUN_READ_RESERVATION_EXCEEDED"
+      ],
+      "current_usage": {
+        "rows_read": 48335,
+        "rows_written": 366,
+        "requests": 517,
+        "unknown_ops": 0
+      },
+      "extra": {
+        "rows_read": 6000,
+        "rows_written": 4
+      },
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "remaining": {
+        "rows_read": 5665,
+        "rows_written": 474
+      }
+    },
+    "shadow_only": true,
+    "auto_send": false
+  },
+  "actual_ENTRY": false,
+  "whole_day_closed": false,
+  "new_provider_nativeSQL_MAIN_Telegram_calls": 0,
+  "project_complete": false
+}

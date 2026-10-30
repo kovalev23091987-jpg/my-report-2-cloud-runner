@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {revalidatePumpCard} from '../../runtime/worker.mjs';
+import {analyzePump} from '../../analytics/index.mjs';
+import {MemoryStore} from '../../runtime/store.mjs';
+import {input,T} from '../analytics/fixtures.mjs';
+
+async function fixture(){const store=new MemoryStore(),i=input();i.mode='MANUAL';i.facts.candles.status='INCOMPLETE';i.facts.candles.coverage={...i.facts.candles.coverage,time_qualified:true,volume_qualified:true};const a=analyzePump(i);assert.equal(a.ready,true);const key='ARTIFICIAL_RECHECK_INPUT';await store.set(key,{input:i,analysis:a});const requests=[],sources={async getCore(request){requests.push(request);return {facts:{price:structuredClone(i.facts.price),orderbook:structuredClone(i.facts.orderbook)}};}};const card={mode:'MANUAL',expires_ts:T+10000,analysis:{...a,source_input_key:key}};return {store,i,card,sources,requests};}
+test('actual publication recheck accepts an engine-qualified incomplete candle tail and refreshes only price/book',async()=>{const f=await fixture(),q=await revalidatePumpCard({...f,clock:()=>T});assert.equal(q.valid,true);assert.equal(f.requests.length,1);assert.deepEqual(f.requests[0].only_facts,['price','orderbook']);assert.equal(f.requests[0].purpose,'DELIVERY');assert.equal(f.requests[0].force_refresh,true);});
+test('fresh price/book cannot rehabilitate expired or unqualified retained candles',async()=>{for(const damage of [i=>{i.facts.candles.expires_ts=T-1;},i=>{i.facts.candles.coverage.time_qualified=false;}]){const f=await fixture();damage(f.i);await f.store.set(f.card.analysis.source_input_key,{input:f.i});assert.equal((await revalidatePumpCard({...f,clock:()=>T})).valid,false);}});
+test('expired cards and changed current plans are refused before any send is possible',async()=>{const f=await fixture();f.card.expires_ts=T;assert.equal((await revalidatePumpCard({...f,clock:()=>T})).valid,false);assert.equal(f.requests.length,0);const g=await fixture();g.sources.getCore=async()=>({facts:{price:{...g.i.facts.price,value:g.i.facts.price.value*1.02},orderbook:g.i.facts.orderbook}});assert.equal((await revalidatePumpCard({...g,clock:()=>T})).valid,false);});

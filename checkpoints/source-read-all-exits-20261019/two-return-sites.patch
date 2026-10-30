@@ -1,0 +1,13 @@
+--- a/current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs
++++ b/current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs
+@@ -314,8 +314,8 @@
+   const after=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;
+   const delta=usageDelta(before,after);
+   if(delta&&(delta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read||delta.rows_written>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written||delta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:delta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};
+-  if(transitions.some(t=>['PARTIAL','PERSISTENCE_READBACK_FAILED','MIGRATION_REQUIRED','SOURCE_UNSUPPORTED'].includes(t.status)))return {...base,status:'PERSISTENCE_NOT_CLOSED',transitions,usage_delta:delta};
+-  return {...base,status:transitions.length?'CLOSED':'CLOSED_NO_TRANSITION',completed_handoffs:loaded.handoffs.length,transitions,usage_delta:delta};
++  if(transitions.some(t=>['PARTIAL','PERSISTENCE_READBACK_FAILED','MIGRATION_REQUIRED','SOURCE_UNSUPPORTED'].includes(t.status)))return {...base,status:'PERSISTENCE_NOT_CLOSED',transitions,usage_delta:delta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};
++  return {...base,status:transitions.length?'CLOSED':'CLOSED_NO_TRANSITION',completed_handoffs:loaded.handoffs.length,transitions,usage_delta:delta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};
+ }
+ 
+ export default {V3_TELEGRAM_LIFECYCLE_SIDECAR_VERSION,V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET,V3_TELEGRAM_SHADOW_RULES_VERSION,deriveLifecycleContext,loadLifecycleSourceRows,runV3TelegramLifecycleSidecar};

@@ -1,0 +1,676 @@
+{
+  "schema": "REPORT2_MERGED_N12_COMPONENT_ORIGIN_PROPOSAL_V1",
+  "state": "CONCRETE_SHARED_PROPOSAL_NOT_IMPLEMENTED",
+  "source_cloud_run": 39133840839,
+  "source_head": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+  "source_run_id": "1792331883613-1792331891442",
+  "reviewed_working_base": "9eb5716fc053ef111ef2dfffd6ec2afc1a28f3bf",
+  "source_code_sha256": {
+    "current-generation/files/src/block-result-context.mjs": "76ae667fba84f3a95c5495a1174639c9623870e4f05a97febc8f701b9b9ccc40",
+    "current-generation/files/src/candidate-evidence-v2-runtime.mjs": "85785e34c52d67aac8ab981d6123c78fc8def8bcff4877c67459a8d601d389ec",
+    "current-generation/files/src/source-role-consumer.mjs": "81acb21b0eb4b10a3d12e02a564c5f712d31eff1857fef8dbf19e8cde8c1fb0f",
+    "current-generation/files/src/evidence-source-adapters.mjs": "d8b740fd0b61989a80ddafdb29e2b31cb2311b45625ee428397fcc1f26cbad54",
+    "current-generation/files/src/n12-market-trades.mjs": "05b6ea93aebf2195af571724e3040a8b1dd73bf3ec52fb6b87bcaaec0f570dec",
+    "current-generation/files/src/joint-spot-futures-flow.mjs": "df683365fc71935d46bde3da9b5dc87a580fb92e10c78025484347c5b61d69f2",
+    "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "6e364bf5755e87adb5f592872d6b63fd4bac4d0b6179d5b5ebfc5eda48661461",
+    "current-generation/files/src/n12-native-public-trade-sample.mjs": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4"
+  },
+  "two_actual_cases": [
+    {
+      "identity": {
+        "contract": "APR-USDT",
+        "publication_id": "PUB:8d000b5b3f74df3408f5d5e27cddf05b12c0fae7",
+        "run_id": "1792331883613-1792331891442",
+        "snapshot_id": "S392:APR-USDT:1792331980053",
+        "observed_ts": 1792331980053,
+        "canonical_state": "OBSERVE",
+        "direction": "SHORT"
+      },
+      "original_merged_receipt": {
+        "block_id": "N12",
+        "source_block_ids": [
+          "N12",
+          "N05"
+        ],
+        "evidence_id": "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+        "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:APR-USDT:APR-USDT:BOUNDED:1000001723286190000:HTX_SPOT_TRADE_SAMPLE:APR-USDT:18195940",
+        "evidence_ids": [
+          "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+          "EV2:043d0fc3744466460ae484e98c1c0c158796aefa31862c1b20a3287464959ec9",
+          "EV2:a8393bf2cc71745e8a390ed14a88658a5ab571642a48232b4a691a386377b909"
+        ],
+        "physical_root_keys": [
+          "HTX_SPOT_FUTURES_TRADE_SAMPLE:APR-USDT:APR-USDT:BOUNDED:1000001723286190000:HTX_SPOT_TRADE_SAMPLE:APR-USDT:18195940"
+        ],
+        "source_ts": 1792331889518,
+        "observed_ts": 1792331954956,
+        "label": "Направление последних сделок HTX",
+        "value": "HTX фьючерсы: 7 сделок, покупки 0,16, продажи 1 377,1 USDT; спот: 11 сделок, покупки 299,39, продажи 220,62 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен; Bitget спот: 371 сделок, покупки 3 896,64, продажи 7 584,33 USDT; общего направления по всем доступным неполным выборкам нет; Bitget — одна отдельная биржа, её спот и фьючерсы не считались двумя независимыми площадками",
+        "source": "HTX / спот и фьючерсы / HTX / Bitget",
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0
+      },
+      "trace_gap": {
+        "main_evidence_id": "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+        "linked_original_evidence_ids": [
+          "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+          "EV2:043d0fc3744466460ae484e98c1c0c158796aefa31862c1b20a3287464959ec9",
+          "EV2:a8393bf2cc71745e8a390ed14a88658a5ab571642a48232b4a691a386377b909"
+        ],
+        "persisted_physical_root_keys": [
+          "HTX_SPOT_FUTURES_TRADE_SAMPLE:APR-USDT:APR-USDT:BOUNDED:1000001723286190000:HTX_SPOT_TRADE_SAMPLE:APR-USDT:18195940"
+        ],
+        "external_bounded_evidence_id": "EV2:a8393bf2cc71745e8a390ed14a88658a5ab571642a48232b4a691a386377b909",
+        "bounded_sample_origins_explicit_in_original_text": [
+          "HTX",
+          "BITGET"
+        ],
+        "cross_referenced_4h_origins": [
+          "HTX"
+        ],
+        "all_origins_are_NOT_one_aligned_window": true,
+        "primary_HTX_source_ts": 1792331889518,
+        "primary_HTX_observed_ts": 1792331954956,
+        "missing_component_origin_and_clocks_not_reconstructed": true,
+        "logical_route_provider_count_is_not_independent_venue_count": true
+      }
+    },
+    {
+      "identity": {
+        "contract": "NEAR-USDT",
+        "publication_id": "PUB:7a24cfe593bdc7129806c95e781db3b2c1ea3aba",
+        "run_id": "1792331883613-1792331891442",
+        "snapshot_id": "S392:NEAR-USDT:1792331943696",
+        "observed_ts": 1792331943696,
+        "canonical_state": "OBSERVE",
+        "direction": "SHORT"
+      },
+      "original_merged_receipt": {
+        "block_id": "N12",
+        "source_block_ids": [
+          "N12",
+          "N05"
+        ],
+        "evidence_id": "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+        "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:NEAR-USDT:NEAR-USDT:BOUNDED:1000020874350870000:HTX_SPOT_TRADE_SAMPLE:NEAR-USDT:148024107",
+        "evidence_ids": [
+          "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+          "EV2:4eec42121391258120c710ab390137e8d109f847944d9e4d37523353c8b4019c",
+          "EV2:7a41f3b913d119e0e352c81788f4deb7d41e39c507adcccdb83ddf9c7b0211dd"
+        ],
+        "physical_root_keys": [
+          "HTX_SPOT_FUTURES_TRADE_SAMPLE:NEAR-USDT:NEAR-USDT:BOUNDED:1000020874350870000:HTX_SPOT_TRADE_SAMPLE:NEAR-USDT:148024107"
+        ],
+        "source_ts": 1792331885195,
+        "observed_ts": 1792331912979,
+        "label": "Направление последних сделок HTX",
+        "value": "HTX фьючерсы: 9 сделок, покупки 154,21, продажи 1 947,27 USDT; спот: 245 сделок, покупки 7 192,79, продажи 7 102 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки BINANCE / POLONIEX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен; OKX спот: 304 сделок, покупки 16 287,26, продажи 111 146,48 USDT; общего направления по всем доступным неполным выборкам нет; спот и фьючерсы одной биржи не считались двумя независимыми площадками",
+        "source": "HTX / спот и фьючерсы / BINANCE / POLONIEX / OKX",
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0
+      },
+      "trace_gap": {
+        "main_evidence_id": "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+        "linked_original_evidence_ids": [
+          "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+          "EV2:4eec42121391258120c710ab390137e8d109f847944d9e4d37523353c8b4019c",
+          "EV2:7a41f3b913d119e0e352c81788f4deb7d41e39c507adcccdb83ddf9c7b0211dd"
+        ],
+        "persisted_physical_root_keys": [
+          "HTX_SPOT_FUTURES_TRADE_SAMPLE:NEAR-USDT:NEAR-USDT:BOUNDED:1000020874350870000:HTX_SPOT_TRADE_SAMPLE:NEAR-USDT:148024107"
+        ],
+        "external_bounded_evidence_id": "EV2:7a41f3b913d119e0e352c81788f4deb7d41e39c507adcccdb83ddf9c7b0211dd",
+        "bounded_sample_origins_explicit_in_original_text": [
+          "HTX",
+          "OKX"
+        ],
+        "cross_referenced_4h_origins": [
+          "BINANCE",
+          "POLONIEX"
+        ],
+        "all_origins_are_NOT_one_aligned_window": true,
+        "primary_HTX_source_ts": 1792331885195,
+        "primary_HTX_observed_ts": 1792331912979,
+        "missing_component_origin_and_clocks_not_reconstructed": true,
+        "logical_route_provider_count_is_not_independent_venue_count": true
+      }
+    }
+  ],
+  "narrowest_integration_site": {
+    "file": "current-generation/files/src/block-result-context.mjs",
+    "function": "auditRenderedBlockResults",
+    "reason": "Existing printed fact already carries related evidence_ids; full canonical argument still contains original evidence rows at this point. Construct origin receipts here without changing confirmed text or producer selection. No need to rebuild provider bodies from this saved projection.",
+    "manual_receipt_map": "Keep evidence_id/physical_root_key as existing primary keys. Add component_origin_receipts and an explicit union of available component physical roots for mergedN12 only. Preserve compatibility for other blocks and missing legacy origin.",
+    "Telegram_internal_receipt_map": "The same origin data may be copied into the internal artifact receipt; no Telegram text or send code change is proposed. Delivered216 proof is not repeated."
+  },
+  "component_origin_fields": [
+    "evidence_id",
+    "block_id",
+    "metric_family",
+    "provider_id",
+    "upstream_id",
+    "market",
+    "physical_root_key_from_existing_evidenceDedupKey",
+    "source_ts",
+    "observed_ts",
+    "window_start_or_end_only_if_original_field_exists",
+    "first_known_only_if_original_field_exists",
+    "origin_status"
+  ],
+  "resolution_algorithm": [
+    "For a mergedN12 printed row, take the stable unique list of its existing evidence_ids including the primary ID.",
+    "Look up each ID in the existing fullcanonical.metadata.internal_market_context.evidence_v2.evidence at audit time.",
+    "Copy provider/upstream/market/root/window/clocks from that exact ORIGINAL evidence row. Do not replace all source clocks with the primary HTX clock or the maximum.",
+    "If an original linked row is absent, retain its ID with origin_status=UNAVAILABLE_IN_CANONICAL and null unknown values. Never infer a root/clock from displayed venue names.",
+    "An AVAILABLE_FLOW aggregate is explicitly an aggregate. Its dedup root is not a native exchange; keep nested source components only where original structured provenance exists.",
+    "Do not infer independent vote counts from receipt/root counts or change the logical source-accounting route/provider semantics. Same-venue markets remain one upstream.",
+    "Retain per-component HTX components[n].source_ts only if present in original rows; their absent own observed/window values remain null. Copy window_start/window_end and window_start_ts/window_end_ts as distinct original fields; defaults are not actual sample bounds."
+  ],
+  "required_new_controls_for_coordinator": [
+    "HTX+Bitget actual shape and HTX+OKX actual shape retain component original origin/clock while preserving the existing merged text exactly.",
+    "Cross-referencedN05 four-hour origin and bounded recent N12 origin remain distinct windows, without summing flows.",
+    "Missing related evidence produces explicit unavailable provenance and no fabricated identity/clock.",
+    "Same-venue spot/futures and wrapper roots never become extra independent votes.",
+    "Shared5HTTP is still APR5+0 and NEAR3+2, no new provider/SQL operation.",
+    "Golden manual/approved payload text byte-exact; only internal provenance artifact fields may extend.",
+    "Do not claim an actual canonical replay from report2-run-result projection; qualify with complete original canonical or clearly controlled fixtures.",
+    "Related lookup eligibility/filter checklist is independently reviewed by anomaly worker; an ID alone must not admit invalid/stale/foreign or non-contributing evidence. Do not mark separate merged children as standalone printed facts."
+  ],
+  "clock_observation_not_a_fix": {
+    "path": "current-generation/files/src/source-role-consumer.mjs",
+    "existing_tolerance_ms": 60000,
+    "observed_offsets_ms": [
+      6480,
+      10107
+    ],
+    "decision_clock_after_source": true,
+    "established_defect": false,
+    "policy_change_proposed": false
+  },
+  "shared_files_changed": false,
+  "new_source_or_SQL": 0,
+  "strategy_score_caps_forms_changed": false,
+  "producer_schema_mapping_NOT_raw_rows": {
+    "status": "SOURCE_SCHEMA_ONLY_NOT_ACTUAL_ARCHIVED_EVIDENCE_ROWS",
+    "builder_common": {
+      "file": "current-generation/files/src/evidence-source-adapters.mjs",
+      "function": "buildEvidenceV2",
+      "fields": [
+        "evidence_id",
+        "asset_id",
+        "htx_contract",
+        "block_id",
+        "metric_family",
+        "provider_id",
+        "upstream_id",
+        "origin_event_id",
+        "dependency_group",
+        "source_ts",
+        "observed_ts",
+        "first_known_ts",
+        "effective_from",
+        "effective_to",
+        "window_start",
+        "window_end",
+        "coverage_status",
+        "coverage_fraction",
+        "unit",
+        "value",
+        "directional_strength",
+        "risk_strength",
+        "identity_status",
+        "finality_status",
+        "schema_version",
+        "raw_hash",
+        "expires_at",
+        "cost_receipt_id",
+        "validation_status",
+        "validation_reason"
+      ],
+      "window_start_and_end_default": null,
+      "first_known_default": "observed_ts unless explicitly supplied; copy producer value, not independently proven event first-detection"
+    },
+    "HTX_primary_MULTI_MARKET": {
+      "file": "current-generation/files/src/n12-market-trades.mjs",
+      "function": "reconcileN12HtxMarkets",
+      "provider_id_schema": "HTX_SPOT_FUTURES_TRADES",
+      "upstream_id_schema": "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS",
+      "metric_family_schema": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+      "asset_id_schema": "HTX:${contract}",
+      "top_level_market_supplied": false,
+      "physical_root_key_schema": "HTX_SPOT_FUTURES_TRADE_SAMPLE:${contract}:${f.origin_event_id}:${s.origin_event_id}",
+      "source_ts_formula": "Math.min(f.source_ts,s.source_ts), NOT max",
+      "observed_ts_schema": "function argument observed_ts",
+      "extra_fields": [
+        "physical_root_key",
+        "components",
+        "independent_venue_count",
+        "whole_window_coverage_proven",
+        "entry_eligible",
+        "is_htx_price",
+        "htx_execution_target_eligible",
+        "agreement_policy"
+      ],
+      "components_original_schema": [
+        {
+          "venue": "HTX",
+          "market": "FUTURES",
+          "other_original_fields": [
+            "buy_quote_turnover_usdt",
+            "sell_quote_turnover_usdt",
+            "valid_recent_rows",
+            "imbalance",
+            "source_ts"
+          ],
+          "own_observed_ts_or_window_fields_supplied": false
+        },
+        {
+          "venue": "HTX",
+          "market": "SPOT",
+          "other_original_fields": [
+            "buy_quote_turnover_usdt",
+            "sell_quote_turnover_usdt",
+            "valid_recent_rows",
+            "imbalance",
+            "source_ts"
+          ],
+          "own_observed_ts_or_window_fields_supplied": false
+        }
+      ],
+      "top_level_window_start_ts_end_ts_supplied": false
+    },
+    "linked_N05_AVAILABLE_FLOW": {
+      "file": "current-generation/files/src/joint-spot-futures-flow.mjs",
+      "function": "availableFlowContext",
+      "provider_id_schema": "AVAILABLE_VERIFIED_TAKER_FLOW",
+      "upstream_id_schema": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+      "metric_family_schema": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+      "top_level_market_supplied": false,
+      "source_ts_formula": "end of aligned selected four-hour window",
+      "observed_ts_formula": "max(original selected components observed_ts), retained producer value",
+      "extra_fields": [
+        "components",
+        "window_start_ts",
+        "window_end_ts",
+        "venue_count",
+        "source_scope",
+        "physical_root_key"
+      ],
+      "components_common_original_fields": [
+        "venue",
+        "market",
+        "quote",
+        "contract",
+        "window_start_ts",
+        "window_end_ts",
+        "observed_ts",
+        "physical_root",
+        "buy_quote",
+        "sell_quote",
+        "imbalance"
+      ],
+      "component_field_presence_varies": "Copy only fields actually present. Wrapper root/provider is not a physical exchange; do not invent provider/upstream on a child."
+    },
+    "APR_related_BITGET": {
+      "file": "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs",
+      "provider_id_schema": "BITGET_${market}_TRADES",
+      "upstream_id_schema": "BITGET_OFFICIAL_PUBLIC_${market}_TRADES",
+      "metric_family_schema": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+      "extra_fields": [
+        "physical_root_key",
+        "venue",
+        "market",
+        "independent_venue_root",
+        "exact_asset_binding",
+        "identity",
+        "identity_method",
+        "asset_binding_proof_if_present",
+        "source_clock_policy",
+        "valid_recent_rows",
+        "buy_quote_turnover_usdt",
+        "sell_quote_turnover_usdt",
+        "taker_imbalance",
+        "whole_window_coverage_proven",
+        "score_contribution",
+        "entry_authorized"
+      ],
+      "source_ts_formula": "latest.source_ts from accepted original trade rows",
+      "observed_ts_schema": "normalizer argument observed_ts",
+      "source_clock_policy_schema": "ORIGINAL_BITGET_TRADE_TIMESTAMPS",
+      "window_start_ts_end_ts_supplied": false,
+      "market_in_saved_printed_text": "SPOT; descriptive label only, not a recovered raw field"
+    },
+    "NEAR_related_OKX": {
+      "file": "current-generation/files/src/n12-native-public-trade-sample.mjs",
+      "provider_id_schema": "${venue}_${market}_TRADES",
+      "upstream_id_schema": "${venue}_OFFICIAL_PUBLIC_${market}_TRADES",
+      "metric_family_schema": "ACTUAL_NATIVE_PUBLIC_TAKER_TRADES_BOUNDED",
+      "extra_fields": [
+        "physical_root_key",
+        "venue",
+        "market",
+        "independent_venue_root",
+        "exact_asset_binding",
+        "identity",
+        "source_symbol",
+        "contract_multiplier",
+        "source_clock_policy",
+        "valid_recent_rows",
+        "buy_quote_turnover_usdt",
+        "sell_quote_turnover_usdt",
+        "taker_imbalance",
+        "whole_window_coverage_proven",
+        "score_contribution",
+        "entry_authorized"
+      ],
+      "source_ts_formula": "latest.ts from accepted original native public trades",
+      "observed_ts_schema": "normalizer argument observed_ts",
+      "source_clock_policy_schema": "ORIGINAL_OKX_MILLISECONDS for OKX",
+      "window_start_ts_end_ts_supplied": false,
+      "market_in_saved_printed_text": "SPOT; descriptive label only, not a recovered raw field"
+    }
+  },
+  "exact_saved_field_presence_matrix": [
+    {
+      "contract": "APR-USDT",
+      "actual_full_EvidenceV2_rows_saved": false,
+      "primary_N12": {
+        "saved_shape_kind": "MANUAL_CONTEXT_RECEIPT_PLUS_IMPACT_NOT_RAW_EVIDENCE",
+        "context_receipt": {
+          "block_id": "N12",
+          "source_block_ids": [
+            "N12",
+            "N05"
+          ],
+          "evidence_id": "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+          "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:APR-USDT:APR-USDT:BOUNDED:1000001723286190000:HTX_SPOT_TRADE_SAMPLE:APR-USDT:18195940",
+          "evidence_ids": [
+            "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+            "EV2:043d0fc3744466460ae484e98c1c0c158796aefa31862c1b20a3287464959ec9",
+            "EV2:a8393bf2cc71745e8a390ed14a88658a5ab571642a48232b4a691a386377b909"
+          ],
+          "physical_root_keys": [
+            "HTX_SPOT_FUTURES_TRADE_SAMPLE:APR-USDT:APR-USDT:BOUNDED:1000001723286190000:HTX_SPOT_TRADE_SAMPLE:APR-USDT:18195940"
+          ],
+          "source_ts": 1792331889518,
+          "observed_ts": 1792331954956,
+          "label": "Направление последних сделок HTX",
+          "value": "HTX фьючерсы: 7 сделок, покупки 0,16, продажи 1 377,1 USDT; спот: 11 сделок, покупки 299,39, продажи 220,62 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен; Bitget спот: 371 сделок, покупки 3 896,64, продажи 7 584,33 USDT; общего направления по всем доступным неполным выборкам нет; Bitget — одна отдельная биржа, её спот и фьючерсы не считались двумя независимыми площадками",
+          "source": "HTX / спот и фьючерсы / HTX / Bitget",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        "impact_receipt": {
+          "evidence_id": "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+          "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+          "validation": "VALID",
+          "coverage_fraction": 0,
+          "reliability": 0.8,
+          "directional_or_risk_strength": 0,
+          "block_cap": 0.6,
+          "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+          "actual_score_contribution": 0,
+          "reasons": [
+            "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+            "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+          ]
+        },
+        "direct_raw_fields_unavailable": {
+          "provider_id": null,
+          "upstream_id": null,
+          "market": null,
+          "window_start": null,
+          "window_end": null,
+          "window_start_ts": null,
+          "window_end_ts": null,
+          "first_known_ts": null
+        },
+        "route_descriptor_not_rawrow": {
+          "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+          "configured_route_count": 1,
+          "attempted_route_count": 1,
+          "live_contacted_route_count": 0,
+          "checked_without_new_http_route_count": 1,
+          "routes_with_valid_facts": 1,
+          "valid_provider_ids": [
+            "HTX_SPOT_FUTURES_TRADES"
+          ],
+          "used_provider_ids": [
+            "HTX_SPOT_FUTURES_TRADES"
+          ],
+          "used_declared_upstream_ids": [
+            "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS"
+          ],
+          "independence_claimed": false,
+          "http_per_route_is_not_additive_across_blocks": true
+        },
+        "component_source_ts_not_in_projection": true
+      },
+      "related_N05": {
+        "saved_shape_kind": "SEPARATE_MANUAL_CONTEXT_RECEIPT_NOT_RAW_EVIDENCE",
+        "context_receipt": {
+          "block_id": "N05",
+          "evidence_id": "EV2:043d0fc3744466460ae484e98c1c0c158796aefa31862c1b20a3287464959ec9",
+          "physical_root_key": "AVAILABLE_FLOW:APR-USDT:1792317480000:1792331880000",
+          "evidence_ids": [
+            "EV2:043d0fc3744466460ae484e98c1c0c158796aefa31862c1b20a3287464959ec9"
+          ],
+          "physical_root_keys": [
+            "AVAILABLE_FLOW:APR-USDT:1792317480000:1792331880000"
+          ],
+          "source_ts": 1792331880000,
+          "observed_ts": 1792331948354,
+          "label": "Поток сделок по доступным площадкам за четыре часа",
+          "value": "HTX фьючерсы: покупки 39 256,27, продажи 27 604,93 USDT; перевес покупок 17,43%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены",
+          "source": "HTX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        "direct_raw_fields_unavailable": {
+          "provider_id": null,
+          "upstream_id": null,
+          "market": null,
+          "window_start": null,
+          "window_end": null,
+          "window_start_ts": null,
+          "window_end_ts": null,
+          "first_known_ts": null
+        },
+        "four_hour_window_decoded_from_explicit_AVAILABLE_FLOW_root_only": {
+          "window_start_ts": 1792317480000,
+          "window_end_ts": 1792331880000,
+          "physical_market_origins_explicit_in_rendered_label": [
+            "HTX"
+          ],
+          "raw_flow_tape_revalidated": false
+        },
+        "do_not_assign_this_window_to_N12_recent": true
+      },
+      "related_external_N12": {
+        "evidence_id": "EV2:a8393bf2cc71745e8a390ed14a88658a5ab571642a48232b4a691a386377b909",
+        "saved_shape_kind": "LINKED_ID_AND_IMPACT_PLUS_PRIMARY_RENDERED_TEXT_ONLY",
+        "impact_receipt": {
+          "evidence_id": "EV2:a8393bf2cc71745e8a390ed14a88658a5ab571642a48232b4a691a386377b909",
+          "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+          "validation": "VALID",
+          "coverage_fraction": 0,
+          "reliability": 0.8,
+          "directional_or_risk_strength": 0,
+          "block_cap": 0.6,
+          "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+          "actual_score_contribution": 0,
+          "reasons": [
+            "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+            "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+          ]
+        },
+        "original_fields_missing": {
+          "provider_id": null,
+          "upstream_id": null,
+          "market": null,
+          "window_start": null,
+          "window_end": null,
+          "window_start_ts": null,
+          "window_end_ts": null,
+          "first_known_ts": null,
+          "physical_root_key": null,
+          "source_ts": null,
+          "observed_ts": null
+        },
+        "native_sample_bytebody_or_clock_not_saved": true,
+        "rendered_text_is_not_row_reconstruction": true
+      }
+    },
+    {
+      "contract": "NEAR-USDT",
+      "actual_full_EvidenceV2_rows_saved": false,
+      "primary_N12": {
+        "saved_shape_kind": "MANUAL_CONTEXT_RECEIPT_PLUS_IMPACT_NOT_RAW_EVIDENCE",
+        "context_receipt": {
+          "block_id": "N12",
+          "source_block_ids": [
+            "N12",
+            "N05"
+          ],
+          "evidence_id": "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+          "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:NEAR-USDT:NEAR-USDT:BOUNDED:1000020874350870000:HTX_SPOT_TRADE_SAMPLE:NEAR-USDT:148024107",
+          "evidence_ids": [
+            "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+            "EV2:4eec42121391258120c710ab390137e8d109f847944d9e4d37523353c8b4019c",
+            "EV2:7a41f3b913d119e0e352c81788f4deb7d41e39c507adcccdb83ddf9c7b0211dd"
+          ],
+          "physical_root_keys": [
+            "HTX_SPOT_FUTURES_TRADE_SAMPLE:NEAR-USDT:NEAR-USDT:BOUNDED:1000020874350870000:HTX_SPOT_TRADE_SAMPLE:NEAR-USDT:148024107"
+          ],
+          "source_ts": 1792331885195,
+          "observed_ts": 1792331912979,
+          "label": "Направление последних сделок HTX",
+          "value": "HTX фьючерсы: 9 сделок, покупки 154,21, продажи 1 947,27 USDT; спот: 245 сделок, покупки 7 192,79, продажи 7 102 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки BINANCE / POLONIEX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен; OKX спот: 304 сделок, покупки 16 287,26, продажи 111 146,48 USDT; общего направления по всем доступным неполным выборкам нет; спот и фьючерсы одной биржи не считались двумя независимыми площадками",
+          "source": "HTX / спот и фьючерсы / BINANCE / POLONIEX / OKX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        "impact_receipt": {
+          "evidence_id": "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+          "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+          "validation": "VALID",
+          "coverage_fraction": 0,
+          "reliability": 0.8,
+          "directional_or_risk_strength": 0,
+          "block_cap": 0.6,
+          "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+          "actual_score_contribution": 0,
+          "reasons": [
+            "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+            "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+          ]
+        },
+        "direct_raw_fields_unavailable": {
+          "provider_id": null,
+          "upstream_id": null,
+          "market": null,
+          "window_start": null,
+          "window_end": null,
+          "window_start_ts": null,
+          "window_end_ts": null,
+          "first_known_ts": null
+        },
+        "route_descriptor_not_rawrow": {
+          "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+          "configured_route_count": 1,
+          "attempted_route_count": 1,
+          "live_contacted_route_count": 0,
+          "checked_without_new_http_route_count": 1,
+          "routes_with_valid_facts": 1,
+          "valid_provider_ids": [
+            "HTX_SPOT_FUTURES_TRADES"
+          ],
+          "used_provider_ids": [
+            "HTX_SPOT_FUTURES_TRADES"
+          ],
+          "used_declared_upstream_ids": [
+            "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS"
+          ],
+          "independence_claimed": false,
+          "http_per_route_is_not_additive_across_blocks": true
+        },
+        "component_source_ts_not_in_projection": true
+      },
+      "related_N05": {
+        "saved_shape_kind": "SEPARATE_MANUAL_CONTEXT_RECEIPT_NOT_RAW_EVIDENCE",
+        "context_receipt": {
+          "block_id": "N05",
+          "evidence_id": "EV2:4eec42121391258120c710ab390137e8d109f847944d9e4d37523353c8b4019c",
+          "physical_root_key": "AVAILABLE_FLOW:NEAR-USDT:1792317480000:1792331880000",
+          "evidence_ids": [
+            "EV2:4eec42121391258120c710ab390137e8d109f847944d9e4d37523353c8b4019c"
+          ],
+          "physical_root_keys": [
+            "AVAILABLE_FLOW:NEAR-USDT:1792317480000:1792331880000"
+          ],
+          "source_ts": 1792331880000,
+          "observed_ts": 1792331925675,
+          "label": "Поток сделок по доступным площадкам за четыре часа",
+          "value": "BINANCE спот: покупки 5 679 494,31, продажи 7 472 664,07 USDT; перевес продаж 13,63%; POLONIEX спот: покупки 1 032 088,23, продажи 1 055 236,19 USDT; перевес продаж 1,11%; две доступные биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены",
+          "source": "BINANCE / POLONIEX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        "direct_raw_fields_unavailable": {
+          "provider_id": null,
+          "upstream_id": null,
+          "market": null,
+          "window_start": null,
+          "window_end": null,
+          "window_start_ts": null,
+          "window_end_ts": null,
+          "first_known_ts": null
+        },
+        "four_hour_window_decoded_from_explicit_AVAILABLE_FLOW_root_only": {
+          "window_start_ts": 1792317480000,
+          "window_end_ts": 1792331880000,
+          "physical_market_origins_explicit_in_rendered_label": [
+            "BINANCE",
+            "POLONIEX"
+          ],
+          "raw_flow_tape_revalidated": false
+        },
+        "do_not_assign_this_window_to_N12_recent": true
+      },
+      "related_external_N12": {
+        "evidence_id": "EV2:7a41f3b913d119e0e352c81788f4deb7d41e39c507adcccdb83ddf9c7b0211dd",
+        "saved_shape_kind": "LINKED_ID_AND_IMPACT_PLUS_PRIMARY_RENDERED_TEXT_ONLY",
+        "impact_receipt": {
+          "evidence_id": "EV2:7a41f3b913d119e0e352c81788f4deb7d41e39c507adcccdb83ddf9c7b0211dd",
+          "metric_family": "ACTUAL_NATIVE_PUBLIC_TAKER_TRADES_BOUNDED",
+          "validation": "VALID",
+          "coverage_fraction": 0,
+          "reliability": 0.8,
+          "directional_or_risk_strength": 0,
+          "block_cap": 0.6,
+          "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+          "actual_score_contribution": 0,
+          "reasons": [
+            "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+            "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+          ]
+        },
+        "original_fields_missing": {
+          "provider_id": null,
+          "upstream_id": null,
+          "market": null,
+          "window_start": null,
+          "window_end": null,
+          "window_start_ts": null,
+          "window_end_ts": null,
+          "first_known_ts": null,
+          "physical_root_key": null,
+          "source_ts": null,
+          "observed_ts": null
+        },
+        "native_sample_bytebody_or_clock_not_saved": true,
+        "rendered_text_is_not_row_reconstruction": true
+      }
+    }
+  ]
+}

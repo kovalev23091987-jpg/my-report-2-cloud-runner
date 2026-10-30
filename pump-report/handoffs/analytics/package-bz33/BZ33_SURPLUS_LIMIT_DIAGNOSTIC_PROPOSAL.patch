@@ -1,0 +1,38 @@
+--- a/pump-report/runtime/candidate-surplus.mjs
++++ b/pump-report/runtime/candidate-surplus.mjs
+@@ -73,8 +73,11 @@
+ export function makeSurplusGrant({state,run_id,candidate_id,policy,native,now,http_upper_bound,http_by_provider}){
+   const key=surplusGrantKey(run_id,candidate_id),grants=surplusGrants(state),day=new Date(now).toISOString().slice(0,10),old=grants[key];
+   if(old)return old.state==='OPEN'?{allowed:true,grant_id:key,grant:old,idempotent:true}:{allowed:false,detail:'SURPLUS_LOGICAL_GRANT_ALREADY_SPENT'};
+-  if(Object.keys(grants).length>=policy.max_retained_records||Object.values(grants).filter(g=>g.day===day).length>=policy.max_grants_per_day||
+-    Object.values(grants).some(g=>g.run_id===run_id))return {allowed:false,detail:'SURPLUS_LOGICAL_GRANT_LIMIT'};
++  const retained_count=Object.keys(grants).length,day_count=Object.values(grants).filter(g=>g.day===day).length,run_count=Object.values(grants).filter(g=>g.run_id===run_id).length;
++  if(retained_count>=policy.max_retained_records||day_count>=policy.max_grants_per_day||run_count>0)return {allowed:false,detail:'SURPLUS_LOGICAL_GRANT_LIMIT',
++    surplus_limit:{schema:'PUMP_SURPLUS_LIMIT_DIAGNOSTIC_V1',observed_ts:now,utc_day:day,retained_count,day_count,run_count,
++      limits:{retained:policy.max_retained_records,day:policy.max_grants_per_day,run:policy.max_grants_per_run},
++      reasons:[...(retained_count>=policy.max_retained_records?['RETAINED_RECORD_LIMIT']:[]),...(day_count>=policy.max_grants_per_day?['UTC_DAY_GRANT_LIMIT']:[]),...(run_count>0?['SAME_RUN_GRANT_LIMIT']:[])]}};
+   const until=Date.parse(day+'T00:00:00Z')+86400000;
+   if(native.expires_ts>until)return {allowed:false,detail:'SURPLUS_NATIVE_DAY_BOUNDARY_REQUIRED'};
+   const grant={version:SURPLUS_VERSION,run_id,candidate_id,day,state:'OPEN',created_ts:now,
+--- a/pump-report/runtime/budget.mjs
++++ b/pump-report/runtime/budget.mjs
+@@ -212,7 +212,7 @@
+         const checked=known?{allowed:true}:assess(current,{ignore_pacing:true});if(!checked.allowed)return {state:current,result:checked};
+         const native=surplusNativeCapacity(store,run_id,policy,clock());if(!native.allowed)return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:native.detail}};
+         const s=makeSurplusGrant({state:current,run_id,candidate_id,policy,native,now:clock(),http_upper_bound,http_by_provider});
+-        if(!s.allowed)return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:s.detail}};
++        if(!s.allowed)return {state:current,result:{allowed:false,reason:'PROTECTED_DAY_RESERVE',detail:s.detail,...(s.surplus_limit?{surplus_limit:s.surplus_limit}:{})}};
+         current.automatic_surplus_grants??={};current.automatic_surplus_grants[s.grant_id]??=s.grant;
+         return {state:current,result:{allowed:true,scope:'CONDITIONAL_UNASSIGNED_WHOLE_OPERATION_HOLD',surplus_grant_id:s.grant_id,candidate_quota:{kind:'UNASSIGNED_SURPLUS',logical_spent:true,never_refunded:true,idempotent:s.idempotent,http_upper_bound}}};
+       });
+--- a/pump-report/runtime/runner.mjs
++++ b/pump-report/runtime/runner.mjs
+@@ -123,7 +123,7 @@
+     budget.setMode(mode);
+     await assert_execution();
+     const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider,candidate_id:instrument.instrument_id});
+-    if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail},delivery:null};
++    if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail,...(admitted.surplus_limit?{surplus_limit:admitted.surplus_limit}:{})},delivery:null};
+     let checked_result=null,failure_stage='SOURCE_WINDOW';
+     try {
+     // After catalog/discovery, wait BEFORE the fresh phase. Cold upper bound:

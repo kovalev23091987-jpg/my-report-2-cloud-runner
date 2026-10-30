@@ -1,3 +1,4 @@
+import {approvedHtxLimitedCronAdmitted} from './approved-htx-analysis-scope.mjs';
 import {buildPipelineHealth,persistPipelineHealth} from './v3-pipeline-health-runtime.mjs';
 
 export const V3_PIPELINE_HEALTH_SIDECAR_VERSION='v3-pipeline-health-sidecar-shadow-v2-worker-degraded-20260928';
@@ -14,7 +15,7 @@ export function deriveTelegramRelayHealth(telegramZeroReason){
   return true;
 }
 
-export function buildPipelineHealthFromCron({cron,scan,telegram_zero_reason,critical_feed_state='OK'}={}){
+export function buildPipelineHealthFromCron({cron,scan,telegram_zero_reason,critical_feed_state='OK',approved_scope=null}={}){
   const cronOk=text(cron?.status).toUpperCase()==='SUCCESS';
   const scanClosed=Boolean(scan&&num(scan.universe_total)>0&&num(scan.scanned)===num(scan.universe_total)&&num(scan.errors||0)===0&&num(scan.stale||0)===0&&num(scan.stage0_coverage_pct)>=99.9);
   const internalStatus=text(cron?.v3_pipeline_health_status).toUpperCase();
@@ -36,14 +37,15 @@ export function buildPipelineHealthFromCron({cron,scan,telegram_zero_reason,crit
     critical_feed_state,
   });
   const reasons=[...new Set([...(health.reasons||[]),...(workerDegraded&&internalReason?[`WORKER_${internalReason}`]:[])])];
-  return {...health,reasons,worker_health_status:internalStatus||null,worker_health_reason:internalReason||null,eligible_live_count:eligible,live_deep_check_count:deep,shadow_only:true};
+  const limited=Boolean(scan&&approvedHtxLimitedCronAdmitted(cron,approved_scope,scan)),otherReasons=reasons.filter(reason=>reason!=='STAGE0_NOT_CLOSED');
+  return {...health,reasons,...(limited?{report_scope_status:'LIMITED_SOURCE_AVAILABILITY',global_report_admission:otherReasons.length?'BLOCKED':'ADMITTED',full_stage0_closed:false,full_health_status:health.status,full_scope_reasons:[...reasons],limited_report_blockers:otherReasons}:{}),worker_health_status:internalStatus||null,worker_health_reason:internalReason||null,eligible_live_count:eligible,live_deep_check_count:deep,shadow_only:true};
 }
 
-export async function runV3PipelineHealthSidecar(db,{cron,scan,telegram_zero_reason,critical_feed_state='OK',now_ts=Date.now()}={}){
+export async function runV3PipelineHealthSidecar(db,{cron,scan,telegram_zero_reason,critical_feed_state='OK',approved_scope=null,now_ts=Date.now()}={}){
   const base={version:V3_PIPELINE_HEALTH_SIDECAR_VERSION,mode:'SHADOW_ONLY',market_signal:false};
   if(!db?.prepare||!db?.batch)return {...base,status:'SOURCE_UNSUPPORTED'};
   const before=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;
-  const health=buildPipelineHealthFromCron({cron,scan,telegram_zero_reason,critical_feed_state});
+  const health=buildPipelineHealthFromCron({cron,scan,telegram_zero_reason,critical_feed_state,approved_scope});
   const persisted=await persistPipelineHealth(db,{health,now_ts,namespace:'PIPELINE'});
   const after=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;
   const delta=usageDelta(before,after);

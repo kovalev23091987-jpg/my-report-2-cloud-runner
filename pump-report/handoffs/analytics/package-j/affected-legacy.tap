@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: manual analysis uses same kernel while automatic thresholds remain separate
+ok 1 - manual analysis uses same kernel while automatic thresholds remain separate
+  ---
+  duration_ms: 8.909792
+  type: 'test'
+  ...
+# Subtest: old inactive 50% daily gain cannot manufacture a current wave
+not ok 2 - old inactive 50% daily gain cannot manufacture a current wave
+  ---
+  duration_ms: 7.214125
+  type: 'test'
+  location: '/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-bingx-migration-20261024/pump-report/tests/analytics/analysis.test.mjs:19:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(a.reasons.includes('CURRENT_ACTIVITY_NOT_CONFIRMED'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-bingx-migration-20261024/pump-report/tests/analytics/analysis.test.mjs:22:61)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: retained wave survives retreat below the original percentage with unchanged ID, baseline and expiry
+ok 3 - retained wave survives retreat below the original percentage with unchanged ID, baseline and expiry
+  ---
+  duration_ms: 4.239083
+  type: 'test'
+  ...
+# Subtest: partial old history can qualify exact available windows without inventing 24h
+ok 4 - partial old history can qualify exact available windows without inventing 24h
+  ---
+  duration_ms: 0.41125
+  type: 'test'
+  ...
+# Subtest: a price extreme inside the period does not replace its starting price
+ok 5 - a price extreme inside the period does not replace its starting price
+  ---
+  duration_ms: 1.477041
+  type: 'test'
+  ...
+# Subtest: stale mandatory data returns waiting instead of a ready card
+ok 6 - stale mandatory data returns waiting instead of a ready card
+  ---
+  duration_ms: 1.857125
+  type: 'test'
+  ...
+# Subtest: expiry is anchored at first observation and cannot be renewed by inactive updates
+ok 7 - expiry is anchored at first observation and cannot be renewed by inactive updates
+  ---
+  duration_ms: 4.365708
+  type: 'test'
+  ...
+# Subtest: missing mandatory volume is a precise waiting reason rather than zero or a market inactivity claim
+ok 8 - missing mandatory volume is a precise waiting reason rather than zero or a market inactivity claim
+  ---
+  duration_ms: 1.029292
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 79.651166

@@ -1,0 +1,64 @@
+{
+  "schema": "ROOT_CURRENT_NORMAL_AUTO_NO_DELIVERY_ACTUAL_V1",
+  "status": "CURRENT_NORMAL_SCHEDULED_SUMMARY_CONFIRMED",
+  "private_capture_sha256": "e86788b7eb1436003d06b1ff855adb24d248c6623df8445befd411ded2074810",
+  "implementation_sha256": "d984187530314079e626b426bd2e356826369ba62d86224e840f5f752fa88daf",
+  "run_id": "39369e73-cfed-476c-80ab-ca2035da7385",
+  "eventTimestamp": 1793024746986,
+  "event_time_moscow": "2026-10-26T17:25:46.986+03:00",
+  "platform_outcome": "ok",
+  "platform_version": {
+    "id": "d00a9924-e85e-4d9f-bbb1-1700fdd079d9"
+  },
+  "exceptions": [],
+  "summary": {
+    "schema": "PUMP_AUTO_SUMMARY_V1",
+    "mode": "AUTO",
+    "run_id": "39369e73-cfed-476c-80ab-ca2035da7385",
+    "implementation_pin": "d984187530314079e626b426bd2e356826369ba62d86224e840f5f752fa88daf",
+    "status": "INCOMPLETE",
+    "discovery_result": "INCOMPLETE_COVERAGE_OR_RESOURCES",
+    "counts": {
+      "checked_entries": 0,
+      "analysis_results": 0,
+      "ready_results": 0,
+      "ready_auto_eligible_results": 0,
+      "manual_results": 0,
+      "budget_deferred_entries": 1,
+      "source_pending": 9,
+      "catalog_unresolved": 248
+    },
+    "phase_flags": {
+      "executor_busy": false,
+      "analysis_result_seen": false,
+      "budget_defer_seen": true,
+      "delivery_result_seen": false
+    },
+    "reason_codes": [
+      "SOURCE_EVIDENCE_PENDING",
+      "UNIVERSE_QUALIFICATION_INCOMPLETE",
+      "SOURCE_BUDGET_DEFERRED",
+      "PROTECTED_DAY_RESERVE",
+      "EVEN_DAY_CANDIDATE_ALLOCATION"
+    ],
+    "reason_codes_truncated": false,
+    "unlisted_reason_occurrences": 0,
+    "delivery": {
+      "complete_result_envelope": true,
+      "reported_occurrences": 0,
+      "occurrences_by_state": {},
+      "refs": [],
+      "refs_truncated": false
+    }
+  },
+  "conclusion": "Exactly this normal current69 AUTO was deferred before CORE/analytics by the already-spent elapsed-hour candidate allocation; no Telegram delivery occurrence. Not a strategy rejection or Telegram/network failure.",
+  "whole_day_coverage_or_current_account_capacity_proven": false,
+  "operator_Worker_invocations": 0,
+  "operator_native_SQL": 0,
+  "operator_market_HTTP": 0,
+  "operator_Telegram": 0,
+  "normal_business_IO": "Not reclassified as zero; automatic programme's own SQL/source costs not in this log.",
+  "first_current_AUTO_SENT_proven": false,
+  "source_pending_count_not_UNSUPPORTED": true,
+  "catalog_unresolved_not_noncrypto": true
+}

@@ -1,0 +1,83 @@
+{
+  "schema": "F585_EXISTING_COMPOSITE_BASIS_FORMAT_REVIEW_V1",
+  "authority_main": "c52f632c8224b5145e3c89207554bdb92f365fc3",
+  "HL_producer": {
+    "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+    "git_blob": "47f044d8eec5ab52e2cb6a4f2ceb95af4a873e13",
+    "sha256": "e3070458333381de055f237f22aaab5b0150290d031f862adcdd69392b027b65",
+    "lines": [
+      37,
+      46,
+      71,
+      78,
+      100
+    ]
+  },
+  "existing_format": {
+    "kind": "EXPLICIT_PRICE_BASIS_AND_QUOTE_CONVERSION",
+    "fields": [
+      "evidence_ref",
+      "quote_conversion_evidence_ref",
+      "price_basis_evidence_ref",
+      "from_quote",
+      "to_quote",
+      "from_market_id",
+      "to_instrument_id",
+      "from_price_basis",
+      "to_price_basis",
+      "multiplier_to_bingx",
+      "event_ts",
+      "expires_ts"
+    ],
+    "one_composite_multiplier": true,
+    "separate_FX_rate_field_required": false,
+    "from_quote_may_equal_USDT": true,
+    "static_fixture": "Controlled1.01 multiplier proves accepted shape only; fixture USDC currency is artificial, not real SOL evidence",
+    "registry_active_routes": 0,
+    "independent_pair_qualifier_implemented": false,
+    "automatic_synchronization_check_implemented": false
+  },
+  "answer": "The format can represent BINGXquote/HLmark from two same-underlying synchronous source facts without a separate FX request. It does not already derive or independently qualify that pair. No real route becomes qualified merely by adding strings.",
+  "quote_proof": {
+    "from_quote": "USDT",
+    "to_quote": "USDT",
+    "evidence_refs": [
+      "HL_CONTRACT_SPECS",
+      "BINGX_EXACT_100028_USDT_M_REGISTRY"
+    ],
+    "meaning": "Identical price denomination; not USDC=USDT, no assumed FX factor, no assumed multiplier1."
+  },
+  "proposed_pair_derivation": {
+    "state": "PROPOSAL_FOR_ROOT_INDEPENDENT_QUALIFIER_NOT_IMPLEMENTED",
+    "inputs": [
+      "Canonical same-underlying binding with independent proof",
+      "B: positive OBSERVED exactBingX100028 quote fact with native event/receive/expiry/hash",
+      "H: positive exact first-dexSOL mark fact with genuine native event/receive/expiry/hash",
+      "Explicit evidence of accepted time alignment; current format has no max-skew field"
+    ],
+    "multiplier_to_bingx": "B.value / H.markPx",
+    "mapped_threshold": "HL.liquidationPx * multiplier_to_bingx",
+    "event_ts": "min(B.event_ts,H.event_ts)",
+    "expires_ts": "min(B.expires_ts,H.expires_ts,event_ts+profile.freshness_ms.price)",
+    "native_zone_expires": "min(account nativeexpiry,mappingexpiry,mappingevent+priceTTL)",
+    "rejections": [
+      "No globalunderlyingproof",
+      "Missing or borrowed H eventclock",
+      "Nonpositive/nonfinite inputs/ratio",
+      "Expired/future/skew-unqualified pair",
+      "H is bookmid/oracle/receipt time disguised as mark",
+      "Wrong firstdex orUSDC-pricedexception"
+    ],
+    "qualification_note": "Current ratio projects the observed venue basis at this instant; it does not guarantee future equal basis or execution. ROOT must qualify comparability before setting flags; no strategy/gate change here."
+  },
+  "minimal_integration_scope": {
+    "ROOT": "Caller-side proof-bound pair qualifier and exact qualified binding/admission before getLiquidations; profile map cap1 doesn't fund extra mark acquisition by itself",
+    "SOURCE": "Existing F556 accepts explicit composite; no edit made. Optional later native_size_unit output needs proof-bound patch if desired; hardcodedUNKNOWN currently remains.",
+    "ANALYTICS": "No consumer code request in F585; null magnitude accepted; unsupported native zones remain unusable"
+  },
+  "unnecessary_F584_extra_requests_removed": [
+    "Separate FX is not required just because first-dexSOL collateralUSDC",
+    "l2Book cannot substitute for liquidationmark; not inselected3HTTPpacket"
+  ],
+  "extra_FX_HTTP": 0
+}

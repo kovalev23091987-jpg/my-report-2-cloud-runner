@@ -1,0 +1,34 @@
+{
+  "schema": "SOURCE_B550_ARITHMETIC_SOURCE_INTEGRITY_CHECK_V1",
+  "result": "PASS_LOCAL_ARITHMETIC_AND_PINNED_SOURCE_INTEGRITY_ONLY",
+  "checks": {
+    "T3_frozen_source_and_manifest_exact": true,
+    "U3_manifest_exact": true,
+    "TZ80_resource_only": true,
+    "profile121_vs_required125": true,
+    "baseline_rows125_vs121": [
+      60,
+      56
+    ],
+    "preserved_HTTP164_lanes96_56_12": true,
+    "project900_unchanged": true,
+    "manual_cold13_plus_outcome1": true,
+    "fixed_protectedHTTP156": true,
+    "conditional5min_dayHTTP486": true,
+    "conditional_SQLW48489": true,
+    "three_min_SQLW72240_before_prior_usage": true,
+    "minutely_capacity_rows600": true,
+    "minutely_HTTPsum486": true,
+    "no_active_source_patch": true,
+    "no_T3_six_tests_replayed": true,
+    "new_market_HTTP_SQL_TG_deploy": 0
+  },
+  "not_tested": [
+    "Native market/API/SQL/Telegram",
+    "Actual rolling-minute latency/CPU/bytes",
+    "125source codepatch because not applied",
+    "Physical storage capacity or old ENTRY deferrals"
+  ],
+  "capture_phase": "Arithmetic stage before ROOT released integration snapshot and allowed H125 code followup",
+  "later_code_followup": "PACKAGE_H125_CORE_HISTORY_FIX_FINAL_V1.json, separate1targetedPASS"
+}

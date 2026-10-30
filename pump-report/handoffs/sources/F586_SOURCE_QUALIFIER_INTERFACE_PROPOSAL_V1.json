@@ -1,0 +1,112 @@
+{
+  "schema": "F586_SOURCE_OWNED_FUNDING_QUOTE_QUALIFIER_INTERFACE_PROPOSAL_V1",
+  "status": "REVIEWABLE_NEXT_SCOPE_NOT_IMPLEMENTED",
+  "code_changes_now": 0,
+  "tests_now": 0,
+  "native_now": 0,
+  "goal": "Turnprovider-capability/profilechecking,actualquoteparsing,andusable-factqualification into explicitsteps;noforeverpreflightNOT_CHECKEDwithoutreason/nofalseunitpromotion.",
+  "provider_scope": {
+    "venue": "BINGX",
+    "family": "USDT_M",
+    "market_type": "PERPETUAL",
+    "quote": "USDT",
+    "settle": "USDT",
+    "route": "/openApi/swap/v2/quote/premiumIndex",
+    "first_instrument": "BINGX:USDT_M:101207:DOOD-USDT"
+  },
+  "qualified_profile_fields": {
+    "evidence_ref": "Exactfixedproviderroute/unit/clock/periodproofbundle",
+    "rate_field": "lastFundingRate",
+    "rate_unit": "RATE_FRACTION onlyafterindependentexactfieldproof;currentlynull",
+    "rate_unit_evidence_ref": null,
+    "quote_kind": "CURRENT_FUNDING_RATE_QUOTE",
+    "quote_clock": {
+      "mode": "VENDOR_RATE_QUOTE_SNAPSHOT_MS orROOTacceptedCCXT_UPDATE_TIME_QUOTE_V1",
+      "field": "time orupdateTime onlyundercorrespondingindependentproof",
+      "event_semantics": "QUOTE_SNAPSHOT_NOT_SETTLED_FUNDING_EVENT",
+      "effective_funding_event_ts": null,
+      "nextFundingTime_allowed": false,
+      "received_ts_fallback": false,
+      "ROOT_policy_decision_required": "No repeatedpermissionquestion:ROOTspecifiedrole. Document exactsupported-consumerfieldbasis/limitsbeforeprofileactivation;vendorfieldguaranteeunavailable.",
+      "ROOT_role_accepted": "ROOTexplicitlysteeredRATE_QUOTEsnapshot/updateTime;notpayment_event"
+    },
+    "period": {
+      "field": "fundingIntervalHours",
+      "unit": "HOURS",
+      "source": "ACTUAL_SAME_SYMBOL_PAYLOAD",
+      "proof": "PinnedCCXTintervalmapping",
+      "missing": "null/FUNDING_PERIOD_UNKNOWN",
+      "never": [
+        "global8h",
+        "nextFundingTime-now",
+        "twohistoricaleventgap=currentperiod"
+      ]
+    }
+  },
+  "parser_result": {
+    "raw_rate_decimal": "Preserveproviderdecimal",
+    "rate_fraction": "Valueonlyifrate_unitproofclosed;else null",
+    "rate_snapshot_ts": "Originalquoteclockunderexplicitprofile;else null",
+    "rate_effective_event_ts": null,
+    "scheduled_funding_ts": "ValidatednextFundingTime separately",
+    "period_ms": "Actualfield ×3600000 withfinitepositive/≤24handexactmillisecondchecks;noimputation",
+    "qualification_parts": [
+      "rate_unit_status",
+      "snapshot_clock_status",
+      "period_status",
+      "exact_instrument_status"
+    ],
+    "status": "USABLE onlyallrequiredpartsclosedandfresh;receivedbutunqualified→INCOMPLETEwithspecificreason;noIO→NOT_CHECKED",
+    "output_unit": "RATE_FRACTION_PER_ACTUAL_PERIOD onlyafterunit+periodproof",
+    "extra_metadata": [
+      "funding_quote_kind",
+      "clock_semantics",
+      "rate_unit_evidence_ref",
+      "period_evidence_ref",
+      "native_metadata_update_ts"
+    ]
+  },
+  "interface": {
+    "parseFundingQuote": "PureSOURCEparserreturnsrawandqualifiedparts;noIO/budget",
+    "qualifyFundingQuote": "Fixedproviderproofprofile+exactbinding+nativeclock/period/unitvalidation;callerbooleansinsufficient",
+    "getOptional_requested_kinds": "OptionalROOT-supplied orderedunique subset oftrades/open_interest/funding,length≤2;SOURCEvalidatesknownkind/cap/deadline;preserveexistingorderwhenomitted",
+    "native_probe": "OnlyunderseparateROOTpositiveboundedqualificationadmission mayunqualifiedquoteberetainedonce;notroutinebackgroundpolling/usablepromotion"
+  },
+  "SOURCE_owned_next_files": [
+    "pump-report/sources/bingx.mjs",
+    "pump-report/sources/index.mjs",
+    "pump-report/sources/funding-qualification.mjs (ifseparationhelps)",
+    "pump-report/tests/sources/funding-quote-connected.test.mjs",
+    "pump-report/handoffs/sources/F587*"
+  ],
+  "ROOT_owned_dependencies": [
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "minimal": "Passrequested_kinds:['trades','funding']onlyifROOTselectsfundingforthisoptionalstage;keepanalysis.readygate andcap2"
+    },
+    {
+      "path": "pump-report/registry/* qualifiedprofileassembly",
+      "minimal": "BindproviderprofiletoexistingexactUSDT_Minstrument;do not manufacturecrossvenuecanonicalflags"
+    },
+    {
+      "path": "Commonfactpolicy",
+      "minimal": "Explicitlyacceptquote-snapshotsemanticseparatelyfromsettledrateeventbeforeclockmodeactivation;consumerpresentationmustremaincurrentquotedcontext"
+    }
+  ],
+  "activation_blockers": [
+    "ExactlastFundingRaterateunitproofmissing;newprofilemustnotpretendfractionclosed",
+    "Providerclockbasis isCCXT-supportedconvention;no nativevendorquote-updateguaranteefound. RolealreadyconfirmedbyROOT.",
+    "DOODnativeperiod/currentclockfieldsnotobserved"
+  ],
+  "not_changed": [
+    "Mandatorywave/plan/Telegrameligibility",
+    "Fundingnotstandalonereadygate",
+    "Nootherprovider/HLactual",
+    "Noquota/cap/oldgrantreset"
+  ],
+  "latest_authority_main": "b48e8526dcc9179b006d08baefdaf857730e0c70",
+  "next_code_wording_scope": {
+    "path": "pump-report/sources/bingx.mjs:191,196",
+    "action": "Replaceunsupportedcontractmetadataassertionwithaccurateclockrole/provenance. Emitnative_rate_quote_update_ts+clock_basis;legacyfieldcompatibilityexplicitlydocumented. Neverrenamegenericclockasfundingpayment_event."
+  }
+}

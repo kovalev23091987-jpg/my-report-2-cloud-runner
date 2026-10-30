@@ -1,0 +1,90 @@
+{
+  "schema": "GROUPED_WATCH_DRAFT_CONTROLLED_RESULT_V1",
+  "group_count": 1,
+  "variant_count": 18,
+  "results": [
+    {
+      "name": "actual old expression emits two drafts; new private helper emits one with both original transitions",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "zero transitions create zero drafts",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "single LONG retains exact old draft key, shape and renderer text",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "single SHORT retains exact old draft key, shape and renderer text",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "pair input order does not change group key, text or retained ordered facts",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "another physical observation fingerprint is another group key",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "different event refuses grouping rather than losing a transition",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "different snapshot refuses grouping rather than losing a transition",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "different source time refuses grouping rather than losing a transition",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "different response proof refuses grouping rather than losing a transition",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "mixed closed window refuses grouping rather than losing a transition",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "mixed observed clock refuses grouping rather than losing a transition",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "mixed gap label refuses grouping rather than losing a transition",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "duplicate direction refuses grouping rather than losing a transition",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "modified transition without matching id is refused",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "more than two rows are refused without truncation",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "gapped pair preserves current warning and both directions",
+      "status": "CONTROLLED_PASS"
+    },
+    {
+      "name": "inverse SHORT confirmation and LONG refutation remain one factual message",
+      "status": "CONTROLLED_PASS"
+    }
+  ],
+  "old_actual_draft_expression_count": 2,
+  "new_actual_helper_draft_count": 1,
+  "scope": "PRIVATE_GROUP_HELPER_AND_BOUND_CALLSITE_NOT_FULL_DUE_EXECUTION",
+  "old_kernel_DUE_outcome_journal_tests_called": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "actual_send": false,
+  "SENT_claimed": false,
+  "native_admission_qualified": false,
+  "form_approval_qualified": false,
+  "author_execution": "UNEXECUTED"
+}

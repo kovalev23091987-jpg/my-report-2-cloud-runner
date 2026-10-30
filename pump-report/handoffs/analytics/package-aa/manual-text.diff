@@ -1,0 +1,11 @@
+--- manual-text.before.mjs
++++ manual-text.mjs
+@@ -10,7 +10,7 @@
+   WAVE_VOLUME_COMPARISON_BASIS_CHANGED:'Единица сравнения активности изменилась; сохранённую волну нельзя пересчитать в другой единице.',WAVE_PATH_INCOMPLETE:'В наблюдении волны есть пропуск.',WAVE_QUALIFICATION_CLOCK_INVALID:'Время первого подтверждения роста не согласовано с сохранённой волной; требуется проверка.',
+   MANDATORY_ORDERBOOK_NOT_USABLE:'Нет свежего проверенного стакана.',ORDERBOOK_UNIT_UNQUALIFIED:'Единицы цены и количества в стакане не подтверждены.',
+   NO_SUPPORTED_POSITION_SIZE:'Стакан не подтверждает ни один из заданных размеров позиции.',INVALID_OR_CROSSED_ORDERBOOK:'Стакан некорректен или содержит пересечение цен.',LIQUIDITY_PROFILE_REQUIRED:'Нет пригодных ограничений проверки ликвидности.',
+-  INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED:'Не удалось обосновать самостоятельный план покупки на откате с входом, выходом и границей отмены.',PLAN_POTENTIAL_BELOW_OWNER_MINIMUM:'Потенциал самостоятельного плана ниже обязательных 10%.',PLAN_POTENTIAL_UNQUALIFIED:'Потенциал самостоятельного плана не подтверждён.',OWNER_ASSET_DELIVERY_EXCLUDED:'Этот инструмент исключён владельцем из уведомлений.',WAVE_LIFETIME_EXPIRED:'Срок наблюдения сохранённой волны истёк.',PLAN_INVALIDATED:'Цена нарушила сохранённую границу отмены плана.'};
++  INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED:'Не удалось обосновать самостоятельный план покупки на откате с входом, выходом и границей отмены.',PLAN_POTENTIAL_BELOW_OWNER_MINIMUM:'Потенциал самостоятельного плана ниже обязательных 10%.',PLAN_POTENTIAL_UNQUALIFIED:'Потенциал самостоятельного плана не подтверждён.',OWNER_ASSET_DELIVERY_EXCLUDED:'Этот инструмент исключён владельцем из уведомлений.',WAVE_LIFETIME_EXPIRED:'Срок наблюдения сохранённой волны истёк.',PLAN_INVALIDATED:'Цена прошла ниже границы основания наблюдаемой волны.'};
+ const number=value=>Number(value.toPrecision(8)).toString();
+ function refusalReasons(result){
+   const codes=new Set(result.reasons),priority=['OWNER_ASSET_DELIVERY_EXCLUDED','PLAN_POTENTIAL_BELOW_OWNER_MINIMUM','PLAN_POTENTIAL_UNQUALIFIED','PLAN_INVALIDATED','WAVE_LIFETIME_EXPIRED','WAVE_QUALIFICATION_CLOCK_INVALID'];

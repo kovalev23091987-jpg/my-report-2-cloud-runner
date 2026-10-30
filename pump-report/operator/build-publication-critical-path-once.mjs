@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {buildArtifact} from '../runtime/build.mjs';
+const digest=b=>createHash('sha256').update(b).digest('hex');
+const a=JSON.parse(fs.readFileSync(process.argv[2],'utf8')),lease=JSON.parse(fs.readFileSync('checkpoints/CLOUD_PHASE_STATE_20261004.json','utf8')).lease;
+if(a.status!=='ADMITTED_ONE_OFFLINE_BUILD_NOT_DEPLOYMENT'||a.max_builds!==1||Date.now()>=a.expires_ts||a.expires_ts>a.own_lease.expires_ts||lease.owner!==a.own_lease.owner||lease.released)throw Error('BUILD_ADMISSION');
+if(digest(fs.readFileSync('pump-report/runtime/build.mjs'))!==a.builder_sha256)throw Error('BUILDER_CHANGED');
+const bytes=fs.readFileSync(a.base_artifact);if(digest(bytes)!==a.base_artifact_sha256)throw Error('BASE_CHANGED');
+const base=JSON.parse(bytes),overrides={...base.modules};
+if(base.manifest.module_count!==72||base.manifest.implementation_pin.sha256!==a.base_live_pin)throw Error('BASE_PIN');
+for(const [p,h]of Object.entries(a.frozen_sources)){if(!['pump-report/runtime/runner.mjs','pump-report/runtime/outcome-journal.mjs'].includes(p)||digest(fs.readFileSync(p))!==h)throw Error('SOURCE_SCOPE_OR_CHANGED');overrides[p.slice(12)]=fs.readFileSync(p,'utf8');}
+if(Object.keys(a.frozen_sources).length!==2)throw Error('TWO_SOURCES_REQUIRED');
+const qualification=fs.readFileSync(a.qualification_path);if(digest(qualification)!==a.qualification_sha256||JSON.parse(qualification).anchor_ELIGIBLE_and_frozen!==true)throw Error('AFFECTED_QUALIFICATION_REQUIRED');
+fs.writeFileSync(a.output+'.attempt',JSON.stringify({started_ts:Date.now(),authority_main:a.authority_main}),{flag:'wx',mode:0o600});
+const legacy=a.output+'.legacy-base';fs.writeFileSync(legacy,base.modules['legacy-worker.mjs'],{flag:'wx',mode:0o600});
+const manifest=buildArtifact({legacy_path:legacy,output_path:a.output,module_overrides:overrides}),artifact=JSON.parse(fs.readFileSync(a.output));
+const changed=Object.keys(artifact.modules).filter(n=>artifact.modules[n]!==base.modules[n]).sort();
+if(manifest.module_count!==72||JSON.stringify(changed)!==JSON.stringify(['runtime/implementation-pin.mjs','runtime/outcome-journal.mjs','runtime/runner.mjs'])||JSON.stringify(artifact.metadata)!==JSON.stringify(base.metadata))throw Error('EXACT_DELTA_REQUIRED');
+const result={schema:'ROOT_PUBLICATION_CRITICAL_PATH_ARTIFACT_V1',status:'BUILT_EXACT_NOT_INSTALLED',authority_main:a.authority_main,built_ts:Date.now(),artifact_path:a.output,artifact_sha256:digest(fs.readFileSync(a.output)),implementation_sha256:manifest.implementation_pin.sha256,module_count:72,changed:changed.map(name=>({name,sha256:digest(artifact.modules[name])})),unchanged_modules:69,legacy_and_metadata_unchanged:true,qualification_path:a.qualification_path,qualification_sha256:a.qualification_sha256,builds:1,market_HTTP:0,native_SQL:0,Telegram:0,deployed:false};
+fs.writeFileSync(a.proof_path,JSON.stringify(result,null,2)+'\n',{flag:'wx',mode:0o600});console.log(JSON.stringify(result));

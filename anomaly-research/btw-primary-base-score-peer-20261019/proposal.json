@@ -1,0 +1,81 @@
+{
+  "schema": "UNEXECUTED_BOUNDED_PRIMARY_METADATA_PROJECTION_PROPOSAL_V1",
+  "target": "current-generation/files/runner-main.mjs",
+  "working_main": "cbb869173cbd669d3c6b3c75afac4c246799a2ad",
+  "before_sha256": "61008c6968cb65b9b3adfac97185238b139f123c0fdb6e333e2a0e8601e87c64",
+  "after_sha256": "53cd3f8d5cf060a11fad8a343a546736b1db97d36eb1588b810ced2cc2602b85",
+  "loader_before_sha256": "4726292f807d9d40a743446ade9761205c39619b2e79df5ca213c1db80c30b40",
+  "loader_after_sha256": "8de313ecacee3faaced01b1484670c47da558936bd4abd88aa7434311edde914",
+  "patch_sha256": "8b76aba3d966e109c202208ee7e3f5ae897d4901e95285fb066cd7700d64d660",
+  "default_option": "include_primary_selection_diagnostic=false",
+  "production_optin_callsites_before": [
+    "    const savedOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:savedRunId,source:'manual',generation,head:process.env.GITHUB_SHA||null,cron:null,candidateContracts:savedContracts});",
+    "  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[],gate_diagnostic_for:gateDiagnosticFor});"
+  ],
+  "production_optin_callsites_after": [
+    "    const savedOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:savedRunId,source:'manual',generation,head:process.env.GITHUB_SHA||null,cron:null,candidateContracts:savedContracts,include_primary_selection_diagnostic:true});",
+    "  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[],gate_diagnostic_for:gateDiagnosticFor,include_primary_selection_diagnostic:true});"
+  ],
+  "field": "primary_selection_diagnostic",
+  "bounds": {
+    "candidate_UTF8_bytes": 4096,
+    "existing_candidate_limit": 6,
+    "maximum_added_candidate_DTO_bytes": 24576,
+    "facts": 16,
+    "predicate_checks": 32,
+    "failed_predicates": 32,
+    "scalar_string_UTF8_bytes": 160
+  },
+  "source_fields": [
+    "canonical.metadata.direction_resolution selected existing fields",
+    "canonical.metadata.score_basis selected existing fields"
+  ],
+  "source_values_recomputed": false,
+  "original392557_predicates_recovered": false,
+  "private_payload_requested_or_read": false,
+  "additional_SQL_HTTP": 0,
+  "shared_runtime_files_edited": false,
+  "callable_component": "primary-selection-connected.mjs",
+  "component_executed": false,
+  "source_runtime_Node_syntax_tests": 0,
+  "own_scope_ref": "5732b2391b757e6876181cb2317cc944b4efa27f",
+  "source_report_sha256": "8dc1511c350eb50cc856eef6cbab1ad793c58f195a5df2e4c36c5c87dc538430",
+  "component_sha256": "669f40aa4e455cc4a7f2374c364c923fb6ab20e227ec6e9ebbbae0837a853e02",
+  "static_artifact_checks": [
+    {
+      "check": "exact full runner before and reconstructed proposed after digests",
+      "result": "PASS"
+    },
+    {
+      "check": "exact loader snippets and unified patch",
+      "result": "PASS"
+    },
+    {
+      "check": "only actual two existing production call lines opt in",
+      "result": "PASS"
+    },
+    {
+      "check": "remaining runner bytes preserved outside loader and two option arguments",
+      "result": "PASS"
+    },
+    {
+      "check": "default false and projection conditional are explicit inside extracted loader",
+      "result": "PASS"
+    },
+    {
+      "check": "original canonical SELECT/bindings/LIMIT line byte exact",
+      "result": "PASS"
+    },
+    {
+      "check": "old core canonical projection/manual/TG input lines unchanged",
+      "result": "PASS"
+    },
+    {
+      "check": "new helper has no DB/HTTP, Date clock refresh or global project dependency",
+      "result": "PASS"
+    }
+  ],
+  "new_runtime_or_component_executions": 0,
+  "semantic_qualification": "PENDING_COORDINATOR_ONE_NEW_CASE_NOT_EXECUTED",
+  "component_limits": "Extracted exact loader with controlled dependency adapters/fake DB; does not qualify real scoring/rendering/persistence/deployment or reconstruct actual392557 predicates."
+}

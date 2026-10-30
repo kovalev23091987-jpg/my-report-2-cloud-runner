@@ -1,0 +1,40 @@
+{
+  "schema": "PUMP_OWNER_PUBLICATION_AFFECTED_ACCEPTANCE_V1",
+  "authority_main": "d9a2843e1a2489bb5c47f9b81866472c70c17a20",
+  "own_lease": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792937785000",
+  "recorded_utc": "2026-10-25T15:09:29.000Z",
+  "pass": 18,
+  "fail": 0,
+  "skip": 0,
+  "command": "node --test --test-reporter=tap --import /private/tmp/pump-e-native-http-forbidden.mjs pump-report/tests/runtime/owner-publication.test.mjs pump-report/tests/runtime/delivery.test.mjs",
+  "tap_sha256": "49a794f82ab479327878daa0d6e23e51acab00a6e3eb5967369c9c6339073394",
+  "global_fetch_forbidden": true,
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "assertions": [
+    "BTC/ETH manual and automatic publication forbidden before newIO",
+    "Old queued excluded/low-potential cards suppressed before source recheck and Telegram",
+    "Conservative finite minimum at least10pct required in both modes",
+    "Exact original240 acceptance binding overrides conflicting production claim",
+    "Production derived aggregate excludes tests,unclassified,artificial; old raw/index/aggregate retained",
+    "Replay preserves one independent production cohort"
+  ],
+  "activation": "Not deployed; OWNER_CORRECTIONS_HOLD prevents new acceptance or production market IO except separately admitted lookup",
+  "files": [
+    "pump-report/contracts/index.mjs",
+    "pump-report/contracts/run-purpose.mjs",
+    "pump-report/runtime/delivery.mjs",
+    "pump-report/runtime/runner.mjs",
+    "pump-report/runtime/manual-response.mjs",
+    "pump-report/runtime/outcome-journal.mjs",
+    "pump-report/runtime/worker.mjs",
+    "pump-report/runtime/provider-policy.mjs",
+    "pump-report/runtime/manual-cli.mjs",
+    "pump-report/runtime/cloudflare-admin.mjs",
+    "pump-report/CONTRACT_RU.md",
+    "pump-report/tests/runtime/owner-publication.test.mjs",
+    "pump-report/tests/runtime/delivery.test.mjs",
+    "checkpoints/pump-report-20261025/OWNER_PUBLICATION_AMENDMENTS.json"
+  ]
+}

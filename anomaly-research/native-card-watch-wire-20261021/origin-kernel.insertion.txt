@@ -1,0 +1,31 @@
+// A bounded existing-store lookup. The LEFT JOIN cannot hide an orphan bundle.
+export const ORIGIN_SQL=`SELECT b.logical_event_id,b.revision,b.card_json,b.card_sha256,b.first_known_ts,b.descriptor_json,b.descriptor_sha256,b.plan_json,b.plan_sha256,b.state_json,b.state_sha256,b.watch_active,b.next_check_ts,b.last_snapshot_ts,b.last_operation_id,o.operation_id,o.request_sha256,o.logical_event_id AS receipt_logical_event_id,o.expected_revision,o.applied_revision,o.card_sha256 AS receipt_card_sha256,o.first_known_ts AS receipt_first_known_ts,o.descriptor_sha256 AS receipt_descriptor_sha256,o.plan_sha256 AS receipt_plan_sha256,o.state_sha256 AS receipt_state_sha256,o.server_recorded_ts_floor_ms FROM report2_anomaly_bundle_v1 b LEFT JOIN report2_anomaly_operation_v1 o ON o.operation_id=b.last_operation_id WHERE b.logical_event_id=?1 LIMIT 1`;
+export function verifyAnomalyOriginRow(row,logical_event_id){
+ need(typeof logical_event_id==='string'&&logical_event_id.length>0&&logical_event_id.length<=160,'ORIGIN_LOGICAL_KEY_REQUIRED');
+ if(row===null)return null;
+ need(object(row)&&row.logical_event_id===logical_event_id&&Number.isSafeInteger(row.revision)&&row.revision>=1,'ORIGIN_KEY_OR_REVISION_CONFLICT');
+ // Bounds are checked before JSON parsing or hashing any retained text.
+ for(const name of ['card','descriptor','plan','state'])need(typeof row[name+'_json']==='string'&&bytes(row[name+'_json'])<=DOMAIN_BOUNDS[name]&&hex(row[name+'_sha256']),'ORIGIN_TEXT_BOUND_OR_DIGEST_REQUIRED');
+ need(typeof row.operation_id==='string'&&/^[A-Za-z0-9:._-]{1,160}$/.test(row.operation_id)&&row.operation_id===row.last_operation_id&&row.receipt_logical_event_id===logical_event_id&&Number.isSafeInteger(row.expected_revision)&&row.expected_revision===row.revision-1&&row.applied_revision===row.revision&&hex(row.request_sha256)&&clock(row.server_recorded_ts_floor_ms),'ORIGIN_OPERATION_RECEIPT_REQUIRED');
+ const parts={};
+ for(const name of ['card','descriptor','plan','state']){
+  const text=row[name+'_json'];need(digest(text)===row[name+'_sha256'],'ORIGIN_PART_DIGEST_CONFLICT');
+  parts[name]=JSON.parse(text);need(canonical(parts[name])===text,'ORIGIN_CANONICAL_TEXT_REQUIRED');
+ }
+ need(row.first_known_ts===parts.card.first_known_ts&&row.watch_active===Number(parts.state.watch?.active)&&row.next_check_ts===parts.state.watch?.next_check_ts&&row.last_snapshot_ts===parts.state.last_snapshot?.ts,'ORIGIN_SCALAR_CROSSBINDING_CONFLICT');
+ const prepared=prepareAnomalyCommit({logical_event_id,operation_id:row.operation_id,expected_revision:row.expected_revision,...parts});
+ const receipt=verifyAnomalyReadback(prepared,row);
+ need(receipt.status==='COMMITTED_RECEIPT_READBACK'&&prepared.request.request_sha256===row.request_sha256,'CURRENT_ORIGIN_RECEIPT_REQUIRED');
+ return{schema:'VERIFIED_RETAINED_ANOMALY_ORIGIN_V1',logical_event_id,revision:row.revision,first_known_ts:row.first_known_ts,operation_id:row.operation_id,request_sha256:row.request_sha256,card_json:row.card_json,card_sha256:row.card_sha256,descriptor_json:row.descriptor_json,descriptor_sha256:row.descriptor_sha256,plan_json:row.plan_json,plan_sha256:row.plan_sha256,state_json:row.state_json,state_sha256:row.state_sha256,...parts,receipt,native_epoch_qualified:false,event_first_knowledge_qualified:false,native_admission_qualified:false,SENT_claimed:false};
+}
+export async function readAnomalyOrigin({db,logical_event_id,admit,cost_bounds}={}){
+ let before;
+ try{need(typeof logical_event_id==='string'&&logical_event_id.length>0&&logical_event_id.length<=160,'ORIGIN_LOGICAL_KEY_REQUIRED');const scope={request:{operation_id:'ANOMALY_ORIGIN:'+digest(logical_event_id)},request_bytes:0,remote_wire_bytes:bytes(JSON.stringify({op:'first',sql:ORIGIN_SQL,params:[logical_event_id],column:null}))};before=await admitted(db,admit,cost_bounds?.origin,'ORIGIN',scope);}catch(error){return{status:'ORIGIN_NOT_ADMITTED',no_SQL_sent:true,error:String(error)};}
+ let row;
+ try{row=await db.prepare(ORIGIN_SQL).bind(logical_event_id).first();}catch(error){return{status:'ORIGIN_READ_UNKNOWN',logical_event_id,error:String(error),new_operation_id_allowed:false};}
+ try{
+  if(!within(before,usage(db),cost_bounds.origin))return{status:'ORIGIN_REPLY_RETAINED_RECONCILIATION_REQUIRED',logical_event_id,retained_readback:row,new_operation_id_allowed:false};
+  const origin=verifyAnomalyOriginRow(row,logical_event_id);
+  return{status:origin===null?'ORIGIN_ABSENT':'VERIFIED_RETAINED_ORIGIN',logical_event_id,origin,cost_status:'WITHIN_CALLER_PROJECTION',absence_is_only_this_read:origin===null,native_admission_qualified:false,event_first_knowledge_qualified:false,native_epoch_qualified:false};
+ }catch(error){return{status:'ORIGIN_NOT_CLOSED',logical_event_id,error:String(error),retained_readback:row,new_operation_id_allowed:false};}
+}

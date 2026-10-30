@@ -1,0 +1,27 @@
+{
+  "schema": "HTX_SAVED_CANDLE_NORMATIVE_UNIT_REFERENCE_V1",
+  "scope": "Documentary source definitions only; not native asset, timing, historical contract epoch or live admission qualification.",
+  "primary_sources": [
+    "https://huobiapi.github.io/docs/usdt_swap/v1/cn/",
+    "https://huobiapi.github.io/docs/usdt_swap/v1/en/"
+  ],
+  "exact_endpoint": "/linear-swap-ex/market/history/kline",
+  "paraphrase": {
+    "vol": "Contract-count volume; both transaction sides are included.",
+    "amount": "Coin quantity, defined in the Chinese USDT-M document as contract count multiplied by contract face value. The English amount formula appears inconsistent, so do not infer inverse conversion from it.",
+    "trade_turnover": "Sum of each trade quantity in contracts times contract face value and traded price. Quote currency needs exact instrument identity. Do not silently halve the native field.",
+    "count": "Number of trades, described as including both sides.",
+    "clocks": "Bar id is its start timestamp; response ts is milliseconds. Original body completion/knowledge and exact calendar still need their own evidence."
+  },
+  "saved_data_progress": {
+    "inventory531": "cc69eb7c09df8cb29ce92eff78703d9d249ce10a",
+    "source_adapter533": "3ac0ecb1c0b26c18fa1078b1391a982b00db54e4",
+    "qualified_source_reported_closed4h": 35634,
+    "contracts": 37,
+    "new31_case_result": "Source worker qualification only; not repeated by coordinator",
+    "production_imports": false,
+    "current105_or_native_anomaly_activation": false,
+    "historical_receipt_before_body_completion": "Explicit limitation, not prospective first-known ACK"
+  },
+  "ENTRY_and_physical_storage": "Deferred until separate direct owner command"
+}

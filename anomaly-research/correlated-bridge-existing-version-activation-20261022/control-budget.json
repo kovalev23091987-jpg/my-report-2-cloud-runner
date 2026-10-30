@@ -1,0 +1,137 @@
+{
+  "schema": "EXISTING_ACTIVATION_CONTROL_BUDGET_V1",
+  "status": "CALCULATED_NOT_MEASURED",
+  "caps": {
+    "CF": 40,
+    "GH": 40,
+    "whole": 164,
+    "manual_reserved": 24,
+    "hot": 96,
+    "background": 56,
+    "statistics": 12
+  },
+  "CF_steps": {
+    "old_Paid_before_metadata": 5,
+    "staged_latest_source_and_metadata": 6,
+    "fresh_old_pre_activation_plus_latest": 5,
+    "forward_deployment": 1,
+    "post_active_metadata_plus_latest": 5,
+    "conditional_rollback_precheck": 5,
+    "conditional_rollback_deployment": 1,
+    "rollback_readback_metadata_plus_latest": 5
+  },
+  "successful_CF": 22,
+  "worst_CF": 33,
+  "GH": {
+    "initial_scope": 1,
+    "new_common_and_automatic_main": 3,
+    "fresh_scope_per_actual_CF_attempt_worst": 33,
+    "final_scope": 1,
+    "worst": 39,
+    "successful": 28,
+    "current_execution_run_start": 1
+  },
+  "whole_worst": 72,
+  "manual_remaining_after_worst": 92,
+  "phase_guard": "Real cached assertMirrorOwner + min(lease, valid actual run_started_at+5min internal deadline), tail 2s*(remainingCF+remainingGH)+30s. Every actual CF independently gets fresh GH snapshot. Existing earlier abort preserved via AbortSignal.any; headers AND streamed body bounded; final fresh GH. Internal deadline is additional conservative admission, not exact platform kill/SLA/crash proof.",
+  "boundaries": [
+    {
+      "phase": "BEFORE_METADATA",
+      "minimum_CF": 33,
+      "minimum_GH": 34
+    },
+    {
+      "phase": "READ_STAGED",
+      "minimum_CF": 28,
+      "minimum_GH": 29
+    },
+    {
+      "phase": "PRE_ACTIVATION",
+      "minimum_CF": 22,
+      "minimum_GH": 23
+    },
+    {
+      "phase": "DEPLOY_EXISTING",
+      "minimum_CF": 17,
+      "minimum_GH": 18
+    },
+    {
+      "phase": "POST_ACTIVATION",
+      "minimum_CF": 16,
+      "minimum_GH": 17
+    },
+    {
+      "phase": "ROLLBACK_PRECHECK",
+      "minimum_CF": 11,
+      "minimum_GH": 12
+    },
+    {
+      "phase": "ROLLBACK_DEPLOY",
+      "minimum_CF": 6,
+      "minimum_GH": 7
+    },
+    {
+      "phase": "ROLLBACK_READBACK",
+      "minimum_CF": 5,
+      "minimum_GH": 6
+    }
+  ],
+  "transport_timeout_ms": 2000,
+  "minimum_initial_lease_headroom_ms": 600000,
+  "minimum_actual_attempt_lease_headroom_ms": 30000,
+  "no_actual_free_budget_claim": true,
+  "failure_budget": "Count attempts even lost replies; if actual remaining tail/lease insufficient, STOP and persist bounded unknown/partial proof, never borrow manual reserve or raise caps",
+  "paths": [
+    {
+      "name": "known_ACK_success",
+      "CF": 22,
+      "GH": 28,
+      "POSTdeployments": 1
+    },
+    {
+      "name": "unknown_forward_ACK_before_or_after_apply",
+      "CF": 22,
+      "GH": 28,
+      "POSTdeployments": 1,
+      "ownership": false
+    },
+    {
+      "name": "last_postflight_reply_lost_then_known_own_rollback",
+      "CF": 33,
+      "GH": 39,
+      "POSTdeployments": 2
+    },
+    {
+      "name": "rollback_ACK_unknown_before_or_after_apply",
+      "CF": 33,
+      "GH": 39,
+      "POSTdeployments": 2,
+      "ownership": false
+    },
+    {
+      "name": "foreign_poststate_and_confirmed_foreign_pre_rollback",
+      "CF": 27,
+      "GH": 33,
+      "POSTdeployments": 1
+    },
+    {
+      "name": "strict_production_synthetic_settings_refusal",
+      "CF": 5,
+      "GH": 11,
+      "POSTdeployments": 0
+    },
+    {
+      "name": "missing_or_invalid_current_run_start",
+      "CF": 0,
+      "GH": 5,
+      "POSTdeployments": 0
+    },
+    {
+      "name": "insufficient_internal_job_tail",
+      "CF": 0,
+      "GH_max": 6,
+      "POSTdeployments": 0
+    }
+  ],
+  "deadline_limit": "Actual run_started_at+300s is an additional conservative internal admission deadline; no exact platform kill/SLA/crash guarantee. Both lease and internal full tail must fit."
+}

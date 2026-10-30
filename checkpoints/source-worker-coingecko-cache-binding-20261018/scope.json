@@ -1,0 +1,245 @@
+{
+  "schema": "SOURCE_WORKER_COINGECKO_RESULT_CACHE_BINDING_AND_ORIGINAL_KNOWLEDGE_CLOCK_V1",
+  "recorded_utc": "2026-10-18T09:54:16.047481+00:00",
+  "parent_main": "d2a6dcb79c2ef2d1160466312b838754c99c0740",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "CoinGecko N15 result cache cannot suppress admissible revalidation with wrong provider/asset/reference/category/quote/math/original clocks. Reuse verified raw references without refreshing source-observation-knowledge timestamps or fact expiry.",
+  "new_cases": 36,
+  "baseline": "1PASS35FAIL; not35independent provider failures: original-clock assertion also detects the same Date.now renewal in previously schema-rejected cases. Controlled corruptions explicitly separated from actual saved provider receipts.",
+  "tests": {
+    "baseline36": {
+      "path": "checkpoints/source-worker-coingecko-cache-binding-20261018/baseline36.tap.gz",
+      "raw_sha256": "794ba789973d87c8f54d6bd5ad5fa42e11d6beb492bec96f3dd98b6522c2152d",
+      "gzip_sha256": "63015e0226a17795426b36a7cc7aa4e7895686277a8f15b0f88b77321516790e",
+      "counts": {
+        "tests": 36,
+        "pass": 1,
+        "fail": 35
+      }
+    },
+    "related89": {
+      "path": "checkpoints/source-worker-coingecko-cache-binding-20261018/related89.tap.gz",
+      "raw_sha256": "8f58e42109b286dd3a0bd0deb72f70604cde0819e1034bc203bb41bfc0214390",
+      "gzip_sha256": "5378d2282d3ca9b0a01a400d9f7ac46efeb102a00041e3c2adfda3ab7d699d2e",
+      "counts": {
+        "tests": 89,
+        "pass": 89,
+        "fail": 0
+      }
+    },
+    "final36": {
+      "path": "checkpoints/source-worker-coingecko-cache-binding-20261018/final36.tap.gz",
+      "raw_sha256": "f8f55be86ec37dc3660c5a6d19e99f38cce08c5471f9ccbe196bcaf1ef3e054a",
+      "gzip_sha256": "ec9c8e032ed68e7be2db4fa9d0de485af25f5c11638a03cf49c4cf59a04285be",
+      "counts": {
+        "tests": 36,
+        "pass": 36,
+        "fail": 0
+      }
+    }
+  },
+  "related_scope": "89PASS0FAIL=36newcases plus53affected sector/native/TRON/targetrefresh/demoadmission/optionalcache/unknown/backoff/fallback cases. Final format/comment-only cleanup and stronger current-version/zeroHTTP assertions followed by final36PASS and node--check.",
+  "source_inputs": {
+    "checkpoints/tron-sector-live-38570989795/validation.json.gz": {
+      "file_sha256": "6c9f1e79a0d706b75d08fa9431ddff5a628c27d8f00c596dd531a1313993c328",
+      "raw_sha256": "09f289569ce20757529c049e06815fd43b3eb03c182f292ad5db6865c4526429"
+    },
+    "checkpoints/native-sector-rest-38564913120/validation.json.gz": {
+      "file_sha256": "1d850cb1bba02ba079055f9c03a909c18df1d00633ac8cf5f657118351b1bc03",
+      "raw_sha256": "f0eccc366bee6d54df1b2920747fd7a8e027e572c49e31d940e4394ecbf41714"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+    },
+    "checkpoints/btw-preserved-block-result-input-20261004.json": {
+      "file_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8",
+      "raw_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8"
+    }
+  },
+  "saved_original_response_hashes": [
+    {
+      "container": "checkpoints/tron-sector-live-38570989795/validation.json.gz",
+      "cloud_run": 38570989795,
+      "head": "19468ff73c44dd840aecc4c5bb76f37120aec8ac",
+      "url": "https://api.coingecko.com/api/v3/coins/tron/contract/TAFjULxiVgT4qWk6UZwjqwZXTSaGaqnVp4",
+      "received_ts": 1791984052531,
+      "body_sha256": "00b973b92db2f0e0411c3d49a9a2e166833eb7ee564c323279bc0fe65db61922"
+    },
+    {
+      "container": "checkpoints/tron-sector-live-38570989795/validation.json.gz",
+      "cloud_run": 38570989795,
+      "head": "19468ff73c44dd840aecc4c5bb76f37120aec8ac",
+      "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=storage&order=market_cap_desc&per_page=100&page=1&sparkline=false",
+      "received_ts": 1791984054797,
+      "body_sha256": "9fb34be367636f71d4fcba20ca04665edd27f20878c4565312807a4a8b1090c4"
+    },
+    {
+      "container": "checkpoints/tron-sector-live-38570989795/validation.json.gz",
+      "cloud_run": 38570989795,
+      "head": "19468ff73c44dd840aecc4c5bb76f37120aec8ac",
+      "url": "https://api.coingecko.com/api/v3/coins/tron/contract/TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9",
+      "received_ts": 1791984056977,
+      "body_sha256": "6affebe5b3fc02363de147f686aa0b2aafb4915347d71754dca9a5576f0fbba8"
+    },
+    {
+      "container": "checkpoints/tron-sector-live-38570989795/validation.json.gz",
+      "cloud_run": 38570989795,
+      "head": "19468ff73c44dd840aecc4c5bb76f37120aec8ac",
+      "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=decentralized-finance-defi&order=market_cap_desc&per_page=100&page=1&sparkline=false",
+      "received_ts": 1791984059178,
+      "body_sha256": "52fe4ca72617ef7b5278ad357278ee2d9d61336de3fe1c500a0bffab2ed406e7"
+    },
+    {
+      "container": "checkpoints/tron-sector-live-38570989795/validation.json.gz",
+      "cloud_run": 38570989795,
+      "head": "19468ff73c44dd840aecc4c5bb76f37120aec8ac",
+      "url": "https://api.coingecko.com/api/v3/coins/tron/contract/TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S",
+      "received_ts": 1791984061438,
+      "body_sha256": "5edb9778614ad87bf7ed03cb23f4c9fdc67f9b4b4dafb784e8c12c202588213b"
+    },
+    {
+      "container": "checkpoints/tron-sector-live-38570989795/validation.json.gz",
+      "cloud_run": 38570989795,
+      "head": "19468ff73c44dd840aecc4c5bb76f37120aec8ac",
+      "url": "https://api.coingecko.com/api/v3/coins/tron/contract/TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7",
+      "received_ts": 1791984064214,
+      "body_sha256": "31d6361944565922a18f4762dd4fd8d9408bb2f66a7f93f7aa4f5037c616cbef"
+    },
+    {
+      "container": "checkpoints/tron-sector-live-38570989795/validation.json.gz",
+      "cloud_run": 38570989795,
+      "head": "19468ff73c44dd840aecc4c5bb76f37120aec8ac",
+      "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=oracle&order=market_cap_desc&per_page=100&page=1&sparkline=false",
+      "received_ts": 1791984066366,
+      "body_sha256": "05f01e55ffaa7d9aa4025f5681cf536260ce15426ee7dd462157a3a7305d92aa"
+    },
+    {
+      "container": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+      "cloud_run": 38564913120,
+      "head": "ccd9935b2569580e09b576df348711388dd87a15",
+      "url": "https://api.coingecko.com/api/v3/coins/hedera-hashgraph?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false",
+      "received_ts": 1791981317234,
+      "body_sha256": "11e72bd082733f10049f098215b800e08835d532c1ad64a4bd87cf6afa2c084d"
+    },
+    {
+      "container": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+      "cloud_run": 38564913120,
+      "head": "ccd9935b2569580e09b576df348711388dd87a15",
+      "url": "https://api.coingecko.com/api/v3/coins/categories/list",
+      "received_ts": 1791981318759,
+      "body_sha256": "5573eb8ced4088d98366c69eb3d35f3cc317a779668e1f976a1e2562a188e307"
+    },
+    {
+      "container": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+      "cloud_run": 38564913120,
+      "head": "ccd9935b2569580e09b576df348711388dd87a15",
+      "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=layer-1&order=market_cap_desc&per_page=100&page=1&sparkline=false",
+      "received_ts": 1791981320639,
+      "body_sha256": "0ad5664a886b76f5a3fc592141419f98456226d9f62c5103b95e43d69291e415"
+    },
+    {
+      "container": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+      "cloud_run": 38564913120,
+      "head": "ccd9935b2569580e09b576df348711388dd87a15",
+      "url": "https://api.coingecko.com/api/v3/coins/monero?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false",
+      "received_ts": 1791981323001,
+      "body_sha256": "fa28a6b1b12818ad349cda16b0f18409a9505934d1b4982a6901b9c6372f436c"
+    },
+    {
+      "container": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+      "cloud_run": 38564913120,
+      "head": "ccd9935b2569580e09b576df348711388dd87a15",
+      "url": "https://api.coingecko.com/api/v3/coins/plasma?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false",
+      "received_ts": 1791981325878,
+      "body_sha256": "0c75f5cd20667d0a208223a761053d0aaa24b4469168fc81bf944a2ea48607e3"
+    },
+    {
+      "container": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+      "cloud_run": 38564913120,
+      "head": "ccd9935b2569580e09b576df348711388dd87a15",
+      "url": "https://api.coingecko.com/api/v3/coins/chiliz?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false",
+      "received_ts": 1791981328498,
+      "body_sha256": "a7fad87a003d06466e943d6f89663354134267a0ff48603e0d6c22e4b3f7e3cf"
+    },
+    {
+      "container": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+      "cloud_run": 38564913120,
+      "head": "ccd9935b2569580e09b576df348711388dd87a15",
+      "url": "https://api.coingecko.com/api/v3/coins/internet-computer?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false",
+      "received_ts": 1791981330531,
+      "body_sha256": "c1b54063515cd9d7f14b249397d7d8b48b344eaa017a5c3b0c56d27cce811817"
+    },
+    {
+      "container": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+      "cloud_run": 38564913120,
+      "head": "ccd9935b2569580e09b576df348711388dd87a15",
+      "url": "https://api.coingecko.com/api/v3/coins/bittensor?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false",
+      "received_ts": 1791981332500,
+      "body_sha256": "78208ef439bacde699653688785ad3a5baa6c235ff793fb12fe654e6c2205bb2"
+    },
+    {
+      "container": "checkpoints/native-sector-rest-38564913120/validation.json.gz",
+      "cloud_run": 38564913120,
+      "head": "ccd9935b2569580e09b576df348711388dd87a15",
+      "url": "https://api.coingecko.com/api/v3/coins/celestia?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false",
+      "received_ts": 1791981334976,
+      "body_sha256": "58b135b339ad726e383369a54895b85ffc7e755f5a5be862ae8d5f405910084a"
+    }
+  ],
+  "original_file_count": 4,
+  "native_qualification_claim": false,
+  "implementation_files": {
+    "current-generation/files/src/coingecko-sector-evidence.mjs": "f2e4c9b858bd69e6800dd3a2f907ec1756ddf9fbe91e2217df05204ffda0f836",
+    "current-generation/tests/coingecko-cache-binding.test.mjs": "73f0ea1428c55b334f8ccfbc72cbc48f8283c1229b7095cf6dcd99b02ce08eb4"
+  },
+  "cache_policy": {
+    "current_version": "coingecko-sector-v11-exact-target-refresh-20261014",
+    "compact_scope": "Checked original metadata identity/platform/homepage/category and original reference receipts, evidence digest, exact typed fields/math/quote/clock consistency. Snapshot is private cache provenance, not new independent provider coverage.",
+    "missing_legacy_scope": "Revalidate through existing exact raw-reference reader; never relabel a legacy result as a new provider qualification.",
+    "normal_valid_scoped_cache": "Same one SQL cache read, no extra SQL, HTTP or grant; identity/quote/source clocks and expiry remain unchanged.",
+    "legacy_or_invalid_cache_limitation": "If raw reference TTL expired or body unavailable, normal existing admitted routes may spend provider allowance or defer; zero HTTP is only proven for the saved raw references used here. No bypass/reset/refund/new quota.",
+    "null_or_malformed_payload": "Rejected before hashing/dereferencing unknown arrays; existing reference route remains available.",
+    "checksum_limits": "Checksum detects changed cached evidence;5controlled changed records with recalculated checksum still fail fixed provider/denomination/math/knowledge/type checks. It is not a signature of provider truth."
+  },
+  "clock_evidence": {
+    "WIN_source_observed_and_first_known_ts": 1791984066366,
+    "WIN_original_container_completed_ts": 1791984067047,
+    "former_retrieval_clock_renewal_delta_ms": 681,
+    "new_observed_rule": "Maximum original received_ts of all actually required verified reference bodies. Cached-body read time does not renew observation/knowledge/TTL. Source timestamp remains the minimum target/peer quote source timestamp.",
+    "TTL": "min(original_known+300000, earliest_quote_source+900000), expired originals remain unusable at current decision."
+  },
+  "consumer_scope": {
+    "existing_sector_consumer": true,
+    "manual_WIN": true,
+    "Telegram_original_V5_WIN": true,
+    "Telegram_original_brief_N15": false,
+    "brief_omission_preserved_by_existing_owner_form": true,
+    "network_delivery": false,
+    "shared_consumer_modified": false,
+    "weights_or_strategy_modified": false,
+    "native_originals": "ICP exact mainnet ledger / CHZ exact legacy bridge for aggregated sector use only. Existing raw receipts, no new API or native chain acquisition."
+  },
+  "shared_CI_proposal": {
+    "path": "checkpoints/source-worker-coingecko-cache-binding-20261018/shared-CI.proposed.patch",
+    "sha256": "fbf3abdf5c4a11178e0a7efa64960f7de3832d0b6dac3c533e4c82a50ba1c86e",
+    "workflow_before_sha256": "47bd6390b01574052b06650d580df007c68791f0c5f2aed6aceaac4f4c23b461",
+    "workflow_proposed_sha256": "11976b5079939d3f15b27b3a7d651b107d2b156290bb3a8647f39b1c7d5bbb26",
+    "coordinator_resolves_current_branch_context": true
+  },
+  "limits": {
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "normal_valid_cache_extra_SQL": 0,
+    "normal_valid_cache_extra_HTTP": 0,
+    "source_day_minute_month_global_caps_and_manual_reserve_unchanged": true,
+    "unknown_not_reset_reservations_not_refunded": true,
+    "pauses_forms_weights_unchanged": true,
+    "current105_or_full_report_qualification": false
+  },
+  "exact_next_action": "Coordinator reviews frozen provider PR, applies exact CI proposal on fresh main, assembled branch/main verification. Worker next independent task from remaining source lane; do not wait for this acceptance or touch frozen433/shared storage recovery."
+}

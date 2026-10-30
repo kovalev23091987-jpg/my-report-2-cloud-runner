@@ -1,0 +1,50 @@
+{
+  "schema": "OWNER_AUTHORIZED_PR467_MAIN_CONFLICT_RECONCILIATION_V1",
+  "original_reviewed_head": "977818d611f11c5953d760e56901a2f40bf11eda",
+  "merged_main": "2a287cc7c237cda7fc7de9a6a798312fa65f572b",
+  "conflicting_paths": [
+    "anomaly-research/outbox/protocol.mjs"
+  ],
+  "resolution": "Use exact reviewed467 protocol bytes; all other new main files inherited, both parent histories retained. No metadata conflict occurred.",
+  "reviewed_nonce_files_byte_identical": [
+    {
+      "path": "anomaly-research/outbox/protocol.mjs",
+      "sha256": "771c8324634a58f59a6395e8cd0e8dd2dd151eaec678fa2828bab03e127cb468"
+    },
+    {
+      "path": "anomaly-research/outbox/nonce-reuse.test.mjs",
+      "sha256": "b8d3e3fe08eadff747668a5e744f07f9403ad495946c35ee6ae78b5843db1626"
+    },
+    {
+      "path": "anomaly-research/outbox/nonce-before.json",
+      "sha256": "fa5f9cf04eeebf299443b019ce37bd12af570547643fc48c748b1a0e1c22bcaf"
+    },
+    {
+      "path": "anomaly-research/outbox/nonce-validation.txt",
+      "sha256": "89e932a64685ef68fb492146c4f669eee9ae04feacdde8bb0965210584f9ab3a"
+    },
+    {
+      "path": "anomaly-research/outbox/NONCE_REUSE_REVIEW_RU.md",
+      "sha256": "e7b67df653db97d25754ebbd7274bbd86da588b9ae4440ef2757e6e44271c42a"
+    }
+  ],
+  "original_nonce_checkpoint_byte_identical": true,
+  "new_behavior_changes": false,
+  "accepted_nonce6_protocol15_reexecuted": false,
+  "validation": "Exact source/fixture/proof hashes and ancestry/allowed-diff checks, no runtime replay",
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792349036661",
+  "lease_ref": "a1cc07e80579596bcecff6d6a38d1cded1c3117c",
+  "exact_readback": true,
+  "effects": {
+    "production_imports": false,
+    "provider_HTTP": 0,
+    "SQL": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "deployment": 0,
+    "main_changed": false
+  },
+  "next": "Coordinator merge/review updated467; separate minimal backfill/prospective watch fix starts from fresh main in another branch, unchanged limits and protected histories.",
+  "initial_merged_main": "911a1d9dbbca4c9c7416700843ae353127c24926",
+  "followup_main_reconciliation": "Coordinator fresh lease commit and last_weekly_lease_release retained in all main mirrors; no metadata conflicts."
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "BY_ONE_COLD_CONNECTED_ACTUAL_V1",
+  "status": "COLD_PATH_BLOCK_PRESERVED",
+  "evidence_class": "ARTIFICIAL",
+  "counterfactual": true,
+  "scenario_class": "EMPTY_PROJECT_SAVED_FACT_REPLAY_WITH_ARTIFICIAL_DISCOVERY_CARRIER",
+  "native_event": false,
+  "native_AUTO_SENT": false,
+  "Node": 1,
+  "new_connected_cases": 1,
+  "AUTO_execute": 1,
+  "MANUAL_execute": 0,
+  "runner_engine_calls": 1,
+  "delivery_recheck_engine_calls": 0,
+  "MOCK_send": 0,
+  "actual_Telegram": 0,
+  "sourceHTTP": 0,
+  "nativeSQL": 0,
+  "build": 0,
+  "deploy": 0,
+  "old_tests": 0,
+  "phases": [
+    {
+      "name": "EMPTY_STATE_CONFIRMED",
+      "candidate_queue_empty": true,
+      "wave_empty": true,
+      "active_membership_empty": true,
+      "history_empty": true,
+      "synthetic_budget_only": true,
+      "artificial_discovery_carrier": 20,
+      "original_previous_wave_omitted": true,
+      "clock_frozen": true
+    },
+    {
+      "name": "REAL_RUNNER_RETURNED",
+      "status": "COMPLETE",
+      "checked": 1,
+      "manual": 0,
+      "calls": {
+        "getCatalog": 1,
+        "getOverview": 2,
+        "await_source_window": 1,
+        "getDayGrowth": 1,
+        "getCore": 1
+      },
+      "runner_engine_calls": 1,
+      "delivery_recheck_engine_calls": 0,
+      "MOCK_send": 0
+    }
+  ],
+  "limitations": [
+    "Historical reported_change_pct is NOT_RETAINED. The separate discovery carrier is ARTIFICIAL, not an observed source fact.",
+    "Original facts retain every value, unit, status and clock. Analysis time is frozen at the original as-of, never shifted earlier.",
+    "Original previous_wave is deliberately absent from the empty project. This is a cold-state counterfactual, not the original MANUAL event.",
+    "Synthetic MemoryStore budget is a forecast fixture; actual quotas, spent, unknowns and reserves are untouched.",
+    "One saved instrument does not establish current catalog coverage, historical intake, actual native AUTO SENT, or future plan profit.",
+    "No second growth observation, wave seed, active membership seed, READY stub, provider transport or native environment is used."
+  ],
+  "discovery_created_queue": true,
+  "source_evidence_real": true,
+  "original_fact_values_units_status_clocks_equal": true,
+  "first_blocked_step": "ANALYTICS_NOT_READY",
+  "analysis_status": "REJECTED",
+  "analysis_reasons": [
+    "PLAN_INVALIDATED"
+  ],
+  "wave_state": "CANCELLED",
+  "current_threshold_passed": true,
+  "saved_analysis": true,
+  "saved_card": false,
+  "advance_pullback_plan_proved": false,
+  "refusal_reason": null,
+  "no_forced_READY": true,
+  "positive_delivery_goal_proved": false,
+  "real_engine_calls": 1,
+  "implementation_pin": "690fae17addd12ee60e111738b255dce267f6cf2af6827d506c4bd724d51f031",
+  "completed_wall_utc": "2026-10-27T06:34:41.981Z"
+}

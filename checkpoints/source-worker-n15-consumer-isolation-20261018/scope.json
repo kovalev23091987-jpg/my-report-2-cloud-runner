@@ -1,0 +1,144 @@
+{
+  "schema": "SOURCE_WORKER_N15_CONSUMER_ISOLATION_SHARED_PROPOSAL_V1",
+  "recorded_utc": "2026-10-18T10:46:50.326725+00:00",
+  "parent_main": "56c1cd905a3ca0c2407358a0357d243af8b9ff9c",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "Exact shared-only proposals for N15 report/review consumers: malformed peer is refused per row, other already-qualified source facts/reviews retained; agree on aggregate denomination/window/clock schema. No actual shared edit.",
+  "new_cases": 26,
+  "tests": {
+    "baseline26": {
+      "path": "checkpoints/source-worker-n15-consumer-isolation-20261018/baseline26.tap.gz",
+      "raw_sha256": "567beca5f75aeed1e58c6417d14c47bdde3d8040d4f663605f66864b759b4e8e",
+      "gzip_sha256": "ea9bb666410b4f055efd2a99aeffff189f2eaf163adc44fd1fdbcdf41be25474",
+      "counts": {
+        "tests": 26,
+        "pass": 9,
+        "fail": 17
+      }
+    },
+    "proposed-related61": {
+      "path": "checkpoints/source-worker-n15-consumer-isolation-20261018/proposed-related61.tap.gz",
+      "raw_sha256": "254aa3445d94450ae3b5492ad1d5ace2bcc67096ceac51521f8deccd8bce8d92",
+      "gzip_sha256": "f0d252f20c1d3de3e1cc68cfae8081fd7a293f51c8c96dd8f0b15d08f702218e",
+      "counts": {
+        "tests": 61,
+        "pass": 61,
+        "fail": 0
+      }
+    }
+  },
+  "source_inputs": {
+    "checkpoints/tron-sector-live-38570989795/validation.json.gz": {
+      "file_sha256": "6c9f1e79a0d706b75d08fa9431ddff5a628c27d8f00c596dd531a1313993c328",
+      "raw_sha256": "09f289569ce20757529c049e06815fd43b3eb03c182f292ad5db6865c4526429"
+    },
+    "checkpoints/native-sector-rest-38564913120/validation.json.gz": {
+      "file_sha256": "1d850cb1bba02ba079055f9c03a909c18df1d00633ac8cf5f657118351b1bc03",
+      "raw_sha256": "f0eccc366bee6d54df1b2920747fd7a8e027e572c49e31d940e4394ecbf41714"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+    },
+    "checkpoints/btw-preserved-block-result-input-20261004.json": {
+      "file_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8"
+    }
+  },
+  "original_reference_receipts": [
+    {
+      "url": "https://api.coingecko.com/api/v3/coins/tron/contract/TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7",
+      "received_ts": 1791984064214,
+      "body_sha256": "31d6361944565922a18f4762dd4fd8d9408bb2f66a7f93f7aa4f5037c616cbef",
+      "independently_recomputed_original_body_hash": true
+    },
+    {
+      "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=oracle&order=market_cap_desc&per_page=100&page=1&sparkline=false",
+      "received_ts": 1791984066366,
+      "body_sha256": "05f01e55ffaa7d9aa4025f5681cf536260ce15426ee7dd462157a3a7305d92aa",
+      "independently_recomputed_original_body_hash": true
+    },
+    {
+      "url": "https://api.coingecko.com/api/v3/coins/categories/list",
+      "received_ts": 1791981318759,
+      "body_sha256": "5573eb8ced4088d98366c69eb3d35f3cc317a779668e1f976a1e2562a188e307",
+      "independently_recomputed_original_body_hash": true
+    }
+  ],
+  "shared_modules": {
+    "current-generation/files/src/sector-context.mjs": {
+      "before_sha256": "758dbbba33b6a7faa1ff0fa0cb205768d384b327ad824aa7f652cc465866bbf9",
+      "proposed_sha256": "6817c4998420387f63ecd853c0b3a16e56e1024850eef0f4100cea4317c55402",
+      "repository_unchanged_from_main": true
+    },
+    "current-generation/files/src/sector-relative-strength-review.mjs": {
+      "before_sha256": "92a6f19bfa61bd523ee53476032ac226949bf38854782286cb853eb259f79b44",
+      "proposed_sha256": "6beea3a048c3e9db253160ece5e04259b810359c73725649d9a4d8c81a8a83f4",
+      "repository_unchanged_from_main": true
+    }
+  },
+  "own_lease": {
+    "commit": "e3cd623a4a1378ea163a1822add678b33f187238",
+    "owner": "CODEX:SOURCES:01a14e11:1792320126250",
+    "expires_ts": 1792324926250,
+    "exact_readback": true
+  },
+  "concrete_defects": [
+    "Null/undefined peer triggers TypeError at peers.map in report consumer and standalone review, even after a valid row was already processed.",
+    "Report consumer could accept wrong aggregate denomination, peer denomination, execution-price/entry flags, foreign window, fractional target clock or missing peer identity that existing reviewed-basket schema refuses."
+  ],
+  "proposal_behavior": [
+    "Reject malformed peer record before reading its fields; continue processing remaining evidence rows, retain exact good-only fact and review.",
+    "Align report quote/window/is_htx_price/entry_eligible/peeridentity and safe source clocks with existing rolling-24h reviewed-basket semantics.",
+    "Standalone review handles null peers/non-array input, preserved900s cohort age; does not create new source/score/direction/entry.",
+    "Saved WIN unchanged17peer basket, original source1791983988000/observed+firstknown1791984066366/expiry1791984366366, actual retained body hashes checked.",
+    "Same manual+V5 fact survives bad row; approved brief N15 omission remains. No new field or bullet."
+  ],
+  "retained_fact": {
+    "advisory_only": true,
+    "directional_vote": false,
+    "hard_gate": false,
+    "score_contribution": 0,
+    "block_id": "N15",
+    "source": "CoinGecko",
+    "decision_block": "MARKET_STRENGTH_SPOT",
+    "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+    "label": "Сектор «оракулы» за 24 часа, выборка 17 монет",
+    "value": "монета -3,17%, медиана -1,54%, разница -1,63 п.п.; сводные цены площадок",
+    "unit": "",
+    "source_ts": 1791983988000,
+    "observed_ts": 1791984066366,
+    "evidence_id": "EV2:915430123d72e9a1a69e6e3b622e0e4c5365ef5537e05a59c442e7747609a5e7",
+    "physical_root_key": "tron:TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7|wink:oracle:1791983988000"
+  },
+  "scope_boundaries": [
+    "This repairs downstream consumers, not434/426 result cache scope/clock/provider acquisition. Ready provider branches remain frozen.",
+    "Controlled malformed copies are explicit, not a claim the provider returned malformed data or a new current acquisition.",
+    "26new+35connected existing cases across sector-context,fresh-flow-sector-consumers,native-sector-provider-binding,tron-sector-source,coinpaprika-sector-evidence=61PASS. All selected test imports resolve to temp proposed runtime.",
+    "Source fact re-derived only from retained actual body strings and original response clocks, no catalog-only or HTTP200 qualification claim.",
+    "Formatter/context/review checks do not establish current105, native report recovery, recomputed final trading decision or actual Telegram delivery."
+  ],
+  "shared_proposals": {
+    "shared-consumers.proposed.patch": {
+      "path": "checkpoints/source-worker-n15-consumer-isolation-20261018/shared-consumers.proposed.patch",
+      "sha256": "dbb9ee4e7bbbd985d908332989d586e34a1ad9866bd29024c577de83f6383d80"
+    },
+    "shared-CI.proposed.patch": {
+      "path": "checkpoints/source-worker-n15-consumer-isolation-20261018/shared-CI.proposed.patch",
+      "sha256": "2041a46b201916f04f1ba00306507e34b1217753a197457d31ce53d3b182dfd7"
+    }
+  },
+  "workflow_before_sha256": "fc9383e4362a295eb9fc88a5fdd5ffa688f9bda3b752ff859a25633764025c1d",
+  "workflow_proposed_sha256": "8852625baba1b00459f6a0cb434ec150810f8bff441e635da4d0657a8eb79109",
+  "limits": {
+    "source_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "additional_provider_request_or_SQL": 0,
+    "current105_or_full_or_SENT": false,
+    "strategy_weights_forms_pauses_caps_unknown_spent_reserves_unchanged": true
+  },
+  "exact_next_action": "Coordinator review/apply exact shared consumer+new test+CI proposals when integrating source queue. Worker continue independent N10 cachedraw/component proof gap, then only-new-packet coverage/order/daymonthminute/manual-reserve delta without old census regeneration or waiting."
+}

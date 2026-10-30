@@ -1,0 +1,306 @@
+{
+  "evidence_class": "ARTIFICIAL",
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "outcome": {
+    "signal_id": "pump:signal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1792910700000",
+    "wave_id": "PUMP:ARTIFICIAL:BINGX:TEST-USDT:1792910700000",
+    "independence_key": "PUMP:ARTIFICIAL:BINGX:TEST-USDT:1792910700000",
+    "mode": "MANUAL",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "pump-analytics-v1-tz2-20261025",
+    "t0": 1792911600000,
+    "reference_price": 112,
+    "target_price": 123.2,
+    "deadline_ts": 1792926000000,
+    "status": "MISS",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": 0.8928571428571397,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": true,
+      "no_hit_period_covered": true,
+      "no_hit_basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "basis": "EXACT_CLOSED_MINUTE_INTERVAL",
+      "covered_until_ts": 1792926000000,
+      "observed_interval_complete": true,
+      "fully_contained_candles": 240,
+      "boundary_candles_excluded": 0,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": false,
+      "exit_touched": null,
+      "entry_then_exit_confirmed": false,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": null
+    }
+  },
+  "before": {
+    "schema": "PUMP_MATERIALIZED_SUMMARY_V1",
+    "version": "pump-materialized-summary-v1-tz2-20261025",
+    "materialization_id": "pump-frozen-origins-v1",
+    "revision": 2,
+    "as_of_ts": 1792926060000,
+    "status": "CURRENT",
+    "maturity_current": true,
+    "pending_clock_transitions": 0,
+    "materialized_updated_ts": 1792926060000,
+    "independent_waves": 1,
+    "mature_waves": 1,
+    "pending_waves": 0,
+    "pending_known_hits": 0,
+    "gapped_mature_waves": 0,
+    "coverage_unknown_mature_waves": 0,
+    "enclosing_no_hit_proof_mature_waves": 0,
+    "origin_conflict_waves": 0,
+    "outcome_conflict_waves": 0,
+    "identity_conflict_waves": 0,
+    "outcomes": {
+      "hit": 0,
+      "miss": 1,
+      "unknown": 0
+    },
+    "mature_outcomes": {
+      "hit": 0,
+      "miss": 1,
+      "unknown": 0
+    },
+    "denominators": {
+      "all_independent_waves": 1,
+      "mature_waves": 1,
+      "resolved_mature_waves": 1,
+      "unknown_mature_waves": 0,
+      "pending_excluded_from_mature": 0
+    },
+    "publication_counts": {
+      "sent": 1,
+      "unsent": 0,
+      "unknown": 0
+    },
+    "reason_counts": {},
+    "adverse": {
+      "total_drawdown_known": 1,
+      "total_drawdown_unknown": 0,
+      "pre_hit_drawdown_known": 0,
+      "pre_hit_drawdown_unknown": 0,
+      "hit_after_invalidation_yes": 0,
+      "hit_after_invalidation_no": 0,
+      "hit_after_invalidation_unknown": 0
+    },
+    "cohorts": [
+      {
+        "cohort_key": "[\"MANUAL\",\"SENT\",\"NO_MAP\",\"pump-analytics-v1-tz2-20261025\",\"pump-report-start-v1\",\"ARTIFICIAL\"]",
+        "mode": "MANUAL",
+        "publication": "SENT",
+        "map_mode": "NO_MAP",
+        "rules_version": "pump-analytics-v1-tz2-20261025",
+        "profile_version": "pump-report-start-v1",
+        "evidence_class": "ARTIFICIAL",
+        "independent_waves": 1,
+        "mature_waves": 1,
+        "pending_waves": 0,
+        "pending_known_hits": 0,
+        "gapped_mature_waves": 0,
+        "coverage_unknown_mature_waves": 0,
+        "enclosing_no_hit_proof_mature_waves": 0,
+        "origin_conflict_waves": 0,
+        "outcome_conflict_waves": 0,
+        "identity_conflict_waves": 0,
+        "outcomes": {
+          "hit": 0,
+          "miss": 1,
+          "unknown": 0
+        },
+        "mature_outcomes": {
+          "hit": 0,
+          "miss": 1,
+          "unknown": 0
+        },
+        "denominators": {
+          "all_independent_waves": 1,
+          "mature_waves": 1,
+          "resolved_mature_waves": 1,
+          "unknown_mature_waves": 0,
+          "pending_excluded_from_mature": 0
+        },
+        "publication_counts": {
+          "sent": 1,
+          "unsent": 0,
+          "unknown": 0
+        },
+        "reason_counts": {},
+        "adverse": {
+          "total_drawdown_known": 1,
+          "total_drawdown_unknown": 0,
+          "pre_hit_drawdown_known": 0,
+          "pre_hit_drawdown_unknown": 0,
+          "hit_after_invalidation_yes": 0,
+          "hit_after_invalidation_no": 0,
+          "hit_after_invalidation_unknown": 0
+        }
+      }
+    ],
+    "success_rate_pct": null,
+    "probability": {
+      "value_pct": null,
+      "reason": "CALIBRATION_NOT_PERFORMED"
+    },
+    "calibration_validated": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "readiness_status": "SEPARATE_RESOURCE_ADMITTED_COHORT_AUDIT_REQUIRED",
+    "limitations": [
+      "Materialized counts require atomic aggregate+wave commit",
+      "Exact counters for frozen normalized append-only journal records; protocol conflicts stop reconciliation",
+      "When maturity_current=false mature/pending counters need explicit due transitions",
+      "No raw observations removed; no full-history read on query",
+      "No probability, calibration, profit or native storage capacity proven"
+    ],
+    "source_cursor": 2,
+    "source_records_at_boundary": 2,
+    "source_caught_up": true,
+    "processed_records": 0,
+    "source_index_append_only": true,
+    "status_text_ru": "Независимых волн: 1. Зрелых: 1; HIT 0, MISS 1, UNKNOWN 0. Ещё не завершены: 0. Процент успешности и вероятность пока не оценены."
+  },
+  "after": {
+    "schema": "PUMP_MATERIALIZED_SUMMARY_V1",
+    "version": "pump-materialized-summary-v1-tz2-20261025",
+    "materialization_id": "pump-frozen-origins-v1",
+    "revision": 2,
+    "as_of_ts": 1792926060000,
+    "status": "CURRENT",
+    "maturity_current": true,
+    "pending_clock_transitions": 0,
+    "materialized_updated_ts": 1792926060000,
+    "independent_waves": 1,
+    "mature_waves": 1,
+    "pending_waves": 0,
+    "pending_known_hits": 0,
+    "gapped_mature_waves": 0,
+    "coverage_unknown_mature_waves": 0,
+    "enclosing_no_hit_proof_mature_waves": 0,
+    "origin_conflict_waves": 0,
+    "outcome_conflict_waves": 0,
+    "identity_conflict_waves": 0,
+    "outcomes": {
+      "hit": 0,
+      "miss": 1,
+      "unknown": 0
+    },
+    "mature_outcomes": {
+      "hit": 0,
+      "miss": 1,
+      "unknown": 0
+    },
+    "denominators": {
+      "all_independent_waves": 1,
+      "mature_waves": 1,
+      "resolved_mature_waves": 1,
+      "unknown_mature_waves": 0,
+      "pending_excluded_from_mature": 0
+    },
+    "publication_counts": {
+      "sent": 1,
+      "unsent": 0,
+      "unknown": 0
+    },
+    "reason_counts": {},
+    "adverse": {
+      "total_drawdown_known": 1,
+      "total_drawdown_unknown": 0,
+      "pre_hit_drawdown_known": 0,
+      "pre_hit_drawdown_unknown": 0,
+      "hit_after_invalidation_yes": 0,
+      "hit_after_invalidation_no": 0,
+      "hit_after_invalidation_unknown": 0
+    },
+    "cohorts": [
+      {
+        "cohort_key": "[\"MANUAL\",\"SENT\",\"NO_MAP\",\"pump-analytics-v1-tz2-20261025\",\"pump-report-start-v1\",\"ARTIFICIAL\"]",
+        "mode": "MANUAL",
+        "publication": "SENT",
+        "map_mode": "NO_MAP",
+        "rules_version": "pump-analytics-v1-tz2-20261025",
+        "profile_version": "pump-report-start-v1",
+        "evidence_class": "ARTIFICIAL",
+        "independent_waves": 1,
+        "mature_waves": 1,
+        "pending_waves": 0,
+        "pending_known_hits": 0,
+        "gapped_mature_waves": 0,
+        "coverage_unknown_mature_waves": 0,
+        "enclosing_no_hit_proof_mature_waves": 0,
+        "origin_conflict_waves": 0,
+        "outcome_conflict_waves": 0,
+        "identity_conflict_waves": 0,
+        "outcomes": {
+          "hit": 0,
+          "miss": 1,
+          "unknown": 0
+        },
+        "mature_outcomes": {
+          "hit": 0,
+          "miss": 1,
+          "unknown": 0
+        },
+        "denominators": {
+          "all_independent_waves": 1,
+          "mature_waves": 1,
+          "resolved_mature_waves": 1,
+          "unknown_mature_waves": 0,
+          "pending_excluded_from_mature": 0
+        },
+        "publication_counts": {
+          "sent": 1,
+          "unsent": 0,
+          "unknown": 0
+        },
+        "reason_counts": {},
+        "adverse": {
+          "total_drawdown_known": 1,
+          "total_drawdown_unknown": 0,
+          "pre_hit_drawdown_known": 0,
+          "pre_hit_drawdown_unknown": 0,
+          "hit_after_invalidation_yes": 0,
+          "hit_after_invalidation_no": 0,
+          "hit_after_invalidation_unknown": 0
+        }
+      }
+    ],
+    "success_rate_pct": null,
+    "probability": {
+      "value_pct": null,
+      "reason": "CALIBRATION_NOT_PERFORMED"
+    },
+    "calibration_validated": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "readiness_status": "SEPARATE_RESOURCE_ADMITTED_COHORT_AUDIT_REQUIRED",
+    "limitations": [
+      "Materialized counts require atomic aggregate+wave commit",
+      "Exact counters for frozen normalized append-only journal records; protocol conflicts stop reconciliation",
+      "When maturity_current=false mature/pending counters need explicit due transitions",
+      "No raw observations removed; no full-history read on query",
+      "No probability, calibration, profit or native storage capacity proven"
+    ],
+    "source_cursor": 2,
+    "source_records_at_boundary": 2,
+    "source_caught_up": true,
+    "processed_records": 0,
+    "source_index_append_only": true,
+    "status_text_ru": "Независимых волн: 1. Зрелых: 1; HIT 0, MISS 1, UNKNOWN 0. Ещё не завершены: 0. Процент успешности и вероятность пока не оценены."
+  },
+  "source_history_requests": 1,
+  "unique_saved_analyses": 2,
+  "summary_records": 2
+}

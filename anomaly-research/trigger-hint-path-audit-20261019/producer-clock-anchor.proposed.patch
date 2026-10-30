@@ -1,0 +1,25 @@
+--- a/current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs
++++ b/current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs
+@@ -152,7 +152,12 @@
+     upper(shadow?.dq_status||''),
+     upper(final?.timing_state||'')
+   ].join('|');
+-  const observationTs=finite(final?.observation_ts)??finite(shadow?.observed_ts)??scanTs??now;
++  // A canonical OBSERVE must retain the clock of the exact publication that
++  // will own its SENT binding and registered task, rather than telemetry time.
++  const observationTs=observationPublication?finite(observationPublication.observed_ts):
++    finite(final?.observation_ts)??finite(shadow?.observed_ts)??scanTs??now;
++  if(observationPublication&&(!Number.isSafeInteger(observationTs)||observationTs<1_000_000_000_000||observationTs>now))
++    return {status:'CANONICAL_OBSERVATION_CLOCK_NOT_CLOSED',ctx:null};
+   const removalReceipt=lifecycleRemovalReceipt({contract,direction:dir,wave_id:wave,reason:removal,handoff,shadow,final,early,observed_ts:observationTs});
+   const ctx={
+     contract,direction:dir,wave_id:wave,rules_version:V3_TELEGRAM_SHADOW_RULES_VERSION,
+@@ -186,7 +191,7 @@
+     data_sufficient_for_observation:sufficientObservation,
+     position_open:Boolean(final&&['OPEN_LONG','OPEN_SHORT'].includes(upper(final.position_state))),
+     management_action:upper(final?.management_action||'NOT_EVALUATED'),
+-    observation_ts:finite(final?.observation_ts)??finite(shadow?.observed_ts)??scanTs??now,
++    observation_ts:observationTs,
+     valid_until_ts:validUntil,
+     decision_id:text(final?.decision_id)||null,
+     score_0_100:score,

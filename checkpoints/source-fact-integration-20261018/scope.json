@@ -1,0 +1,56 @@
+{
+  "schema": "ACTIVE105_CONNECTED_SOURCE_FACT_INTEGRATION_V1",
+  "recorded_utc": "2026-10-18T11:09:09.598872+00:00",
+  "base_main": "4a59607a13dc2a4ebca17aaee123c30fd3e4098a",
+  "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792321120450",
+  "source_heads": {
+    "433": "580ec10a5a4092f77a0836968df892742473508e",
+    "434": "8d28b5494290452ad51342f5294234e6194529e4",
+    "435": "6ab7d72d97993a0232c2241871186901560add41",
+    "436": "cc5fb8e28c493b87de6cb6f8f7de1596390e51b6",
+    "438": "f6727b59b382713594b9918dbb7811ab5e435b32",
+    "439": "865ef8f95b9e1720c917c85f62721ee48d6b3e64",
+    "441": "3dde1e02913b307617653fc728f4701e833789b6"
+  },
+  "integration": "Cherry-picked frozen source commits with exact after433 collector SHA61a44a59; applied exact438 consumer/test and441 shared consumers; current CI additions keep existing guards. Original PRs remain frozen until combined qualification.",
+  "new_cases": 304,
+  "provider_cases": 268,
+  "shared_consumer_cases": 36,
+  "local": {
+    "tests": 382,
+    "pass": 382,
+    "fail": 0,
+    "tap_raw_sha256": "2b30dab5ac2c22be00167ca1c2133dbc8d6bfcf219e8da6877192756680611b3",
+    "tap_gzip_sha256": "9d666126e44ab24d080958941ddbbba3b7e366f18bf59410f51a84b5cdb22091"
+  },
+  "cloud_expected_tests": 1686,
+  "cloud_expected_TAP": 21,
+  "golden_files_byte_exact": 10,
+  "saved_natural_inspected": {
+    "run": 39121234819,
+    "head": "83e38e4faab850eb0da3ff577d79261e51a3fa21",
+    "artifact": 12133259960,
+    "digest": "sha256:117c344885c550c874f6aabd844ebe3f929ca5252193564628b6a0701ec419ec",
+    "status": "NO_WORK_NOT_DUE_NO_FRESH_TRIGGER",
+    "full_report_completed": false,
+    "SENT": false,
+    "extra_SQL": 0,
+    "extra_sourceHTTP": 0
+  },
+  "limits": {
+    "new_provider_acquisition": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN_forced": 0,
+    "Telegram_send": 0,
+    "current105_or_provider_qualification": false,
+    "forms_scores_strategy_pauses_caps_unknown_reservations_unchanged": true
+  },
+  "acceptance_open": [
+    "all seven fixed directions",
+    "native105/105 complete report",
+    "both persisted finalists exact readback",
+    "same-run Telegram message_id",
+    "paid sliding expiry and sustainable capacity"
+  ]
+}

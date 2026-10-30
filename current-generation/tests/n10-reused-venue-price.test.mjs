@@ -5,16 +5,12 @@ import {deriveN10ReusedVenuePathEvidence,loadN10ReusedVenuePaths,verifyN10Reused
 import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
 import {finalizeCandidateBlockCoverage} from '../files/src/candidate-evidence-v2-runtime.mjs';
 
-const samples=JSON.parse(readFileSync(new URL('./fixtures/n10-reused-original-15m-samples.json',import.meta.url)));
-function fixture(sample){
- const {venue,htx_window:h,component:c}=sample,first=sample.bars[0].split('|').map(Number),start=h.window_end_ts-240*60000;
- const make=(ts,o,hi,lo,cl,activity,end)=>venue==='BINANCE'?[ts,String(o),String(hi),String(lo),String(cl),String(activity),end,'0',activity]:venue==='POLONIEX'?[String(lo),String(hi),String(o),String(cl),'0',String(activity),'0','0',activity,ts,String(cl),'MINUTE_1',ts,end]:[String(ts),String(o),String(hi),String(lo),String(cl),String(activity),'0','0'];
- const raw=Array.from({length:225},(_,i)=>{const ts=start+i*60000;return make(ts,first[1],first[1],first[1],first[1],0,ts+59999);});
- raw.push(...sample.bars.map(line=>make(...line.split('|').map(Number))));
- const payload=venue==='BITGET'?{observed_ts:sample.cache_observed_ts,payloads:{candles:{code:'00000',data:raw}}}:{observed_ts:sample.cache_observed_ts,candles:raw};
- return{contract:sample.contract,venue,component:c,htx_window:h,now:sample.now,cache:{observed_ts:sample.cache_observed_ts,expires_ts:sample.cache_expires_ts,payload}};
-}
-for(const sample of samples)test(`N10 reuses independently qualified ${sample.venue} original candles for ${sample.contract}`,()=>{
+import {activeSourceSamples,sampleParams} from './n10-full-cache-inputs.mjs';
+const samples=activeSourceSamples.filter(s=>s.venue!=='GATE').map(s=>{const p=sampleParams(s);return{...s,htx_window:p.htx_window,now:p.now,cache_observed_ts:p.cache.observed_ts,cache_expires_ts:p.cache.expires_ts};});
+// Full original caches for BTC/AAVE; Bitget uses an explicit controlled
+// retained-page event clock. No padded225bar cache is treated as complete.
+const fixture=sample=>sampleParams(sample);
+for(const sample of samples)test(`N10 reuses independently qualified ${sample.venue} complete cached candles for ${sample.contract}`,()=>{
  const x=fixture(sample),rows=deriveN10ReusedVenuePathEvidence(x);
  assert.equal(rows.length,1);const row=rows[0];
  assert.equal(row.window_end,x.htx_window.window_end_ts);assert.equal(row.candle_count,15);assert.ok(row.active_minute_count>0);

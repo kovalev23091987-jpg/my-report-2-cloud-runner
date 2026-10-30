@@ -1,0 +1,20 @@
+--- runtime-acceptance.before.mjs
++++ pump-report/tests/analytics/runtime-acceptance.test.mjs
+@@ -87,11 +87,17 @@
+ test('E09 REQUIREMENT possible-send UNKNOWN must register the immutable original for separate outcome tracking',async()=>{
+   const f=harness({unknown:true}),r=await f.runner.execute({mode:'AUTO',run_id:'E09'}),a=r.checked[0].analysis,signal=await f.store.get(signalKey(a));
+   assert.ok(signal,'ROOT_DEFECT_1: UNKNOWN card has no original signal; possible-send waves must not disappear from statistics');assert.equal(signal.t0,a.analysis_ts);assert.equal(signal.reference_price,a.reference_price);assert.ok((await f.store.get('pump:outcomes-pending')).includes(signalKey(a)));
++  const summary=await f.runner.getSummary(),journal=await f.store.get('pump:journal:'+a.instrument.instrument_id+':'+a.wave_id);
++  assert.equal(summary.independent_waves,1);assert.deepEqual(summary.publication_counts,{sent:0,unsent:0,unknown:1});assert.equal(summary.cohorts[0].mode,'AUTO');assert.equal(summary.cohorts[0].map_mode,'NO_MAP');
++  assert.equal(journal.frozen_anchor.immutable,true);assert.equal(journal.frozen_anchor.origin.t0,a.analysis_ts);assert.equal(journal.frozen_anchor.origin.reference_price,a.reference_price);assert.equal(signal.publication.state,'UNKNOWN');assert.equal(f.sends.length,1);
+ });
+ test('E10 REQUIREMENT a terminal never-sent wave must register first READY as a separate UNSENT original',async()=>{
+   const f=harness(),first=await f.runner.execute({mode:'AUTO',run_id:'E10_FIRST',publish:false}),a=first.checked[0].analysis;assert.equal(a.ready,true);assert.equal(await f.store.get(signalKey(a)),null,'active never-sent wave is not prematurely counted');
+   f.advance(241,112);const expired=await f.runner.execute({mode:'AUTO',run_id:'E10_EXPIRED',publish:false});assert.equal(expired.checked[0].analysis.wave_state,'EXPIRED');assert.ok((await f.store.get('pump:wave:'+a.instrument.instrument_id)).expires_ts<=f.clock());const signal=await f.store.get(signalKey(a));
+   assert.ok(signal,'ROOT_DEFECT_2: terminal never-sent FIRST_READY original is absent');assert.equal(signal.t0,a.analysis_ts);assert.equal(signal.reference_price,a.reference_price);assert.equal(f.sends.length,0);
++  const summary=await f.runner.getSummary(),journal=await f.store.get('pump:journal:'+a.instrument.instrument_id+':'+a.wave_id);
++  assert.equal(summary.independent_waves,1);assert.deepEqual(summary.publication_counts,{sent:0,unsent:1,unknown:0});assert.equal(summary.cohorts[0].map_mode,'NO_MAP');assert.equal(signal.publication.state,'UNSENT');
++  assert.equal(journal.frozen_anchor.selection.kind,'FIRST_READY');assert.equal(journal.frozen_anchor.origin.t0,a.analysis_ts);assert.equal(journal.frozen_anchor.origin.reference_price,a.reference_price);assert.equal(journal.frozen_anchor.immutable,true);
+ });
+ test('E11 SENT manual/auto and partial-map/no-map originals retain distinct modes and map states',async()=>{
+   const f=harness({count:2,weak:[1],map:[1]}),auto=await f.runner.execute({mode:'AUTO',run_id:'E11_AUTO'});assert.equal(auto.checked.length,1);

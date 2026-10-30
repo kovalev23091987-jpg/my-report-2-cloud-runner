@@ -1,0 +1,3861 @@
+{
+  "schema": "EXISTING_SAVED_ANOMALY_STATISTICS_INPUT_INVENTORY_V1",
+  "created_at_utc": "2026-10-19T11:04:16.437607+00:00",
+  "main_at_acquire": "a6bb7658ebbd2117b4e10f723230bc5add9c64a9",
+  "latest_guard_main": "47b08e859075fd9bafc19b568ae8d3139ec7cee9",
+  "own_lease": {
+    "owner": "CODEX:OFFLINE_ANOMALIES:1792407150845",
+    "ref": "f657a474c2cfbc8a4bed4ef5ad38a56c6b61ad6b",
+    "exact_readback": true
+  },
+  "owner_limits": "ENTRY/cadence/recheck followup AND physicalstorage qualification DEFERRED until separate direct owner command. Separate anomalies/statistics ACTIVE. No new accumulation required for the data-bound cases listed.",
+  "summary_ru": "На уже сохранённой базе есть длинные фьючерсные и спотовые ряды, исходные CSV с объёмными столбцами, реальные короткие свечные события и фактические траектории sampled price/outcome. Основная ближайшая граница — квалификация units/исторической identity/calendar и связывание часов; это не отсутствие всех исходных данных и не причина ждать новые недели. Цена, объём, availability и фактическое раннее событие имеют разные уровни доказанности.",
+  "HTX_4h_actual_manifests": {
+    "population": "All37tracked manifest/raw/normalized triplets in named directory, not all105 assets or DB census",
+    "counts": {
+      "COMPLETE_90D_4H_PRICE_ONLY": 27,
+      "PARTIAL_90D_4H_PRICE_ONLY": 10
+    },
+    "records": [
+      {
+        "contract": "AAVE-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/AAVE-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "121ac8113f7c5e3a7ceacdefe5b4f4570787181c11330aef93ef8c7404ed8e62"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=AAVE-USDT&period=4hour&size=1200",
+          "requested_ts": 1791765482450,
+          "received_ts": 1791765483910,
+          "http_status": 200,
+          "sha256": "8ffb93cf747d255a0a6824affb20ef9348df517745e142661f568227eba86219"
+        },
+        "source_ts": 1791765483520,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/AAVE-USDT.raw.json.gz",
+          "bytes": 41461,
+          "sha256": "431a0f6a9f365930f9dc4342bf9fe3cfd697d498f4465e944895d58a08efd829"
+        },
+        "raw_body_sha256": "8ffb93cf747d255a0a6824affb20ef9348df517745e142661f568227eba86219",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774497600000,
+        "raw_last_closed_end_ts": 1791763200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/AAVE-USDT.normalized.json.gz",
+          "bytes": 13060,
+          "sha256": "986043defc7d357bf0afe58a2a0c646aa3ba250eeac431387b08497b0d8f9dd5"
+        },
+        "normalized_body_sha256": "6ff5e42bc57f745ee191b87ac3f4218bd634a958c8943befb16a65112ac39399",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ACE-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ACE-USDT.manifest.json",
+          "bytes": 1498,
+          "sha256": "eca0f86420d1ca2c3da2f9891b4c9b3fe98e7f9042c13b4b33a6e17f6277ef0f"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ACE-USDT&period=4hour&size=1200",
+          "requested_ts": 1791765484149,
+          "received_ts": 1791765484447,
+          "http_status": 200,
+          "sha256": "fe47a524212ea9bc338aa6daecad0d39cc59111f98c7eb73429eecda6d1b5ab9"
+        },
+        "source_ts": 1791765484278,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ACE-USDT.raw.json.gz",
+          "bytes": 11487,
+          "sha256": "2ac4d851819836161b9339ab6d805d587c68824d3a973ef21c42b3c574fc98b0"
+        },
+        "raw_body_sha256": "fe47a524212ea9bc338aa6daecad0d39cc59111f98c7eb73429eecda6d1b5ab9",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 347,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 346,
+        "raw_first_open_ts": 1786780800000,
+        "raw_last_closed_end_ts": 1791763200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ACE-USDT.normalized.json.gz",
+          "bytes": 7617,
+          "sha256": "44c669b4b069f88e3cd39149c931ab3717188df525300edce34b7cb22f3df0a5"
+        },
+        "normalized_body_sha256": "8e9c8f06fd14ca7288aaf34e993695c97472d0dbde18e88798ff9c8451ac4158",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 334,
+        "manifest_observed_bars": 334,
+        "missing_bars": 206,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ADA-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ADA-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "83d92f21bdd34689fce3e51c4f3b17c5da6e236bbc44fad367dcf45f935f1e12"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ADA-USDT&period=4hour&size=1200",
+          "requested_ts": 1791765484455,
+          "received_ts": 1791765485090,
+          "http_status": 200,
+          "sha256": "722a355f1dd789219230d3972cf379b446f91a5d19e936ef9de5630131d262b1"
+        },
+        "source_ts": 1791765484685,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ADA-USDT.raw.json.gz",
+          "bytes": 44933,
+          "sha256": "013286ac90f5f839704da3aca611accfc4888e0841e3de54c692349f960d40a3"
+        },
+        "raw_body_sha256": "722a355f1dd789219230d3972cf379b446f91a5d19e936ef9de5630131d262b1",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774497600000,
+        "raw_last_closed_end_ts": 1791763200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ADA-USDT.normalized.json.gz",
+          "bytes": 12953,
+          "sha256": "3164a36283ded1c53963b5f717cd8c10175f91bf7a6134a54f192af53bdc8413"
+        },
+        "normalized_body_sha256": "902e500aa21f74de8c45e7b68251c5ca61a9a8ad5dbc850acc1ec8027ada9e23",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "AKE-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/AKE-USDT.manifest.json",
+          "bytes": 1497,
+          "sha256": "a01d431da338758f39ebf4578a49b8d1d568f8ed631ae4396445a6bfa585f4aa"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=AKE-USDT&period=4hour&size=1200",
+          "requested_ts": 1791765485334,
+          "received_ts": 1791765485732,
+          "http_status": 200,
+          "sha256": "20711774681541481669ee0153497dada75949a97a497b97629e00ab06717f4f"
+        },
+        "source_ts": 1791765485456,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/AKE-USDT.raw.json.gz",
+          "bytes": 19063,
+          "sha256": "f1b39452285ce163472578be3d84c7f405f74274b046d6e2014dc3c98d15464b"
+        },
+        "raw_body_sha256": "20711774681541481669ee0153497dada75949a97a497b97629e00ab06717f4f",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 527,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 526,
+        "raw_first_open_ts": 1784188800000,
+        "raw_last_closed_end_ts": 1791763200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/AKE-USDT.normalized.json.gz",
+          "bytes": 12491,
+          "sha256": "c7db6382bf002fe219572bd0c66852e6074e244e54411f98d102b950e80c6502"
+        },
+        "normalized_body_sha256": "ee3bcf65af3b7002bbf9f521669f43be716006117a943739a05b372832eed6e6",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 514,
+        "manifest_observed_bars": 514,
+        "missing_bars": 26,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ALGO-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ALGO-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "6decbb46bee9e328e848508a6f8e00470dd969362723f7b79d9771095aaa8e7b"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ALGO-USDT&period=4hour&size=1200",
+          "requested_ts": 1791765485752,
+          "received_ts": 1791765486001,
+          "http_status": 200,
+          "sha256": "db95882f10ec093c1094ef5f286e5dc1b171682a1540e6ace334349d73499c17"
+        },
+        "source_ts": 1791765485878,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ALGO-USDT.raw.json.gz",
+          "bytes": 37010,
+          "sha256": "77b23c5e9681673d133cd52b375090338a31f27fb61fdef45cd5e4e5205c3281"
+        },
+        "raw_body_sha256": "db95882f10ec093c1094ef5f286e5dc1b171682a1540e6ace334349d73499c17",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774497600000,
+        "raw_last_closed_end_ts": 1791763200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ALGO-USDT.normalized.json.gz",
+          "bytes": 11248,
+          "sha256": "0acef95ccd590ad336ce87b0388adc23dbd78407d0bb956512c9ef1c5828be90"
+        },
+        "normalized_body_sha256": "2bcffca7e2b8a3a5991ee8d73038a18aafe2debe742fe36864238ac49da8a662",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "APR-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/APR-USDT.manifest.json",
+          "bytes": 1498,
+          "sha256": "984fb3c2d442e8e97206b5bbdfc6dd21e32f2e797805b2c26e69484d1174b3a9"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=APR-USDT&period=4hour&size=1200",
+          "requested_ts": 1791765486013,
+          "received_ts": 1791765486273,
+          "http_status": 200,
+          "sha256": "38520c0d572ded2cf471d7dd68055ab93e1ccfc22491c92405152fb275448b59"
+        },
+        "source_ts": 1791765486152,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/APR-USDT.raw.json.gz",
+          "bytes": 11002,
+          "sha256": "24ec60743813cc153d8ae36a676f58702727be19732773b21fc48dbcf2433a22"
+        },
+        "raw_body_sha256": "38520c0d572ded2cf471d7dd68055ab93e1ccfc22491c92405152fb275448b59",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 360,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 359,
+        "raw_first_open_ts": 1786593600000,
+        "raw_last_closed_end_ts": 1791763200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/APR-USDT.normalized.json.gz",
+          "bytes": 7055,
+          "sha256": "93fd6aea4ccb85a816c5d893bdaadb900524f8bce1b523030b299b01f1ed4491"
+        },
+        "normalized_body_sha256": "24f7b904fb74fde8d447ff71dcd9a7a5d013730c254aeb3ac73b5b3b34f1141a",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 347,
+        "manifest_observed_bars": 347,
+        "missing_bars": 193,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "APT-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/APT-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "04f9fecb32718fa03ef5b14bf3cf9bf6b2bd01d468c0ae9d08ece6b93a321561"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=APT-USDT&period=4hour&size=1200",
+          "requested_ts": 1791873803818,
+          "received_ts": 1791873804574,
+          "http_status": 200,
+          "sha256": "643fc23f618fbb4027dd6b430e9cf719d57c88b8e93632d550872084f0cc88f9"
+        },
+        "source_ts": 1791873804283,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/APT-USDT.raw.json.gz",
+          "bytes": 39012,
+          "sha256": "301a97fc09e90e97af3b883ac680704fc84fa09db6daf87d2efd66474737eec3"
+        },
+        "raw_body_sha256": "643fc23f618fbb4027dd6b430e9cf719d57c88b8e93632d550872084f0cc88f9",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774598400000,
+        "raw_last_closed_end_ts": 1791864000000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/APT-USDT.normalized.json.gz",
+          "bytes": 11080,
+          "sha256": "779c4602cc8bd2544c8d937166230e3bd43efd0bc2b4c31533d62cb623b59296"
+        },
+        "normalized_body_sha256": "c9b62cbf0937a34e9034b3ee3d4f0f56e593306f2b699f64bce676d9991ff523",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ARB-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ARB-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "2eb36847ee7e374709a12c4e720fc554a1531c568c88b83996ece8d43e12a664"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ARB-USDT&period=4hour&size=1200",
+          "requested_ts": 1791873804746,
+          "received_ts": 1791873805175,
+          "http_status": 200,
+          "sha256": "c7f81862a13926003c53f5649aa09cdd6cafcd698a8e74ca22f305a093ad3f8e"
+        },
+        "source_ts": 1791873804878,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ARB-USDT.raw.json.gz",
+          "bytes": 38487,
+          "sha256": "56b676e1418a22cf3fed6c8a6a1e9d040be99bc56aefd45ed7308ea7fdb05329"
+        },
+        "raw_body_sha256": "c7f81862a13926003c53f5649aa09cdd6cafcd698a8e74ca22f305a093ad3f8e",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774598400000,
+        "raw_last_closed_end_ts": 1791864000000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ARB-USDT.normalized.json.gz",
+          "bytes": 11486,
+          "sha256": "543de083ab0cbb1cc0b39eda5852882ee29927f98bb617c4e56b40f66b5038eb"
+        },
+        "normalized_body_sha256": "f8564b01a3be75dadebe952b83ed2e3407704fa9318cddca9aaf2079f0c31826",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ASTER-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ASTER-USDT.manifest.json",
+          "bytes": 1429,
+          "sha256": "4145faf3be6b680c01570e3e234b8c1bf020fd7c2166edaaae4c0385a7cc3616"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ASTER-USDT&period=4hour&size=1200",
+          "requested_ts": 1791873805352,
+          "received_ts": 1791873805778,
+          "http_status": 200,
+          "sha256": "5e1721c8af076cc4e3a4919b6f0d1ec11b95938c295873aaef56095ff818aaca"
+        },
+        "source_ts": 1791873805479,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ASTER-USDT.raw.json.gz",
+          "bytes": 36431,
+          "sha256": "ec09653fbb852abe3d36140e2222cdaebe6f57e275966c702f82d8d6c47388dd"
+        },
+        "raw_body_sha256": "5e1721c8af076cc4e3a4919b6f0d1ec11b95938c295873aaef56095ff818aaca",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774598400000,
+        "raw_last_closed_end_ts": 1791864000000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ASTER-USDT.normalized.json.gz",
+          "bytes": 10506,
+          "sha256": "f6ab4532954380cb77835798972999f71ceb7a2a03010401d0f4c2818e80e74b"
+        },
+        "normalized_body_sha256": "fa0992825e0b3b7f333f7aafffbfb481e4e8416530f8f270ab2ea72077bbef59",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ATOM-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ATOM-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "4409cc4d88982ca56ca39683a980d77906e0013c2c8192961a4ecedd5d93561d"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ATOM-USDT&period=4hour&size=1200",
+          "requested_ts": 1791873805953,
+          "received_ts": 1791873806375,
+          "http_status": 200,
+          "sha256": "ebf4961c29ee5be51aa76a5a0442b5e184982d87879672942c1ea67cd2b9e001"
+        },
+        "source_ts": 1791873806084,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ATOM-USDT.raw.json.gz",
+          "bytes": 37517,
+          "sha256": "cbc276a1b61b3b384ef091ba85a0d9bec4af1379956a3710286570638aa8e1fd"
+        },
+        "raw_body_sha256": "ebf4961c29ee5be51aa76a5a0442b5e184982d87879672942c1ea67cd2b9e001",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774598400000,
+        "raw_last_closed_end_ts": 1791864000000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ATOM-USDT.normalized.json.gz",
+          "bytes": 11234,
+          "sha256": "f38c1959d89bfc2fb0466468be8d6b0d44a277b1d544ca57162a6a6c3bfee89f"
+        },
+        "normalized_body_sha256": "7963fe2176d6d823d6042b8550cdf2e1ca85b9eea01266a76285e3f433bac607",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "AVAX-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/AVAX-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "35f3c55381c3195d020a1637f20048b7b690c95a0e83ee85a29e7049e2515efc"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=AVAX-USDT&period=4hour&size=1200",
+          "requested_ts": 1791873806547,
+          "received_ts": 1791873806980,
+          "http_status": 200,
+          "sha256": "a514dbeb66a0e01944c720af647628d1bc01e68d166edc99cd5742c7c152cbb8"
+        },
+        "source_ts": 1791873806682,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/AVAX-USDT.raw.json.gz",
+          "bytes": 39949,
+          "sha256": "36844c93091d7ab62e83dfac0c37961d6e51a9d7a78af7be383f684500028916"
+        },
+        "raw_body_sha256": "a514dbeb66a0e01944c720af647628d1bc01e68d166edc99cd5742c7c152cbb8",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774598400000,
+        "raw_last_closed_end_ts": 1791864000000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/AVAX-USDT.normalized.json.gz",
+          "bytes": 12290,
+          "sha256": "3f6d30b98fb270e7041de51f3c17a7fa1fee1937eafc97940c6328da115a2d91"
+        },
+        "normalized_body_sha256": "96c662ee2bbd03e196cc7e78903c822c81360d2fd7a7f3ccdef6c196bde5429a",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "AVNT-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/AVNT-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "1857c4281a57c74ab91185a393c282227a276d79cdedd1bfbbeab4521c6f7fef"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=AVNT-USDT&period=4hour&size=1200",
+          "requested_ts": 1791873807155,
+          "received_ts": 1791873807576,
+          "http_status": 200,
+          "sha256": "cdf3bc90344d950ca8e7e5c68500f4806a6c3bbd3ed8ba4ef9e1b26f7d256fcf"
+        },
+        "source_ts": 1791873807282,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/AVNT-USDT.raw.json.gz",
+          "bytes": 36954,
+          "sha256": "2afe02d3f8ec0f77206ae631c4d871541c9246671425255b9c9c381ec2e1157b"
+        },
+        "raw_body_sha256": "cdf3bc90344d950ca8e7e5c68500f4806a6c3bbd3ed8ba4ef9e1b26f7d256fcf",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774598400000,
+        "raw_last_closed_end_ts": 1791864000000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/AVNT-USDT.normalized.json.gz",
+          "bytes": 11365,
+          "sha256": "b41e890fd13c442e5e25b7d55bbba58aae33fd29a2703c05b46a6fb412fbc9b1"
+        },
+        "normalized_body_sha256": "134c301e1bd8fe0aa39c9f6175790a01de1c744400870e269d873ae6375dfff3",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BANK-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BANK-USDT.manifest.json",
+          "bytes": 1502,
+          "sha256": "669cbc5c73a1a94561f0de8265ca18c7e341f8fc026f62d2dd39b169fe391af1"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BANK-USDT&period=4hour&size=1200",
+          "requested_ts": 1792038606691,
+          "received_ts": 1792038607361,
+          "http_status": 200,
+          "sha256": "9dcd4235ddca25fc725c0a78fd6f6c6535a4645d8216ea1c6d549cc413c83c76"
+        },
+        "source_ts": 1792038607076,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BANK-USDT.raw.json.gz",
+          "bytes": 16105,
+          "sha256": "511ac79bf4cc41fd4aad4ee1cfab64c6167657c313fec3fec03e67bbb07aa7c2"
+        },
+        "raw_body_sha256": "9dcd4235ddca25fc725c0a78fd6f6c6535a4645d8216ea1c6d549cc413c83c76",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 523,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 522,
+        "raw_first_open_ts": 1784520000000,
+        "raw_last_closed_end_ts": 1792036800000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BANK-USDT.normalized.json.gz",
+          "bytes": 10143,
+          "sha256": "7bbcc0bbf5db8ad702553901208b7953f646dbd8f2ffd162ea492fd46bece2e3"
+        },
+        "normalized_body_sha256": "7c7f6dd3b933ca7bfcc8777fd82787e59d0696935a9e2527589f83118d790332",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 491,
+        "manifest_observed_bars": 491,
+        "missing_bars": 49,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BCH-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BCH-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "676176567a42f06a7a03fc32fc0a47c9ab105e25adde4d2e8db0c9ff3eb7dc9c"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BCH-USDT&period=4hour&size=1200",
+          "requested_ts": 1792038607369,
+          "received_ts": 1792038607804,
+          "http_status": 200,
+          "sha256": "027f1c04721f101981c6d9ae44985ff8ef5e5a9d191977c757973e1b33c17470"
+        },
+        "source_ts": 1792038607503,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BCH-USDT.raw.json.gz",
+          "bytes": 41518,
+          "sha256": "f19fb19cc185bcc05c520e3e5c14707b5ca4ad336c09d6bcb4918a7e5a1c75f3"
+        },
+        "raw_body_sha256": "027f1c04721f101981c6d9ae44985ff8ef5e5a9d191977c757973e1b33c17470",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774771200000,
+        "raw_last_closed_end_ts": 1792036800000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BCH-USDT.normalized.json.gz",
+          "bytes": 12175,
+          "sha256": "20e916abb5321821afd708c1f64f262f95e276b12761c741bf85786e11d118a5"
+        },
+        "normalized_body_sha256": "3033c26d2d59f158e7f7248f79678aee13ebfa391cfccfa35a88e53fa0120f99",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BEAT-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BEAT-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "b62bf1a9dd1b1b4fc9c8cb3404f9c9ffc4822dbf99e8bef713a8b68619b74b55"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BEAT-USDT&period=4hour&size=1200",
+          "requested_ts": 1792038607985,
+          "received_ts": 1792038608410,
+          "http_status": 200,
+          "sha256": "81fa9651e276d161cd7d7dc1d9370405d0b583560332396acbf91c2f40185720"
+        },
+        "source_ts": 1792038608113,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BEAT-USDT.raw.json.gz",
+          "bytes": 41590,
+          "sha256": "2256a06f5e4659a87ce9cebc48a26fc259846616b29a6e78cde2110d49a87097"
+        },
+        "raw_body_sha256": "81fa9651e276d161cd7d7dc1d9370405d0b583560332396acbf91c2f40185720",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774771200000,
+        "raw_last_closed_end_ts": 1792036800000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BEAT-USDT.normalized.json.gz",
+          "bytes": 12487,
+          "sha256": "ca19d3a891264d902eac6db5212848f890b11a2610e14904c624af018d26fd92"
+        },
+        "normalized_body_sha256": "7b7c58bec817e8d71d5f87550951ebcb5b15b14be6167f79fdaebd9c83245e7e",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BILL-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BILL-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "1186f1b5a68acdd3d0c2bbd259fd16363db7119b0d7f25d1a0b58f533d384243"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BILL-USDT&period=4hour&size=1200",
+          "requested_ts": 1792038608586,
+          "received_ts": 1792038609053,
+          "http_status": 200,
+          "sha256": "6849bb5212fe68348d41711657aedfa20d720aca96609265933a2bf4c4d85ba5"
+        },
+        "source_ts": 1792038608768,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BILL-USDT.raw.json.gz",
+          "bytes": 30230,
+          "sha256": "9895ee9da7530f1ef02aed60f6bad1c2c9f0980dc3c1d94ec3a2487ac648bc45"
+        },
+        "raw_body_sha256": "6849bb5212fe68348d41711657aedfa20d720aca96609265933a2bf4c4d85ba5",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 967,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 966,
+        "raw_first_open_ts": 1778126400000,
+        "raw_last_closed_end_ts": 1792036800000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BILL-USDT.normalized.json.gz",
+          "bytes": 10694,
+          "sha256": "d692607b30ee74bf502bb4f7810a7584622f6d5c3e621273642c4fd5a19826d8"
+        },
+        "normalized_body_sha256": "73aa269c5bd7be8605b32aa751ab43b62140a0743f8aa78e62513bb5d7f1f1ed",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BNB-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BNB-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "f50f37e7f78e3142aaf2e4e6612e5d2756cb5d6ed8653c95752fd0b5e84459d5"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BNB-USDT&period=4hour&size=1200",
+          "requested_ts": 1792038609069,
+          "received_ts": 1792038609486,
+          "http_status": 200,
+          "sha256": "94355bdeec58748e3c3244a8729a18f2db4c1cb4495c1cc3c117630ce0de9a46"
+        },
+        "source_ts": 1792038609200,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BNB-USDT.raw.json.gz",
+          "bytes": 44010,
+          "sha256": "9dd6ee316353d545ed6e5996df5221b217d5be40252d9c08a90f5109e0359316"
+        },
+        "raw_body_sha256": "94355bdeec58748e3c3244a8729a18f2db4c1cb4495c1cc3c117630ce0de9a46",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774771200000,
+        "raw_last_closed_end_ts": 1792036800000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BNB-USDT.normalized.json.gz",
+          "bytes": 13880,
+          "sha256": "3030b134b16f70e5302df13b66455668a5a636c5ebe505549e90a443927b3e04"
+        },
+        "normalized_body_sha256": "00469510e280710c745a16c63f62de0debf0b92eb108c4d8b6a57890bd9fbee5",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BOME-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BOME-USDT.manifest.json",
+          "bytes": 1503,
+          "sha256": "c7b1899ac04408d46dfd01c4cf1ab1974db4820c926b585dbae8f8850d7cb23a"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BOME-USDT&period=4hour&size=1200",
+          "requested_ts": 1792038609655,
+          "received_ts": 1792038610006,
+          "http_status": 200,
+          "sha256": "ac0facfa791fd284dfc33b1b28b2eba77498b32b9bc5fe335af852a5ca029b4c"
+        },
+        "source_ts": 1792038609830,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BOME-USDT.raw.json.gz",
+          "bytes": 11180,
+          "sha256": "1fb8d74abfb6750341523a7309302c1d90a66fdfe967ae6ee85566708cf200f8"
+        },
+        "raw_body_sha256": "ac0facfa791fd284dfc33b1b28b2eba77498b32b9bc5fe335af852a5ca029b4c",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 331,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 330,
+        "raw_first_open_ts": 1787284800000,
+        "raw_last_closed_end_ts": 1792036800000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BOME-USDT.normalized.json.gz",
+          "bytes": 6611,
+          "sha256": "c09621cfac893d1f59ca698988ec478260e2195c17a174af972598778e129d9f"
+        },
+        "normalized_body_sha256": "0e75720843b7883e0e6d58ec4a063a3ce6a1c3413d58b2106afba701df34731f",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 299,
+        "manifest_observed_bars": 299,
+        "missing_bars": 241,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BONK-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BONK-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "f3226a8c1a009a55171716b3a34e50cde87d3457327d8083973b3ae0f67adc58"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BONK-USDT&period=4hour&size=1200",
+          "requested_ts": 1792124693551,
+          "received_ts": 1792124694248,
+          "http_status": 200,
+          "sha256": "4d7df5417f0b276aca8685cd96c81c170558297c9d01e6668b60101c2430d098"
+        },
+        "source_ts": 1792124693940,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BONK-USDT.raw.json.gz",
+          "bytes": 37892,
+          "sha256": "7606b0ef9688762d0bf90584b8a5c7a00c8f0c2e0b88019c118143325defc1e4"
+        },
+        "raw_body_sha256": "4d7df5417f0b276aca8685cd96c81c170558297c9d01e6668b60101c2430d098",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774857600000,
+        "raw_last_closed_end_ts": 1792123200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BONK-USDT.normalized.json.gz",
+          "bytes": 11059,
+          "sha256": "ac1cdcf303966da271b2a1083fd87e11a5de6ebc3088cb2b622ac3138045e6f1"
+        },
+        "normalized_body_sha256": "c99558313020fb5a4ed1fe819310482b72179384d07b01e10f23478a9754f656",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BR-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BR-USDT.manifest.json",
+          "bytes": 1494,
+          "sha256": "22d2338a086ec5dba8515dcf80b6105833c18f6d5bf38f2e3e9423c5abc93c5c"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BR-USDT&period=4hour&size=1200",
+          "requested_ts": 1792124694430,
+          "received_ts": 1792124694682,
+          "http_status": 200,
+          "sha256": "ba563cf3cd95607c5c66569e2b99ffbf482a360a5e5dfd150638e3c892cee3e3"
+        },
+        "source_ts": 1792124694557,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BR-USDT.raw.json.gz",
+          "bytes": 7001,
+          "sha256": "f23d2a1308b99a69d691d8dbd320c5da1c7d47fab06e902bee1917fd1299910b"
+        },
+        "raw_body_sha256": "ba563cf3cd95607c5c66569e2b99ffbf482a360a5e5dfd150638e3c892cee3e3",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 187,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 186,
+        "raw_first_open_ts": 1789444800000,
+        "raw_last_closed_end_ts": 1792123200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BR-USDT.normalized.json.gz",
+          "bytes": 3811,
+          "sha256": "3ea943f0f96ed4a8d673868828b872ddb3560687d07ce1171af9a620164c69ec"
+        },
+        "normalized_body_sha256": "e475187745de522ec58a8f7e0183005b8e5993befb50f4f4ddba032421d295b9",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 149,
+        "manifest_observed_bars": 149,
+        "missing_bars": 391,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BTC-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BTC-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "c543f09aae440d6bc113b9a19a99bc7296eddb13823310436d058d324867a836"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BTC-USDT&period=4hour&size=1200",
+          "requested_ts": 1792124694688,
+          "received_ts": 1792124695110,
+          "http_status": 200,
+          "sha256": "20c13e69ade785aa2cbb0e3eb4b47bb730c4a1793c103b040f1cb0a6b81f3955"
+        },
+        "source_ts": 1792124694812,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BTC-USDT.raw.json.gz",
+          "bytes": 49382,
+          "sha256": "3c39a5929127aed11a655f0601f3d8e39fb979bc74de7ad19ab2047699d46cd4"
+        },
+        "raw_body_sha256": "20c13e69ade785aa2cbb0e3eb4b47bb730c4a1793c103b040f1cb0a6b81f3955",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774857600000,
+        "raw_last_closed_end_ts": 1792123200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BTC-USDT.normalized.json.gz",
+          "bytes": 13242,
+          "sha256": "7c510161f172276d0e6005dab69ad6cc60a89f711566db99158afd4f9facb3f9"
+        },
+        "normalized_body_sha256": "07475b6781baf09aa760e4da9e6a1751270f054f088767a1bbbe54339cfaf03a",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BTR-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BTR-USDT.manifest.json",
+          "bytes": 1498,
+          "sha256": "91b0b37b654f58cd71567122c8ea60215e3bdc39a66eddde061725320b117d6e"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BTR-USDT&period=4hour&size=1200",
+          "requested_ts": 1792124695285,
+          "received_ts": 1792124695534,
+          "http_status": 200,
+          "sha256": "41da02a23229ab8479e5256ed787d3f3e1e6a8ec3eaecc2b00b9f139c569274c"
+        },
+        "source_ts": 1792124695408,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BTR-USDT.raw.json.gz",
+          "bytes": 9630,
+          "sha256": "0f961fdf6ad8867aa81f22508f2e059a17d6ae81a7925a3c9d30a8aefeeb1a38"
+        },
+        "raw_body_sha256": "41da02a23229ab8479e5256ed787d3f3e1e6a8ec3eaecc2b00b9f139c569274c",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 301,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 300,
+        "raw_first_open_ts": 1787803200000,
+        "raw_last_closed_end_ts": 1792123200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BTR-USDT.normalized.json.gz",
+          "bytes": 5634,
+          "sha256": "30f2076a74ef2b49f10f399749bc4d9d7f816b3021910453f9b5adcb89f5af09"
+        },
+        "normalized_body_sha256": "7c8d0a3542e425a2774a2a354072d23d48ecdc02e6ebe6cd2b9b980bee20ce60",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 263,
+        "manifest_observed_bars": 263,
+        "missing_bars": 277,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BTT-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BTT-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "6dcf0636a7d39735436fe88fc98a31dd515a5372461df014b053de17df1b18af"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BTT-USDT&period=4hour&size=1200",
+          "requested_ts": 1792124695538,
+          "received_ts": 1792124696581,
+          "http_status": 200,
+          "sha256": "8eab9c7ed29ac214d33ded68aaa329d60c72c89651a3c67f7f71072bd66f1907"
+        },
+        "source_ts": 1792124696149,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BTT-USDT.raw.json.gz",
+          "bytes": 28122,
+          "sha256": "6c14538d9fd621c2d2d9b30a85587a26ff1020d4691cbd1f5d9ba6284c5c784d"
+        },
+        "raw_body_sha256": "8eab9c7ed29ac214d33ded68aaa329d60c72c89651a3c67f7f71072bd66f1907",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774857600000,
+        "raw_last_closed_end_ts": 1792123200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BTT-USDT.normalized.json.gz",
+          "bytes": 7981,
+          "sha256": "570528c4397bbfa4a0cb4a1084021ea77e5ce2352f248728209695fbfe93b7af"
+        },
+        "normalized_body_sha256": "6142ac365244e2fb4c8df16c4af98b7f66eb57d33fc6cfa53f676f106c52334c",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "BTW-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/BTW-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "874742d7f131769b865ba02886726c83634079155e6bb001077f5a78a79b9e95"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=BTW-USDT&period=4hour&size=1200",
+          "requested_ts": 1792124696591,
+          "received_ts": 1792124697030,
+          "http_status": 200,
+          "sha256": "12ed39a1222bb80571d6872a40c1f45305f2165befcb3aa8c33ee7f9f31b8c83"
+        },
+        "source_ts": 1792124696737,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/BTW-USDT.raw.json.gz",
+          "bytes": 29278,
+          "sha256": "8255123226cc15bf64d5832e2f5fe47801a73704af47c225dd132a693238a55c"
+        },
+        "raw_body_sha256": "12ed39a1222bb80571d6872a40c1f45305f2165befcb3aa8c33ee7f9f31b8c83",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 799,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 798,
+        "raw_first_open_ts": 1780632000000,
+        "raw_last_closed_end_ts": 1792123200000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/BTW-USDT.normalized.json.gz",
+          "bytes": 13539,
+          "sha256": "d18887d7cb4120b37b996ba63a94b609450c24d9ac81147047aa73823a68dfc7"
+        },
+        "normalized_body_sha256": "4b48c8c87c4b9b42901046f52442888a62da2e376df92b06a8bfe4e0665e4185",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "CASHCAT-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/CASHCAT-USDT.manifest.json",
+          "bytes": 1518,
+          "sha256": "29e0ab418409bdf34e58a911e89ca1fb87476eb28a20f6b669f82581fc59d7b7"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=CASHCAT-USDT&period=4hour&size=1200",
+          "requested_ts": 1792210705605,
+          "received_ts": 1792210706552,
+          "http_status": 200,
+          "sha256": "e631280a4b5d10a275d4709f75d683c34d82bae44167dc0065211e4bd5df0ef1"
+        },
+        "source_ts": 1792210706252,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/CASHCAT-USDT.raw.json.gz",
+          "bytes": 15442,
+          "sha256": "b92f102e8b10646e60aaa7a3878c2a295f3a62f1f9104b390c03f097da96ee23"
+        },
+        "raw_body_sha256": "e631280a4b5d10a275d4709f75d683c34d82bae44167dc0065211e4bd5df0ef1",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 427,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 426,
+        "raw_first_open_ts": 1786075200000,
+        "raw_last_closed_end_ts": 1792209600000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/CASHCAT-USDT.normalized.json.gz",
+          "bytes": 9586,
+          "sha256": "7ca6e91d8c3db845260f90173a3707cf5aa31d8b4f36e17512b4d72b49c12579"
+        },
+        "normalized_body_sha256": "4974eb074a8679bcb39600229c3a713b78b1639594597fcd5d9abd29a50b6e38",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 383,
+        "manifest_observed_bars": 383,
+        "missing_bars": 157,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "CHZ-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/CHZ-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "d8021c2b2ac302b3cb681ae38e2e50db2bf52fb0276c6cb0bf9b7e1d030db3a1"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=CHZ-USDT&period=4hour&size=1200",
+          "requested_ts": 1792210706562,
+          "received_ts": 1792210706815,
+          "http_status": 200,
+          "sha256": "6d3b50f1123d6fc4d8d06de5aaf0f5db83702ab7cf164029b83585e305ffe848"
+        },
+        "source_ts": 1792210706691,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/CHZ-USDT.raw.json.gz",
+          "bytes": 35822,
+          "sha256": "ba34e35d433c8d1ad3903c11b571fd1b09a2a0ff55e928f3386306bc5b0b0931"
+        },
+        "raw_body_sha256": "6d3b50f1123d6fc4d8d06de5aaf0f5db83702ab7cf164029b83585e305ffe848",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774944000000,
+        "raw_last_closed_end_ts": 1792209600000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/CHZ-USDT.normalized.json.gz",
+          "bytes": 10065,
+          "sha256": "3ea90ba4c3936b6fe9bf74e35a76a343285d82bf2162d2c8ae369ac9264966f2"
+        },
+        "normalized_body_sha256": "33cddd3f883a1312845ab13e355c11abd65d6727772031db18b8b706617092fb",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "DASH-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/DASH-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "f07b8c85d9fef82fda067382363947935230d5f60252e835e9f1763a37a70c72"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=DASH-USDT&period=4hour&size=1200",
+          "requested_ts": 1792210706830,
+          "received_ts": 1792210707260,
+          "http_status": 200,
+          "sha256": "320ac605dfa45d76960de8688efdc3f690bd1ef5da6cf6171abe4db98de07ad7"
+        },
+        "source_ts": 1792210706961,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/DASH-USDT.raw.json.gz",
+          "bytes": 38418,
+          "sha256": "b1cb18c862c26b98d2497f427549aa6d1f4a4b20e6884acb3800ad4601e58d64"
+        },
+        "raw_body_sha256": "320ac605dfa45d76960de8688efdc3f690bd1ef5da6cf6171abe4db98de07ad7",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774944000000,
+        "raw_last_closed_end_ts": 1792209600000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/DASH-USDT.normalized.json.gz",
+          "bytes": 11185,
+          "sha256": "236073f77230db80a2968c214cec002026a4b72c2624635535ed985af6bce144"
+        },
+        "normalized_body_sha256": "53363d3cab11ba20edfb22dce0aa6eff547625df298142a25c062da712e62242",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "DOGE-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/DOGE-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "53ab7496e1aa8107d2dbea42fdb95f6a60a2ce53141409edd368aef077966843"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=DOGE-USDT&period=4hour&size=1200",
+          "requested_ts": 1792210707468,
+          "received_ts": 1792210707889,
+          "http_status": 200,
+          "sha256": "525a9374706f877215c5b753b279fb24fd71e364c2eccf4db94cd46eeb82bac3"
+        },
+        "source_ts": 1792210707598,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/DOGE-USDT.raw.json.gz",
+          "bytes": 44303,
+          "sha256": "bcb5a6b20e37eb7852c5e3f3d44966001eb772477ac69f0557100a2d5689a0a7"
+        },
+        "raw_body_sha256": "525a9374706f877215c5b753b279fb24fd71e364c2eccf4db94cd46eeb82bac3",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774944000000,
+        "raw_last_closed_end_ts": 1792209600000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/DOGE-USDT.normalized.json.gz",
+          "bytes": 12144,
+          "sha256": "7619f32f2065b9e286d542fa2d98877cb12635b54b9ad2e4bf623e5e6e964f1f"
+        },
+        "normalized_body_sha256": "885c3964c8c98e65ffa46066be39c18ced92a1530430aaae75792764f74c8f19",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "DOS-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/DOS-USDT.manifest.json",
+          "bytes": 1498,
+          "sha256": "eb62a6a0df210d27ea93d20805d1b21d10f3f3f5f9d4dbef6fc1f9cf656f37b8"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=DOS-USDT&period=4hour&size=1200",
+          "requested_ts": 1792210708087,
+          "received_ts": 1792210708341,
+          "http_status": 200,
+          "sha256": "8b2510d2011fc4e7e2832053b8c55649656a1c8616aef7cfa00dc69ab4b1e93c"
+        },
+        "source_ts": 1792210708218,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/DOS-USDT.raw.json.gz",
+          "bytes": 11317,
+          "sha256": "cbc55f2858811f7a8772f2288da124fab32e6b78b5df62f58f6114501dc9979d"
+        },
+        "raw_body_sha256": "8b2510d2011fc4e7e2832053b8c55649656a1c8616aef7cfa00dc69ab4b1e93c",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 397,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 396,
+        "raw_first_open_ts": 1786507200000,
+        "raw_last_closed_end_ts": 1792209600000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/DOS-USDT.normalized.json.gz",
+          "bytes": 7012,
+          "sha256": "0e48351b8f8f64eb37805e5690c3f36180348bd5fca802ae2340d112efb9e0ce"
+        },
+        "normalized_body_sha256": "fbf445c84b7b2ab9537e7979e112c630348af7a5d11d75c7e49072b89c02ecea",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 353,
+        "manifest_observed_bars": 353,
+        "missing_bars": 187,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "DOT-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/DOT-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "615520a4ab286005ff89325272e54883098ede6b75866c4da61f563b7c7575a6"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=DOT-USDT&period=4hour&size=1200",
+          "requested_ts": 1792210708347,
+          "received_ts": 1792210708776,
+          "http_status": 200,
+          "sha256": "0fe4ef7fe153e8c8ef7a9e243dcfa9f780d55a080303c3a6e6f3eacaf0ebe04b"
+        },
+        "source_ts": 1792210708477,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/DOT-USDT.raw.json.gz",
+          "bytes": 37973,
+          "sha256": "b8f0cb5fb3019bd51698568971d3435eef08d9f8469d994252cd3bfefcab72d6"
+        },
+        "raw_body_sha256": "0fe4ef7fe153e8c8ef7a9e243dcfa9f780d55a080303c3a6e6f3eacaf0ebe04b",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774944000000,
+        "raw_last_closed_end_ts": 1792209600000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/DOT-USDT.normalized.json.gz",
+          "bytes": 11247,
+          "sha256": "457a436f86c90c9aa271c8c15a02ac6f979e5a2f1b3810cecf383e1435c7c8ed"
+        },
+        "normalized_body_sha256": "bc81ace516a26f37a5126c2058cad254d573dd6f133856d3c3f37965bee2b040",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ENA-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ENA-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "0452a9cb89c246085a3385255de02c76be0048859e443f32f2322497bd6af8e3"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ENA-USDT&period=4hour&size=1200",
+          "requested_ts": 1792384385477,
+          "received_ts": 1792384386191,
+          "http_status": 200,
+          "sha256": "a5206edaafd52e00e51dd9fb59ad6ef747e52d83c28ea2c6b4dceaa4fb43f021"
+        },
+        "source_ts": 1792384385885,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ENA-USDT.raw.json.gz",
+          "bytes": 40782,
+          "sha256": "8983a68f306e819f15973147d789325a909929eb2b497509d95f8556f57af672"
+        },
+        "raw_body_sha256": "a5206edaafd52e00e51dd9fb59ad6ef747e52d83c28ea2c6b4dceaa4fb43f021",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1775116800000,
+        "raw_last_closed_end_ts": 1792382400000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ENA-USDT.normalized.json.gz",
+          "bytes": 11692,
+          "sha256": "f7618038581c99d75cfbb74e1c0812259331ff85a1ac5d2e4d5eb80fc4a0e848"
+        },
+        "normalized_body_sha256": "eeba16177139a52123ce3b705a533ca1c6d43c759b9fae2f6d0862e7929c068b",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ETC-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ETC-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "cb893b1a38d9f7d1d2bed0d1dd43b0ab2a890d243b7bbcd2ee00adb09c37c138"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ETC-USDT&period=4hour&size=1200",
+          "requested_ts": 1792384386370,
+          "received_ts": 1792384386819,
+          "http_status": 200,
+          "sha256": "b3ce2845ad5df64d2db4341c117875f528faf86fc83716cea7c08d85b2dbc42b"
+        },
+        "source_ts": 1792384386513,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ETC-USDT.raw.json.gz",
+          "bytes": 38652,
+          "sha256": "3e974b56eb12703dca7a3a334de7284ec372887136567da6dc301b37114d088a"
+        },
+        "raw_body_sha256": "b3ce2845ad5df64d2db4341c117875f528faf86fc83716cea7c08d85b2dbc42b",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1775116800000,
+        "raw_last_closed_end_ts": 1792382400000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ETC-USDT.normalized.json.gz",
+          "bytes": 12266,
+          "sha256": "4b4d5578ffbd93831e38f44dfb0224520038058ccbc5330c9162453fdd6c8ad7"
+        },
+        "normalized_body_sha256": "3d18dafc1b3bc6228b46b235e74651220ee16f94bd44c34d80410f00f2280079",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ETH-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ETH-USDT.manifest.json",
+          "bytes": 1419,
+          "sha256": "ba97566a1aa860e85c631cee6fce8a966f782cbd15cf3e5d6cebaea173216f04"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ETH-USDT&period=4hour&size=1200",
+          "requested_ts": 1792384386995,
+          "received_ts": 1792384387454,
+          "http_status": 200,
+          "sha256": "56c513c90a0f972a694d3009a846d5ae5cc857e0f5c1e62e360592b013346bd0"
+        },
+        "source_ts": 1792384387140,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ETH-USDT.raw.json.gz",
+          "bytes": 48599,
+          "sha256": "d0dba29f1003b680fc863d6b865c9fd7262327e747d6367befca734d88535c29"
+        },
+        "raw_body_sha256": "56c513c90a0f972a694d3009a846d5ae5cc857e0f5c1e62e360592b013346bd0",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1775116800000,
+        "raw_last_closed_end_ts": 1792382400000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ETH-USDT.normalized.json.gz",
+          "bytes": 13089,
+          "sha256": "e69fb6d3d1be1c0bbb5c9bec296db5a9be7f648b55aefe249ee2c06331bbe189"
+        },
+        "normalized_body_sha256": "627f413a807e73a96c8540a948befd34a0eb707e752ec098955805bd60975fa8",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "ETHFI-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/ETHFI-USDT.manifest.json",
+          "bytes": 1429,
+          "sha256": "8528189c205c82d03dec3c3e1940ecc49e60ee34a545a14da02517246c87c428"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=ETHFI-USDT&period=4hour&size=1200",
+          "requested_ts": 1792384387638,
+          "received_ts": 1792384387922,
+          "http_status": 200,
+          "sha256": "560755cfaf8484bd3f516e111f2215d01430c7a9f1fdb943ca9078620246cf1c"
+        },
+        "source_ts": 1792384387780,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/ETHFI-USDT.raw.json.gz",
+          "bytes": 38254,
+          "sha256": "34145dc051b1632361c63cbaa36c0892ea0e6232658989e40e2f5a49bb583687"
+        },
+        "raw_body_sha256": "560755cfaf8484bd3f516e111f2215d01430c7a9f1fdb943ca9078620246cf1c",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1775116800000,
+        "raw_last_closed_end_ts": 1792382400000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/ETHFI-USDT.normalized.json.gz",
+          "bytes": 11124,
+          "sha256": "079b9224fbdae696940e3f48af025c72b4d6965351917e42167538fe6486078d"
+        },
+        "normalized_body_sha256": "4797512391a965f9d21bab802f8101cddc9e341b995294654be52a5e74d28bb0",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "EUL-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/EUL-USDT.manifest.json",
+          "bytes": 1497,
+          "sha256": "f3749d32bf313b037e7b33546c28205efd39d37a0d52dcff4b723ac8252ab0d4"
+        },
+        "status": "PARTIAL_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=EUL-USDT&period=4hour&size=1200",
+          "requested_ts": 1792384388100,
+          "received_ts": 1792384388481,
+          "http_status": 200,
+          "sha256": "af996c29abef9587ec2da756db366cf1f359296c8f2d7695d3f857e6419adbe3"
+        },
+        "source_ts": 1792384388232,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/EUL-USDT.raw.json.gz",
+          "bytes": 15520,
+          "sha256": "f3f849652eb371e9cfa4dd59524f95c7c88ab322424d619183ef3420f6dc114f"
+        },
+        "raw_body_sha256": "af996c29abef9587ec2da756db366cf1f359296c8f2d7695d3f857e6419adbe3",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 505,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 504,
+        "raw_first_open_ts": 1785124800000,
+        "raw_last_closed_end_ts": 1792382400000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/EUL-USDT.normalized.json.gz",
+          "bytes": 9652,
+          "sha256": "f3a0fdc81af177b5f24a19dd7826efd5cc862afd6b61115452bc807c693ddd0a"
+        },
+        "normalized_body_sha256": "fe9555b31463134b7f1a9d72f4ddd311d0f63a560a304d3f49f7350a9d87ad75",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 449,
+        "manifest_observed_bars": 449,
+        "missing_bars": 91,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "FARTCOIN-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/FARTCOIN-USDT.manifest.json",
+          "bytes": 1444,
+          "sha256": "44ca858c492b2669f3457ce73b44aee379a890526798f4ccee2a5c5254b0e075"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=FARTCOIN-USDT&period=4hour&size=1200",
+          "requested_ts": 1792384388502,
+          "received_ts": 1792384388956,
+          "http_status": 200,
+          "sha256": "599c3ddb8f883ee41c6651c54c6b0f85bed94193c0e1d5dbc457818c954c9fb3"
+        },
+        "source_ts": 1792384388649,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/FARTCOIN-USDT.raw.json.gz",
+          "bytes": 41206,
+          "sha256": "1114a9b050fb5b3842cd7f3c35423356e3696153d30acc949c0675f340927045"
+        },
+        "raw_body_sha256": "599c3ddb8f883ee41c6651c54c6b0f85bed94193c0e1d5dbc457818c954c9fb3",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1775116800000,
+        "raw_last_closed_end_ts": 1792382400000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/FARTCOIN-USDT.normalized.json.gz",
+          "bytes": 11669,
+          "sha256": "f2c5c361ca23a255be11447be8b03100e17cecb43b5362fe5c872bb1c1cbe847"
+        },
+        "normalized_body_sha256": "5a03a664d44433de7f90342229eca9022d0ea5159badc818dc82b7156ad3128c",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      },
+      {
+        "contract": "NEAR-USDT",
+        "manifest": {
+          "path": "checkpoints/htx-compact-4h/NEAR-USDT.manifest.json",
+          "bytes": 1424,
+          "sha256": "2ccb6e5d6641edd94a52fa1d6a212e59c4f49dc1268d4d72921948b18e4b856b"
+        },
+        "status": "COMPLETE_90D_4H_PRICE_ONLY",
+        "receipt": {
+          "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=NEAR-USDT&period=4hour&size=1200",
+          "requested_ts": 1791678898397,
+          "received_ts": 1791678899133,
+          "http_status": 200,
+          "sha256": "60237556af117da6df4dd6ab396cdece9e3b93391980a71d2c821e2ea0807133"
+        },
+        "source_ts": 1791678898836,
+        "raw": {
+          "path": "checkpoints/htx-compact-4h/NEAR-USDT.raw.json.gz",
+          "bytes": 35752,
+          "sha256": "7342fc7a417e98dbc8ab5d65169ce8704897abf2d78067858e62a8faf474102b"
+        },
+        "raw_body_sha256": "60237556af117da6df4dd6ab396cdece9e3b93391980a71d2c821e2ea0807133",
+        "manifest_raw_body_matches": true,
+        "raw_row_count": 1200,
+        "raw_certainly_closed_4h_rows_by_native_reply_ts": 1199,
+        "raw_first_open_ts": 1774411200000,
+        "raw_last_closed_end_ts": 1791676800000,
+        "raw_gap_edges": 0,
+        "raw_duplicate_starts": 0,
+        "native_UTC_offset_mod_4h_ms": [
+          0
+        ],
+        "raw_fieldnames": [
+          "id",
+          "open",
+          "close",
+          "high",
+          "low",
+          "amount",
+          "vol",
+          "trade_turnover",
+          "count"
+        ],
+        "normalized": {
+          "path": "checkpoints/htx-compact-4h/NEAR-USDT.normalized.json.gz",
+          "bytes": 10771,
+          "sha256": "b3d8e81c94da766048f816fef38cec1986d735693589b1dfb5b0214d3aa0d588"
+        },
+        "normalized_body_sha256": "6065bc7e99ca9568b2e958e6824de2cae5f61fd79ea85fd08e28255b78549aa8",
+        "manifest_normalized_body_matches": true,
+        "normalized_rows": 540,
+        "manifest_observed_bars": 540,
+        "missing_bars": 0,
+        "anchor_end_ts": 1791590400000,
+        "volume_qualified": false,
+        "live_quote_eligible": false,
+        "history_class": "ACTUAL_RETAINED_PROVIDER_BODY_BACKFILLED_NOT_PROSPECTIVE_EVENT"
+      }
+    ],
+    "raw_units_status": "Columns retained, manifest volume_qualified:false; no unit assigned here",
+    "raw_lookback_note": "Some actualraw1200x4h span~200days while normalizedclip is90days. Raw native grid and contract epoch require their own bounded qualification; weekly/native calendar cannot be guessed."
+  },
+  "BTC_monthly_actual_originals": {
+    "outer_zip": {
+      "path": "checkpoints/binance-monthly-original-37937872663.zip",
+      "bytes": 15070543,
+      "sha256": "fba36560d7618be996d3484e2ead601b0710eb9d15c49c76d8b7a147fe7f1ccd"
+    },
+    "original_archives": [
+      {
+        "market": "spot",
+        "symbol": "BTCUSDT",
+        "month": "2026-06",
+        "outer_zip": "checkpoints/binance-monthly-original-37937872663.zip",
+        "zip_member": "binance-monthly/spot/2026-06/original.zip",
+        "zip_bytes": 2092027,
+        "zip_sha256": "c8e1d5e70b766dd2312fc9cd7085785bb25708e27e75c21a5a5aaba61a6d07f5",
+        "saved_checksum_matches": true,
+        "csv_member": "BTCUSDT-1m-2026-06.csv",
+        "csv_bytes": 6711196,
+        "csv_sha256": "db449105339f695657d674f8831a0595a8f5f19bbc5750268e0670ba56a72c03",
+        "qualification_csv_hash_matches": true,
+        "rows": 43200,
+        "field_count": 12,
+        "raw_header": null,
+        "raw_column_indices_present": [
+          5,
+          7,
+          8,
+          9,
+          10
+        ],
+        "sample_raw_extra_columns": {
+          "5": "3.76233000",
+          "7": "277179.25455580",
+          "8": "2892",
+          "9": "2.24771000",
+          "10": "165600.35283720"
+        },
+        "first_native_timestamp": "1780272000000000",
+        "last_native_timestamp": "1782863940000000",
+        "original_timestamp_unit": "microseconds",
+        "available_at": 1791552915253,
+        "qualified_at": 1791552924065,
+        "source_ts": null,
+        "native_source_publication_ts": null,
+        "quantity_unit_status": "RAW_COLUMNS_AVAILABLE; units/base/quote/count/taker meanings require official schema verification, not assigned from column names.",
+        "qualification_role": "HISTORICAL_PRICE_ONLY",
+        "decision_replay_eligible": false
+      },
+      {
+        "market": "spot",
+        "symbol": "BTCUSDT",
+        "month": "2026-07",
+        "outer_zip": "checkpoints/binance-monthly-original-37937872663.zip",
+        "zip_member": "binance-monthly/spot/2026-07/original.zip",
+        "zip_bytes": 2112275,
+        "zip_sha256": "3ef15c84353da48e1c7c5fd99b9751cb036bf8986ed47f7cd1be63359c0d4f6b",
+        "saved_checksum_matches": true,
+        "csv_member": "BTCUSDT-1m-2026-07.csv",
+        "csv_bytes": 6908948,
+        "csv_sha256": "a5d6c63a4116da9f33a739ff0a772e9d0d5b433be5e6c1010bf6822c6c27722c",
+        "qualification_csv_hash_matches": true,
+        "rows": 44640,
+        "field_count": 12,
+        "raw_header": null,
+        "raw_column_indices_present": [
+          5,
+          7,
+          8,
+          9,
+          10
+        ],
+        "sample_raw_extra_columns": {
+          "5": "207.53912000",
+          "7": "12179638.02812310",
+          "8": "6895",
+          "9": "187.44859000",
+          "10": "11000588.60368700"
+        },
+        "first_native_timestamp": "1782864000000000",
+        "last_native_timestamp": "1785542340000000",
+        "original_timestamp_unit": "microseconds",
+        "available_at": 1791552917053,
+        "qualified_at": 1791552925051,
+        "source_ts": null,
+        "native_source_publication_ts": null,
+        "quantity_unit_status": "RAW_COLUMNS_AVAILABLE; units/base/quote/count/taker meanings require official schema verification, not assigned from column names.",
+        "qualification_role": "HISTORICAL_PRICE_ONLY",
+        "decision_replay_eligible": false
+      },
+      {
+        "market": "spot",
+        "symbol": "BTCUSDT",
+        "month": "2026-08",
+        "outer_zip": "checkpoints/binance-monthly-original-37937872663.zip",
+        "zip_member": "binance-monthly/spot/2026-08/original.zip",
+        "zip_bytes": 2084946,
+        "zip_sha256": "acab442e02745177063031d402929703ae983715010064b40cf811c4beb843d4",
+        "saved_checksum_matches": true,
+        "csv_member": "BTCUSDT-1m-2026-08.csv",
+        "csv_bytes": 6904130,
+        "csv_sha256": "eeae500451e4297645b7252c776f967d03670a942fbc51c6c1566021a7977f6e",
+        "qualification_csv_hash_matches": true,
+        "rows": 44640,
+        "field_count": 12,
+        "raw_header": null,
+        "raw_column_indices_present": [
+          5,
+          7,
+          8,
+          9,
+          10
+        ],
+        "sample_raw_extra_columns": {
+          "5": "7.71179000",
+          "7": "485038.09592460",
+          "8": "873",
+          "9": "1.18384000",
+          "10": "74456.29821520"
+        },
+        "first_native_timestamp": "1785542400000000",
+        "last_native_timestamp": "1788220740000000",
+        "original_timestamp_unit": "microseconds",
+        "available_at": 1791552918545,
+        "qualified_at": 1791552926083,
+        "source_ts": null,
+        "native_source_publication_ts": null,
+        "quantity_unit_status": "RAW_COLUMNS_AVAILABLE; units/base/quote/count/taker meanings require official schema verification, not assigned from column names.",
+        "qualification_role": "HISTORICAL_PRICE_ONLY",
+        "decision_replay_eligible": false
+      },
+      {
+        "market": "usd_m_futures",
+        "symbol": "BTCUSDT",
+        "month": "2026-06",
+        "outer_zip": "checkpoints/binance-monthly-original-37937872663.zip",
+        "zip_member": "binance-monthly/usd_m_futures/2026-06/original.zip",
+        "zip_bytes": 1838455,
+        "zip_sha256": "9b214199eb5063585c7ed0f59ba19323326d68ac024b85106713989399204490",
+        "saved_checksum_matches": true,
+        "csv_member": "BTCUSDT-1m-2026-06.csv",
+        "csv_bytes": 4894009,
+        "csv_sha256": "a0d502fe633a659c806c787bbbc338627527df786bf94c65bc01cef9eb4b853e",
+        "qualification_csv_hash_matches": true,
+        "rows": 43200,
+        "field_count": 12,
+        "raw_header": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "raw_column_indices_present": [
+          5,
+          7,
+          8,
+          9,
+          10
+        ],
+        "sample_raw_extra_columns": {
+          "5": "48.353",
+          "7": "3561022.12150",
+          "8": "2445",
+          "9": "21.773",
+          "10": "1603482.46490"
+        },
+        "first_native_timestamp": "1780272000000",
+        "last_native_timestamp": "1782863940000",
+        "original_timestamp_unit": "milliseconds",
+        "available_at": 1791552920374,
+        "qualified_at": 1791552927099,
+        "source_ts": null,
+        "native_source_publication_ts": null,
+        "quantity_unit_status": "RAW_COLUMNS_AVAILABLE; units/base/quote/count/taker meanings require official schema verification, not assigned from column names.",
+        "qualification_role": "HISTORICAL_PRICE_ONLY",
+        "decision_replay_eligible": false
+      },
+      {
+        "market": "usd_m_futures",
+        "symbol": "BTCUSDT",
+        "month": "2026-07",
+        "outer_zip": "checkpoints/binance-monthly-original-37937872663.zip",
+        "zip_member": "binance-monthly/usd_m_futures/2026-07/original.zip",
+        "zip_bytes": 1844583,
+        "zip_sha256": "f18440bb58f0c7e1ff63cbb906132002877c4914540c8aebab920da6937cff73",
+        "saved_checksum_matches": true,
+        "csv_member": "BTCUSDT-1m-2026-07.csv",
+        "csv_bytes": 5016863,
+        "csv_sha256": "55513f41367680136e1937c8e7fb6cdcff08eb1a05b37702cee1a6742ca513d1",
+        "qualification_csv_hash_matches": true,
+        "rows": 44640,
+        "field_count": 12,
+        "raw_header": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "raw_column_indices_present": [
+          5,
+          7,
+          8,
+          9,
+          10
+        ],
+        "sample_raw_extra_columns": {
+          "5": "113.536",
+          "7": "6659523.70170",
+          "8": "4323",
+          "9": "75.808",
+          "10": "4446408.85270"
+        },
+        "first_native_timestamp": "1782864000000",
+        "last_native_timestamp": "1785542340000",
+        "original_timestamp_unit": "milliseconds",
+        "available_at": 1791552922199,
+        "qualified_at": 1791552928017,
+        "source_ts": null,
+        "native_source_publication_ts": null,
+        "quantity_unit_status": "RAW_COLUMNS_AVAILABLE; units/base/quote/count/taker meanings require official schema verification, not assigned from column names.",
+        "qualification_role": "HISTORICAL_PRICE_ONLY",
+        "decision_replay_eligible": false
+      },
+      {
+        "market": "usd_m_futures",
+        "symbol": "BTCUSDT",
+        "month": "2026-08",
+        "outer_zip": "checkpoints/binance-monthly-original-37937872663.zip",
+        "zip_member": "binance-monthly/usd_m_futures/2026-08/original.zip",
+        "zip_bytes": 1817920,
+        "zip_sha256": "adfd0846ea580681aeb18a6bdf06660dcfcc1a7b6819ea2eecfc3c53240ec67a",
+        "saved_checksum_matches": true,
+        "csv_member": "BTCUSDT-1m-2026-08.csv",
+        "csv_bytes": 5004926,
+        "csv_sha256": "675f1a0c9f3a265cafbc69e7821eb891ff432cfa12aba45c77754a06190fd80e",
+        "qualification_csv_hash_matches": true,
+        "rows": 44640,
+        "field_count": 12,
+        "raw_header": [
+          "open_time",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "close_time",
+          "quote_volume",
+          "count",
+          "taker_buy_volume",
+          "taker_buy_quote_volume",
+          "ignore"
+        ],
+        "raw_column_indices_present": [
+          5,
+          7,
+          8,
+          9,
+          10
+        ],
+        "sample_raw_extra_columns": {
+          "5": "70.188",
+          "7": "4412340.02750",
+          "8": "1293",
+          "9": "29.359",
+          "10": "1845583.23570"
+        },
+        "first_native_timestamp": "1785542400000",
+        "last_native_timestamp": "1788220740000",
+        "original_timestamp_unit": "milliseconds",
+        "available_at": 1791552923723,
+        "qualified_at": 1791552929002,
+        "source_ts": null,
+        "native_source_publication_ts": null,
+        "quantity_unit_status": "RAW_COLUMNS_AVAILABLE; units/base/quote/count/taker meanings require official schema verification, not assigned from column names.",
+        "qualification_role": "HISTORICAL_PRICE_ONLY",
+        "decision_replay_eligible": false
+      }
+    ],
+    "all_rows": 264960,
+    "duplicated_markets": "Spot and USD-M are two markets of Binance, not two independent upstreams",
+    "first_known_rule": "Every available_at is actualOct9 acquisition; historicalJune-August event labels do not gain an exanteJune first_known",
+    "derived_price_paths": [
+      {
+        "outer_zip": "checkpoints/cold-derived-candles-connected-37951988397.zip",
+        "member": "spot-90d-5m.json.gz",
+        "member_sha256": "87be657971a59324f07ee51967b2c1e3d5ee4af9bc737a2a3f2e58849f4902b1",
+        "decoded_sha256": "fd9aec2563e30d0cfccddd1be7ac8c149350c8eb6777f8e085884903b5dcd1e4",
+        "schema": "BINANCE_DERIVED_COLD_OHLC_V1",
+        "venue": "BINANCE",
+        "market": "spot",
+        "symbol": "BTCUSDT",
+        "start_ts": 1780272000000,
+        "end_ts": 1788048000000,
+        "interval_ms": 300000,
+        "candles": 25920,
+        "row_field_count": 5,
+        "source_ts": null,
+        "available_at": 1791552918545,
+        "qualified_at": 1791552926083,
+        "source_archives": [
+          {
+            "month": "2026-06",
+            "archive_sha256": "c8e1d5e70b766dd2312fc9cd7085785bb25708e27e75c21a5a5aaba61a6d07f5",
+            "qualified_price_payload_sha256": "6ca0d063c0095edbdfe02ef9d796e94d5c251acac454997a1406a009b1c3cc6b"
+          },
+          {
+            "month": "2026-07",
+            "archive_sha256": "3ef15c84353da48e1c7c5fd99b9751cb036bf8986ed47f7cd1be63359c0d4f6b",
+            "qualified_price_payload_sha256": "eabb7d51394ebbf5bb21711be9383e4716ad70d8e8ae7a09dcb5d32b2de8d74d"
+          },
+          {
+            "month": "2026-08",
+            "archive_sha256": "acab442e02745177063031d402929703ae983715010064b40cf811c4beb843d4",
+            "qualified_price_payload_sha256": "1cedafa8853081b8d5b57c3fab0f997b23b82cd6aa7aadc4374fe6355b5a009f"
+          }
+        ],
+        "native_volume_in_derived_rows": false,
+        "decision_replay_eligible": false,
+        "evidence_class": "ACTUAL_HISTORICAL_PRICE_PATH_ONLY"
+      },
+      {
+        "outer_zip": "checkpoints/cold-derived-candles-connected-37951988397.zip",
+        "member": "usd_m_futures-90d-5m.json.gz",
+        "member_sha256": "9df6d17fb713c230aa422b77597a809ec6e5ae9684bd82e32a2622241f955643",
+        "decoded_sha256": "32aa889ffffa9519cc6f0a801ac62f481a5c21642466558b306cdbe5c6305d14",
+        "schema": "BINANCE_DERIVED_COLD_OHLC_V1",
+        "venue": "BINANCE",
+        "market": "usd_m_futures",
+        "symbol": "BTCUSDT",
+        "start_ts": 1780272000000,
+        "end_ts": 1788048000000,
+        "interval_ms": 300000,
+        "candles": 25920,
+        "row_field_count": 5,
+        "source_ts": null,
+        "available_at": 1791552923723,
+        "qualified_at": 1791552929002,
+        "source_archives": [
+          {
+            "month": "2026-06",
+            "archive_sha256": "9b214199eb5063585c7ed0f59ba19323326d68ac024b85106713989399204490",
+            "qualified_price_payload_sha256": "242894e6c901dbc37b6c4b0576924cfeb49e08e876052fcafbe2e8bbf32183cd"
+          },
+          {
+            "month": "2026-07",
+            "archive_sha256": "f18440bb58f0c7e1ff63cbb906132002877c4914540c8aebab920da6937cff73",
+            "qualified_price_payload_sha256": "bad76207b038275f7215007a73e8a186a08db1ab3803855d4905d4b00f96995d"
+          },
+          {
+            "month": "2026-08",
+            "archive_sha256": "adfd0846ea580681aeb18a6bdf06660dcfcc1a7b6819ea2eecfc3c53240ec67a",
+            "qualified_price_payload_sha256": "a0e91cb2a9b5fff9e54d69ab4668127e08d2fe845e78c49f49eaac97e1a48d41"
+          }
+        ],
+        "native_volume_in_derived_rows": false,
+        "decision_replay_eligible": false,
+        "evidence_class": "ACTUAL_HISTORICAL_PRICE_PATH_ONLY"
+      }
+    ]
+  },
+  "NEAR_native_archive_API_registry": {
+    "outer_zip": "checkpoints/native-kline-original-37927835391.zip",
+    "native_zip_member": "native-kline-archive/native-kline.zip",
+    "native_zip_sha256": "1830d7631d21d86332c3df1b66bb1e7ca7d8ef21fb322e8668db045ec9d0c37d",
+    "csv_member": "NEAR-USDT-PERP-klines-1m-2026-10-03.csv",
+    "csv_sha256": "8fbed5918881819ddba163241d7a9eb4ef8ba9220184fe5c4f031bc868798317",
+    "raw_header": [
+      "instId",
+      "open",
+      "high",
+      "low",
+      "close",
+      "vol",
+      "volCcy",
+      "volCcyQuote",
+      "ts"
+    ],
+    "raw_data_rows": 1440,
+    "instId_values": [
+      "NEAR-USDT-PERP"
+    ],
+    "raw_rows_order": "not epoch sorted; qualifier reorders original epoch only",
+    "raw_quantity_sample": {
+      "vol": "208",
+      "volCcy": "208.00000000",
+      "volCcyQuote": "959.97600000"
+    },
+    "exact_archive_endpoint": "https://futures.htx.com/data/historical_data/futures/daily/klines/NEAR-USDT-PERP/1m/NEAR-USDT-PERP-klines-1m-2026-10-03.zip",
+    "archive_key": "historical_data/futures/daily/klines/NEAR-USDT-PERP/1m/NEAR-USDT-PERP-klines-1m-2026-10-03.zip",
+    "download_received_ts": 1791547571645,
+    "old_directory_reference": {
+      "outer_zip": "checkpoints/native-kline-original-37927521761.zip",
+      "JSON_member": "native-kline-archive-original.json",
+      "file_listing_member": "native-kline-archive/files.xml",
+      "file_listing_sha256": "0c7132e7163bd61f75aa969a3dfccba354c0ea216cff3614632db9833dddd1ad",
+      "directory_receipts": [
+        {
+          "url": "https://futures.htx.com/data?delimiter=/&prefix=historical_data%2Ffutures%2Fdaily%2Fklines%2FNEAR-USDT-PERP%2F",
+          "received_ts": 1791547391670,
+          "sha256": "87a9323ac85ce28867d5d7ce590c8f29b8d1a999961fca71bb33adef48683691"
+        },
+        {
+          "url": "https://futures.htx.com/data/?delimiter=/&prefix=historical_data%2Ffutures%2Fdaily%2Fklines%2FNEAR-USDT-PERP%2F",
+          "received_ts": 1791547391919,
+          "sha256": "9befa2ac599feb0b510556bb7143088250abbeeb6d91680aa676dc1170f1e830"
+        },
+        {
+          "url": "https://futures.htx.com/data/?prefix=historical_data%2Ffutures%2Fdaily%2Fklines%2FNEAR-USDT-PERP%2F1m%2F",
+          "received_ts": 1791547392587,
+          "sha256": "0c7132e7163bd61f75aa969a3dfccba354c0ea216cff3614632db9833dddd1ad"
+        }
+      ]
+    },
+    "old_approved_registry": {
+      "file": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "pointer": "/contracts/30",
+      "record": {
+        "family": "linear",
+        "contract_code": "NEAR-USDT",
+        "asset_symbol": "NEAR",
+        "market_kind": "LINEAR_PERPETUAL",
+        "settlement_asset": "USDT",
+        "price_quote": "USDT",
+        "contract_size": 1,
+        "price_tick": 0.001,
+        "delivery_time": null,
+        "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all",
+        "source_ts": 1791652902035,
+        "observed_ts": 1791652904807,
+        "scope": {
+          "classification": "CRYPTO_CONFIRMED",
+          "eligible_for_crypto_discovery": true,
+          "source": "HTX swap_contract_info labels/tradfi_labels",
+          "source_fields_present": {
+            "labels": true,
+            "tradfi_labels": true,
+            "business_type": true,
+            "contract_type": true,
+            "trade_partition": true
+          },
+          "evidence": {
+            "official_forex_source_url": null,
+            "official_crypto_token_source_url": null,
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "reasons": [
+            "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+          ]
+        },
+        "production_market_adapter_supported": true,
+        "market_adapter_status": "EXISTING_EXACT_LINEAR_PERPETUAL_ADAPTER"
+      },
+      "historical_units_or_epoch_acceptance": false
+    },
+    "native_API_crosscheck_reference": {
+      "path": "checkpoints/htx-archive-primary-20261004/near-archive-minute-counts-20261003.json.gz",
+      "decoded_sha256": "47e458922d794ec96a42606966a637e81554e2dec36702090c1e154a5a8a4719",
+      "channel": "market.NEAR-USDT.kline.1min",
+      "source_ts": 1791139079109,
+      "rows": 1440,
+      "raw_fieldnames": [
+        "id",
+        "open",
+        "close",
+        "high",
+        "low",
+        "amount",
+        "vol",
+        "trade_turnover",
+        "count"
+      ],
+      "exact_historical_API_request_URL": "NOT_RETAINED_IN_THIS_REPLY_OR_PROVENANCE_DESCRIPTOR; do not invent query parameters",
+      "producer_contract": "NEAR-USDT",
+      "API_family_reference": "HTX linear-swap history/kline, supported by saved ch and existing compact4h URL, not a recovered original1m request receipt",
+      "documentary_endpoint_path": "GET /linear-swap-ex/market/history/kline; original exact1m query string not retained in inspected reply/provenance."
+    },
+    "qualified_price_manifest": {
+      "schema": "HTX_NATIVE_KLINE_PRICE_QUALIFICATION_V1",
+      "status": "CLOSED_PRICE_HISTORY",
+      "contract": "NEAR-USDT",
+      "native_instrument": "NEAR-USDT-PERP",
+      "archive_sha256": "1830d7631d21d86332c3df1b66bb1e7ca7d8ef21fb322e8668db045ec9d0c37d",
+      "csv_sha256": "8fbed5918881819ddba163241d7a9eb4ef8ba9220184fe5c4f031bc868798317",
+      "bars_sha256": "47e458922d794ec96a42606966a637e81554e2dec36702090c1e154a5a8a4719",
+      "source_ts": 1791139079109,
+      "archive_acquired_at": 1791547571645,
+      "available_at": 1791547571645,
+      "qualified_at": 1791548315175,
+      "event_interval": [
+        1790956800000,
+        1791043200000
+      ],
+      "explicit_day_offset_minutes": 480,
+      "other_files_calendar_qualified": false,
+      "minute_count": 1440,
+      "qualified_price_minutes": 1440,
+      "raw_records_removed": 0,
+      "raw_timestamps_shifted": 0,
+      "rows_reordered_by_original_epoch_only": true,
+      "quantity_unit_qualified": false,
+      "exchange_fill_identity_qualified": false,
+      "signed_notional_or_cvd_calculated": false,
+      "live_quote_eligible": false,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "decision_replay_eligible": false,
+      "original_source_clock_refreshed": false,
+      "qualification_scope": "DELAYED_NATIVE_MINUTE_PRICES_ONLY;NO_TRADE_OR_DIRECTION_EVIDENCE",
+      "complete_30_90day_102asset_history": false,
+      "project_complete": false,
+      "qualified_price_payload_sha256": "5882657247038d8300b62abd1253bf07293dfb81418dea57dcd1483327914268"
+    },
+    "quantity_units_qualified": false,
+    "tradecount_or_CVD_qualified": false
+  },
+  "actual_legacy_early_outcome": {
+    "outer_zip": "checkpoints/early-outcome-original-path-37930961701.zip",
+    "member": "early-queue-path-diagnosis.json",
+    "member_sha256": "ced6a09b69b36d1a3c1231d01df376247669301033c79359565508c191226a21",
+    "task_pointer": "/task",
+    "task": {
+      "outcome_id": "EDW:BR-USDT:1791545058092:G10:H1",
+      "wave_id": "EDW:BR-USDT:1791545058092:G10",
+      "contract_code": "BR-USDT",
+      "direction_hint": null,
+      "first_seen_ts": 1791545058092,
+      "horizon_hours": 1,
+      "target_ts": 1791548658092,
+      "outcome_status": "PENDING",
+      "rules_version": "v3-early-discovery-shadow-v1",
+      "decision_without_filter_json": "null",
+      "decision_with_filter_json": "null",
+      "first_seen_context_json": "{\"first_seen_ts\":1791545058092,\"first_seen_price\":0.52343,\"first_seen_oi\":84778,\"first_seen_funding\":0.00005,\"first_seen_detectors\":[\"PRICE_STATE_TRANSITION:SHORT\",\"RELATIVE_STRENGTH:LONG\",\"RELATIVE_STRENGTH:LONG\"],\"move_before_first_seen\":3.7625136287045224,\"lifecycle_stage\":\"DISCOVERY\"}",
+      "entry_condition_json": "null",
+      "invalidation_json": "null",
+      "regime": null,
+      "liquidity_bucket": null,
+      "raw_return_pct": null,
+      "directional_return_pct": null,
+      "mfe_pct": null,
+      "mae_pct": null,
+      "realized_r": null,
+      "model_r": null,
+      "lost_rr": null,
+      "prevented_bad_entry": null,
+      "missed_good_entry": null,
+      "late_entry_avoided": null,
+      "early_alert_useful": null,
+      "computed_ts": null,
+      "shadow_only": 1
+    },
+    "path_pointer": "/path",
+    "points": 12,
+    "first_point": {
+      "ts": 1791545101809,
+      "price": 0.52497
+    },
+    "last_point": {
+      "ts": 1791548403114,
+      "price": 0.53284
+    },
+    "read_ts": 1791549297272,
+    "resolved": {
+      "status": "CLOSED",
+      "outcome": {
+        "outcome_id": "EDW:BR-USDT:1791545058092:G10:H1",
+        "outcome_status": "CLOSED",
+        "raw_return_pct": 1.797757102191322,
+        "directional_return_pct": null,
+        "mfe_pct": null,
+        "mae_pct": null,
+        "computed_ts": 1791549297272,
+        "probability": null,
+        "validated_signal": false,
+        "shadow_only": true
+      }
+    },
+    "point_source_clocks_after_original_anchor": true,
+    "last_point_no_later_than_target": true,
+    "computed_after_target": true,
+    "raw_rows": 78,
+    "extrema_scope": "OBSERVED_SNAPSHOTS_ONLY",
+    "new_ANOM_card_or_early_detection_proven": false
+  },
+  "actual_paged_collector_price_paths": [
+    {
+      "path": "checkpoints/paged-prospective-history-37864646300/actual-paged-history.json",
+      "status": "ACTUAL_ORIGINAL12H_PAGED_HISTORY_CLOSED",
+      "contract": "BTC-USDT",
+      "start_ts": 1791462000000,
+      "end_ts": 1791505200000,
+      "read_ts": 1791505519147,
+      "point_count": 144,
+      "rows_loaded": 870,
+      "sampling_minutes": 5,
+      "extrema_scope": "OBSERVED_SNAPSHOTS_ONLY",
+      "pages": 3,
+      "task_writes": 0,
+      "outcome_writes": 0,
+      "scope": "READ_ONLY_ORIGINAL_COLLECTOR_SHARDS_THROUGH_ACTUAL_ASSEMBLED_PAGED_READER;NOT_NEW_SOURCE_OR_EMPIRICAL_ENTRY_OUTCOME_OR30_90DAY_COVERAGE"
+    },
+    {
+      "path": "checkpoints/paged-prospective-history-37865298193/actual-paged-history.json",
+      "status": "ACTUAL_ORIGINAL24H_PAGED_HISTORY_CLOSED",
+      "contract": "BTC-USDT",
+      "start_ts": 1791419400000,
+      "end_ts": 1791505800000,
+      "read_ts": 1791505971960,
+      "point_count": 288,
+      "rows_loaded": 1734,
+      "sampling_minutes": 5,
+      "extrema_scope": "OBSERVED_SNAPSHOTS_ONLY",
+      "pages": 5,
+      "task_writes": 0,
+      "outcome_writes": 0,
+      "scope": "READ_ONLY_ORIGINAL_COLLECTOR_SHARDS_THROUGH_ACTUAL_ASSEMBLED_PAGED_READER;NOT_NEW_SOURCE_OR_EMPIRICAL_ENTRY_OUTCOME_OR30_90DAY_COVERAGE"
+    }
+  ],
+  "actual_CT_BR_normalized_event_evidence": [
+    {
+      "contract": "CT-USDT",
+      "canonical": {
+        "path": "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/CT-USDT.canonical.json.gz",
+        "bytes": 50012,
+        "sha256": "9924a0f8005ad20e6e3de43c805460dfa7a0623a31617f955295f09d930e0dc8"
+      },
+      "decoded_SHA256": "607a13f9ad7ebd30eabbe16447c78ed2c9ff47daf35069faa6d398674e1e4236",
+      "event": {
+        "event_id": "OPP:opportunity-integrity-v2:CT-USDT:MARKET:EPISODE:1792305900000:1792307700000",
+        "timeframe": "15m",
+        "event_close_ts": 1792306800000,
+        "status": "PARTIAL",
+        "funnel_stage": "ANOMALOUS_EVENT",
+        "event_type": "ANOMALOUS_EFFORT_VS_RESULT",
+        "original_event_candle": {
+          "open": 0.31671,
+          "high": 0.31859,
+          "low": 0.31598,
+          "close": 0.31601
+        },
+        "first_detection_ts_retained": null,
+        "event_close_to_canonical_ms": 15235025,
+        "early_detection_proven": false,
+        "event_close_is_not_first_known_time": true,
+        "hypothesis_missing_evidence": [
+          "timestamp_aligned_taker_flow",
+          "price_oi_1h",
+          "spot_perp_basis"
+        ],
+        "hypothesis_semantics": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY_OR_TRADER_INTENT"
+      },
+      "actual_event_1m": {
+        "rows": 15,
+        "window_start": 1792305900000,
+        "window_end": 1792306800000,
+        "duration_ms": 60000,
+        "expected_rows": 15,
+        "duplicate_times": 0,
+        "invalid_OHLC_rows": 0,
+        "missing_or_invalid_volume_rows": 0,
+        "exact_closed_grid": true,
+        "complete_OHLC": true,
+        "complete_OHLCV": true,
+        "volume_required_for_this_claim": true,
+        "volume_total": 25738.644000000004,
+        "volume_unit": "QUOTE_TURNOVER_USDT",
+        "volume_equals_retained_turnover_every_row": true,
+        "trade_count_total": 112,
+        "individual_raw_fills_retained_for_event": false,
+        "provider_wire_body_retained_here": false,
+        "preceding_comparison_baseline_bars_retained_here": 0,
+        "unusual_volume_ratio_recomputed": false,
+        "normalized_bar_sha256": "897d1ff2877e09be08979b1101622fcb05c872197b0e3c7f21c5e97eb8e0aaae"
+      },
+      "no_replay_run": true
+    },
+    {
+      "contract": "BR-USDT",
+      "canonical": {
+        "path": "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/BR-USDT.canonical.json.gz",
+        "bytes": 33305,
+        "sha256": "fb05cc25487c16355a93bb7094741e9d3f4f221a7e2b0bb398ee894e4ec4eb9e"
+      },
+      "decoded_SHA256": "708f899670c093ff7ccdddb5ddda951c588d49a021c75908dbd88076b9e46a52",
+      "event": {
+        "event_id": "OPP:opportunity-integrity-v2:BR-USDT:MARKET:EPISODE:1792279800000:1792296000000",
+        "timeframe": "15m",
+        "event_close_ts": 1792280700000,
+        "status": "PARTIAL",
+        "funnel_stage": "ANOMALOUS_EVENT",
+        "event_type": "ANOMALOUS_EFFORT_VS_RESULT",
+        "original_event_candle": {
+          "open": 0.45043,
+          "high": 0.45043,
+          "low": 0.43951,
+          "close": 0.44638
+        },
+        "first_detection_ts_retained": null,
+        "event_close_to_canonical_ms": 41359116,
+        "early_detection_proven": false,
+        "event_close_is_not_first_known_time": true,
+        "hypothesis_missing_evidence": [
+          "timestamp_aligned_taker_flow",
+          "price_oi_1h",
+          "spot_perp_basis"
+        ],
+        "hypothesis_semantics": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY_OR_TRADER_INTENT"
+      },
+      "actual_event_1m": {
+        "rows": 15,
+        "window_start": 1792279800000,
+        "window_end": 1792280700000,
+        "duration_ms": 60000,
+        "expected_rows": 15,
+        "duplicate_times": 0,
+        "invalid_OHLC_rows": 0,
+        "missing_or_invalid_volume_rows": 0,
+        "exact_closed_grid": true,
+        "complete_OHLC": true,
+        "complete_OHLCV": true,
+        "volume_required_for_this_claim": true,
+        "volume_total": 16672.090500000002,
+        "volume_unit": "QUOTE_TURNOVER_USDT",
+        "volume_equals_retained_turnover_every_row": true,
+        "trade_count_total": 177,
+        "individual_raw_fills_retained_for_event": false,
+        "provider_wire_body_retained_here": false,
+        "preceding_comparison_baseline_bars_retained_here": 0,
+        "unusual_volume_ratio_recomputed": false,
+        "normalized_bar_sha256": "089f55521b9bd4d61d7a9ccf7858d1d06b5c4897b0b1daf2803ad427214dde0b"
+      },
+      "no_replay_run": true
+    }
+  ],
+  "source_scalar105_reference": {
+    "path": "checkpoints/collector-v10-release-38531281231/approved105-first-natural-funding-coverage.json",
+    "bytes": 14353,
+    "sha256": "e5b21ea88962071f3c0826e567f181a8f3f06e075c4c4f2b4aea182d6fb89483",
+    "source_head": "7369cafa7d289f3b60135a3ca5172ba391974b3d",
+    "source_bucket": 1791964500000,
+    "source_clocks": {
+      "contracts": 1791964526643,
+      "market": 1791964526056,
+      "oi": 1791964526100,
+      "funding": 1791964526229,
+      "received": 1791964526775,
+      "expected_shards": 7,
+      "universe_total": 386
+    },
+    "original_field_columns": [
+      "contract",
+      "price",
+      "funding_rate",
+      "funding_interval_hours",
+      "observed_ts",
+      "source_status"
+    ],
+    "original_rows": 105,
+    "original_unique_contracts": 105,
+    "all105_OHLCV_available": false,
+    "missing_candle_fields": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume_contracts",
+      "volume_base",
+      "turnover_quote",
+      "native_bar_start",
+      "native_bar_end"
+    ],
+    "exact_asset_sample": [
+      [
+        "BR-USDT",
+        0.42873,
+        5e-05,
+        4,
+        1791964526055,
+        "CLOSED"
+      ],
+      [
+        "CT-USDT",
+        0.39857,
+        5e-05,
+        4,
+        1791964526055,
+        "CLOSED"
+      ],
+      [
+        "HBAR-USDT",
+        0.08711,
+        0.000709172009218204,
+        8,
+        1791964526055,
+        "CLOSED"
+      ]
+    ],
+    "scope": "Exact historical scalar native projection; not original provider candle payload and not current105 coverage."
+  },
+  "other_structural_archive_reference": {
+    "schema": "ACTUAL_HTX_COLD_HISTORY_BATCH_20261010_V1",
+    "status": "THREE_ACTUAL_OFFICIAL_ARCHIVE_PAIRS_RETAINED_CHECKSUM_AND_GRID_VERIFIED",
+    "source_run": 38038404724,
+    "tested_head": "197f31cd015e1b84de6d5a1ece5c7f24633d6501",
+    "source_artifact_id": 11665071206,
+    "source_artifact_sha256": "f1d31e942ea70aa90fe3992d299b261353e7476359ecf2cb34441371b0bc4429",
+    "retained_zip": "checkpoints/actual-htx-cold-history-38038404724.zip",
+    "sourceHTTP": 6,
+    "D1": {
+      "requests": 7,
+      "rows_read": 33,
+      "rows_written": 8,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 30,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 2,
+          "rows_read": 1,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "contracts": [
+      "AAVE-USDT",
+      "ACE-USDT",
+      "ADA-USDT"
+    ],
+    "archive_day": "2026-10-03",
+    "verified_archive_pairs": 3,
+    "structurally_verified_minutes": 4320,
+    "native_api_ohlc_crosschecked": false,
+    "price_qualified": false,
+    "volume_qualified": false,
+    "full_30_90day_102asset_history": false,
+    "actual_ENTRY": false,
+    "project_complete": false,
+    "next": "Admit API OHLC crosschecks and 102-asset backfill only within existing budgets; preserve separate price-only lineage."
+  },
+  "actual_statistics_status_reference": {
+    "block_weights": "WEEKLY_POLICY_ALREADY_ASSESSED",
+    "recall": "NOT_CLOSED:BASELINE_SNAPSHOT_MISSING across1h/4h/24h; persistedreadbackPASS",
+    "prospective": "CLOSED; one factual BTWearlyoutcome with originalhistory; no capturable entry; readinessNOT_VALIDATED_INSUFFICIENT_PROSPECTIVE_SAMPLE; exact maskedcounts not reconstructed."
+  },
+  "existing_controlled_code_and_results": {
+    "observer": "anomaly-research/observer/observer.mjs",
+    "outcome": "anomaly-research/statistics/outcomes.mjs",
+    "durability": "anomaly-research/durability/identity-retention-grid.mjs",
+    "outbox": "anomaly-research/outbox/protocol.mjs",
+    "accepted450455_or_source_replay_reruns": 0,
+    "trust": "Existing controlled function tests remain inherited evidence; no actual market or prospective performance is created by their names/counts.",
+    "current_outcome_clock_rule": "commitOutcomePlan requires committed_ts=card.first_known_ts and a contemporaneous source anchor; evaluateOutcome target is first_known+horizon and ignores points<=firstknown. An oldeventclose cannot replace a late actual known-time price."
+  },
+  "new_data_bound_case_frontier": [
+    {
+      "id": "N1",
+      "available_input": "All6nested original BTCmonthly CSVs +12raw columns",
+      "new_concrete_check": "Official schema/market-specific timestamp and quantity mapping on already retained CSV, preserving exact column text and source receipt. No source request required. Spot headerless indices stay unlabelled until normative proof.",
+      "can_do_now": "raw membership/count/header/clock inspection completed; bounded unit qualification possible from existing originals plus official docs by coordinator",
+      "not_claimed": "base/quote/count/taker units or independent source vote"
+    },
+    {
+      "id": "N2",
+      "available_input": "37HTX4h raw replies +manifests, nativeamount/vol/trade_turnover/count",
+      "new_concrete_check": "Qualify exact per-contract quantity/contract_size/epoch from existing approved registry and source docs; then prospective-free historical4h detector/wick/volume cases can use actual values. The raw window is often wider than normalized90d; exclude forming rows by original replyclock.",
+      "can_do_now": "exact raw availability/closed-vs-forming/counts and normalized gaps inventoried; price-only cases ready",
+      "not_claimed": "volume qualification, historical native instrument epoch, weekly calendar or prospective early accuracy"
+    },
+    {
+      "id": "N3",
+      "available_input": "BTCactual90d5m spot+USD-M OHLC derived arrays",
+      "new_concrete_check": "A genuine long price trajectory can exercise30d/90d watch/outcome endpoint/gap/source-time behavior without waiting for new months. Use a CONTROLLED predeclared envelope for functional-only replay or a separately labelled descriptive BACKFILLED selection.",
+      "can_do_now": "data ready; no module/test was run",
+      "not_claimed": "June prospective first_known; actual archive availableOct9 is later than all these prices, so importing it as an actual future path fromfirstknown must be refused/censored"
+    },
+    {
+      "id": "N4",
+      "available_input": "NEARnative1440minute archive+matching savedAPIreply",
+      "new_concrete_check": "Price-only horizons and nativeUTCoffset480 can be checked from exact old bytes; raw nine-column CSV and nine native API fields give a concrete unit-comparison frontier.",
+      "can_do_now": "full raw endpoint/header/nativeinstrument/registry/hash pointers supplied; existing price acceptance reused",
+      "not_claimed": "vol/volCcy/volCcyQuote unit meaning or fill/taker/CVD provenance"
+    },
+    {
+      "id": "N5",
+      "available_input": "BRactuallegacyH1first_seen_context +12five-minutepricepoints +computedoutcome",
+      "new_concrete_check": "Import old first_seen/anchor, target and computed clocks with unknown direction; keep raw return descriptive and directional return/MFE/MAE null. Do not turn it into a new ANOM prospective sample.",
+      "can_do_now": "exact clocks and source points available; no re-execution of old consumer",
+      "not_claimed": "two-direction success rate, trade PnL or fresh ENTRY"
+    },
+    {
+      "id": "N6",
+      "available_input": "BTCactual12h144points +24h288points paged collector paths",
+      "new_concrete_check": "Source-receipt-aware bounded history/gap/coverage linkage using exact original pages; distinguish sampled extrema from closed OHLC and from analytic raw-candle baselines.",
+      "can_do_now": "read original data/manifest, reuse accepted page-reader result",
+      "not_claimed": "1m/5m volume, one full24h path as105coverage, or empirical prediction result"
+    },
+    {
+      "id": "N7",
+      "available_input": "CT/BRreal15minuteeventrows and latecanonicalcopies",
+      "new_concrete_check": "Keep4.23h/11.49h late-discovery lineage and absent originalfirst_detection; do not use event close as first_known. Existing event candle plus later samecoinspot cannot fabricate a matched event-window pair.",
+      "can_do_now": "BACKFILLED/event-row/volume-unit boundary cases from original pointers",
+      "not_claimed": "new unusual-volume detection without prior20sameTFbars or prospective captured outcome"
+    },
+    {
+      "id": "N8",
+      "available_input": "Kraken240closed1m+forming1 and Bitfinexsparse4h originals",
+      "new_concrete_check": "4h of1m data yields atmost16fifteen-minute bars, below21needed by observer20prior+event. Sparse candles cannot be silently filled or converted USD→USDT.",
+      "can_do_now": "actual partial-baseline/formation/sparse/quoteunit data cases; no accepted source-suite repeat",
+      "not_claimed": "new15m abnormal-volume detector success/current105 or crossvenue agreement"
+    },
+    {
+      "id": "N9",
+      "available_input": "AAVE/ACE/ADA1440nativearchive rows each, structural accepted receipts",
+      "new_concrete_check": "Do not inherit NEAR nativeAPIprice/units qualification for unrelated assets solely from same CSV shape; preserve exact structural-only status.",
+      "can_do_now": "structural-vs-qualified consumer gating case",
+      "not_claimed": "all4320pricequalified or any volume qualification"
+    },
+    {
+      "id": "N10",
+      "available_input": "all105scalaroriginalsnapshot + existingnative statistics receipts",
+      "new_concrete_check": "Keep exact screened denominator and available-price history separate from OHLCV. Legacy early outcome, CONTROLLED tests and newANOM cards have distinct cohorts; overlapping12derived paths are not12independent samples.",
+      "can_do_now": "denominator/type/provenance and explicit missing-baseline inventory",
+      "not_claimed": "actual prospective anomaly count, calibrated source weights or prediction accuracy withENTRYsamples0"
+    }
+  ],
+  "source_membership": [
+    {
+      "path": "checkpoints/htx-compact-4h/AAVE-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "121ac8113f7c5e3a7ceacdefe5b4f4570787181c11330aef93ef8c7404ed8e62"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AAVE-USDT.raw.json.gz",
+      "bytes": 41461,
+      "sha256": "431a0f6a9f365930f9dc4342bf9fe3cfd697d498f4465e944895d58a08efd829"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AAVE-USDT.normalized.json.gz",
+      "bytes": 13060,
+      "sha256": "986043defc7d357bf0afe58a2a0c646aa3ba250eeac431387b08497b0d8f9dd5"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ACE-USDT.manifest.json",
+      "bytes": 1498,
+      "sha256": "eca0f86420d1ca2c3da2f9891b4c9b3fe98e7f9042c13b4b33a6e17f6277ef0f"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ACE-USDT.raw.json.gz",
+      "bytes": 11487,
+      "sha256": "2ac4d851819836161b9339ab6d805d587c68824d3a973ef21c42b3c574fc98b0"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ACE-USDT.normalized.json.gz",
+      "bytes": 7617,
+      "sha256": "44c669b4b069f88e3cd39149c931ab3717188df525300edce34b7cb22f3df0a5"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ADA-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "83d92f21bdd34689fce3e51c4f3b17c5da6e236bbc44fad367dcf45f935f1e12"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ADA-USDT.raw.json.gz",
+      "bytes": 44933,
+      "sha256": "013286ac90f5f839704da3aca611accfc4888e0841e3de54c692349f960d40a3"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ADA-USDT.normalized.json.gz",
+      "bytes": 12953,
+      "sha256": "3164a36283ded1c53963b5f717cd8c10175f91bf7a6134a54f192af53bdc8413"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AKE-USDT.manifest.json",
+      "bytes": 1497,
+      "sha256": "a01d431da338758f39ebf4578a49b8d1d568f8ed631ae4396445a6bfa585f4aa"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AKE-USDT.raw.json.gz",
+      "bytes": 19063,
+      "sha256": "f1b39452285ce163472578be3d84c7f405f74274b046d6e2014dc3c98d15464b"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AKE-USDT.normalized.json.gz",
+      "bytes": 12491,
+      "sha256": "c7db6382bf002fe219572bd0c66852e6074e244e54411f98d102b950e80c6502"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ALGO-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "6decbb46bee9e328e848508a6f8e00470dd969362723f7b79d9771095aaa8e7b"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ALGO-USDT.raw.json.gz",
+      "bytes": 37010,
+      "sha256": "77b23c5e9681673d133cd52b375090338a31f27fb61fdef45cd5e4e5205c3281"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ALGO-USDT.normalized.json.gz",
+      "bytes": 11248,
+      "sha256": "0acef95ccd590ad336ce87b0388adc23dbd78407d0bb956512c9ef1c5828be90"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/APR-USDT.manifest.json",
+      "bytes": 1498,
+      "sha256": "984fb3c2d442e8e97206b5bbdfc6dd21e32f2e797805b2c26e69484d1174b3a9"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/APR-USDT.raw.json.gz",
+      "bytes": 11002,
+      "sha256": "24ec60743813cc153d8ae36a676f58702727be19732773b21fc48dbcf2433a22"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/APR-USDT.normalized.json.gz",
+      "bytes": 7055,
+      "sha256": "93fd6aea4ccb85a816c5d893bdaadb900524f8bce1b523030b299b01f1ed4491"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/APT-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "04f9fecb32718fa03ef5b14bf3cf9bf6b2bd01d468c0ae9d08ece6b93a321561"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/APT-USDT.raw.json.gz",
+      "bytes": 39012,
+      "sha256": "301a97fc09e90e97af3b883ac680704fc84fa09db6daf87d2efd66474737eec3"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/APT-USDT.normalized.json.gz",
+      "bytes": 11080,
+      "sha256": "779c4602cc8bd2544c8d937166230e3bd43efd0bc2b4c31533d62cb623b59296"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ARB-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "2eb36847ee7e374709a12c4e720fc554a1531c568c88b83996ece8d43e12a664"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ARB-USDT.raw.json.gz",
+      "bytes": 38487,
+      "sha256": "56b676e1418a22cf3fed6c8a6a1e9d040be99bc56aefd45ed7308ea7fdb05329"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ARB-USDT.normalized.json.gz",
+      "bytes": 11486,
+      "sha256": "543de083ab0cbb1cc0b39eda5852882ee29927f98bb617c4e56b40f66b5038eb"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ASTER-USDT.manifest.json",
+      "bytes": 1429,
+      "sha256": "4145faf3be6b680c01570e3e234b8c1bf020fd7c2166edaaae4c0385a7cc3616"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ASTER-USDT.raw.json.gz",
+      "bytes": 36431,
+      "sha256": "ec09653fbb852abe3d36140e2222cdaebe6f57e275966c702f82d8d6c47388dd"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ASTER-USDT.normalized.json.gz",
+      "bytes": 10506,
+      "sha256": "f6ab4532954380cb77835798972999f71ceb7a2a03010401d0f4c2818e80e74b"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ATOM-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "4409cc4d88982ca56ca39683a980d77906e0013c2c8192961a4ecedd5d93561d"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ATOM-USDT.raw.json.gz",
+      "bytes": 37517,
+      "sha256": "cbc276a1b61b3b384ef091ba85a0d9bec4af1379956a3710286570638aa8e1fd"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ATOM-USDT.normalized.json.gz",
+      "bytes": 11234,
+      "sha256": "f38c1959d89bfc2fb0466468be8d6b0d44a277b1d544ca57162a6a6c3bfee89f"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AVAX-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "35f3c55381c3195d020a1637f20048b7b690c95a0e83ee85a29e7049e2515efc"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AVAX-USDT.raw.json.gz",
+      "bytes": 39949,
+      "sha256": "36844c93091d7ab62e83dfac0c37961d6e51a9d7a78af7be383f684500028916"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AVAX-USDT.normalized.json.gz",
+      "bytes": 12290,
+      "sha256": "3f6d30b98fb270e7041de51f3c17a7fa1fee1937eafc97940c6328da115a2d91"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AVNT-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "1857c4281a57c74ab91185a393c282227a276d79cdedd1bfbbeab4521c6f7fef"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AVNT-USDT.raw.json.gz",
+      "bytes": 36954,
+      "sha256": "2afe02d3f8ec0f77206ae631c4d871541c9246671425255b9c9c381ec2e1157b"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/AVNT-USDT.normalized.json.gz",
+      "bytes": 11365,
+      "sha256": "b41e890fd13c442e5e25b7d55bbba58aae33fd29a2703c05b46a6fb412fbc9b1"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BANK-USDT.manifest.json",
+      "bytes": 1502,
+      "sha256": "669cbc5c73a1a94561f0de8265ca18c7e341f8fc026f62d2dd39b169fe391af1"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BANK-USDT.raw.json.gz",
+      "bytes": 16105,
+      "sha256": "511ac79bf4cc41fd4aad4ee1cfab64c6167657c313fec3fec03e67bbb07aa7c2"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BANK-USDT.normalized.json.gz",
+      "bytes": 10143,
+      "sha256": "7bbcc0bbf5db8ad702553901208b7953f646dbd8f2ffd162ea492fd46bece2e3"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BCH-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "676176567a42f06a7a03fc32fc0a47c9ab105e25adde4d2e8db0c9ff3eb7dc9c"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BCH-USDT.raw.json.gz",
+      "bytes": 41518,
+      "sha256": "f19fb19cc185bcc05c520e3e5c14707b5ca4ad336c09d6bcb4918a7e5a1c75f3"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BCH-USDT.normalized.json.gz",
+      "bytes": 12175,
+      "sha256": "20e916abb5321821afd708c1f64f262f95e276b12761c741bf85786e11d118a5"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BEAT-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "b62bf1a9dd1b1b4fc9c8cb3404f9c9ffc4822dbf99e8bef713a8b68619b74b55"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BEAT-USDT.raw.json.gz",
+      "bytes": 41590,
+      "sha256": "2256a06f5e4659a87ce9cebc48a26fc259846616b29a6e78cde2110d49a87097"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BEAT-USDT.normalized.json.gz",
+      "bytes": 12487,
+      "sha256": "ca19d3a891264d902eac6db5212848f890b11a2610e14904c624af018d26fd92"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BILL-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "1186f1b5a68acdd3d0c2bbd259fd16363db7119b0d7f25d1a0b58f533d384243"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BILL-USDT.raw.json.gz",
+      "bytes": 30230,
+      "sha256": "9895ee9da7530f1ef02aed60f6bad1c2c9f0980dc3c1d94ec3a2487ac648bc45"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BILL-USDT.normalized.json.gz",
+      "bytes": 10694,
+      "sha256": "d692607b30ee74bf502bb4f7810a7584622f6d5c3e621273642c4fd5a19826d8"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BNB-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "f50f37e7f78e3142aaf2e4e6612e5d2756cb5d6ed8653c95752fd0b5e84459d5"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BNB-USDT.raw.json.gz",
+      "bytes": 44010,
+      "sha256": "9dd6ee316353d545ed6e5996df5221b217d5be40252d9c08a90f5109e0359316"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BNB-USDT.normalized.json.gz",
+      "bytes": 13880,
+      "sha256": "3030b134b16f70e5302df13b66455668a5a636c5ebe505549e90a443927b3e04"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BOME-USDT.manifest.json",
+      "bytes": 1503,
+      "sha256": "c7b1899ac04408d46dfd01c4cf1ab1974db4820c926b585dbae8f8850d7cb23a"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BOME-USDT.raw.json.gz",
+      "bytes": 11180,
+      "sha256": "1fb8d74abfb6750341523a7309302c1d90a66fdfe967ae6ee85566708cf200f8"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BOME-USDT.normalized.json.gz",
+      "bytes": 6611,
+      "sha256": "c09621cfac893d1f59ca698988ec478260e2195c17a174af972598778e129d9f"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BONK-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "f3226a8c1a009a55171716b3a34e50cde87d3457327d8083973b3ae0f67adc58"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BONK-USDT.raw.json.gz",
+      "bytes": 37892,
+      "sha256": "7606b0ef9688762d0bf90584b8a5c7a00c8f0c2e0b88019c118143325defc1e4"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BONK-USDT.normalized.json.gz",
+      "bytes": 11059,
+      "sha256": "ac1cdcf303966da271b2a1083fd87e11a5de6ebc3088cb2b622ac3138045e6f1"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BR-USDT.manifest.json",
+      "bytes": 1494,
+      "sha256": "22d2338a086ec5dba8515dcf80b6105833c18f6d5bf38f2e3e9423c5abc93c5c"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BR-USDT.raw.json.gz",
+      "bytes": 7001,
+      "sha256": "f23d2a1308b99a69d691d8dbd320c5da1c7d47fab06e902bee1917fd1299910b"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BR-USDT.normalized.json.gz",
+      "bytes": 3811,
+      "sha256": "3ea943f0f96ed4a8d673868828b872ddb3560687d07ce1171af9a620164c69ec"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTC-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "c543f09aae440d6bc113b9a19a99bc7296eddb13823310436d058d324867a836"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTC-USDT.raw.json.gz",
+      "bytes": 49382,
+      "sha256": "3c39a5929127aed11a655f0601f3d8e39fb979bc74de7ad19ab2047699d46cd4"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTC-USDT.normalized.json.gz",
+      "bytes": 13242,
+      "sha256": "7c510161f172276d0e6005dab69ad6cc60a89f711566db99158afd4f9facb3f9"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTR-USDT.manifest.json",
+      "bytes": 1498,
+      "sha256": "91b0b37b654f58cd71567122c8ea60215e3bdc39a66eddde061725320b117d6e"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTR-USDT.raw.json.gz",
+      "bytes": 9630,
+      "sha256": "0f961fdf6ad8867aa81f22508f2e059a17d6ae81a7925a3c9d30a8aefeeb1a38"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTR-USDT.normalized.json.gz",
+      "bytes": 5634,
+      "sha256": "30f2076a74ef2b49f10f399749bc4d9d7f816b3021910453f9b5adcb89f5af09"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTT-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "6dcf0636a7d39735436fe88fc98a31dd515a5372461df014b053de17df1b18af"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTT-USDT.raw.json.gz",
+      "bytes": 28122,
+      "sha256": "6c14538d9fd621c2d2d9b30a85587a26ff1020d4691cbd1f5d9ba6284c5c784d"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTT-USDT.normalized.json.gz",
+      "bytes": 7981,
+      "sha256": "570528c4397bbfa4a0cb4a1084021ea77e5ce2352f248728209695fbfe93b7af"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTW-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "874742d7f131769b865ba02886726c83634079155e6bb001077f5a78a79b9e95"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTW-USDT.raw.json.gz",
+      "bytes": 29278,
+      "sha256": "8255123226cc15bf64d5832e2f5fe47801a73704af47c225dd132a693238a55c"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/BTW-USDT.normalized.json.gz",
+      "bytes": 13539,
+      "sha256": "d18887d7cb4120b37b996ba63a94b609450c24d9ac81147047aa73823a68dfc7"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/CASHCAT-USDT.manifest.json",
+      "bytes": 1518,
+      "sha256": "29e0ab418409bdf34e58a911e89ca1fb87476eb28a20f6b669f82581fc59d7b7"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/CASHCAT-USDT.raw.json.gz",
+      "bytes": 15442,
+      "sha256": "b92f102e8b10646e60aaa7a3878c2a295f3a62f1f9104b390c03f097da96ee23"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/CASHCAT-USDT.normalized.json.gz",
+      "bytes": 9586,
+      "sha256": "7ca6e91d8c3db845260f90173a3707cf5aa31d8b4f36e17512b4d72b49c12579"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/CHZ-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "d8021c2b2ac302b3cb681ae38e2e50db2bf52fb0276c6cb0bf9b7e1d030db3a1"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/CHZ-USDT.raw.json.gz",
+      "bytes": 35822,
+      "sha256": "ba34e35d433c8d1ad3903c11b571fd1b09a2a0ff55e928f3386306bc5b0b0931"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/CHZ-USDT.normalized.json.gz",
+      "bytes": 10065,
+      "sha256": "3ea90ba4c3936b6fe9bf74e35a76a343285d82bf2162d2c8ae369ac9264966f2"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DASH-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "f07b8c85d9fef82fda067382363947935230d5f60252e835e9f1763a37a70c72"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DASH-USDT.raw.json.gz",
+      "bytes": 38418,
+      "sha256": "b1cb18c862c26b98d2497f427549aa6d1f4a4b20e6884acb3800ad4601e58d64"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DASH-USDT.normalized.json.gz",
+      "bytes": 11185,
+      "sha256": "236073f77230db80a2968c214cec002026a4b72c2624635535ed985af6bce144"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DOGE-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "53ab7496e1aa8107d2dbea42fdb95f6a60a2ce53141409edd368aef077966843"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DOGE-USDT.raw.json.gz",
+      "bytes": 44303,
+      "sha256": "bcb5a6b20e37eb7852c5e3f3d44966001eb772477ac69f0557100a2d5689a0a7"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DOGE-USDT.normalized.json.gz",
+      "bytes": 12144,
+      "sha256": "7619f32f2065b9e286d542fa2d98877cb12635b54b9ad2e4bf623e5e6e964f1f"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DOS-USDT.manifest.json",
+      "bytes": 1498,
+      "sha256": "eb62a6a0df210d27ea93d20805d1b21d10f3f3f5f9d4dbef6fc1f9cf656f37b8"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DOS-USDT.raw.json.gz",
+      "bytes": 11317,
+      "sha256": "cbc55f2858811f7a8772f2288da124fab32e6b78b5df62f58f6114501dc9979d"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DOS-USDT.normalized.json.gz",
+      "bytes": 7012,
+      "sha256": "0e48351b8f8f64eb37805e5690c3f36180348bd5fca802ae2340d112efb9e0ce"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DOT-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "615520a4ab286005ff89325272e54883098ede6b75866c4da61f563b7c7575a6"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DOT-USDT.raw.json.gz",
+      "bytes": 37973,
+      "sha256": "b8f0cb5fb3019bd51698568971d3435eef08d9f8469d994252cd3bfefcab72d6"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/DOT-USDT.normalized.json.gz",
+      "bytes": 11247,
+      "sha256": "457a436f86c90c9aa271c8c15a02ac6f979e5a2f1b3810cecf383e1435c7c8ed"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ENA-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "0452a9cb89c246085a3385255de02c76be0048859e443f32f2322497bd6af8e3"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ENA-USDT.raw.json.gz",
+      "bytes": 40782,
+      "sha256": "8983a68f306e819f15973147d789325a909929eb2b497509d95f8556f57af672"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ENA-USDT.normalized.json.gz",
+      "bytes": 11692,
+      "sha256": "f7618038581c99d75cfbb74e1c0812259331ff85a1ac5d2e4d5eb80fc4a0e848"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ETC-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "cb893b1a38d9f7d1d2bed0d1dd43b0ab2a890d243b7bbcd2ee00adb09c37c138"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ETC-USDT.raw.json.gz",
+      "bytes": 38652,
+      "sha256": "3e974b56eb12703dca7a3a334de7284ec372887136567da6dc301b37114d088a"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ETC-USDT.normalized.json.gz",
+      "bytes": 12266,
+      "sha256": "4b4d5578ffbd93831e38f44dfb0224520038058ccbc5330c9162453fdd6c8ad7"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ETH-USDT.manifest.json",
+      "bytes": 1419,
+      "sha256": "ba97566a1aa860e85c631cee6fce8a966f782cbd15cf3e5d6cebaea173216f04"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ETH-USDT.raw.json.gz",
+      "bytes": 48599,
+      "sha256": "d0dba29f1003b680fc863d6b865c9fd7262327e747d6367befca734d88535c29"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ETH-USDT.normalized.json.gz",
+      "bytes": 13089,
+      "sha256": "e69fb6d3d1be1c0bbb5c9bec296db5a9be7f648b55aefe249ee2c06331bbe189"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ETHFI-USDT.manifest.json",
+      "bytes": 1429,
+      "sha256": "8528189c205c82d03dec3c3e1940ecc49e60ee34a545a14da02517246c87c428"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ETHFI-USDT.raw.json.gz",
+      "bytes": 38254,
+      "sha256": "34145dc051b1632361c63cbaa36c0892ea0e6232658989e40e2f5a49bb583687"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/ETHFI-USDT.normalized.json.gz",
+      "bytes": 11124,
+      "sha256": "079b9224fbdae696940e3f48af025c72b4d6965351917e42167538fe6486078d"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/EUL-USDT.manifest.json",
+      "bytes": 1497,
+      "sha256": "f3749d32bf313b037e7b33546c28205efd39d37a0d52dcff4b723ac8252ab0d4"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/EUL-USDT.raw.json.gz",
+      "bytes": 15520,
+      "sha256": "f3f849652eb371e9cfa4dd59524f95c7c88ab322424d619183ef3420f6dc114f"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/EUL-USDT.normalized.json.gz",
+      "bytes": 9652,
+      "sha256": "f3a0fdc81af177b5f24a19dd7826efd5cc862afd6b61115452bc807c693ddd0a"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/FARTCOIN-USDT.manifest.json",
+      "bytes": 1444,
+      "sha256": "44ca858c492b2669f3457ce73b44aee379a890526798f4ccee2a5c5254b0e075"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/FARTCOIN-USDT.raw.json.gz",
+      "bytes": 41206,
+      "sha256": "1114a9b050fb5b3842cd7f3c35423356e3696153d30acc949c0675f340927045"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/FARTCOIN-USDT.normalized.json.gz",
+      "bytes": 11669,
+      "sha256": "f2c5c361ca23a255be11447be8b03100e17cecb43b5362fe5c872bb1c1cbe847"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/NEAR-USDT.manifest.json",
+      "bytes": 1424,
+      "sha256": "2ccb6e5d6641edd94a52fa1d6a212e59c4f49dc1268d4d72921948b18e4b856b"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/NEAR-USDT.raw.json.gz",
+      "bytes": 35752,
+      "sha256": "7342fc7a417e98dbc8ab5d65169ce8704897abf2d78067858e62a8faf474102b"
+    },
+    {
+      "path": "checkpoints/htx-compact-4h/NEAR-USDT.normalized.json.gz",
+      "bytes": 10771,
+      "sha256": "b3d8e81c94da766048f816fef38cec1986d735693589b1dfb5b0214d3aa0d588"
+    },
+    {
+      "path": "checkpoints/binance-monthly-original-37937872663.zip",
+      "bytes": 15070543,
+      "sha256": "fba36560d7618be996d3484e2ead601b0710eb9d15c49c76d8b7a147fe7f1ccd"
+    },
+    {
+      "path": "checkpoints/native-kline-original-37927835391.zip",
+      "bytes": 20605,
+      "sha256": "59e67e7860586a603fb3f2d5f3543dbc2902fdf476e6e244fe5f63765a08e774"
+    },
+    {
+      "path": "checkpoints/native-kline-price-connected-37929161332.zip",
+      "bytes": 21251,
+      "sha256": "854bc3431a77a13c17fbb4da57ae314c034d4f8df6de2e1edbc40a14ea0cefe5"
+    },
+    {
+      "path": "checkpoints/htx-archive-primary-20261004/near-archive-minute-counts-20261003.json.gz",
+      "bytes": 20503,
+      "sha256": "5e18cb94d81bf95c832d88cd8d4fe4540c1a54c80a9a22e5e851ee788011b17d"
+    },
+    {
+      "path": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "bytes": 9477,
+      "sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771"
+    },
+    {
+      "path": "checkpoints/native-kline-original-37927521761.zip",
+      "bytes": 20176,
+      "sha256": "f3c336fd6f1fe1aaa26b8c955cdd83c8ac7732046e9b93424fde9285f48273d2"
+    },
+    {
+      "path": "checkpoints/cold-derived-candles-connected-37951988397.zip",
+      "bytes": 3895269,
+      "sha256": "65c3a9313823735bc6fdfd6deeed13d478e62c1d52b4d79b0614370dfb91c3dd"
+    },
+    {
+      "path": "checkpoints/early-outcome-original-path-37930961701.zip",
+      "bytes": 162980,
+      "sha256": "1b5e68368351c1b8a3fe8984ee6c5fad83cb779d2ba89f8cfcb98607d9b5daa8"
+    },
+    {
+      "path": "checkpoints/source-worker-anomaly-input-feed-20261018/analysis.json",
+      "bytes": 37425,
+      "sha256": "bd2e300124a5c567e8c5b3da293d3fb81911f4481edbc670223390504b205df4"
+    },
+    {
+      "path": "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/CT-USDT.canonical.json.gz",
+      "bytes": 50012,
+      "sha256": "9924a0f8005ad20e6e3de43c805460dfa7a0623a31617f955295f09d930e0dc8"
+    },
+    {
+      "path": "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/BR-USDT.canonical.json.gz",
+      "bytes": 33305,
+      "sha256": "fb05cc25487c16355a93bb7094741e9d3f4f221a7e2b0bb398ee894e4ec4eb9e"
+    },
+    {
+      "path": "checkpoints/paged-prospective-history-37864646300/actual-paged-history.json",
+      "bytes": 14403,
+      "sha256": "b3dab3e6fed634a4e46114ebdd792a4703ae71c74aab801d51c959ea3fe2af71"
+    },
+    {
+      "path": "checkpoints/paged-prospective-history-37865298193/actual-paged-history.json",
+      "bytes": 25166,
+      "sha256": "e60697331b807d613a159bea75b19b32a55afcb5827661a5d1c97c97fd929fa6"
+    },
+    {
+      "path": "checkpoints/collector-v10-release-38531281231/approved105-first-natural-funding-coverage.json",
+      "bytes": 14353,
+      "sha256": "e5b21ea88962071f3c0826e567f181a8f3f06e075c4c4f2b4aea182d6fb89483"
+    },
+    {
+      "path": "checkpoints/ACTUAL_HTX_COLD_HISTORY_BATCH_20261010.json",
+      "bytes": 1851,
+      "sha256": "fee535ea60520eccd1e8349f22cae7fa362515f165665195dcfeb6620682918b"
+    },
+    {
+      "path": "checkpoints/natural-full-recovery-and-statistics-20261018/native-review.json",
+      "bytes": 16644,
+      "sha256": "4f64ad24614d29234bcb0dc9d0aaaf17596b414a18cacb05d566c1e5cf98a75a"
+    },
+    {
+      "path": "anomaly-research/observer/observer.mjs",
+      "bytes": 21115,
+      "sha256": "086274b4bab805c18bb1db740e0d59e30b374b3f5dd4be72dac3880cfa76da05"
+    },
+    {
+      "path": "anomaly-research/statistics/outcomes.mjs",
+      "bytes": 13366,
+      "sha256": "8c649bbf1f5be562b7668f5bd44ae0a0cd4d768571957f777327dcfa8a672f74"
+    }
+  ],
+  "scope_effects": {
+    "application_module_test_probe_execution": 0,
+    "old450455_or_accepted_suites_repeated": 0,
+    "provider_HTTP_or_artifact_GET": 0,
+    "native_SQL_MAIN_Telegram_deploy": 0,
+    "runtime_strategy_weights_forms_caps_pauses_changed": false,
+    "new_framework_or_model": false,
+    "actual_prediction_accuracy": null,
+    "new_actual_prospective_ANOM_samples_qualified": 0,
+    "ENTRY_work_resumed": false,
+    "physical_storage_work_resumed": false
+  },
+  "verification": {
+    "status": "PASS_ONE_FINAL_NEW_INVENTORY_INTEGRITY",
+    "checked_at_utc": "2026-10-19T11:05:48.948179+00:00",
+    "fresh_main": "47b08e859075fd9bafc19b568ae8d3139ec7cee9",
+    "PASS": 15,
+    "FAIL": 0,
+    "checks": [
+      "own scoped lease exact readback active and within original expiry",
+      "all129 source file hashes and bytes match fresh frozen main",
+      "all37 manifest/raw/normalized triplets inventoried once",
+      "27complete10partial are price-only and retain native extra fields",
+      "six actual monthly members hashes/CSVmembership and raw columns match",
+      "264960 native minute rows are two markets and three months, not independent signals",
+      "retained90d5m price arrays have25920rows and actual availability after history",
+      "NEAR archive/CSV/API/registry exact pointers and hash chain",
+      "NEAR raw quantities are present but unqualified, exact original1m query not invented",
+      "BR actual anchor path and outcome clock order preserved, direction unknown",
+      "actual12h/24h paged history contains144/288 sampled points, no outcome writes",
+      "CTBR reused evidence remains late historical and has no exante first detection",
+      "ten bounded new data cases, no app/module/test/source/native execution",
+      "fresh four active mirrors equal and both owner deferred items preserved",
+      "dedicated branch only inventory authoring, no runtime/shared changes"
+    ],
+    "source_files_bound": 129,
+    "native_or_semantic_tests_executed": 0,
+    "guard_sha256": {
+      "AGENTS.md": "23925304f7c0fbc0dccba8180e7505d0b389dc1a247d9d163c7738508da68a11",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "88626f5c0a2f67d8d5853cebef61e8eb41d3bb8712f40d5d4ba34444e3a18476",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "2db39a0c34f8b56ae92a00058738a2d9d47d4cd0cd7f0510571ef044c6aac5e6",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "2c7390fad278c4ac87e7eda221ee53f0b8c5cb354375c4558dc1eafc7bce6fc2",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "fafcebc72f88a46a9ca6338d024a30580603f4e8563f9060177c0546d9860c73",
+      "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "d7e4027feb03606ce53ab58808c62826c80aa05174d77f5e4a9105285d6858df",
+      "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+    },
+    "three_proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_OWNER_DEFERRED_ENTRY_STORAGE_EXISTING_BASE_HANDOFF_20261019.json",
+        "sha256": "169ff7cf869ae32e8f3976dc103970d93d1c2617f8f64dfe3aa926cb8d7c9c6f"
+      },
+      {
+        "path": "checkpoints/owner-two-deferred-existing-base-20261019/owner-direct-order.json",
+        "sha256": "23cc8a83011160450b1b5c1e17b7cca837eebb5accbd2f34ea3ac6083e91e2c4"
+      },
+      {
+        "path": "checkpoints/memory-binding-integration-20261019/six-merged-and-existing-history-receipts.json",
+        "sha256": "06f8b5f0e9573109cbd932a46c0b449aabede1d1cb779277571f2aba4edbc363"
+      }
+    ],
+    "runtime_qualification": false,
+    "empirical_anomaly_accuracy_qualified": false
+  },
+  "coordinator_documentary_reference_only": {
+    "provided_by": "coordinator chat01a14dc8, exact primary links supplied, not independently fetched by this worker",
+    "EN": "https://huobiapi.github.io/docs/usdt_swap/v1/en/#general-get-kline-data",
+    "CN": "https://huobiapi.github.io/docs/usdt_swap/v1/cn/",
+    "paraphrase": "USDT-M ordinary history/kline defines vol as contracts, amount as contract count times contract face value, trade_turnover as summed contract quantity times face value times price; counts/volumes are reported for both sides. This is documentary meaning, not qualification of every asset or historical contract epoch. Do not infer aggressor side or silently halve values.",
+    "calendar": "Derived UTC day/week from4h must be labelled derived; native HTX UTC+8 daily or weekly equivalence is not assumed.",
+    "native_requalification_by_this_worker": false
+  }
+}

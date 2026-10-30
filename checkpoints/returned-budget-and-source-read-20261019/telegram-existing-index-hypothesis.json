@@ -1,0 +1,61 @@
+{
+  "schema": "ONE_NEW_CONTROLLED_EXISTING_INDEX_TELEGRAM_QUERY_HYPOTHESIS_V1",
+  "saved_failure": 39245523405,
+  "actual_failure_stage_usage": {
+    "rows_read": 182,
+    "requests": 5,
+    "stagecap_rows_read": 160
+  },
+  "actual_per_query_native_costs": null,
+  "saved_native_index_schema": "checkpoints/canonical-index-native-20261014/index_schema_single_raw.json",
+  "fixture": "CONTROLLED256metadata rows and small bodies; not currentnative rows/body/size/admission",
+  "SQLite_version": "3.51.0",
+  "queries": {
+    "existing": {
+      "plan": [
+        [
+          5,
+          0,
+          71,
+          "SEARCH canonical_publication_shadow USING INDEX idx_canonical_publication_identity (contract_code=? AND run_id=?)"
+        ],
+        [
+          46,
+          0,
+          0,
+          "USE TEMP B-TREE FOR ORDER BY"
+        ]
+      ],
+      "controlled_SQLite_VM_steps": 106,
+      "returned_publications": [
+        "CONTROLLED:255",
+        "CONTROLLED:254"
+      ]
+    },
+    "forced_existing_index": {
+      "plan": [
+        [
+          5,
+          0,
+          71,
+          "SEARCH canonical_publication_shadow USING INDEX idx_canonical_publication_identity (contract_code=? AND run_id=?)"
+        ],
+        [
+          46,
+          0,
+          0,
+          "USE TEMP B-TREE FOR ORDER BY"
+        ]
+      ],
+      "controlled_SQLite_VM_steps": 102,
+      "returned_publications": [
+        "CONTROLLED:255",
+        "CONTROLLED:254"
+      ]
+    }
+  },
+  "native_SQL_sourceHTTP_MAIN_Telegram": 0,
+  "production_changes": false,
+  "conclusion": "DO_NOT_IMPLEMENT_FORCING_INDEX_IF_SAME_PLAN_AND_STEPS",
+  "native_cause_proven": false
+}

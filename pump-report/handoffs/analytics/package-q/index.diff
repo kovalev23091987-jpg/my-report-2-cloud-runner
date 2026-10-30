@@ -1,0 +1,10 @@
+--- pump-report/handoffs/analytics/package-q/baseline/index.before.mjs	2026-10-25 19:49:54
++++ pump-report/analytics/index.mjs	2026-10-25 19:50:50
+@@ -121,6 +121,7 @@
+   if(potentialReason)return {...result,status:'REJECTED',reasons:unique([...result.reasons,potentialReason])};
+   const context=explainOptionalFacts(facts,at,profile);
+   if(context.trade_context)result.trade_context=context.trade_context;
++  if(context.trade_diagnostic)result.trade_diagnostic=context.trade_diagnostic;
+   if(Object.keys(context.optional_context).length)result.optional_context=context.optional_context;
+   result.findings.push(...context.findings);result.fact_ids.push(...context.fact_ids);
+   const mapContext=explainMapPlan(result.plan,result.liquidations);

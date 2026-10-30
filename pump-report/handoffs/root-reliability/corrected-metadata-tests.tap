@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: metadata probe rejects wrong grants and extra URL/auth parameters before SQL
+ok 1 - metadata probe rejects wrong grants and extra URL/auth parameters before SQL
+  ---
+  duration_ms: 21.685584
+  type: 'test'
+  ...
+# Subtest: corrected metadata uses the same cumulative provider/version and retains the original spent cost
+ok 2 - corrected metadata uses the same cumulative provider/version and retains the original spent cost
+  ---
+  duration_ms: 2.058708
+  type: 'test'
+  ...
+# Subtest: metadata allowance is one exact unauthenticated provider route without reopening BingX or Telegram
+ok 3 - metadata allowance is one exact unauthenticated provider route without reopening BingX or Telegram
+  ---
+  duration_ms: 0.306291
+  type: 'test'
+  ...
+# Subtest: legacy unknown cost stops a new native run without changing the old row
+ok 4 - legacy unknown cost stops a new native run without changing the old row
+  ---
+  duration_ms: 10.733916
+  type: 'test'
+  ...
+# Subtest: six manual reservations and next-full reserve are protected by shared admission
+ok 5 - six manual reservations and next-full reserve are protected by shared admission
+  ---
+  duration_ms: 0.485291
+  type: 'test'
+  ...
+# Subtest: the small lookup envelope still protects the full sized remaining manual reservations
+ok 6 - the small lookup envelope still protects the full sized remaining manual reservations
+  ---
+  duration_ms: 0.53725
+  type: 'test'
+  ...
+# Subtest: one metadata grant is independent and cannot rearm after an arbitrary ID
+ok 7 - one metadata grant is independent and cannot rearm after an arbitrary ID
+  ---
+  duration_ms: 0.856291
+  type: 'test'
+  ...
+# Subtest: the separately admitted corrected metadata operation retains the spent original and cannot repeat either ID
+ok 8 - the separately admitted corrected metadata operation retains the spent original and cannot repeat either ID
+  ---
+  duration_ms: 1.395875
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 106.270416

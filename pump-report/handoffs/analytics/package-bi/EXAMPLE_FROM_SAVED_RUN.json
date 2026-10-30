@@ -1,0 +1,73 @@
+{
+  "schema": "BI_EXAMPLE_PROJECTION_NOT_EMITTED_V1",
+  "status": "MANUALLY_MAPPED_FROM_ACCEPTED_BH_EVIDENCE_NOT_EXECUTED",
+  "input": {
+    "path": "pump-report/handoffs/analytics/package-bh/ACTUAL_STAGE_EVIDENCE.json",
+    "sha256": "dd710a27dec8510d589da5fc38160c9088b0ebcd17c46f89ba2472fe9d5f9c13",
+    "raw_private_capture_not_reopened_or_copied": true
+  },
+  "proposed_event": {
+    "schema": "PUMP_AUTO_SUMMARY_V1",
+    "mode": "AUTO",
+    "run_id": "7de14263-15a1-4207-89d9-4fa8c942a04d",
+    "implementation_pin": "3bd0cbd96b9bdc1525fb6b06831749451cb612976632a4cb5d5c15c5f064f0aa",
+    "status": "INCOMPLETE",
+    "discovery_result": "INCOMPLETE_COVERAGE_OR_RESOURCES",
+    "counts": {
+      "checked_entries": 0,
+      "analysis_results": 0,
+      "ready_results": 0,
+      "ready_auto_eligible_results": 0,
+      "manual_results": 0,
+      "budget_deferred_entries": 1,
+      "source_pending": 9,
+      "catalog_unresolved": 24
+    },
+    "phase_flags": {
+      "executor_busy": false,
+      "analysis_result_seen": false,
+      "budget_defer_seen": true,
+      "delivery_result_seen": false
+    },
+    "reason_codes": [
+      "SOURCE_EVIDENCE_PENDING",
+      "UNIVERSE_QUALIFICATION_INCOMPLETE",
+      "SOURCE_BUDGET_DEFERRED",
+      "PROTECTED_DAY_RESERVE",
+      "EVEN_DAY_CANDIDATE_ALLOCATION"
+    ],
+    "reason_codes_truncated": false,
+    "unlisted_reason_occurrences": 0,
+    "delivery": {
+      "complete_result_envelope": true,
+      "reported_occurrences": 0,
+      "occurrences_by_state": {},
+      "refs": [],
+      "refs_truncated": false
+    }
+  },
+  "ROOT_current_cron_report": {
+    "time_moscow": "2026-10-26 16:25",
+    "outcome": "ok",
+    "wall_ms": 8097,
+    "cpu_ms": 575,
+    "scriptversion": "3e08bf26-99f6-4cd5-a656-3892f1faa660",
+    "logs": [],
+    "exceptions": [],
+    "provenance": "Trusted ROOT message only; BI made no fresh Cloudflare read",
+    "same_original_SENT_proof": false
+  },
+  "BI_counters": {
+    "Node": 0,
+    "project_imports": 0,
+    "tests": 0,
+    "mapper_invocations": 0,
+    "native_SQL": 0,
+    "HTTP": 0,
+    "MCP": 0,
+    "TG": 0,
+    "deploy": 0,
+    "LOOKUP": 0,
+    "worker_code_changes": 0
+  }
+}

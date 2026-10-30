@@ -1,0 +1,118 @@
+{
+  "schema": "PUMP_POST_REVIEW_SOL_AND_PRODUCTION_SUMMARY_ACTUAL_V1",
+  "code_main": "17a8c8fe92de90e18db2c5c755044fb9de521a40",
+  "grant": "pump-j-integration-sol-20261025-one",
+  "run_purpose": "ACCEPTANCE_TEST",
+  "publish": false,
+  "Telegram": 0,
+  "automatic_enabled": false,
+  "delivery_enabled": false,
+  "schedules_enabled": false,
+  "exact_server_modules": 34,
+  "version": "pump-report-v1.4-integration-acceptance",
+  "rules_version": "pump-analytics-v4-first-qualification-20261025",
+  "started_ts": 1792945002239,
+  "received_ts": 1792945009670,
+  "raw_response_sha256": "48723396271869fb169ff2f330461b7fe9943b971b55bb7023eba7ed548f7703",
+  "CORE": {
+    "status": "USABLE",
+    "price": "USABLE",
+    "closed_1m_candles": 121,
+    "orderbook_bids": 1000,
+    "orderbook_asks": 1000,
+    "absolute_candle_volume_known": false,
+    "relative_quantity_comparison_only": true
+  },
+  "analysis": {
+    "ready": false,
+    "status": "REJECTED",
+    "wave_state": "CANCELLED",
+    "reasons": [
+      "PLAN_INVALIDATED"
+    ],
+    "plan_present": false,
+    "card_present": false,
+    "automatic_threshold_confirmed": false,
+    "delivery": null
+  },
+  "universe": {
+    "catalog_is_not_cryptoN": true,
+    "unknown_identity_count": 919,
+    "cryptoN": null
+  },
+  "provider": {
+    "attempts": 5,
+    "provider": "BINGX",
+    "confirmed": 5,
+    "unknown": 0,
+    "acceptance_pool_version": "pump-manual-native-relative-acceptance-20261025-v1",
+    "original_pool": 24,
+    "charged_before": 7,
+    "charged_after": 12,
+    "remaining": 12,
+    "not_reset": true
+  },
+  "native": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:MANUAL:pump-j-integration-sol-20261025-one",
+    "usage": {
+      "requests": 77,
+      "rows_read": 70,
+      "rows_written": 45,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 70,
+      "rows_written": 45
+    },
+    "original_envelope_never_reduced": true
+  },
+  "summary": {
+    "started_ts": 1792945019530,
+    "received_ts": 1792945020877,
+    "raw_response_sha256": "1949c53dd37ff821ae791c135da05b402901322fd69017d8f23c72e0ac6ff857",
+    "run_purpose": "PRODUCTION",
+    "independent_waves": 0,
+    "publication_counts": {
+      "sent": 0,
+      "unsent": 0,
+      "unknown": 0
+    },
+    "excluded_records_by_purpose": {
+      "ACCEPTANCE_TEST": 1
+    },
+    "source_caught_up": true,
+    "probability": {
+      "value_pct": null,
+      "reason": "CALIBRATION_NOT_PERFORMED"
+    },
+    "native": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:feb85d79-cb94-43d2-98f7-3edf97050ca6",
+      "usage": {
+        "requests": 13,
+        "rows_read": 22,
+        "rows_written": 7,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 22,
+        "rows_written": 7
+      },
+      "original_envelope_never_reduced": true
+    },
+    "old240_original_unchanged": true
+  },
+  "known_cumulative": {
+    "native": {
+      "requests": 354,
+      "rows_read": 740,
+      "rows_written": 227,
+      "unknown_ops": 0
+    },
+    "provider_attempts": 21,
+    "initial_BINGX_unknown2_preserved": true
+  },
+  "complete_TZ": false,
+  "production_acceptance": false
+}

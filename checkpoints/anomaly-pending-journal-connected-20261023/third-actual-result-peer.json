@@ -1,0 +1,95 @@
+{
+  "schema": "THIRD_ACTUAL_PENDING_JOURNAL_RESULT_TARGETED_PEER_V1",
+  "status": "ACCEPTED_WITH_LIMITS",
+  "run": 39942917070,
+  "head": "7b14091b73d6d3ce058e5b779caa777000195250",
+  "artifact": 12496223300,
+  "ZIP_bytes": 8480,
+  "ZIP_digest": "sha256:ae3dc8dd3a8a7a106f8aa3cddfec0646e85fc2b837424e68c0ba06effc839946",
+  "wholeZIP_verification": "ROOT already verified; THIRD did not download or re-read ZIP",
+  "all4_local_members_match_ROOT_receipt_FULL_bytes": true,
+  "members": [
+    {
+      "path": "component-return.json",
+      "bytes": 3451,
+      "sha256": "b640dc0f0eb2507fab79ef4e78883138e627693abdfe2b8107a207a01d4aeb68"
+    },
+    {
+      "path": "guard-after.json",
+      "bytes": 8104,
+      "sha256": "78215a93e5dce31c037070c176d32d967add21a148921360256998a505c2942c"
+    },
+    {
+      "path": "guard-before.json",
+      "bytes": 8105,
+      "sha256": "82ced05d38a346ba4f3e9675a8a6b4dd0c84f40365987690bc8dc8ba59cf1f59"
+    },
+    {
+      "path": "new-gate.spec.txt",
+      "bytes": 180,
+      "sha256": "bf68bbf0f9169b44230d7630ab321bce8e3f46c69d6e1a6c5681540bc68dc48e"
+    }
+  ],
+  "actual_result": {
+    "Node_SPEC": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "NEW_CONTROLLED_groups": 12,
+    "variants_sum": 32,
+    "groups_are_not_Node_SPEC_test_count": true,
+    "group_variant_counts": [
+      1,
+      6,
+      2,
+      1,
+      5,
+      3,
+      1,
+      2,
+      2,
+      3,
+      5,
+      1
+    ]
+  },
+  "bindings": {
+    "all52_before_after_equal": true,
+    "source_pins_map_sha256_peer_computed": "54d65a591723fc670e93bc38b1befa40c0c6ae32c26835299f25fec473ef3c27",
+    "guard_main": "47729645100eaca3848f0e713d9e6aa54bca916e",
+    "guard_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792752244598",
+    "separate_known_GH_guard_replies": 2,
+    "setup_derived_case_sha256": "2770476049c9289c6c9e655bf4a97f7aa63380fc319a28c9b848b58c82bf3c42",
+    "production_runner_sha256": "ecc6cab8956fbcb8f9485a2f8c48e693cb2149b57985b485685c3d9e8699d20d",
+    "frozen_original_case_sha256": "2a48433c35e5cd8b271aea90702fd6c3a00ae4845168acca435be98c11ed2397",
+    "frozen_original_manifest_sha256": "349a1a4586213238274085d15a9cddd8c9edf7f1997f6694c6bf3fd611cc648b"
+  },
+  "findings": [],
+  "limits": [
+    "Actual case uses real local OStemp files, real SDK with CONTROLLED replies and fresh factory/SDK reopen; no actual OS process kill, cold restart or power-loss experiment.",
+    "Controlled known/unknown reply preservation and stop/reconciliation were exercised. This does not establish native commit ACK, installed schema/caller, distributed durability, cross-job private carrier, independent checkpoint transport, cost/day admission, CPU/heap/latency or all105 cadence.",
+    "Oversized or failed reply persistence remains explicitly unqualified; returning known RAM reply is not proof of durable disk recovery.",
+    "12 groups/32 nested variants are actual returned CONTROLLED assertions within ONE Node SPEC, not 12/32 native operations or SPEC tests.",
+    "Prior setup39941887750 completed0groups/0variants; this is FIRST semantic12/32, no accepted group replay. Production runnerECC and reviewed setup277 bindings are unchanged.",
+    "Source coverage, runtime activation, unknown refund/reset and same-run Telegram SENT are not implied."
+  ],
+  "peer_actions": {
+    "local_result_read_once": true,
+    "new_archive_downloads": 0,
+    "Node": 0,
+    "imports": 0,
+    "syntax": 0,
+    "tests_or_group_execution": 0,
+    "application_semantics": 0,
+    "SQL": 0,
+    "native": 0,
+    "provider": 0,
+    "Git_writes": 0,
+    "frozen626_changes": 0,
+    "new_lease": 0
+  }
+}

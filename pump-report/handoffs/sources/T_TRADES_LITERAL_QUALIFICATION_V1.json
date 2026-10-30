@@ -1,0 +1,171 @@
+{
+  "schema": "PUMP_T_TRADES_LITERAL_QUALIFICATION_V1",
+  "status": "FINITE_NEGATIVE_INSUFFICIENT_QUALIFIED_PRICE_AMOUNT_TIME_FOR_USEFUL_ADAPTER",
+  "authority": {
+    "schema": "PUMP_T_TRADES_OFFLINE_AUTHORITY_V1",
+    "main": "67892c0b62bf808beeb11dd37ce0654a5ae7d1e6",
+    "lease": {
+      "schema": "REPORT2_OFFLINE_SOURCE_WORKER_LEASE_V1",
+      "owner": "CODEX:SOURCES:01a171fd:1792945810233",
+      "thread_id": "01a171fd-51b6-79a1-82f4-3dc4532aee24",
+      "acquired_ts": 1792945810233,
+      "expires_ts": 1792946809000,
+      "expected_main": "67892c0b62bf808beeb11dd37ce0654a5ae7d1e6",
+      "working_base": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
+      "released": false,
+      "scope": "T_TRADES_OPTIONAL_QUALIFICATION finite offline. Own sources/tests/handoffs only; inspect only retained historical-trades officialliteral for positive fields/units/time/isBuyerMaker semantics beforepatch. Connect useful qualified price+executedamount via existinggetOptional/commonbroker onlyif literal supports; otherwise exact finite gap, no emptyframework. Unknown null/reason; no guessed aggressor/absorption/intent. Optionalbound2 changes require explicit ROOTinterface+worstcoldmanualwholecalc, noadmission/capraise. No GET/docs/search/API/WS/SQL/TG/deploy/newchat/subagent/automation/outgoingmessages; oldbatteriesnotreplayed. Prior frozenmanifestsimmutable,1metadataGETSPENT preserved; if ROOTnewcorrected metadata actualarrives readretainedlocalonly and include qualified taxonomy/nativebridge audit without IO. FXfiat exclusion/anyscriptcrypto/9pauses2deferrals/capsunknownsreserves preserved. One small new affected onlyifcode, else static evidenceintegrity. Timelyonlyownrelease FULLreadback.",
+      "root_lease_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792942069000",
+      "guard_git_blobs": {
+        "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+        "pump-report/AGENTS.md": "e01cab5ab39f7cdca712289858bddb708325fef6",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "bba2cc1625953d1c00abc60e654962c0b5134226",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "53e1f42398e6dc6897b84719859c9dcc53ea614b",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "44d1a62d6643721e049d0da3f16f3b421f801cab",
+        "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "bbd917497d19339bb531d87c38fd2825ce3b9a03",
+        "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "435414ceff9e91907c6d5da2ababe64638cd9561",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+        "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+        "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+        "checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json": "8004c6b4b8b646558b8fa0f774cdf985667324a1"
+      },
+      "all4_equal_verified": true,
+      "fence_active": false,
+      "generation_latest_only": true,
+      "previous_own_release": "5844473e9913116e8a9e818b38f05a2e883f12f4"
+    },
+    "lease_commit": "06060954b15c28f672775b7882727d219b14ce71",
+    "FULL_exact_readback": true,
+    "scope_addendum": "ROOT may supply corrected metadata local artifact under this same lease; offline interpretation only. No new IO/grant or automatic taxonomy promotion.",
+    "source_index_gitblob": "32820f91b312a9aed8303f11f45e39cf33bf2565",
+    "owner_latest_FX_literal": "Фьючерс на валюту также не нужен никакой.",
+    "preserved": {
+      "pauses": 9,
+      "owner_deferrals": 2,
+      "full_crypto_N": null,
+      "unknown_active_USDT": 919,
+      "no_new_source_nativeIO": true
+    }
+  },
+  "before_patch_decision": {
+    "code_patch_performed": false,
+    "reason": "Literal alone does not positively qualify executed quantity/notional units and response time units. Adding HTTP + an unusable wrapper would be the explicitly forbidden empty framework. Existing honest NOT_CHECKED remains."
+  },
+  "primary_evidence": {
+    "path": "pump-report/handoffs/sources/evidence/historical-trades-docsv3-current.literal.txt",
+    "bytes": 2800,
+    "sha256": "8bb60afd6eafb6496ad86941330ce27b20b383f135a61c3aa2572cf5a5ef6dc9",
+    "official_endpoint": "https://open-api.bingx.com/openApi/swap/v1/market/historicalTrades",
+    "method": "GET",
+    "requires_auth_in_literal": false,
+    "downloaded_JS_executed": false,
+    "schema_examples_are_native_data": false
+  },
+  "fields": {
+    "price": {
+      "positive": "string, transaction price",
+      "literal": "{name:\"price\",type:\"string\",values:\"\",zh:\"交易價格\",en:\"transaction price\"}",
+      "unit": null,
+      "reason": "TRADE_PRICE_FIELD_DECLARED_UNIT_AND_INSTRUMENT_BINDING_REQUIRE_QUALIFICATION"
+    },
+    "qty": {
+      "positive": "string, transaction quantity",
+      "literal": "{name:\"qty\",type:\"string\",values:\"\",zh:\"交易數量\",en:\"transaction quantity\"}",
+      "unit": null,
+      "reason": "QTY_BASE_VS_CONTRACTS_UNSPECIFIED_NO_MULTIPLIER"
+    },
+    "quoteQty": {
+      "positive": "string, turnover",
+      "literal": "{name:\"quoteQty\",type:\"string\",values:\"\",zh:\"成交額\",en:\"turnover\"}",
+      "unit": null,
+      "reason": "TURNOVER_QUOTE_CURRENCY_AND_NOTIONAL_SEMANTICS_NOT_EXPLICIT"
+    },
+    "time": {
+      "positive": "int64, transaction time",
+      "literal": "{name:\"time\",type:\"int64\",values:\"\",zh:\"交易時間\",en:\"transaction time\"}",
+      "unit": null,
+      "reason": "RESPONSE_TIME_UNIT_NOT_EXPLICIT_REQUEST_TIMESTAMP_MS_NOT_TRANSFERRED"
+    },
+    "id": {
+      "positive": "string, transaction ID",
+      "literal": "{name:\"id\",type:\"string\",values:\"\",zh:\"交易ID\",en:\"transaction ID\"}",
+      "unit": "NATIVE_TRADE_ID",
+      "reason": "ID_ORDER_SEQUENCE_AND_GLOBAL_UNIQUENESS_SCOPE_UNSPECIFIED"
+    },
+    "isBuyerMaker": {
+      "positive": "boolean, whether buyer is maker of order true/false",
+      "literal": "{name:\"isBuyerMaker\",type:\"bool\",values:\"\",zh:\"買方是否為掛單方(true / false)\",en:\"Whether the buyer is the maker of the order (true / false)\"}",
+      "unit": "BOOLEAN_BUYER_MAKER_ROLE_ONLY",
+      "aggressor_side": null,
+      "reason": "NO_EXPLICIT_BUY_SELL_AGGRESSOR_MAPPING_PROOF_OR_FLOW_COVERAGE"
+    }
+  },
+  "exact_field_byte_spans": [
+    {
+      "field": "price",
+      "byte_start": 1888,
+      "byte_end_exclusive": 1967,
+      "span_sha256": "fcc78348531bef86b6434cd9da8b313509f9378c22820843dc435448eeeea040"
+    },
+    {
+      "field": "qty",
+      "byte_start": 1968,
+      "byte_end_exclusive": 2048,
+      "span_sha256": "29ea9bb36c14b2315af572f23173a8ff0106e4802f5d77954e06ed76c6dd0667"
+    },
+    {
+      "field": "quoteQty",
+      "byte_start": 2049,
+      "byte_end_exclusive": 2119,
+      "span_sha256": "94b2650e3d5eaa2918ec7ade5649ad3b62f6c815427b44ac530c425a25810523"
+    },
+    {
+      "field": "time",
+      "byte_start": 1659,
+      "byte_end_exclusive": 1735,
+      "span_sha256": "182b121823924a79bd8d76c1a4bac6230caf35065cafbc8f447b7ccbb0e4d416"
+    },
+    {
+      "field": "id",
+      "byte_start": 2120,
+      "byte_end_exclusive": 2189,
+      "span_sha256": "bee2e78ee048b2d69340e7b05392cc4c8559185fc21132ad8d367f26fdfbdfd0"
+    },
+    {
+      "field": "isBuyerMaker",
+      "byte_start": 1736,
+      "byte_end_exclusive": 1887,
+      "span_sha256": "21d442bd719e8c0d36a9ac134a9395a79c976c72d9dbf266a9114c0921a6a115"
+    }
+  ],
+  "window_and_pages": {
+    "fromId": "Optional start transactionID, default latest; direction/order/page completeness not explicitly specified",
+    "limit_default": 50,
+    "limit_table_max": 100,
+    "payload_example_limit": 500,
+    "conflict": "Example500 vs request table maximum100; no assumption500 is admitted/supported",
+    "start_end_time_params_declared": false,
+    "complete5m_or15m_window_proven": false,
+    "saturated_page_is_full_market_window": false,
+    "no_data_inference_from_incomplete_page": false
+  },
+  "what_not_inferred": [
+    "qty base units from its name or sample arithmetic",
+    "quoteQty USDT from name/settlement alone",
+    "response time milliseconds from13-digit sample or request timestamp",
+    "isBuyerMaker to unsupported aggressor/absorption/participant intent claims",
+    "bounded100 trades to complete5min flow",
+    "default instrument ticker to canonical identity"
+  ],
+  "existing_source_state": {
+    "path": "pump-report/sources/index.mjs",
+    "sha256": "d95e5b120f927e1dd89c7a3061764efcde631b6343e7c98e40f296806a269e9f",
+    "getOptional_trades": "NOT_CHECKED/BINGX_TRADE_ROUTE_NOT_QUALIFIED",
+    "changed": false,
+    "all_other_source_files_changed": false
+  },
+  "one_required_primary_input": "An exact official specification/qualification record for this historicalTrades endpoint declaring qty unit/multiplier, quoteQty currency/notional semantics and response time unit/semantics, tied to verified native instrument. For direction add explicit side mapping; for aggregate flow add bounded paging/window completeness. A saved admitted raw fixture alone cannot independently establish these semantics.",
+  "new_HTTP_SQL_TG_deploy": 0,
+  "new_unit_tests": 0,
+  "old_tests_audits_replayed": 0,
+  "static_integrity": "PASS exact literal hash/field membership/spans and current honest code state only; not native or adapter acceptance"
+}

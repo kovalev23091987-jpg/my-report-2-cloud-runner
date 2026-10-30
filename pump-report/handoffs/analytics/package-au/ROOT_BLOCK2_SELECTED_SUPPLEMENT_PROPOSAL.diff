@@ -1,0 +1,98 @@
+diff --git a/pump-report/runtime/runner.mjs b/pump-report/runtime/runner.mjs
+--- a/pump-report/runtime/runner.mjs
++++ b/pump-report/runtime/runner.mjs
+@@ -117,7 +117,9 @@
+     const core=await sources.getCore({instrument,run_id,mode,existing_facts:overviewFacts}),previous_wave=await store.get('pump:wave:'+instrumentKey(instrument));
+     let input={schema_version:INPUT_SCHEMA,run_id,mode,run_purpose,analysis_ts:clock(),instrument,facts:{...overviewFacts,...core.facts,...(day?.facts??{})},liquidations:emptyMap(),previous_wave};
+     let analysis=analyzePump(input,profile);
+-    if(analysis.ready){
++    const supplementRefusal=analysis.ready!==true&&analysis.reasons?.length===1&&analysis.reasons[0]==='CURRENT_ACTIVITY_NOT_CONFIRMED'&&
++      ['CURRENT','RETAINED'].includes(analysis.growth_proof?.status)&&analysis.liquidity?.status==='USABLE';
++    if(analysis.ready||supplementRefusal){
+       await assert_execution();
+       // One absolute deadline for all supplemental work. Retain half of the
+       // shortest mandatory fact's remaining life for saving and the existing
+@@ -126,9 +128,11 @@
+       const deadline_ts=Math.min(at+profile.liquidation_deadline_ms,at+Math.max(0,Math.floor((mandatoryUntil-at)/2)));
+       // Future liquidation information has the owner's first priority within
+       // the supplemental budget; its absence is still not a core refusal.
+-      try{input.liquidations=await sources.getLiquidations({instrument,run_id,reference_price:analysis.reference_price,deadline_ts});}
+-      catch(error){input.liquidations=emptyMap(/BUDGET|RESERVE|QUOTA/.test(error.code??'')?'NOT_CHECKED_BUDGET':'ERROR',error.code??'OPTIONAL_MAP_ERROR');}
+-      const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts,deadline_ts});
++      if(analysis.ready){
++        try{input.liquidations=await sources.getLiquidations({instrument,run_id,reference_price:analysis.reference_price,deadline_ts});}
++        catch(error){input.liquidations=emptyMap(/BUDGET|RESERVE|QUOTA/.test(error.code??'')?'NOT_CHECKED_BUDGET':'ERROR',error.code??'OPTIONAL_MAP_ERROR');}
++      }
++      const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts,deadline_ts,...(supplementRefusal?{only_facts:['trades']}:{})});
+       input.facts={...input.facts,...optional.facts};
+       input.analysis_ts=clock();analysis=analyzePump(input,profile);
+     }
+diff --git a/pump-report/sources/index.mjs b/pump-report/sources/index.mjs
+--- a/pump-report/sources/index.mjs
++++ b/pump-report/sources/index.mjs
+@@ -322,7 +322,9 @@
+     } catch (error) { return finish(failed(entry, 'candles', error), {purpose: 'HISTORICAL_OUTCOME', complete: false,
+       start_ts, end_ts, reason: safeCode(error), evidence_ref: response?.receipt_id ?? null}); }
+   }
+-  async function getOptional({instrument, deadline_ts} = {}) {
++  async function getOptional({instrument, deadline_ts, only_facts = ['trades', 'open_interest', 'funding']} = {}) {
++    if (!Array.isArray(only_facts) || !only_facts.length || new Set(only_facts).size !== only_facts.length || only_facts.some(k => !['trades', 'open_interest', 'funding'].includes(k))) fail('INVALID_OPTIONAL_FACT_SELECTION');
++    const requested = new Set(only_facts);
+     const entry = resolve(instrument), facts = {}, at = now();
+     if (!Number.isSafeInteger(profile.liquidation_deadline_ms) || profile.liquidation_deadline_ms <= 0) fail('OPTIONAL_DEADLINE_PROFILE_INVALID');
+     const validDeadline = deadline_ts === undefined || typeof deadline_ts === 'number' && timestamp(deadline_ts) !== null;
+@@ -357,7 +359,8 @@
+     // Every attempted broker request consumes a slot even when it fails or is
+     // denied. These per-kind maxima are alternatives within the same upper2.
+     let attempts = 0;
+-    if (attempts >= upper) facts.trades = absent(entry, 'trades', 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE', 'NOT_CHECKED');
++    if (!requested.has('trades')) facts.trades = absent(entry, 'trades', 'OPTIONAL_KIND_NOT_REQUESTED', 'NOT_CHECKED');
++    else if (attempts >= upper) facts.trades = absent(entry, 'trades', 'OPTIONAL_BUDGET_SLOT_NOT_AVAILABLE', 'NOT_CHECKED');
+     else {
+       attempts++;
+       try {
+@@ -369,6 +372,7 @@
+       } catch (error) { facts.trades = optionalFailure('trades', error); }
+     }
+     for (const [kind, parse] of [['open_interest', parseOpenInterest], ['funding', parseFunding]]) {
++      if (!requested.has(kind)) { facts[kind] = absent(entry, kind, 'OPTIONAL_KIND_NOT_REQUESTED', 'NOT_CHECKED'); continue; }
+       if (exhausted()) { facts[kind] = absent(entry, kind, 'OPTIONAL_STAGE_DEADLINE_EXPIRED', 'NOT_CHECKED'); continue; }
+       const qualification = entry.qualifications[kind];
+       const usableQualification = proof(qualification) && (kind === 'open_interest'
+diff --git a/pump-report/analytics/index.mjs b/pump-report/analytics/index.mjs
+--- a/pump-report/analytics/index.mjs
++++ b/pump-report/analytics/index.mjs
+@@ -104,6 +104,11 @@
+     reasons:unique([...result.reasons,...movement.reasons]),fact_ids:[facts.price.fact_id,facts.candles.fact_id,...(ticker?[ticker.fact_id]:[]),...(day.usable?[day.fact_id]:[])]});
+   result.growth_proof=selectGrowthProof(result,profile);
+   result.liquidations=selectZones(input.liquidations,instrument,result.reference_price,movement.normal_range,at,profile);
++  const context=explainOptionalFacts(facts,at,profile);
++  if(context.trade_context)result.trade_context=context.trade_context;
++  if(context.trade_diagnostic)result.trade_diagnostic=context.trade_diagnostic;
++  if(Object.keys(context.optional_context).length)result.optional_context=context.optional_context;
++  result.findings.push(...context.findings);result.fact_ids.push(...context.fact_ids);
+   if(!movement.active){result.status=movement.reasons.some(r=>['CURRENT_VOLUME_REQUIRED','VOLUME_BASELINE_UNAVAILABLE','WAVE_PATH_INCOMPLETE','WAVE_VOLUME_COMPARISON_BASIS_CHANGED','VOLUME_BASELINE_ZERO_OR_UNKNOWN','IMPULSE_VOLUME_ZERO_OR_UNKNOWN','VOLUME_RATIO_NOT_FINITE'].includes(r))?'WAITING':'REJECTED';return result;}
+   const stateText=movementStateText(result);if(stateText)result.findings.push({code:movement.state,text:stateText,fact_ids:[facts.candles.fact_id]});
+   const activityFinding=currentActivityFinding(result,[facts.candles.fact_id]);if(activityFinding)result.findings.push(activityFinding);
+@@ -120,11 +125,6 @@
+   result.notification_eligibility={eligible:potentialReason===null,reason:potentialReason,required_potential_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,minimum_potential_pct:finite(minimum)?minimum:null,
+     comparison:{entry_upper:Math.max(...result.plan.entry_zones.map(z=>z.upper)),exit_lower:result.plan.exit_zone.lower,basis:'GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT',execution_proven:false}};
+   if(potentialReason)return {...result,status:'REJECTED',reasons:unique([...result.reasons,potentialReason])};
+-  const context=explainOptionalFacts(facts,at,profile);
+-  if(context.trade_context)result.trade_context=context.trade_context;
+-  if(context.trade_diagnostic)result.trade_diagnostic=context.trade_diagnostic;
+-  if(Object.keys(context.optional_context).length)result.optional_context=context.optional_context;
+-  result.findings.push(...context.findings);result.fact_ids.push(...context.fact_ids);
+   const mapContext=explainMapPlan(result.plan,result.liquidations);
+   if(mapContext){result.plan_context={liquidation_confluence:mapContext.liquidation_confluence};result.findings.push(mapContext.finding);}
+   result.findings.push({code:'STRUCTURAL_PLAN',text:'Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.',fact_ids:[facts.candles.fact_id,facts.orderbook.fact_id]});
+diff --git a/pump-report/analytics/manual-text.mjs b/pump-report/analytics/manual-text.mjs
+--- a/pump-report/analytics/manual-text.mjs
++++ b/pump-report/analytics/manual-text.mjs
+@@ -31,5 +31,6 @@
+   if(activity)observations.push(activity.text);else if(finite(background)&&background>0)observations.push('Активность текущего окна к фону: '+number(background)+' раза.');
+   if(positive(liquidity?.position_limit_usdt))observations.push('Двусторонняя ликвидность проверена.');
+   if(observations.length)lines.push(observations.join(' '));
++  const trade=result.findings?.find(f=>f.code==='TRADE_PRICE_RESPONSE');if(trade)lines.push(trade.text);
+   return lines.join('\n');
+ }

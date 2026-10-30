@@ -1,0 +1,87 @@
+{
+  "schema": "BN_DERIVED_EXACT_REPLAY_RESULT_V1",
+  "status": "EXPECTED_REFUSAL",
+  "run_id": "1372a2e6-3736-448e-b32d-846e37bafc80",
+  "implementation_sha256": "d984187530314079e626b426bd2e356826369ba62d86224e840f5f752fa88daf",
+  "original_container_sha256": "899f557c1a352d42e1a242e0ab7459df542a6f799645d20d762a9ee67420acd4",
+  "original_input_sha256": "983b29950920e6db4d7b0ed6be15ca474a659c35a4186ab17de3938d857885dc",
+  "Node": 1,
+  "analyzePump_calls": 1,
+  "source_HTTP": 0,
+  "native_SQL": 0,
+  "TG": 0,
+  "deploy": 0,
+  "saved": {
+    "ready": false,
+    "status": "REJECTED",
+    "reasons": [
+      "CURRENT_ACTIVITY_NOT_CONFIRMED"
+    ]
+  },
+  "replay": {
+    "ready": false,
+    "status": "REJECTED",
+    "reasons": [
+      "CURRENT_ACTIVITY_NOT_CONFIRMED"
+    ]
+  },
+  "full_analysis_equal": true,
+  "critical_equal": true,
+  "critical_differences": [],
+  "input_mutated": false,
+  "closed_rows": 125,
+  "normalized_reason": null,
+  "closed_range": {
+    "first_open_ts": 1793019360000,
+    "last_close_ts": 1793026860000,
+    "analysis_ts": 1793026918122,
+    "closed_lag_ms": 58122
+  },
+  "search_window_ms": 3600000,
+  "impulse_window_ms": 300000,
+  "baseline_window_ms": 3600000,
+  "search_endpoints": 61,
+  "complete_comparisons": 61,
+  "candidates_ratio_ge_2": 0,
+  "candidates_positive_return": 22,
+  "candidates_both": 0,
+  "eligible_candidates": 0,
+  "max_ratio_any": 1.5715010530539875,
+  "max_ratio_positive_return": 1.5715010530539875,
+  "latest_closed_comparison": {
+    "start_ts": 1793026560000,
+    "end_ts": 1793026860000,
+    "field": "volume_native",
+    "unit": "UNKNOWN_NATIVE_UNIT",
+    "volume": 226751.9,
+    "baseline_median": 376615.1,
+    "baseline_windows": 12,
+    "baseline_status": "FULL",
+    "ratio": 0.602078620851899,
+    "ratio_reason": null,
+    "return_pct": 0.11148272017835748
+  },
+  "current_basis": {
+    "field": "volume_native",
+    "unit": "UNKNOWN_NATIVE_UNIT",
+    "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+    "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:104308:KIMCHI-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+    "interval_ms": 60000
+  },
+  "current_volume": 226751.9,
+  "previous_wave": {
+    "present": false,
+    "identity": false,
+    "qualification_clock_valid": false,
+    "usable": false,
+    "expired": false,
+    "terminal": false
+  },
+  "selected_impulse_exists": false,
+  "exact_no_impulse_reason": "CURRENT_ACTIVITY_NOT_CONFIRMED",
+  "preliminary_plan_reached": false,
+  "plan_exists": false,
+  "automatic_eligible": false,
+  "current_threshold_passed": true,
+  "limitation": "Exact single saved input only; no strategy calibration/wholecoverage/future execution or hypothetical plan proved. Raw original and full numerical windows private."
+}

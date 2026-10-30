@@ -1,0 +1,216 @@
+{
+  "schema": "COINEX_TIA_EXACT_RARE_EVENT_QUALIFICATION_REQUEST_V1",
+  "worker_branch": "work/report2-sources-coinex-tia-qualification-20261018",
+  "working_base": "043a3177d39af5db279e7e946ff54f7526b31ea9",
+  "source_of_truth_main_at_acquisition": "07703e786565eb2e0bbb4727f70ef6680115c07b",
+  "lease": {
+    "commit": "3bedbd4ade48da003b5645555ae762d89479d587",
+    "owner": "CODEX:SOURCES:01a14e11:1792353455696",
+    "expires_ts": 1792358255696,
+    "exact_readback": true,
+    "fence_active": false,
+    "expected_main_guard_reread_completed_before_edits": true
+  },
+  "allowed_prefix": "checkpoints/source-worker-coinex-tia-qualification-20261018/",
+  "status": "OFFLINE_REQUEST_NOT_ADMITTED_NO_CURRENT_PROVIDER_FACTS",
+  "purpose": "One rare105HINT_ONLY candidate, independent CoinEx closed15m+basis/internalminute context; not all105OHLCV, not full historical candle taker analysis.",
+  "reused_proofs": {
+    "prior459_spec": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/plan-spec.json",
+    "prior459_calculated_plan": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/plan.json",
+    "accepted489_commit": "9ede9b7f8d1e7a949cb74264ca1ae13ee00b87e9",
+    "accepted489_analysis_sha256": "bd2e300124a5c567e8c5b3da293d3fb81911f4481edbc670223390504b205df4",
+    "source_assets": "checkpoints/n05-coinex-qualification-38069197541/COINEX-EXACT-ASSETS.json.gz",
+    "source_spot_market": "checkpoints/n05-coinex-qualification-38069197541/COINEX-SPOT-MARKETS.json.gz",
+    "source_summary": "checkpoints/n05-coinex-qualification-38069197541/coinex-summary.json",
+    "source_HTX_native": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz"
+  },
+  "reference_classification": {
+    "contract": "TIA-USDT",
+    "provider_ccy": "TIA",
+    "native_namespace": "CELESTIA:utia",
+    "identity_field_kind": "NATIVE_BANK_DENOMINATION_NOT_EVM_TOKEN_CONTRACT",
+    "historical_provider_reference_compatible": true,
+    "basis": [
+      "One exact TIA/Celestia row",
+      "Official site celestia.org",
+      "Explicit native chain CELESTIA and identity utia",
+      "HTX native TIA chainType0 with no token contract",
+      "Official Celestia native denomination authority"
+    ],
+    "not_ticker_or_name_only": true,
+    "not_proven": [
+      "CoinEx currently available futures/contractepoch",
+      "RPC/network genesis attestation",
+      "CoinEx amount/volume/value scale",
+      "CoinEx contract multiplier",
+      "Current quote/source freshness",
+      "IngestACK/prospective detection"
+    ],
+    "native_TIA_per_utia_denominator": 1000000,
+    "forbidden_inference": "Do not multiply a CoinEx trading amount/volume by1e6 or by the HTX contract multiplier merely because identity field containsutia."
+  },
+  "source_clocks": {
+    "CoinEx_original_body_received_ts": 1791650973347,
+    "CoinEx_provider_reference_event_ts": null,
+    "HTX_original_transport_received_ts": null,
+    "current_market_observed_ts": null,
+    "current_market_first_known_ts": null,
+    "historical_transport_is_not_new_reference_qualification_or_early_detection": true,
+    "expired_or_legacy_reference_is_not_fresh_cache": true
+  },
+  "planning_example": {
+    "cutoff_ts": 1792353455696,
+    "clock_kind": "Controlled local plan example equals lease acquisition, not provider observation/firstknown/event proof."
+  },
+  "gate0": {
+    "actor": "COORDINATOR_WITH_NEW_SEPARATE_LIVE_SCOPE_ONLY",
+    "actual_admission": false,
+    "source_pool_id": null,
+    "historical_source_id": "N05_OFFICIAL_FLOW:COINEX",
+    "provider_id": "COINEX",
+    "historical_source_id_is_not_current_grant": true,
+    "current_registry_membership": "Not qualified: no explicitCoinEx policy/collector in inspected code. This is not a deployed/DB registry inventory.",
+    "current_source_day_month_minute_balances": null,
+    "shared_IP_rate_documented_in459": "400requests/s; not projectday/month allowance",
+    "no_new_ANOMALY_alias_pool": true,
+    "native_SQL_statement_plan": null,
+    "native_R_bound": null,
+    "native_W_bound": null,
+    "requires": [
+      "Coordinator new current main/phase/fence/own applicable live lease",
+      "Actual shared/source/provider/IP/day/month admission; protect main/manual and nextfull59000R920W",
+      "Exact registered source pool/balance, no absentrow=0 assumption",
+      "Native SQL/R/W/transport/admission/finalizer bound including partial/unknown tail",
+      "No reuse of current offline lease or hardcoded old native job"
+    ],
+    "budget_reader_daily_scope": "Reads ALL currentUTCday daily rows LIMIT128; a CoinEx row can be returned with policy capNULL. No literalCoinEx string does NOT mean it is excluded."
+  },
+  "sequential_requests": [
+    {
+      "stage": 1,
+      "method": "GET",
+      "url": "https://api.coinex.com/v2/futures/market",
+      "params": {
+        "market": "TIAUSDT"
+      },
+      "HTTP_cap": 1,
+      "accept": "Exactly one active native TIAUSDT linear USDT perpetual row; baseTIA/quoteUSDT/status/APIavailability retained. Preserve epoch/multiplier only when actually returned; NULL is not fabricated.",
+      "stop": "Absent/duplicate/offline/wrongtype stops before assets/numeric; identity is pending untilstage2, not rejected merely because marketmetadata has no chain field.",
+      "preserve": [
+        "rawbody/hash",
+        "status",
+        "transportreceived",
+        "originalproductfields"
+      ],
+      "future_market_fact_present_now": false
+    },
+    {
+      "stage": 2,
+      "method": "GET",
+      "url": "https://api.coinex.com/v2/assets/info",
+      "params": {
+        "ccy": "TIA"
+      },
+      "HTTP_cap": 1,
+      "accept": "Fresh exact native-reference TIA/Celestia/officialdomain/uniqueCELESTIA:utia relation, matched with current instrument row. Full market/identity gate adjudicated after both replies.",
+      "stop": "Mismatch/ambiguous native identity or no actual registered budget, no automatic extra identity endpoint.",
+      "preserve": "Old Oct10 original can supply typed expectations, never a fresh cache/received clock."
+    },
+    {
+      "stage": 3,
+      "method": "GET",
+      "url": "https://api.coinex.com/v2/futures/kline",
+      "params": {
+        "market": "TIAUSDT",
+        "price_type": "latest_price",
+        "period": "15min",
+        "limit": 24,
+        "start_time": "E15-21*900000",
+        "end_time": "E15-1"
+      },
+      "HTTP_cap": 1,
+      "accept": "At least21 exact contiguous closed native15m bars:20prior+1event; same instrument epoch/quote, positive coherentOHLC, explicit rawvolume/value and independently qualified units. Exclude forming/duplicate/future/wrong-grid bars.",
+      "source_asof_rule": "Native created_at is barstart in milliseconds, not transportreceived or providerasof. Missing providerasof/closed assurance remains explicitlyunclosed; do not fill with localclock.",
+      "volume_fallback": "If volume/value scaling remainsunqualified retain rawstrings and at most qualified OHLC-only informational context; no unusualvolume/candle-flow claim.",
+      "gate": "Bounded qualification acquisition may resolve missing bar/unit semantics only after exact market/asset relation and actualcostadmission. Unproven epoch/unit means diagnostic/raw or atmostqualifiedprice-onlycontext, never closed anomalyvolume proof or automaticconsumer."
+    },
+    {
+      "stage": 4,
+      "method": "GET",
+      "url": "https://api.coinex.com/v2/futures/kline",
+      "params": {
+        "market": "TIAUSDT",
+        "price_type": "latest_price",
+        "period": "1min",
+        "limit": 40,
+        "start_time": "min(E1-900000,E15-900000)",
+        "end_time": "E1-1"
+      },
+      "HTTP_cap": 1,
+      "accept": "Separate nativeevent15closed1m bars endingE15 and optional sliding15m path endingE1; union spans15..29minutes, do not relabel one as the other or two upstreams.",
+      "scope": "OHLC/qualifiedvolume path gives intrabar candle structure, not true historical aggressor side or full raw fills."
+    },
+    {
+      "stage": 5,
+      "method": "GET",
+      "url": "https://api.coinex.com/v2/futures/deals",
+      "params": {
+        "market": "TIAUSDT",
+        "limit": 1000
+      },
+      "HTTP_cap": 1,
+      "accept": "At most one exact recent page, original tradeclock/decimalstrings/safeuniqueIDs/side literal and units retained.",
+      "last_id_parameter": "OMITTED; no last_id=0 reuse or pagination inferred from old spot request.",
+      "scope": "LIMITED_RECENT_SAMPLE_NOT_COMPLETE_HISTORICAL_CANDLE_TAKER_WINDOW",
+      "not_proven": [
+        "Whole15m or4h trade coverage",
+        "True candle aggressor side/CVD",
+        "Cancelled resting orders",
+        "Trader identity or intent",
+        "Manipulation/absorption/trap"
+      ],
+      "stop": "Missingclock/unsafeID/duplicate/wrongunit/missing event overlap retains exactpartial status, not invented0/failedmarket."
+    }
+  ],
+  "cost": {
+    "conditional_HTTP_upper_bound": 5,
+    "conditional_HTTP_before_numeric_if_stage1_2_stop": 2,
+    "provider_calls_executed": 0,
+    "WS_upgrades_or_connections": 0,
+    "retry": 0,
+    "pagination": 0,
+    "automatic_extra_identity_lookup": 0,
+    "spot": 0,
+    "OI": 0,
+    "source_fallback": 0,
+    "full_actual_native_and_source_bound": null,
+    "complete_native_cost_closed": false,
+    "not_a_new_cap_or_admission": true
+  },
+  "finality_and_consumers": {
+    "native_grid": "Freeze E1/E15 from admitted cutoff; verify actual providergrid/UTCepochs; do not assume weekly/day offsets.",
+    "startup": "History/replay BACKFILLED; no firstknown at native candle start/end or at oldOct10 receipt.",
+    "prospective": "Separate new post-ingest nativeclose with own received/firstknown/causalACK/lag<=10min; not current output.",
+    "watch": "Existing HTX sampled5m reference permitted only with its own exactvenue/quote/basis/clock/anchor and actualnative read costs; not a reconstruction of CoinEx intrabar history.",
+    "persistence": "No successful/qualified ingestion without exact saved rawref and causal persisted readback/ACK; nativeSQL budget needs coordinatorplan.",
+    "publication": "No score/entry/Telegram or independent-source vote from this offline reference.",
+    "missing": "DEFERRED/PENDING_DATA/GAP/CENSORED or unitunknown, not no-event/no-move/zerovolume."
+  },
+  "precise_remaining_gaps": [
+    "Current registered CoinEx source budget/pool and actualremaining day/month/minute/common/main/manual resources.",
+    "Qualified native SQL statement/charged R/W admission/finalizer costs for the exact central actor; repairreader itself is not sourceadmission.",
+    "Actual fresh futures-market and assetsreference replies for TIA, including active instrument epoch and price/volume unit contract.",
+    "Actual returned21closed15m/1min bars, end/start semantics/gaps/asof and body bounds.",
+    "Limited trades are not a full historical candle taker feed; proving side/completewindow would require a separately documented/bounded/admitted route."
+  ],
+  "effects": {
+    "market_HTTP": 0,
+    "WS": 0,
+    "native_SQL": 0,
+    "newrunacquisition": 0,
+    "production_framework_imports": 0,
+    "shared_edits": 0,
+    "accepted_suites_rerun": 0,
+    "unknown_or_reservation_refund": false
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "ROOT_BTC_PRIMARY_DOCUMENT_BINDING_PROPOSAL_V1",
+  "status": "PROPOSED_IDENTITY_METADATA_NOT_PRODUCTION_GRANT",
+  "native_catalogue_body_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+  "native_fields": {
+    "contractId": "100",
+    "symbol": "BTC-USDT",
+    "asset": "BTC",
+    "currency": "USDT"
+  },
+  "primary_sources": [
+    {
+      "url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/BTC-USDT",
+      "method": "Official page metadata returned by web search, not raw exchange API readback",
+      "selected_identity_metadata": {
+        "Contract": "BTCUSDT",
+        "Type": "Perpetual Futures",
+        "Settlement Currency": "USDT",
+        "Funding Interval": "8H",
+        "Min Trade Amount": "0.0001 BTC"
+      }
+    },
+    {
+      "url": "https://bingx.com/en/spot/BTCUSDT",
+      "method": "Official page metadata returned by web search, not raw exchange API readback",
+      "selected_identity_metadata": {
+        "pair": "BTC/USDT",
+        "asset_name": "Bitcoin"
+      }
+    }
+  ],
+  "inference": "Same-venue native BTC-USDT assetBTC/contract100 linked to exact official BTCUSDT perpetual rules and official Bitcoin BTC identity page; proposed curated classification only, never HTX history rebinding or general ticker admission",
+  "warning": "Unrelated BingX perpetual URLs can render fallback BTC contents. Generic page title/default BTC HTML cannot authenticate any other target contract.",
+  "documentation_search_calls": 2,
+  "documentation_underlying_HTTP_count": "UNKNOWN; web search/cached documentary content is not a repeat exchange API client execution",
+  "new_BingX_exchange_API_client_requests_after_7": 0,
+  "full_raw_document_original_retained": false,
+  "native_strategy_or_root_registry_grant": false,
+  "whole_catalogue_crypto_coverage": false,
+  "current_global_crypto_N": null
+}

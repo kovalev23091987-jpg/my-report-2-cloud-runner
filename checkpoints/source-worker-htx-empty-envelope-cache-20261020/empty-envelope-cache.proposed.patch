@@ -1,0 +1,32 @@
+--- a/current-generation/files/src/htx-large-trades-evidence.mjs
++++ b/current-generation/files/src/htx-large-trades-evidence.mjs
+@@ -49,12 +49,27 @@
+  if(cached.status==='CLOSED_EMPTY_BOUNDED_SAMPLE')return cached.evidence.length===0&&cached.summary?.rows_returned===0&&cached.summary.valid_recent_rows===0&&s.channel===`market.${contract}.trade.detail`&&s.source_status==='ok'&&Number.isSafeInteger(s.batch_ts)&&s.batch_ts<=s.observed_ts&&s.observed_ts-s.batch_ts<=TTL;
+  return cached.evidence.length===0&&!String(cached.status||'').startsWith('CLOSED');
+ }
+-export async function collectHtxLargeTradesEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,now=Date.now(),same_run_htx_trades}={}){
++export async function collectHtxLargeTradesEvidence({db,fetch_impl=globalThis.fetch,request_admit,source_health_admit,contract,run_id,now=Date.now(),same_run_htx_trades}={}){
+  if(same_run_htx_trades&&typeof same_run_htx_trades==='object'){
+   const future=same_run_htx_trades.futures?.contract===contract?same_run_htx_trades.futures.payload:null;
+   const spot=same_run_htx_trades.spot?.contract===contract?same_run_htx_trades.spot.payload:null;
+   const futures=future?normalizeHtxLargeTrades(future,{contract,observed_ts:now}):{status:'FUTURES_RESPONSE_UNAVAILABLE',evidence:[],summary:null};
+-  return{version:HTX_LARGE_TRADES_VERSION,...reconcileN12HtxMarkets({contract,futures,spot_payload:spot,observed_ts:now})};
++  const current={version:HTX_LARGE_TRADES_VERSION,...reconcileN12HtxMarkets({contract,futures,spot_payload:spot,observed_ts:now})};
++  // A real same-run check (including an empty fresh sample) owns this result.
++  // A failed/empty envelope is not proof that an exact positive cache is absent.
++  if(current.check_completed===true||current.evidence.length||Array.isArray(same_run_htx_trades))return current;
++  let prototype;try{prototype=Object.getPrototypeOf(same_run_htx_trades);}catch{return current;}
++  if(prototype!==Object.prototype&&prototype!==null)return current;
++  const fallback=(status)=>({...current,cache_fallback:{schema:'HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1',status,same_run_status:current.status,same_run_receipts:current.receipts,native_usage_unclosed:nativeSourceUsageUnclosed(db)}});
++  if(!/^[^-\s]{1,32}-USDT$/.test(contract)||!Number.isSafeInteger(now)||now<1_000_000_000_000||!db?.prepare||nativeSourceUsageUnclosed(db)||typeof source_health_admit!=='function')return fallback('EXISTING_CACHE_READ_NOT_ADMITTED');
++  let grant;try{grant=source_health_admit({rows_read:500,rows_written:0});}catch{return fallback('EXISTING_CACHE_READ_NOT_ADMITTED');}
++  if(grant?.allowed!==true)return fallback('EXISTING_CACHE_READ_NOT_ADMITTED');
++  try{
++   const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now,include_cache_clock:true});
++   if(cached?.cache_scope?.schema==='HTX_N12_RESULT_CACHE_SCOPE_V1'&&cached.status==='CLOSED_BOUNDED_SAMPLE'&&validHtxTradeCache(cached,contract,now))return{...cached,check_completed:false,cache_fallback:{schema:'HTX_EMPTY_SAME_RUN_CACHE_FALLBACK_V1',status:'VALIDATED_EXISTING_POSITIVE_CACHE',same_run_status:current.status,same_run_receipts:current.receipts,native_usage_unclosed:nativeSourceUsageUnclosed(db)}};
++   return fallback('NO_VALID_EXISTING_POSITIVE_CACHE');
++  }catch{return fallback('EXISTING_CACHE_READ_FAILED');}
++  // Cache miss/failure returns above: never fall through to legacy acquisition.
+  }
+  const no=(status,extra={})=>({version:HTX_LARGE_TRADES_VERSION,status,evidence:[],network_calls:0,...extra});
+  const unclosed=()=>nativeSourceUsageUnclosed(db);

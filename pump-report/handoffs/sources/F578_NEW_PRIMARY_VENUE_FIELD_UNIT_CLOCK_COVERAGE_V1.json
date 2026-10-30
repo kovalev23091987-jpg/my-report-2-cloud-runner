@@ -1,0 +1,173 @@
+{
+  "schema": "F578_NEW_PRIMARY_VENUE_FIELD_UNIT_CLOCK_COVERAGE_V1",
+  "decision": "NO_NEW_QUALIFIED_FUTURE_MAP_OR_NATIVE_ROUTE_PROPOSAL",
+  "tz_v2_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "unified_spec_sha256": "384e038c734e02230845925fa564d46402ffc4be4555ca6345315ac5ea335048",
+  "scope_delta": "Avantis/Paradex retained known F570; gTrade known retained RPC diagnostics. Replaced under ROOT instruction by MYX/Bluefin/Ethereal with zero bounded primary API pattern hits. All three replacements examined; no SDK loop or new local liquidation calculation.",
+  "candidates": [
+    {
+      "id": "MYX",
+      "primary": "https://myxfinance.gitbook.io/myx/protocol/api",
+      "attempts": [
+        1,
+        4
+      ],
+      "type": "Vendor perpetual-contract API and Solidity account-position getter",
+      "public_documented": {
+        "base": "https://api.myx.finance",
+        "method": "GET",
+        "path": "/v2/quote/market/contracts",
+        "parameters": "none",
+        "open_interest": "contracts over last24h as written; denominator/scaling unresolved",
+        "clock": "next_funding_rate_timestamp is future funding-change time, not OI as-of",
+        "sample_quote": "USDC, not USDT"
+      },
+      "position": {
+        "method": "getPosition(account,pairIndex,isLong)",
+        "fields": [
+          "account",
+          "pairIndex",
+          "isLong",
+          "collateral",
+          "positionAmount",
+          "averagePrice",
+          "fundingFeeTracker"
+        ],
+        "liquidationPrice_in_read_struct": false,
+        "census_or_account_enumeration": null,
+        "position_clock": null,
+        "raw_amount_scaling": null,
+        "complete_population_cost": null
+      },
+      "auth_free_quota": "No-auth public REST example; current access/permanent free entitlement/quota not qualified. RPC chain/contract/read cost not admitted.",
+      "utility": "No qualified OI chronology or future position census; holds as documentary lead only.",
+      "crypto_vs_RWA": "Current classifications/target overlap unqueried",
+      "coverage550": "NOT_CHECKED"
+    },
+    {
+      "id": "BLUEFIN",
+      "primary": [
+        "https://bluefin-exchange.readme.io/reference/how-to-use-this-guide",
+        "https://bluefin-exchange.readme.io/v2.0.1/reference/getuserposition"
+      ],
+      "attempts": [
+        2,
+        5,
+        7,
+        10
+      ],
+      "version_boundary": "v2.0.1 legacy page explicitly links latest v3.0.2; do not merge endpoint families or infer migration parity.",
+      "legacy_position": {
+        "method": "GET",
+        "base": "https://dapi.api.sui-prod.bluefin.io",
+        "path": "/userPosition",
+        "authentication": "Bearer JWT",
+        "scope": "Current authenticated user's OPEN positions; absent symbol means their markets, not platform census",
+        "page_size_default_and_max": 50,
+        "pageNumber": true,
+        "parentAddress": "Subaccount context",
+        "liquidationPrice_schema": null,
+        "amount_and_source_clock_schema": null
+      },
+      "pro_guide": {
+        "exchange_host_template": "https://api.{env}.bluefin.io/v1/exchange",
+        "mainnet_env": "sui-prod",
+        "general_numeric_note": "Most numbers use 9 decimals; field-specific API/onchain parity not proved",
+        "quote_example": "USDC, not USDT"
+      },
+      "future_zone_gap": "No anonymous global position population; response schema not expanded by static page. Authenticated user endpoint is not free public coverage.",
+      "public_OI_or_trade_field_qualification": null,
+      "quota": null,
+      "actual_access": null,
+      "utility": "No native proposal; no keys/signup/wallet or example code execution.",
+      "coverage550": "NOT_CHECKED"
+    },
+    {
+      "id": "ETHEREAL",
+      "primary": [
+        "https://docs.ethereal.trade/protocol-reference/api-hosts",
+        "https://docs.ethereal.trade/developer-guides/trading-api/products",
+        "https://docs.ethereal.trade/developer-guides/trading-api/system-limits"
+      ],
+      "attempts": [
+        3,
+        6,
+        8,
+        9
+      ],
+      "public_product": {
+        "method": "GET",
+        "base": "https://api.ethereal.trade",
+        "path": "/v1/product",
+        "query_example": "limit=3&orderBy=createdAt",
+        "fields": [
+          "id",
+          "ticker",
+          "displayTicker",
+          "baseTokenName",
+          "quoteTokenName",
+          "blockNumber",
+          "createdAt",
+          "openInterest",
+          "fundingUpdatedAt",
+          "fundingRate1h",
+          "maxOpenInterestUsd"
+        ],
+        "openInterest_unit": null,
+        "openInterest_asof": null,
+        "clock_boundary": "createdAt is not proved as OI as-of; fundingUpdatedAt is funding clock; product config blockNumber is not common market snapshot proof.",
+        "maxOpenInterestUsd": "Risk limit, not observed open interest",
+        "sample_quote": "USD, not USDT",
+        "published_nonexcluded_example": "SOLUSD; only documented name, not qualified SOL/BingX identity or current coverage"
+      },
+      "position_boundary": "Trading help describes own positions and account cross-margin liquidation; no public OPEN-position census/field schema established.",
+      "access": "Public GET sample uses Accept only; actual anonymous/free entitlement/geographic availability untested. Mainnet static OpenAPI inaccessible.",
+      "quota": {
+        "HTTP_shared_IP_points_per_minute": 20000,
+        "WS_IP_points_per_5minutes": 3500,
+        "authenticated_account_points_per_minute": 220,
+        "HTTP_429_on_exhaustion": true,
+        "endpoint_point_categories": [
+          1,
+          5,
+          10
+        ],
+        "exact_product_endpoint_weight": null,
+        "WS_connection_points": 10,
+        "WS_subscription_points": 5,
+        "mutable": true,
+        "doc_conflict": "Table HTTP20000/min vs RateLimit-Limit description default1000000; not reconciled, no cap increase",
+        "response_headers": [
+          "RateLimit-Limit",
+          "RateLimit-Remaining",
+          "RateLimit-Reset",
+          "Retry-After"
+        ]
+      },
+      "utility": "More explicit shared quota model and product OI field, but no direct OI denomination/as-of; not ready for current consumer.",
+      "coverage550": "NOT_CHECKED"
+    }
+  ],
+  "coverage": {
+    "selected_crypto_USDT_perps": 550,
+    "future_map_checked": 0,
+    "future_map_qualified": 0,
+    "future_map_unsupported": 0,
+    "all_550_status": "NOT_CHECKED",
+    "new_native_identity_joins": 0,
+    "new_registry_bindings": 0,
+    "new_independent_votes": 0,
+    "foreign_venue_and_quote_preserved": true
+  },
+  "actual_IO": {
+    "documentary_attempts": 10,
+    "single_queries": 3,
+    "market_metadata_provider_RPC_SQL_TG_Worker_deploy_privatecaptures": 0,
+    "vendor_or_source_import_execution": 0,
+    "production_tests": 0,
+    "new_chats_agents_automations": 0,
+    "outgoing_messages": 0
+  },
+  "remaining_gap": "No selected-asset public future map. MYX needs census/liq field+clock+scale; Bluefin needs current anonymous global data and actual schema; Ethereal needs direct OI unit and OI-specific clock. A sample native response cannot substitute these semantic proofs.",
+  "preserved": "Frozen prior packages, old SPENT/unknowns/reserves/caps,9pauses/2OWNERdeferrals and ROOT live66 program unchanged."
+}

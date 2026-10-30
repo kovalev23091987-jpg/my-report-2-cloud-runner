@@ -1,0 +1,9 @@
+# AA — только реальные сохранённые факты F550 SOL
+
+Private original SHA0170bba73bc1fd2d56796d2c448258f6192a8c8fb612ab438d4f3d017de60e07/1186568B проверен. Workerresponse находится прямо в capture.body (capture — сам файл, не лишний wrapper). Используются exact body.instrument, history.facts.candles и exact instrument-matching overview price/ticker из11observations плюс реальные optional error envelopes. Нет book/growth24h/map/previous wave — ничего не подставлять из истории.
+
+В одном offline script actual analyzePump вызывается на outer received_ts и отдельно фактическом Date.now. MODE MANUAL, run_purpose ACCEPTANCE_TEST, previous_wave=null (в capture нет ранее сохранённой волны). Все source facts/value/units/source clocks/IDs и инструмент остаются exact; меняется только analysis context time. Input и results/private manual text не выгружаются: только hashes/codes/counts/flags/timestamps/TTL ages. Проверяются no ready/card/plan/probability, честное missing mandatory data и manual отказ.
+
+Для исходного usable candle/price path отдельно вызвать actual closedCandles/analyzeMovement и структурно проверить все endpoint окна полной60м search с5м impulse+60м baseline: ожидается61endpoint, в каждом12 предшествующих5м baseline окон при125rows. Это не повтор H125/старых тестов и не assertion роста/плана. На current stale direct movement не допускается как signal path: полный analyzePump должен остановиться на freshness guards. Старые source clocks не сдвигаются.
+
+Конкретный consumer дефект сначала доказать; только затем минимальный owned analytics patch + одна новая focused qualification, без ROOTruntime/source/main изменений. Сейчас ожидается только sanitized handoff фактических пропусков mandatory book/day/trades и доступности125window. Новых HTTP/SQL/TG/deploy0, accepted T/V/W/X/Z не повторять, raw/private prices не выводить, original240/capsunknownreserves9пауз2deferrals сохранить.

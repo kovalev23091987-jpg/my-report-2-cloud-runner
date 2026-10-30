@@ -1,0 +1,48 @@
+{
+  "schema": "EXACT_WORKER_PIN_REPAIR_AFTER_CONCRETE_FAILURE_V1",
+  "original_head": "bc3f42e0480735909dbb26d64596af4f13cb7b2a",
+  "scope_amend_main": "32368a8e29b11742029e794afac6a5928b27eff8",
+  "failures": [
+    {
+      "run": 39458448633,
+      "generation_PASS": 2727,
+      "generation_FAIL": 2,
+      "generation_SKIP": 2,
+      "failure": "CURRENT_BINDING_SOURCE_HASH_MISMATCH / workflow worker pin equals effective V13 worker"
+    },
+    {
+      "run": 39458448667,
+      "generation_PASS": 2727,
+      "generation_FAIL": 2,
+      "generation_SKIP": 2,
+      "failure": "CURRENT_BINDING_SOURCE_HASH_MISMATCH / workflow worker pin equals effective V13 worker"
+    },
+    {
+      "run": 39458448719,
+      "generation_PASS": 2727,
+      "generation_FAIL": 2,
+      "generation_SKIP": 2,
+      "failure": "CURRENT_BINDING_SOURCE_HASH_MISMATCH / workflow worker pin equals effective V13 worker"
+    }
+  ],
+  "changes": {
+    ".github/workflows/report2.yml": {
+      "before_sha256": "1b112e78b72448c88c226aad65c4c629b965f1e195eed3549a1468f3a3befcfd",
+      "after_sha256": "76dbd82609372d391a99c0013034bc47e3d177e219061e9235e2f539e754aff4",
+      "change": "Only the independent pin literal, exact to already qualified worker9eb914a6; no assertion or workflow gate removed."
+    },
+    "current-generation/tests/generation-guard.test.mjs": {
+      "before_sha256": "c5aab6d88953221ff8c380f5fbb18b48a65f0dfd0e16ca19a5f0921f6ef8d34c",
+      "after_sha256": "133fccc1ce63e9f2cfa8ccbfc2c51a3d608cf61abb31afc62eddaa1286d95f50",
+      "change": "Only the independent pin literal, exact to already qualified worker9eb914a6; no assertion or workflow gate removed."
+    }
+  },
+  "previous_common_result": "39457927666 PASS1 retained byteexact; no replay",
+  "runtime_bytes_unchanged": true,
+  "narrow_repair_result": {
+    "PASS": 2,
+    "FAIL": 0,
+    "scope": "ONLY two concretely failed binding tests; source/common not repeated",
+    "artifact": "pin-repair-targeted.tap"
+  }
+}

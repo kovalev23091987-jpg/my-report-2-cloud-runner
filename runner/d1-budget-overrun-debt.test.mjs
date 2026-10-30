@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
 import {loadDailyUsageAggregate,evaluateDailyReservationBudget,finalizeRunUsage} from './d1-preaction-budget-guard.mjs';
 import {reserveCanonicalCopyBudget,CANONICAL_COPY_POLICY} from './canonical-cold-copy.mjs';
@@ -10,6 +11,7 @@ import {buildR88DailyAdmissionView} from '../current-generation/files/src/v3-ada
 const now=Date.parse('2026-10-15T14:00:00Z'),day='2026-10-15';
 function fixture(){
  const raw=new DatabaseSync(':memory:');raw.exec('CREATE TABLE report2_runner_budget_ledger_shadow(reservation_id TEXT PRIMARY KEY,day_utc TEXT,reserve_rows_read INTEGER,reserve_rows_written INTEGER,state TEXT,started_ts INTEGER,source_run_id TEXT,measured_rows_read INTEGER,measured_rows_written INTEGER,measured_requests INTEGER,unknown_ops INTEGER,completed_ts INTEGER); CREATE INDEX budget_day ON report2_runner_budget_ledger_shadow(day_utc);');
+ raw.exec(fs.readFileSync(new URL('../current-generation/migrations/009_public_collector_runtime.sql',import.meta.url),'utf8'));
  const db={raw,prepare(sql){let args=[];return{bind(...a){args=a;return this;},async first(){const row=raw.prepare(sql).get(...args);return row?{...row}:null;},async run(){return{meta:{changes:Number(raw.prepare(sql).run(...args).changes)}};}};}};
  const add=(id,reserveR,reserveW,read=null,write=null,state='FINALIZED',unknown=0)=>raw.prepare('INSERT INTO report2_runner_budget_ledger_shadow VALUES(?,?,?,?,?,?,NULL,?,?,NULL,?,NULL)').run(id,day,reserveR,reserveW,state,now,read,write,unknown);
  return{db,raw,add};

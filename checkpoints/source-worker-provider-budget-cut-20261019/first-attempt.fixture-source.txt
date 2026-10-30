@@ -1,0 +1,100 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {createProviderReferenceReader as baselineReader} from './.baseline/src/provider-reference-cache.mjs';
+import {createProviderReferenceReader as proposedReader} from './.runtime/src/provider-reference-cache.mjs';
+import {createProviderBudgetReceiptCapture,buildRunBudgetContext} from './.runtime/src/run-budget-context.mjs';
+
+const NOW=1792407299550,RUN='CONTROLLED:EXISTING_PROVIDER_CUT',CONTRACT='APR-USDT';
+const CGURL='https://api.coingecko.com/api/v3/coins/categories/list',CPURL='https://api.coinpaprika.com/v1/tags';
+const hash=s=>createHash('sha256').update(s).digest('hex'),proofs=[];
+
+function dbFixture({source='COINGECKO_SECTOR',day=17,rollingBefore=2,rollingAfter=3,dailyAllowed=true,minuteAllowed=true,unknown=0,cache=false}={}){
+ const trace=[];let sums=0;
+ const db={usageSnapshot:()=>({unknown_ops:unknown}),prepare(sql){return{sql,params:[],bind(...args){this.params=args;return this;},async run(){trace.push({op:'run',sql,params:this.params});return{success:true};},async first(){
+  trace.push({op:'first',sql,params:this.params});
+  if(sql.includes('SELECT attempts FROM report2_evidence_source_daily'))return day===null?null:{attempts:day};
+  if(sql.includes('SELECT source,attempts FROM report2_evidence_source_reservation'))return dailyAllowed?{source,attempts:1}:null;
+  if(sql.includes('SELECT units FROM report2_provider_minute_ledger_v1'))return minuteAllowed?{units:1}:null;
+  if(sql.includes('SELECT COALESCE(SUM(units),0) AS units'))return{units:sums++===0?rollingBefore:rollingAfter};
+  if(sql.includes('SELECT payload_json')){
+   if(!cache)return null;const body='{"id":"CACHED_CONTROLLED"}';return{payload_json:JSON.stringify({version:'provider-reference-cache-v1-20261004',url:CGURL,body,body_sha256:hash(body),received_ts:NOW-1000,expires_ts:NOW+60000})};
+  }
+  throw Error('UNEXPECTED_MOCK_SQL:'+sql);
+ }};},async batch(statements){return statements.map(s=>{trace.push({op:'batch',sql:s.sql,params:s.params});return{success:true};});}};
+ return{db,trace};
+}
+async function flow(reader,{source='COINGECKO_SECTOR',capture,observerThrows=false,cache=false,ttlFresh=false,...config}={}){
+ const f=dbFixture({source,cache,...config}),http=[],whole=[],url=source==='COINGECKO_SECTOR'?CGURL:CPURL;
+ const real=Date.now;Date.now=()=>NOW;
+ try{
+  const observer=observerThrows?()=>{throw Error('CONTROLLED_DIAGNOSTIC_FAILURE');}:capture?e=>capture.observe({...e,contract:CONTRACT,run_id:RUN}):null;
+  const r=reader({db:f.db,source,run_id:RUN,now:NOW,clock:()=>NOW,daily_cap:224,minute_provider:source==='COINGECKO_SECTOR'?'COINGECKO':null,minute_cap:9,budget_observe:observer,
+   request_admit:x=>{whole.push(x);return{allowed:true,status:'RESERVED',duplicate:false};},fetch_impl:async(u,options)=>{http.push({url:u,headers:options.headers});return{ok:true,status:200,headers:{get:()=>null},text:async()=>'{"id":"CONTROLLED"}'};}});
+  const payload=await r.get('EXACT_CATEGORY_DIRECTORY',url,{ttl_ms:cache||ttlFresh?60000:0});
+  return{payload,summary:r.summary(),SQL:f.trace,HTTP:http,whole};
+ }finally{Date.now=real;}
+}
+
+test('NEW connected CG existing SQL/helper replies reach bounded completion, old results and exact SQL/HTTP unchanged',async()=>{
+ const before=await flow(baselineReader),capture=createProviderBudgetReceiptCapture({clock:()=>NOW+5}),after=await flow(proposedReader,{capture});
+ assert.deepEqual(after,before);const s=capture.summary(RUN);assert.equal(s.events.length,4);
+ assert.deepEqual(s.events.map(e=>e.phase),['DAY_PREFLIGHT_ROW','MINUTE_PREFLIGHT_ROW','DAY_RESERVATION_REPLY','MINUTE_RESERVATION_REPLY']);
+ assert.equal(s.events[0].reported_used_units,17);assert.equal(s.events[1].reported_used_units,2);assert.equal(s.events[2].reported_own_reserved_units,1);assert.equal(s.events[3].reported_used_units,3);
+ assert.equal(s.events[3].returned_allowed,true);assert.equal(s.events[3].configured_cap,9);assert.equal(s.events[3].query_window_end_ts,NOW);
+ const context=buildRunBudgetContext({run_id:RUN,recorded_ts:NOW+100,reservation:{rows_read:54000,rows_written:840},usage:{requests:647,rows_read:38563,rows_written:471,unknown_ops:0},provider_receipts:s});
+ assert.equal(context.technical_provider_receipt_observations.events.length,4);
+ for(const k of ['provider_day_month_rolling60s_headroom','manual_provider_reserve_headroom','independent_global_native_capacity'])assert.equal(context[k],null);
+ assert.equal(context.admission_authorized,false);assert.equal(context.whole_day_closed,false);assert.equal(s.future_work_admitted,false);
+ assert.equal(s.manual_held_reserve,null);assert.equal(s.month_headroom,null);assert.equal(s.native_unknown_ops_at_individual_query,null);
+ proofs.push({case:'CG_CONTROLLED_CONNECTED',original_SQL:before.SQL.length,proposed_SQL:after.SQL.length,original_HTTP:before.HTTP.length,proposed_HTTP:after.HTTP.length,whole_reservations_unchanged:JSON.stringify(before.whole)===JSON.stringify(after.whole),completion_bytes:Buffer.byteLength(JSON.stringify(context)),projection:s});
+});
+test('NEW CP reports only existing day cuts, no synthetic minute/month/manual counters',async()=>{
+ const before=await flow(baselineReader,{source:'COINPAPRIKA_SECTOR'}),capture=createProviderBudgetReceiptCapture({clock:()=>NOW+5}),after=await flow(proposedReader,{source:'COINPAPRIKA_SECTOR',capture});
+ assert.deepEqual(after,before);const s=capture.summary(RUN);assert.deepEqual(s.events.map(e=>e.phase),['DAY_PREFLIGHT_ROW','DAY_RESERVATION_REPLY']);
+ assert.equal(s.events[1].reported_used_units,null);assert.equal(s.events[1].reported_own_reserved_units,1);assert.equal(s.provider_account_balances,null);
+ proofs.push({case:'CP_CONTROLLED_CONNECTED',original_SQL:before.SQL.length,proposed_SQL:after.SQL.length,original_HTTP:before.HTTP.length,proposed_HTTP:after.HTTP.length,projection:s});
+});
+for(const config of [{day:224},{dailyAllowed:false},{rollingBefore:9},{minuteAllowed:false,rollingAfter:9},{unknown:1}])test('NEW existing denial/unknown path unchanged '+JSON.stringify(config),async()=>{
+ const before=await flow(baselineReader,config),capture=createProviderBudgetReceiptCapture({clock:()=>NOW+5}),after=await flow(proposedReader,{...config,capture});assert.deepEqual(after,before);
+ assert.equal(after.HTTP.length,0);assert.equal(capture.summary(RUN).future_work_admitted,false);
+ proofs.push({case:'DENIAL_OR_UNKNOWN',config,SQL_before:before.SQL.length,SQL_after:after.SQL.length,HTTP:0,projection:capture.summary(RUN)});
+});
+test('NEW cached reference has no current budget observations; source clock/body/cache payload unchanged',async()=>{
+ const before=await flow(baselineReader,{cache:true}),capture=createProviderBudgetReceiptCapture({clock:()=>NOW+5}),after=await flow(proposedReader,{cache:true,capture});assert.deepEqual(after,before);
+ assert.equal(after.HTTP.length,0);assert.equal(after.summary.receipts[0].received_ts,NOW-1000);assert.equal(capture.summary(RUN).status,'NO_CURRENT_CAPTURE');assert.deepEqual(capture.summary(RUN).events,[]);
+});
+test('NEW fresh reference cache write payload bytes and SQL params stay exact, no technical metadata persisted in source cache',async()=>{
+ const before=await flow(baselineReader,{ttlFresh:true}),capture=createProviderBudgetReceiptCapture({clock:()=>NOW+5}),after=await flow(proposedReader,{ttlFresh:true,capture});assert.deepEqual(after,before);
+ const writes=after.SQL.filter(s=>s.sql.includes('INSERT INTO report2_evidence_source_cache'));assert.equal(writes.length,1);const payload=writes[0].params.at(-1);assert.equal(typeof payload,'string');assert.ok(!payload.includes('DAY_PREFLIGHT_ROW'));assert.ok(!payload.includes('EXISTING_PROVIDER_LEDGER_OBSERVATIONS'));
+ proofs.push({case:'REFERENCE_CACHE_WRITE_CONTROLLED',original_SQL:before.SQL.length,proposed_SQL:after.SQL.length,reference_cache_payload_bytes:Buffer.byteLength(payload),source_cache_payload_unchanged:true});
+});
+test('NEW optional diagnostic exception cannot deny or alter existing transport/reservation/return',async()=>assert.deepEqual(await flow(proposedReader,{observerThrows:true}),await flow(baselineReader)));
+test('NEW absent/invalid native day scalar is NULL in metadata, not fabricated measured zero',async()=>{
+ for(const day of [null,'',false,'17',-1,NaN]){
+  const capture=createProviderBudgetReceiptCapture({clock:()=>NOW+5});await flow(proposedReader,{day,capture});const first=capture.summary(RUN).events[0];assert.equal(first.reported_used_units,null);
+  assert.equal(first.row_presence,day===null?'ABSENT':'RETURNED');
+ }
+});
+
+function event(extra={}){return{source:'COINGECKO_SECTOR',run_id:RUN,contract:CONTRACT,route:'EXACT_CATEGORY_DIRECTORY',phase:'DAY_PREFLIGHT_ROW',reference_key:'REFERENCE:provider-reference-cache-v1-20261004:'+'a'.repeat(64),attempt_sequence:0,query_window_end_ts:NOW,day_utc:'2026-10-19',native_usage_guard_passed:true,row_presence:'RETURNED',reported_used_units:17,configured_cap:224,...extra};}
+test('NEW capture keeps duplicate/earlier query observations distinct; never latest-wins or sums them as balances',()=>{
+ const c=createProviderBudgetReceiptCapture({clock:()=>NOW+5});c.observe(event());c.observe(event({reported_used_units:19}));const s=c.summary(RUN);assert.deepEqual(s.events.map(e=>e.reported_used_units),[17,19]);assert.equal(s.query_cuts_are_distinct,true);assert.equal(s.provider_account_balances,null);
+});
+test('NEW invocation/root run binding omits foreign data and does not resurrect an old capture',()=>{
+ const c=createProviderBudgetReceiptCapture({clock:()=>NOW+5});c.observe(event());assert.deepEqual(c.summary('FOREIGN').events,[]);assert.equal(c.summary('FOREIGN').foreign_run_omitted,1);assert.deepEqual(createProviderBudgetReceiptCapture().summary(RUN).events,[]);
+ const s=c.summary(RUN);assert.equal(buildRunBudgetContext({run_id:'OTHER',provider_receipts:s}).technical_provider_receipt_observations,null);
+});
+test('NEW safe bounds and privacy: unknown/private fields are not exported, status cannot contain a URL',()=>{
+ const c=createProviderBudgetReceiptCapture({clock:()=>NOW+5});c.observe(event({raw_body:'SECRET_PRIVATE',api_key:'SECRET_PRIVATE',url:'https://private.example/SECRET_PRIVATE',returned_status:'https://private.example/SECRET_PRIVATE',reported_used_units:true}));const s=c.summary(RUN);
+ assert.equal(s.events[0].returned_status,null);assert.equal(s.events[0].reported_used_units,null);assert.ok(!JSON.stringify(s).includes('SECRET_PRIVATE'));
+});
+test('NEW malformed context/native date/native guard gives partial diagnostic, never an exception or budget authority',()=>{
+ const c=createProviderBudgetReceiptCapture({clock:()=>NOW+5});for(const extra of [{source:'FOREIGN'},{phase:'UNKNOWN'},{run_id:''},{contract:'FOREIGN'},{reference_key:'https://SECRET'},{native_usage_guard_passed:false},{query_window_end_ts:Number.MAX_SAFE_INTEGER},{query_window_end_ts:-1},{route:'private/url'},{attempt_sequence:.5}])assert.doesNotThrow(()=>c.observe(event(extra)));
+ const s=c.summary(RUN);assert.deepEqual(s.events,[]);assert.equal(s.invalid_observations,10);assert.equal(s.status,'PARTIAL_OR_INVALID');assert.equal(s.future_work_admitted,false);
+});
+test('NEW capacity overflow is explicit, diagnostic-only and bounded; reservations/facts are not refunded or evicted',()=>{
+ const c=createProviderBudgetReceiptCapture({clock:()=>NOW+5});for(let i=0;i<40;i++)c.observe(event({attempt_sequence:i}));const s=c.summary(RUN);assert.ok(s.events.length<=16);assert.equal(s.overflow_observations,24);assert.equal(s.status,'OVERFLOW');assert.ok(Buffer.byteLength(JSON.stringify(s))<=16384);assert.equal(s.all_run_observations_complete,false);
+});
+test.after(()=>fs.writeFileSync(new URL('./controlled-witness.json',import.meta.url),JSON.stringify({schema:'PROVIDER_BUDGET_NEW_CONTROLLED_AFFECTED_WITNESS_V1',classification:'CONTROLLED mockDB/helper replies and existing-reader baseline comparison; not native CG/CP/provideraccount balances',native_SQL:0,provider_HTTP:0,old_tests_executed:0,cases:proofs},null,2)+'\n'));

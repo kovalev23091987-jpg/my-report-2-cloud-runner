@@ -1,0 +1,41 @@
+{
+  "schema": "BRIDGE_CORRELATION_EXACT_TEXT_PINS_V1",
+  "working_main": "438eed88224fdf5624064509d1902d95540a0528",
+  "helper_path": "runner/sql-bridge-counter-repair.mjs",
+  "helper_export": "addExactSQLBridgeCostCorrelation",
+  "helper_before": {
+    "bytes": 3935,
+    "sha256": "cf2d70caa589dc96a75857977c3ff11b5075f4bbf148e87cd5854003ac36a8da"
+  },
+  "helper_append": {
+    "path": "bridge-patch.proposed.txt",
+    "bytes": 6249,
+    "sha256": "151bd35e9ba6548601f1840d6deede6f34369b66d45f6f52dda3d52ef0936190"
+  },
+  "helper_after": {
+    "bytes": 10184,
+    "sha256": "67b5213a52d0d9ccbde29a6f905c5ef5ab072bc9b93e38488c6de6998e9d5084"
+  },
+  "original70c_fixture": {
+    "path": "current-generation/tests/fixtures/actual-d1-bridge-20261008.mjs",
+    "bytes": 5103,
+    "sha256": "70c3b56e3c93612379e5d344ba9e856e0150d0be83e2fb9b66acdfc62dc99df8"
+  },
+  "strict06603": {
+    "bytes": 5292,
+    "sha256": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf"
+  },
+  "correlated_worker": {
+    "path": "bridge-worker.proposed.mjs",
+    "bytes": 9614,
+    "sha256": "c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063"
+  },
+  "runtime_targets": [
+    "report2-d1-adapter.mjs",
+    "native-query-cost-journal.mjs"
+  ],
+  "full_runtime_files": 618,
+  "unchanged_runtime_files": 616,
+  "server_helper_repo_only": true,
+  "author_application_execution": 0
+}

@@ -1,0 +1,1319 @@
+{
+  "schema": "SAVED_INITIAL_FULL_PUBLICATION_REFUSALS_V1",
+  "source_run_id": "1792470686053-1792470696222",
+  "head": "b014569068d113bcf578f7101b92ed3406f17832",
+  "lifecycle_as_saved": {
+    "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+    "mode": "SHADOW_ONLY",
+    "network_send": false,
+    "dispatch_enabled": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "completed_handoffs": 2,
+    "transitions": [
+      {
+        "contract": "PEPE-USDT",
+        "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "current_status": null,
+        "dispatch": null
+      },
+      {
+        "contract": "BTW-USDT",
+        "status": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+        "reason": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+        "current_status": null,
+        "dispatch": null
+      }
+    ],
+    "usage_delta": {
+      "rows_read": 121,
+      "rows_written": 0,
+      "requests": 5,
+      "unknown_ops": 0
+    },
+    "source_read_costs": {
+      "schema": "EXISTING_LIFECYCLE_SOURCE_READ_COSTS_V1",
+      "source_run_id": "1792470686053-1792470696222",
+      "caller_evaluation_ts": 1792470787054,
+      "basis": "ALREADY_RETURNED_BATCH_REPLY_META_NOT_WHOLE_DAY_OR_PROVIDER_HEADROOM",
+      "scope": "BATCH_STATEMENT_META_ONLY_NOT_ADAPTER_OR_RESTORER_EXTRA_WORK",
+      "status": "REPORTED_COUNTERS_COMPLETE",
+      "expected_queries": 5,
+      "actual_reply_count": 5,
+      "queries": [
+        {
+          "query": "EARLY_WAVES",
+          "reply_success": true,
+          "rows_read": 50,
+          "rows_written": 0,
+          "returned_rows": 23
+        },
+        {
+          "query": "SHADOW_DECISIONS",
+          "reply_success": true,
+          "rows_read": 8,
+          "rows_written": 0,
+          "returned_rows": 2
+        },
+        {
+          "query": "FINAL_WITH_CONTEXT",
+          "reply_success": true,
+          "rows_read": 3,
+          "rows_written": 0,
+          "returned_rows": 0
+        },
+        {
+          "query": "PREVIOUS_LIFECYCLE",
+          "reply_success": true,
+          "rows_read": 18,
+          "rows_written": 0,
+          "returned_rows": 7
+        },
+        {
+          "query": "CURRENT_CANONICAL",
+          "reply_success": true,
+          "rows_read": 42,
+          "rows_written": 0,
+          "returned_rows": 2
+        }
+      ],
+      "known_rows_read_subtotal": 121,
+      "known_rows_written_subtotal": 0,
+      "total_rows_read": 121,
+      "total_rows_written": 0,
+      "admission_authorized": false,
+      "additional_SQL": 0,
+      "additional_source_HTTP": 0,
+      "SQL_params_and_result_values_exported": false
+    }
+  },
+  "candidate_boundaries": [
+    {
+      "canonical_identity_as_saved": {
+        "publication_id": "PUB:a73852c63515f1e92af80bf2d13954aa49fc55db",
+        "contract": "PEPE-USDT",
+        "direction": null,
+        "run_id": "1792470686053-1792470696222",
+        "snapshot_id": "S392:PEPE-USDT:1792470783762",
+        "wave_id": "EDW:PEPE-USDT:1792470696383:G4",
+        "observed_ts": 1792470783762,
+        "valid_until_ts": null,
+        "canonical_state": "REJECTED",
+        "lifecycle_event": null,
+        "actionability_status": "UNASSESSED",
+        "actionability_reason": null
+      },
+      "canonical_scores_as_saved": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "source_role_audit_as_saved": {
+        "schema": "ORIGINAL_OBSERVATION_SOURCE_ROLE_AUDIT_V1",
+        "contract": "PEPE-USDT",
+        "run_id": "1792470686053-1792470696222",
+        "snapshot_id": "S392:PEPE-USDT:1792470783762",
+        "observed_ts": 1792470783762,
+        "status": "CLOSED",
+        "observation_source_gate_closed": true,
+        "reasons": [],
+        "verified_HTX_execution": true,
+        "distinct_verified_origins": [
+          "GATE_OFFICIAL",
+          "HTX_OFFICIAL",
+          "OKX_OFFICIAL"
+        ],
+        "classified_receipt_count": 21,
+        "usable_role_receipt_count": 16,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 1,
+          "FACT_OR_IDENTITY_NOT_VERIFIED": 1,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 3
+        },
+        "receipts": [
+          {
+            "source_key": "BYBIT_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470748268,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792454400000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 43200,
+            "normalized_value": 0.0001
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "OPEN_INTEREST_CURRENT",
+            "assigned_roles": [
+              "OI_CURRENT_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792470754364,
+            "received_ts": 1792470748268,
+            "max_age_sec": 900,
+            "normalized_value": 29930574.095
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 1.4681107099879576
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792468800000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 0.0001
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "OI_CHANGE_1H",
+            "assigned_roles": [
+              "OI_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792468800000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": -0.044636901891170755
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 1.4440433212996373
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "TAKER_BALANCE_1H_RAW",
+            "assigned_roles": [
+              "TRADES_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1792468800000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": -30.140845070422532
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_1H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 1.1264765728702386
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_1H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 0.9521113003060355
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_4H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 1.2855985096437816
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_4H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 1.2338313709033821
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_24H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 4.467180339275956
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_24H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 4.377032170252882
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "SPOT_TURNOVER_24H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "DOWN_MARKET_RS_VS_BTC_RAW",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 0.05829381513429924
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "DOWN_MARKET_RS_VS_ETH_RAW",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "normalized_value": 0.22682969821751423
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470748268,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470748268,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470748268,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "HTX_OFFICIAL",
+            "metric": "EXECUTION_GATE_STATUS",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "HTX_OFFICIAL",
+            "event_ts": 1792470783643,
+            "received_ts": 1792470783762,
+            "max_age_sec": 15,
+            "normalized_value": 1
+          }
+        ],
+        "omitted_receipt_details": 0,
+        "revalidated_at_original_observation": true,
+        "not_a_current_source_refresh": true,
+        "decisions_changed": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "internal_only": true
+      },
+      "gate_diagnostic_as_saved": {
+        "schema": "GATE_STORED_NORMALIZED_DIAGNOSTIC_V1",
+        "contract": "PEPE-USDT",
+        "canonical_tuple": {
+          "contract": "PEPE-USDT",
+          "run_id": "1792470686053-1792470696222",
+          "snapshot_id": "S392:PEPE-USDT:1792470783762",
+          "observed_ts": 1792470783762,
+          "analytical_fingerprint": "85278a22b9b58e736a790669658f95e43637ef6976b0dcb4dd81e98b71e3961f"
+        },
+        "normalized_rows_status": "CAPTURED",
+        "first_binding": {
+          "schema": "GATE_RETURNED_BINDING_DIAGNOSTIC_V1",
+          "contract": "PEPE-USDT",
+          "carrier_status": "CAPTURED",
+          "status": "NOT_CLOSED",
+          "reason": "NO_USABLE_GATE_METRIC_REQUIRING_BINDING"
+        },
+        "rows": [
+          {
+            "source_key": "GATE_OFFICIAL",
+            "venue": "GATE",
+            "status": "CLOSED",
+            "legacy_status": "CLOSED",
+            "fact_contract_status": "CLOSED",
+            "identity_status": "CLOSED",
+            "freshness_status": "CURRENT_AT_OBSERVATION",
+            "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+            "quality_status": "OK",
+            "reason_code": null,
+            "metric": "funding_rate",
+            "contract_code": "PEPE-USDT",
+            "unit": "rate_per_settlement",
+            "interval": "CURRENT_HOURLY_STATS",
+            "decision_usable": true,
+            "source_compatible": true,
+            "event_ts": 1792468800000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "coverage_pct": 100,
+            "identity": {
+              "status": "CLOSED",
+              "base_asset": "PEPE",
+              "quote_asset": "USDT",
+              "market_type": "PERP",
+              "market_type_raw": "USDT_PERP",
+              "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+              "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+              "contract_code": "PEPE-USDT",
+              "instrument_id": "PEPE_USDT",
+              "primary_market_id": "PEPE_USDT:GATE:USDT_PERP",
+              "multiplier_required_for_metric": false,
+              "symbol_verified": true,
+              "asset_identity_verified": true
+            }
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "venue": "GATE",
+            "status": "CLOSED",
+            "legacy_status": "CLOSED",
+            "fact_contract_status": "CLOSED",
+            "identity_status": "CLOSED",
+            "freshness_status": "CURRENT_AT_OBSERVATION",
+            "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+            "quality_status": "OK",
+            "reason_code": null,
+            "metric": "oi_change_1h",
+            "contract_code": "PEPE-USDT",
+            "unit": "pct",
+            "interval": "1h",
+            "decision_usable": true,
+            "source_compatible": true,
+            "event_ts": 1792468800000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "coverage_pct": 100,
+            "identity": {
+              "status": "CLOSED",
+              "base_asset": "PEPE",
+              "quote_asset": "USDT",
+              "market_type": "PERP",
+              "market_type_raw": "USDT_PERP",
+              "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+              "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+              "contract_code": "PEPE-USDT",
+              "instrument_id": "PEPE_USDT",
+              "primary_market_id": "PEPE_USDT:GATE:USDT_PERP",
+              "multiplier_required_for_metric": false,
+              "symbol_verified": true,
+              "asset_identity_verified": true
+            }
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "venue": "GATE",
+            "status": "CLOSED",
+            "legacy_status": "CLOSED",
+            "fact_contract_status": "CLOSED",
+            "identity_status": "CLOSED",
+            "freshness_status": "CURRENT_AT_OBSERVATION",
+            "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+            "quality_status": "OK",
+            "reason_code": null,
+            "metric": "price_change_4h",
+            "contract_code": "PEPE-USDT",
+            "unit": "pct",
+            "interval": "4h",
+            "decision_usable": true,
+            "source_compatible": true,
+            "event_ts": 1792465200000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "coverage_pct": 100,
+            "identity": {
+              "status": "CLOSED",
+              "base_asset": "PEPE",
+              "quote_asset": "USDT",
+              "market_type": "PERP",
+              "market_type_raw": "USDT_PERP",
+              "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+              "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+              "contract_code": "PEPE-USDT",
+              "instrument_id": "PEPE_USDT",
+              "primary_market_id": "PEPE_USDT:GATE:USDT_PERP",
+              "multiplier_required_for_metric": false,
+              "symbol_verified": true,
+              "asset_identity_verified": true
+            }
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "venue": "GATE",
+            "status": "CLOSED",
+            "legacy_status": "CLOSED",
+            "fact_contract_status": "CLOSED",
+            "identity_status": "CLOSED",
+            "freshness_status": "CURRENT_AT_OBSERVATION",
+            "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+            "quality_status": "OK",
+            "reason_code": null,
+            "metric": "taker_balance_1h_raw",
+            "contract_code": "PEPE-USDT",
+            "unit": "pct_long_minus_short_of_total",
+            "interval": "1h",
+            "decision_usable": true,
+            "source_compatible": true,
+            "event_ts": 1792468800000,
+            "received_ts": 1792470748268,
+            "max_age_sec": 7200,
+            "coverage_pct": 100,
+            "identity": {
+              "status": "CLOSED",
+              "base_asset": "PEPE",
+              "quote_asset": "USDT",
+              "market_type": "PERP",
+              "market_type_raw": "USDT_PERP",
+              "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+              "asset_identity_verification_method": "EXPLICIT_ASSET_IDENTITY",
+              "contract_code": "PEPE-USDT",
+              "instrument_id": "PEPE_USDT",
+              "primary_market_id": "PEPE_USDT:GATE:USDT_PERP",
+              "multiplier_required_for_metric": false,
+              "symbol_verified": true,
+              "asset_identity_verified": true
+            }
+          }
+        ],
+        "proof_scope": "STORED_NORMALIZED_AND_RETURNED_CODES_NOT_RAW_API_OR_ADMISSION"
+      }
+    },
+    {
+      "canonical_identity_as_saved": {
+        "publication_id": "PUB:8f94851a880bc2e07c2bf4c84cd500d7d04d6d5c",
+        "contract": "BTW-USDT",
+        "direction": "SHORT",
+        "run_id": "1792470686053-1792470696222",
+        "snapshot_id": "S392:BTW-USDT:1792470745271",
+        "wave_id": "EDW:BTW-USDT:1792392656280:G19",
+        "observed_ts": 1792470745271,
+        "valid_until_ts": 1792472545271,
+        "canonical_state": "OBSERVE",
+        "lifecycle_event": null,
+        "actionability_status": "UNASSESSED",
+        "actionability_reason": null
+      },
+      "canonical_scores_as_saved": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 83,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "source_role_audit_as_saved": {
+        "schema": "ORIGINAL_OBSERVATION_SOURCE_ROLE_AUDIT_V1",
+        "contract": "BTW-USDT",
+        "run_id": "1792470686053-1792470696222",
+        "snapshot_id": "S392:BTW-USDT:1792470745271",
+        "observed_ts": 1792470745271,
+        "status": "NOT_CLOSED",
+        "observation_source_gate_closed": false,
+        "reasons": [
+          "FEWER_THAN_TWO_VERIFIED_DISTINCT_ORIGINS"
+        ],
+        "verified_HTX_execution": true,
+        "distinct_verified_origins": [
+          "HTX_OFFICIAL"
+        ],
+        "classified_receipt_count": 11,
+        "usable_role_receipt_count": 1,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 2,
+          "FACT_OR_IDENTITY_NOT_VERIFIED": 4,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 4
+        },
+        "receipts": [
+          {
+            "source_key": "BYBIT_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470707892,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470707892,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792468800000,
+            "received_ts": 1792470707892,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "OI_CHANGE_1H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792468800000,
+            "received_ts": 1792470707892,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792465200000,
+            "received_ts": 1792470707892,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "TAKER_BALANCE_1H_RAW",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": 1792468800000,
+            "received_ts": 1792470707892,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "RELATIVE_STRENGTH_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470707892,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470707892,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470707892,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "retained_fact_proof": {
+              "decision_usable": false,
+              "fact_contract_status": "NOT_CLOSED",
+              "identity_status": "NOT_CLOSED",
+              "identity_object_status": "NOT_CLOSED",
+              "source_compatible": true,
+              "freshness_status": "NOT_CLOSED",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1792470707892,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "HTX_OFFICIAL",
+            "metric": "EXECUTION_GATE_STATUS",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "retained_fact_proof": {
+              "decision_usable": true,
+              "fact_contract_status": "CLOSED",
+              "identity_status": "CLOSED",
+              "identity_object_status": "CLOSED",
+              "source_compatible": true,
+              "freshness_status": "CURRENT_AT_OBSERVATION",
+              "normalization_status": "LEGACY_VALUE_PASSTHROUGH"
+            },
+            "independence_group": "HTX_OFFICIAL",
+            "event_ts": 1792470745125,
+            "received_ts": 1792470745270,
+            "max_age_sec": 15,
+            "normalized_value": 1
+          }
+        ],
+        "omitted_receipt_details": 0,
+        "revalidated_at_original_observation": true,
+        "not_a_current_source_refresh": true,
+        "decisions_changed": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "internal_only": true
+      },
+      "gate_diagnostic_as_saved": {
+        "schema": "GATE_STORED_NORMALIZED_DIAGNOSTIC_V1",
+        "contract": "BTW-USDT",
+        "canonical_tuple": {
+          "contract": "BTW-USDT",
+          "run_id": "1792470686053-1792470696222",
+          "snapshot_id": "S392:BTW-USDT:1792470745271",
+          "observed_ts": 1792470745271,
+          "analytical_fingerprint": "787eb870bcdbdb9025fc59288b7062113a2d0c8f073d9bc1bb6dcb5a87b56207"
+        },
+        "normalized_rows_status": "CAPTURED",
+        "first_binding": {
+          "schema": "GATE_RETURNED_BINDING_DIAGNOSTIC_V1",
+          "contract": "BTW-USDT",
+          "carrier_status": "CAPTURED",
+          "status": "NOT_CLOSED",
+          "reason": "OFFICIAL_HTX_EXACT_TOKEN_REFERENCE_REQUIRED"
+        },
+        "rows": [
+          {
+            "source_key": "GATE_OFFICIAL",
+            "venue": "GATE",
+            "status": "CLOSED",
+            "legacy_status": "CLOSED",
+            "fact_contract_status": "NOT_CLOSED",
+            "identity_status": "NOT_CLOSED",
+            "freshness_status": "CURRENT_AT_OBSERVATION",
+            "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+            "quality_status": "OK",
+            "reason_code": null,
+            "metric": "funding_rate",
+            "contract_code": "BTW-USDT",
+            "unit": "rate_per_settlement",
+            "interval": "CURRENT_HOURLY_STATS",
+            "decision_usable": false,
+            "source_compatible": true,
+            "event_ts": 1792468800000,
+            "received_ts": 1792470707892,
+            "max_age_sec": 7200,
+            "coverage_pct": 100,
+            "identity": {
+              "status": "NOT_CLOSED",
+              "base_asset": "BTW",
+              "quote_asset": "USDT",
+              "market_type": "PERP",
+              "market_type_raw": "USDT_PERP",
+              "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+              "asset_identity_verification_method": "NOT_VERIFIED",
+              "contract_code": "BTW-USDT",
+              "instrument_id": "BTW_USDT",
+              "primary_market_id": "BTW_USDT:GATE:USDT_PERP",
+              "multiplier_required_for_metric": false,
+              "symbol_verified": true,
+              "asset_identity_verified": false
+            }
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "venue": "GATE",
+            "status": "CLOSED",
+            "legacy_status": "CLOSED",
+            "fact_contract_status": "NOT_CLOSED",
+            "identity_status": "NOT_CLOSED",
+            "freshness_status": "CURRENT_AT_OBSERVATION",
+            "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+            "quality_status": "OK",
+            "reason_code": null,
+            "metric": "oi_change_1h",
+            "contract_code": "BTW-USDT",
+            "unit": "pct",
+            "interval": "1h",
+            "decision_usable": false,
+            "source_compatible": true,
+            "event_ts": 1792468800000,
+            "received_ts": 1792470707892,
+            "max_age_sec": 7200,
+            "coverage_pct": 100,
+            "identity": {
+              "status": "NOT_CLOSED",
+              "base_asset": "BTW",
+              "quote_asset": "USDT",
+              "market_type": "PERP",
+              "market_type_raw": "USDT_PERP",
+              "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+              "asset_identity_verification_method": "NOT_VERIFIED",
+              "contract_code": "BTW-USDT",
+              "instrument_id": "BTW_USDT",
+              "primary_market_id": "BTW_USDT:GATE:USDT_PERP",
+              "multiplier_required_for_metric": false,
+              "symbol_verified": true,
+              "asset_identity_verified": false
+            }
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "venue": "GATE",
+            "status": "CLOSED",
+            "legacy_status": "CLOSED",
+            "fact_contract_status": "NOT_CLOSED",
+            "identity_status": "NOT_CLOSED",
+            "freshness_status": "CURRENT_AT_OBSERVATION",
+            "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+            "quality_status": "OK",
+            "reason_code": null,
+            "metric": "price_change_4h",
+            "contract_code": "BTW-USDT",
+            "unit": "pct",
+            "interval": "4h",
+            "decision_usable": false,
+            "source_compatible": true,
+            "event_ts": 1792465200000,
+            "received_ts": 1792470707892,
+            "max_age_sec": 7200,
+            "coverage_pct": 100,
+            "identity": {
+              "status": "NOT_CLOSED",
+              "base_asset": "BTW",
+              "quote_asset": "USDT",
+              "market_type": "PERP",
+              "market_type_raw": "USDT_PERP",
+              "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+              "asset_identity_verification_method": "NOT_VERIFIED",
+              "contract_code": "BTW-USDT",
+              "instrument_id": "BTW_USDT",
+              "primary_market_id": "BTW_USDT:GATE:USDT_PERP",
+              "multiplier_required_for_metric": false,
+              "symbol_verified": true,
+              "asset_identity_verified": false
+            }
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "venue": "GATE",
+            "status": "CLOSED",
+            "legacy_status": "CLOSED",
+            "fact_contract_status": "NOT_CLOSED",
+            "identity_status": "NOT_CLOSED",
+            "freshness_status": "CURRENT_AT_OBSERVATION",
+            "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+            "quality_status": "OK",
+            "reason_code": null,
+            "metric": "taker_balance_1h_raw",
+            "contract_code": "BTW-USDT",
+            "unit": "pct_long_minus_short_of_total",
+            "interval": "1h",
+            "decision_usable": false,
+            "source_compatible": true,
+            "event_ts": 1792468800000,
+            "received_ts": 1792470707892,
+            "max_age_sec": 7200,
+            "coverage_pct": 100,
+            "identity": {
+              "status": "NOT_CLOSED",
+              "base_asset": "BTW",
+              "quote_asset": "USDT",
+              "market_type": "PERP",
+              "market_type_raw": "USDT_PERP",
+              "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+              "asset_identity_verification_method": "NOT_VERIFIED",
+              "contract_code": "BTW-USDT",
+              "instrument_id": "BTW_USDT",
+              "primary_market_id": "BTW_USDT:GATE:USDT_PERP",
+              "multiplier_required_for_metric": false,
+              "symbol_verified": true,
+              "asset_identity_verified": false
+            }
+          }
+        ],
+        "proof_scope": "STORED_NORMALIZED_AND_RETURNED_CODES_NOT_RAW_API_OR_ADMISSION"
+      }
+    }
+  ],
+  "delivery_as_saved": {
+    "version": "post-v7-bound-telegram-delivery-v5-finalize-invisible-removal-20260928",
+    "mode": "CANONICAL_BOUND_DELIVERY",
+    "network_send": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "original_terminal": {
+      "status": "NO_ELIGIBLE_ORIGINAL_TERMINAL",
+      "queued": false
+    },
+    "reconciliation": {
+      "status": "CLOSED",
+      "processed": 0,
+      "capacity_deferred": 0,
+      "source_run_id": "1792470686053-1792470696222",
+      "executor_run_id": "1792470686053-1792470696222",
+      "results": []
+    },
+    "lifecycle": [
+      {
+        "key": "ZEC-USDT|LONG|EDW:ZEC-USDT:1791710630650:G8|OBSERVE|v3-telegram-shadow-r6",
+        "status": "FAILED_RETRYABLE",
+        "reason": "NOT_CLOSED",
+        "sent": false,
+        "bound_refusal": null
+      }
+    ],
+    "health": [],
+    "sent": 0,
+    "usage_delta": {
+      "rows_read": 93,
+      "rows_written": 2,
+      "requests": 6,
+      "unknown_ops": 0
+    },
+    "secrets_logged": false
+  },
+  "same_run_proof_as_saved": {
+    "schema": "SAME_RUN_DELIVERY_PROOF_V1",
+    "head": "b014569068d113bcf578f7101b92ed3406f17832",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "run_id": "1792470686053-1792470696222",
+    "source": "schedule",
+    "recorded_at": 1792470789295,
+    "status": "NO_EXACT_SAME_RUN_SENT_CAPTURED",
+    "delivery_status": "CLOSED",
+    "cases": [],
+    "sourceHTTP_added": 0,
+    "D1_added": 0,
+    "Telegram_added": 0,
+    "task_writes_added": 0,
+    "original_clocks_refreshed": false,
+    "project_complete": false
+  },
+  "causal_limits": [
+    "BTW current OBSERVE failed its source-role gate before creating a dispatch. PEPE lacked canonical direction. Both exact refusal codes are saved, not recomputed.",
+    "121R0W/5queries/unknown0 split50,8,3,18,42 is this PRE565 lifecycle cut only. It is below existing160 cap and is not182/native savings/whole-day admission.",
+    "Selected ZEC LONG prior retry FAILED_RETRYABLE/NOT_CLOSED is separate from current BTW. Exact loaded ZEC binding/refusal subterm is not exported; bound_refusal=null. It did not consume or suppress a current BTW dispatch because current BTW dispatch was null.",
+    "Gate first_binding captures OFFICIAL_HTX_EXACT_TOKEN_REFERENCE_REQUIRED; h/raw reference and exact failed OR subterm are absent. Fresh legacy Gate PERP metrics with unverified identity do not qualify. Supplemental BSC/CoinGecko identity and Gate SPOT trade facts are different roles and cannot substitute.",
+    "No provider transport failure/market zero/current SENT/new initial-primary cause is inferred. No ENTRY followup/TTL/cadence/taskreader analysis performed."
+  ],
+  "code_changes": 0,
+  "tests": 0,
+  "runtime_imports": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0
+}

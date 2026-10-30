@@ -1,0 +1,4067 @@
+{
+  "schema": "BITGET_KNOWN_METADATA_CACHE_FALLBACK_CONNECTED_RESULT_V1",
+  "environment": "CONTROLLED_PUBLIC_PRODUCER_CALLER_CACHE_CONSUMER",
+  "completed_groups": 1,
+  "completed_variants": [
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "BEFORE_KNOWN_503_RETURNS_BEFORE_USABLE_SPOT_CACHE",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "AFTER_KNOWN_503_CACHE_TO_ACTUAL_CALLER_AND_CONTEXT",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "KNOWN_429_BACKOFF_RETAINED_WITHOUT_REFUND_OR_NEW_HTTP",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "COLD_SPOT_CACHE_NEVER_STARTS_NEW_TRANSPORT_AFTER_REFUSAL",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "EXPIRED_SPOT_CACHE_NEVER_REACQUIRES_OR_REBINDS_CLOCK",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "WRONG_SPOT_ASSET_METADATA_REFUSES_BEFORE_FLOW_READ",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "FOREIGN_TRADE_IN_RETAINED_WINDOW_FAILS_ACTUAL_RECONCILER",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "FUTURE_OBSERVATION_CLOCK_NOT_QUALIFIED_OR_REACQUIRED",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "UNCERTAIN_TRANSPORT_PRESERVES_OLD_GLOBAL_STOP",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "INCOMPLETE_HTTP_BODY_IS_NOT_KNOWN_REFUSAL",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "NATIVE_UNKNOWN_WITH_503_STOPS_BEFORE_CACHE_READ",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "UNKNOWN_DURING_FALLBACK_CACHE_READ_STOPS_BEFORE_FACT",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "WHOLE_JOB_DENIAL_IS_NOT_HTTP_REPLY_OR_CACHE_GRANT",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    },
+    {
+      "group": "ONE_NEW_BITGET_KNOWN_FUTURES_METADATA_CACHE_FALLBACK",
+      "name": "BOTH_METADATA_PRESENT_RETAIN_ORIGINAL_TWO_CACHE_PATH",
+      "status": "CONTROLLED_CHECK_COMPLETED"
+    }
+  ],
+  "returned_frames": [
+    {
+      "index": 0,
+      "options": {},
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "HTTP_503",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [],
+        "components": [],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 503,
+            "status": "HTTP_503",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "HTTP_503",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "HTTP_503",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {},
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+        "check_completed": true,
+        "network_calls": 1,
+        "evidence": [
+          {
+            "evidence_id": "EV2:72250aeca8e6f67fb7d9d89254a83dcdae84a6632ddb6fc7cb259585013c6636",
+            "asset_id": "HTX:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N12",
+            "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+            "provider_id": "BITGET_SPOT_TRADES",
+            "upstream_id": "BITGET_OFFICIAL_PUBLIC_SPOT_TRADES",
+            "origin_event_id": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "dependency_group": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "source_ts": 1792771141000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "BOUNDED_DIRECTIONAL_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "USDT",
+            "value": 500000,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "d429dbe3ff7d67da584a656003b4396bc834c5aedfc9f083993b94b01987227c",
+            "expires_at": 1792771261000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "physical_root_key": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "independent_venue_root": "BITGET",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "identity_method": "HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK",
+            "source_clock_policy": "ORIGINAL_BITGET_TRADE_TIMESTAMPS",
+            "valid_recent_rows": 5,
+            "buy_quote_turnover_usdt": 500000,
+            "sell_quote_turnover_usdt": 0,
+            "taker_imbalance": 1,
+            "whole_window_coverage_proven": false,
+            "score_contribution": 0,
+            "entry_authorized": false
+          }
+        ],
+        "components": [
+          {
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "status": "HTTP_503",
+            "check_completed": false
+          },
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 503,
+            "status": "HTTP_503",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [
+          "BITGET"
+        ],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+        "check_completed": true,
+        "evidence": [
+          {
+            "evidence_id": "EV2:4d4fdaabbfbd27f5497a8d3687a66c0a85b2201d8f54be1ae09290ac5161aca2",
+            "asset_id": "HTX:USDT_M_PERPETUAL:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N05",
+            "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+            "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+            "upstream_id": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+            "origin_event_id": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000",
+            "dependency_group": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000",
+            "source_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "EXACT_WINDOW_LIMITED_VENUES",
+            "coverage_fraction": 0,
+            "unit": "PER_VENUE_RELATIVE_FLOW_IMBALANCE",
+            "value": null,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "6acbb39151f5574ffde6707e914f7ade25adbc30cfdc45727458b980fa432732",
+            "expires_at": 1792771500000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "available_flow_version": "available-venue-flow-v1-20261010",
+            "components": [
+              {
+                "version": "bitget-four-hour-flow-v1-20261010",
+                "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+                "check_completed": true,
+                "contract": "ADA-USDT",
+                "venue": "BITGET",
+                "market": "SPOT",
+                "quote": "USDT",
+                "window_start_ts": 1792756800000,
+                "window_end_ts": 1792771200000,
+                "observed_ts": 1792771201000,
+                "verified_minutes": 240,
+                "pages": 1,
+                "buy_quote": 24000000,
+                "sell_quote": 0,
+                "trade_count": 240,
+                "score_contribution": 0,
+                "entry_authorized": false,
+                "unreconciled_minutes": [],
+                "recent_windows": [
+                  {
+                    "minutes": 15,
+                    "window_start_ts": 1792770300000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 1500000,
+                    "sell_quote": 0,
+                    "trade_count": 15,
+                    "imbalance": 1
+                  },
+                  {
+                    "minutes": 60,
+                    "window_start_ts": 1792767600000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 6000000,
+                    "sell_quote": 0,
+                    "trade_count": 60,
+                    "imbalance": 1
+                  }
+                ],
+                "large_individual_trades_available": true,
+                "large_trade_context": {
+                  "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+                  "threshold_quote": 100000,
+                  "count": 240,
+                  "buy_quote": 24000000,
+                  "sell_quote": 0,
+                  "market_impact_verified": false,
+                  "score_contribution": 0
+                },
+                "imbalance": 1,
+                "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+                "raw_trade_counter_independently_verified": false,
+                "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+                "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+                "not_onchain_exchange_flows": true,
+                "cache_status": "HIT",
+                "exact_asset_binding": true,
+                "identity": {
+                  "chain": "cardano",
+                  "asset_kind": "NATIVE",
+                  "native_asset_id": "cardano:mainnet",
+                  "contract_or_mint": null
+                },
+                "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+                "receipt_hashes": [
+                  "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+                  "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+                  "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3"
+                ],
+                "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+              }
+            ],
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "venue_count": 1,
+            "source_scope": "ONE_VENUE_ONLY",
+            "market_wide_direction_proven": false,
+            "absolute_cross_quote_turnover_summed": false,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "physical_root_key": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000"
+          }
+        ],
+        "components": [
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          }
+        ],
+        "network_calls": 0,
+        "internal_only": true
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+          "actual_http": 1,
+          "evidence_rows": 1,
+          "valid_rows": 1,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED",
+        "FLOW:ADA-USDT:SPOT:1792771200000"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {
+        "status": 429
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+        "check_completed": true,
+        "network_calls": 1,
+        "evidence": [
+          {
+            "evidence_id": "EV2:72250aeca8e6f67fb7d9d89254a83dcdae84a6632ddb6fc7cb259585013c6636",
+            "asset_id": "HTX:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N12",
+            "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+            "provider_id": "BITGET_SPOT_TRADES",
+            "upstream_id": "BITGET_OFFICIAL_PUBLIC_SPOT_TRADES",
+            "origin_event_id": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "dependency_group": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "source_ts": 1792771141000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "BOUNDED_DIRECTIONAL_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "USDT",
+            "value": 500000,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "d429dbe3ff7d67da584a656003b4396bc834c5aedfc9f083993b94b01987227c",
+            "expires_at": 1792771261000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "physical_root_key": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "independent_venue_root": "BITGET",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "identity_method": "HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK",
+            "source_clock_policy": "ORIGINAL_BITGET_TRADE_TIMESTAMPS",
+            "valid_recent_rows": 5,
+            "buy_quote_turnover_usdt": 500000,
+            "sell_quote_turnover_usdt": 0,
+            "taker_imbalance": 1,
+            "whole_window_coverage_proven": false,
+            "score_contribution": 0,
+            "entry_authorized": false
+          }
+        ],
+        "components": [
+          {
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "status": "HTTP_429",
+            "check_completed": false
+          },
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 429,
+            "status": "HTTP_429",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [
+          {
+            "asset_key": "SHARED",
+            "status": "CACHE_WRITE_COMPLETED",
+            "native_usage_unclosed": false
+          }
+        ],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [
+          "BITGET"
+        ],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [
+              {
+                "asset_key": "SHARED",
+                "status": "CACHE_WRITE_COMPLETED",
+                "native_usage_unclosed": false
+              }
+            ],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+        "check_completed": true,
+        "evidence": [
+          {
+            "evidence_id": "EV2:4d4fdaabbfbd27f5497a8d3687a66c0a85b2201d8f54be1ae09290ac5161aca2",
+            "asset_id": "HTX:USDT_M_PERPETUAL:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N05",
+            "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+            "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+            "upstream_id": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+            "origin_event_id": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000",
+            "dependency_group": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000",
+            "source_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "EXACT_WINDOW_LIMITED_VENUES",
+            "coverage_fraction": 0,
+            "unit": "PER_VENUE_RELATIVE_FLOW_IMBALANCE",
+            "value": null,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "6acbb39151f5574ffde6707e914f7ade25adbc30cfdc45727458b980fa432732",
+            "expires_at": 1792771500000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "available_flow_version": "available-venue-flow-v1-20261010",
+            "components": [
+              {
+                "version": "bitget-four-hour-flow-v1-20261010",
+                "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+                "check_completed": true,
+                "contract": "ADA-USDT",
+                "venue": "BITGET",
+                "market": "SPOT",
+                "quote": "USDT",
+                "window_start_ts": 1792756800000,
+                "window_end_ts": 1792771200000,
+                "observed_ts": 1792771201000,
+                "verified_minutes": 240,
+                "pages": 1,
+                "buy_quote": 24000000,
+                "sell_quote": 0,
+                "trade_count": 240,
+                "score_contribution": 0,
+                "entry_authorized": false,
+                "unreconciled_minutes": [],
+                "recent_windows": [
+                  {
+                    "minutes": 15,
+                    "window_start_ts": 1792770300000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 1500000,
+                    "sell_quote": 0,
+                    "trade_count": 15,
+                    "imbalance": 1
+                  },
+                  {
+                    "minutes": 60,
+                    "window_start_ts": 1792767600000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 6000000,
+                    "sell_quote": 0,
+                    "trade_count": 60,
+                    "imbalance": 1
+                  }
+                ],
+                "large_individual_trades_available": true,
+                "large_trade_context": {
+                  "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+                  "threshold_quote": 100000,
+                  "count": 240,
+                  "buy_quote": 24000000,
+                  "sell_quote": 0,
+                  "market_impact_verified": false,
+                  "score_contribution": 0
+                },
+                "imbalance": 1,
+                "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+                "raw_trade_counter_independently_verified": false,
+                "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+                "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+                "not_onchain_exchange_flows": true,
+                "cache_status": "HIT",
+                "exact_asset_binding": true,
+                "identity": {
+                  "chain": "cardano",
+                  "asset_kind": "NATIVE",
+                  "native_asset_id": "cardano:mainnet",
+                  "contract_or_mint": null
+                },
+                "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+                "receipt_hashes": [
+                  "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+                  "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+                  "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3"
+                ],
+                "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+              }
+            ],
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "venue_count": 1,
+            "source_scope": "ONE_VENUE_ONLY",
+            "market_wide_direction_proven": false,
+            "absolute_cross_quote_turnover_summed": false,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "physical_root_key": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000"
+          }
+        ],
+        "components": [
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          }
+        ],
+        "network_calls": 0,
+        "internal_only": true
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+          "actual_http": 1,
+          "evidence_rows": 1,
+          "valid_rows": 1,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED",
+        "FLOW:ADA-USDT:SPOT:1792771200000"
+      ],
+      "cache_writes": 1,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {
+        "noFlow": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "PARTIAL_FOUR_HOUR_FLOW",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [],
+        "components": [
+          {
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "status": "HTTP_503",
+            "check_completed": false
+          },
+          {
+            "venue": "BITGET",
+            "market": "SPOT",
+            "status": "CACHED_FLOW_REQUIRED_AFTER_METADATA_REFUSAL",
+            "check_completed": false
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 503,
+            "status": "HTTP_503",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "PARTIAL_FOUR_HOUR_FLOW",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "PARTIAL_FOUR_HOUR_FLOW",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED",
+        "FLOW:ADA-USDT:SPOT:1792771200000"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "fb329000228cc5a24c264c57139de8bf854fc86fc18bf1c04ab61a2b5cb4b921"
+    },
+    {
+      "index": 1,
+      "options": {
+        "expired": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "PARTIAL_FOUR_HOUR_FLOW",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [],
+        "components": [
+          {
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "status": "HTTP_503",
+            "check_completed": false
+          },
+          {
+            "venue": "BITGET",
+            "market": "SPOT",
+            "status": "CACHED_FLOW_REQUIRED_AFTER_METADATA_REFUSAL",
+            "check_completed": false
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 503,
+            "status": "HTTP_503",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "PARTIAL_FOUR_HOUR_FLOW",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "PARTIAL_FOUR_HOUR_FLOW",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED",
+        "FLOW:ADA-USDT:SPOT:1792771200000"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {
+        "wrongSpot": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "PARTIAL_FOUR_HOUR_FLOW",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [],
+        "components": [
+          {
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "status": "HTTP_503",
+            "check_completed": false
+          },
+          {
+            "venue": "BITGET",
+            "market": "SPOT",
+            "status": "EXACT_ASSET_BINDING_NOT_CLOSED",
+            "check_completed": false
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "f4f837e2766c4869c31584665318d11278759f8eb236a33a65356b8357c345a9",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 503,
+            "status": "HTTP_503",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "PARTIAL_FOUR_HOUR_FLOW",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "PARTIAL_FOUR_HOUR_FLOW",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {
+        "foreignTrade": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "PARTIAL_FOUR_HOUR_FLOW",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [
+          {
+            "evidence_id": "EV2:658f5a7a32af6d6004d1b32bf564374b91a71f1b4939517700ff6ae9330a54b8",
+            "asset_id": "HTX:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N12",
+            "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+            "provider_id": "BITGET_SPOT_TRADES",
+            "upstream_id": "BITGET_OFFICIAL_PUBLIC_SPOT_TRADES",
+            "origin_event_id": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000238",
+            "dependency_group": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000238",
+            "source_ts": 1792771081000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "BOUNDED_DIRECTIONAL_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "USDT",
+            "value": 400000,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "69929a209b20ff96d70079f4f6c6ed2924088d71393728c5f58d9f22ec9460da",
+            "expires_at": 1792771261000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "physical_root_key": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000238",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "independent_venue_root": "BITGET",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "identity_method": "HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK",
+            "source_clock_policy": "ORIGINAL_BITGET_TRADE_TIMESTAMPS",
+            "valid_recent_rows": 4,
+            "buy_quote_turnover_usdt": 400000,
+            "sell_quote_turnover_usdt": 0,
+            "taker_imbalance": 1,
+            "whole_window_coverage_proven": false,
+            "score_contribution": 0,
+            "entry_authorized": false
+          }
+        ],
+        "components": [
+          {
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "status": "HTTP_503",
+            "check_completed": false
+          },
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "PARTIAL_FOUR_HOUR_FLOW",
+            "check_completed": false,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 0,
+            "pages": 1,
+            "buy_quote": null,
+            "sell_quote": null,
+            "trade_count": null,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "reason": "INVALID_DUPLICATE_FOREIGN_OR_NONADVANCING_TRADE",
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 503,
+            "status": "HTTP_503",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "PARTIAL_FOUR_HOUR_FLOW",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "PARTIAL_FOUR_HOUR_FLOW",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED",
+        "FLOW:ADA-USDT:SPOT:1792771200000"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "962b69642d398b9f92675cb1daa41efa0760cad62aa9ae89aea5d6c4986358aa"
+    },
+    {
+      "index": 1,
+      "options": {
+        "futureClock": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "PARTIAL_FOUR_HOUR_FLOW",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [],
+        "components": [
+          {
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "status": "HTTP_503",
+            "check_completed": false
+          },
+          {
+            "venue": "BITGET",
+            "market": "SPOT",
+            "status": "CACHED_FLOW_REQUIRED_AFTER_METADATA_REFUSAL",
+            "check_completed": false
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 503,
+            "status": "HTTP_503",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "PARTIAL_FOUR_HOUR_FLOW",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "PARTIAL_FOUR_HOUR_FLOW",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED",
+        "FLOW:ADA-USDT:SPOT:1792771200000"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "d8b6ad4c3ca803a86a24f7c71e0b55bb2e5bde7da35dd63c0de6166897ad22e1"
+    },
+    {
+      "index": 1,
+      "options": {
+        "transportThrow": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "CONTROLLED_TRANSPORT_ACK_UNKNOWN",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [],
+        "components": [],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": null,
+            "http_status": null,
+            "status": "CONTROLLED_TRANSPORT_ACK_UNKNOWN",
+            "actual_http": 1,
+            "kind": "futures"
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "CONTROLLED_TRANSPORT_ACK_UNKNOWN",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "CONTROLLED_TRANSPORT_ACK_UNKNOWN",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {
+        "incompleteBody": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "CONTROLLED_INCOMPLETE_BODY",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [],
+        "components": [],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": null,
+            "http_status": 503,
+            "status": "CONTROLLED_INCOMPLETE_BODY",
+            "actual_http": 1,
+            "kind": "futures"
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "CONTROLLED_INCOMPLETE_BODY",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "CONTROLLED_INCOMPLETE_BODY",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {
+        "nativeUnknown": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "HTTP_503",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [],
+        "components": [],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 503,
+            "status": "HTTP_503",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": true,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "HTTP_503",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "HTTP_503",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 1,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {
+        "unknownDuringFlowRead": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+        "check_completed": false,
+        "network_calls": 1,
+        "evidence": [],
+        "components": [
+          {
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "status": "HTTP_503",
+            "check_completed": false
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": 1792771230000,
+            "http_status": 503,
+            "status": "HTTP_503",
+            "actual_http": 1,
+            "kind": "futures",
+            "body_sha256": "7f389eef994bd0956617ea6c9b4f6b66cf5814ba37b527751b44f6c7353c02e3",
+            "bytes": 24
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 1,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 1,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 1,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": true,
+        "observed_transport_HTTP": 1,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [
+        "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES"
+      ],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [
+        {
+          "source_id": "N05_PUBLIC_VENUE:BITGET",
+          "status": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+          "actual_http": 1,
+          "evidence_rows": 0,
+          "valid_rows": 0,
+          "decision_usable_rows": 0
+        }
+      ],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 1,
+        "operations_after_unknown": 0,
+        "daily_reserved": 1,
+        "minute_reserved": 1
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED",
+        "FLOW:ADA-USDT:SPOT:1792771200000"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {
+        "deny": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "CONTROLLED_WHOLE_JOB_DENIED",
+        "check_completed": false,
+        "network_calls": 0,
+        "evidence": [],
+        "components": [],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "url": "https://api.bitget.com/api/v2/mix/market/contracts?productType=USDT-FUTURES",
+            "received_ts": null,
+            "http_status": null,
+            "status": "CONTROLLED_WHOLE_JOB_DENIED",
+            "actual_http": 0,
+            "kind": "futures"
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 0,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 0,
+        "selected_venue": "BITGET",
+        "selected_venues": [],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 0,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 0,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "CONTROLLED_WHOLE_JOB_DENIED",
+            "check_completed": false,
+            "network_calls": 0,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 0,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [],
+      "grants": [
+        {
+          "logical_request_id": "N05_BITGET:CONTROLLED_METADATA_FALLBACK:ADA-USDT:1",
+          "lane": "background",
+          "attempts": 1
+        }
+      ],
+      "context": {
+        "status": "AVAILABLE_FLOW_NOT_CONFIRMED",
+        "check_completed": false,
+        "evidence": [],
+        "components": [],
+        "network_calls": 0,
+        "internal_only": true,
+        "reason": "NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO"
+      },
+      "health": [],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 0,
+        "minute_reserved": 0
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "SHARED"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 0,
+      "options": {
+        "bothMetadata": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+        "check_completed": true,
+        "network_calls": 0,
+        "evidence": [
+          {
+            "evidence_id": "EV2:72250aeca8e6f67fb7d9d89254a83dcdae84a6632ddb6fc7cb259585013c6636",
+            "asset_id": "HTX:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N12",
+            "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+            "provider_id": "BITGET_SPOT_TRADES",
+            "upstream_id": "BITGET_OFFICIAL_PUBLIC_SPOT_TRADES",
+            "origin_event_id": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "dependency_group": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "source_ts": 1792771141000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "BOUNDED_DIRECTIONAL_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "USDT",
+            "value": 500000,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "d429dbe3ff7d67da584a656003b4396bc834c5aedfc9f083993b94b01987227c",
+            "expires_at": 1792771261000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "physical_root_key": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "independent_venue_root": "BITGET",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "identity_method": "HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK",
+            "source_clock_policy": "ORIGINAL_BITGET_TRADE_TIMESTAMPS",
+            "valid_recent_rows": 5,
+            "buy_quote_turnover_usdt": 500000,
+            "sell_quote_turnover_usdt": 0,
+            "taker_imbalance": 1,
+            "whole_window_coverage_proven": false,
+            "score_contribution": 0,
+            "entry_authorized": false
+          },
+          {
+            "evidence_id": "EV2:6590c4260b1d170fa131913936355a9b1ab8e7a3a76a9ea4341124cad5f2eb12",
+            "asset_id": "HTX:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N12",
+            "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+            "provider_id": "BITGET_FUTURES_TRADES",
+            "upstream_id": "BITGET_OFFICIAL_PUBLIC_FUTURES_TRADES",
+            "origin_event_id": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:FUTURES:1000239",
+            "dependency_group": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:FUTURES:1000239",
+            "source_ts": 1792771141000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "BOUNDED_DIRECTIONAL_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "USDT",
+            "value": 500000,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "f56082c0468de3bf71dc800384e9fb814af9baee0288185c1abf83c3b3d89ac1",
+            "expires_at": 1792771261000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "physical_root_key": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:FUTURES:1000239",
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "independent_venue_root": "BITGET",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "identity_method": "HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK",
+            "source_clock_policy": "ORIGINAL_BITGET_TRADE_TIMESTAMPS",
+            "valid_recent_rows": 5,
+            "buy_quote_turnover_usdt": 500000,
+            "sell_quote_turnover_usdt": 0,
+            "taker_imbalance": 1,
+            "whole_window_coverage_proven": false,
+            "score_contribution": 0,
+            "entry_authorized": false
+          }
+        ],
+        "components": [
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          },
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "futures",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41",
+            "cache_status": "HIT"
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 0,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 0,
+        "selected_venue": "BITGET",
+        "selected_venues": [
+          "BITGET"
+        ],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 0,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 0,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+            "check_completed": false,
+            "network_calls": 0,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 0,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [],
+      "grants": [],
+      "context": {
+        "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+        "check_completed": true,
+        "evidence": [
+          {
+            "evidence_id": "EV2:4d4fdaabbfbd27f5497a8d3687a66c0a85b2201d8f54be1ae09290ac5161aca2",
+            "asset_id": "HTX:USDT_M_PERPETUAL:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N05",
+            "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+            "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+            "upstream_id": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+            "origin_event_id": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000",
+            "dependency_group": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000",
+            "source_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "EXACT_WINDOW_LIMITED_VENUES",
+            "coverage_fraction": 0,
+            "unit": "PER_VENUE_RELATIVE_FLOW_IMBALANCE",
+            "value": null,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "d99333da1160fe2c284dff45dff3d4b7e3e43b531573a211240e3d81f6302d95",
+            "expires_at": 1792771500000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "available_flow_version": "available-venue-flow-v1-20261010",
+            "components": [
+              {
+                "version": "bitget-four-hour-flow-v1-20261010",
+                "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+                "check_completed": true,
+                "contract": "ADA-USDT",
+                "venue": "BITGET",
+                "market": "SPOT",
+                "quote": "USDT",
+                "window_start_ts": 1792756800000,
+                "window_end_ts": 1792771200000,
+                "observed_ts": 1792771201000,
+                "verified_minutes": 240,
+                "pages": 1,
+                "buy_quote": 24000000,
+                "sell_quote": 0,
+                "trade_count": 240,
+                "score_contribution": 0,
+                "entry_authorized": false,
+                "unreconciled_minutes": [],
+                "recent_windows": [
+                  {
+                    "minutes": 15,
+                    "window_start_ts": 1792770300000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 1500000,
+                    "sell_quote": 0,
+                    "trade_count": 15,
+                    "imbalance": 1
+                  },
+                  {
+                    "minutes": 60,
+                    "window_start_ts": 1792767600000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 6000000,
+                    "sell_quote": 0,
+                    "trade_count": 60,
+                    "imbalance": 1
+                  }
+                ],
+                "large_individual_trades_available": true,
+                "large_trade_context": {
+                  "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+                  "threshold_quote": 100000,
+                  "count": 240,
+                  "buy_quote": 24000000,
+                  "sell_quote": 0,
+                  "market_impact_verified": false,
+                  "score_contribution": 0
+                },
+                "imbalance": 1,
+                "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+                "raw_trade_counter_independently_verified": false,
+                "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+                "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+                "not_onchain_exchange_flows": true,
+                "cache_status": "HIT",
+                "exact_asset_binding": true,
+                "identity": {
+                  "chain": "cardano",
+                  "asset_kind": "NATIVE",
+                  "native_asset_id": "cardano:mainnet",
+                  "contract_or_mint": null
+                },
+                "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+                "receipt_hashes": [
+                  "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+                  "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+                  "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+                ],
+                "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+              },
+              {
+                "version": "bitget-four-hour-flow-v1-20261010",
+                "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+                "check_completed": true,
+                "contract": "ADA-USDT",
+                "venue": "BITGET",
+                "market": "FUTURES",
+                "quote": "USDT",
+                "window_start_ts": 1792756800000,
+                "window_end_ts": 1792771200000,
+                "observed_ts": 1792771201000,
+                "verified_minutes": 240,
+                "pages": 1,
+                "buy_quote": 24000000,
+                "sell_quote": 0,
+                "trade_count": 240,
+                "score_contribution": 0,
+                "entry_authorized": false,
+                "unreconciled_minutes": [],
+                "recent_windows": [
+                  {
+                    "minutes": 15,
+                    "window_start_ts": 1792770300000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 1500000,
+                    "sell_quote": 0,
+                    "trade_count": 15,
+                    "imbalance": 1
+                  },
+                  {
+                    "minutes": 60,
+                    "window_start_ts": 1792767600000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 6000000,
+                    "sell_quote": 0,
+                    "trade_count": 60,
+                    "imbalance": 1
+                  }
+                ],
+                "large_individual_trades_available": true,
+                "large_trade_context": {
+                  "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+                  "threshold_quote": 100000,
+                  "count": 240,
+                  "buy_quote": 24000000,
+                  "sell_quote": 0,
+                  "market_impact_verified": false,
+                  "score_contribution": 0
+                },
+                "imbalance": 1,
+                "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+                "raw_trade_counter_independently_verified": false,
+                "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+                "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+                "not_onchain_exchange_flows": true,
+                "cache_status": "HIT",
+                "exact_asset_binding": true,
+                "identity": {
+                  "chain": "cardano",
+                  "asset_kind": "NATIVE",
+                  "native_asset_id": "cardano:mainnet",
+                  "contract_or_mint": null
+                },
+                "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+                "receipt_hashes": [
+                  "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+                  "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+                  "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+                ],
+                "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+              }
+            ],
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "venue_count": 1,
+            "source_scope": "ONE_VENUE_ONLY",
+            "market_wide_direction_proven": false,
+            "absolute_cross_quote_turnover_summed": false,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "physical_root_key": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000"
+          }
+        ],
+        "components": [
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          },
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          }
+        ],
+        "network_calls": 0,
+        "internal_only": true
+      },
+      "health": [],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 0,
+        "minute_reserved": 0
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "FLOW:ADA-USDT:SPOT:1792771200000",
+        "FLOW:ADA-USDT:FUTURES:1792771200000"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    },
+    {
+      "index": 1,
+      "options": {
+        "bothMetadata": true
+      },
+      "flow": {
+        "version": "bitget-flow-collector-v1-20261010",
+        "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+        "check_completed": true,
+        "network_calls": 0,
+        "evidence": [
+          {
+            "evidence_id": "EV2:72250aeca8e6f67fb7d9d89254a83dcdae84a6632ddb6fc7cb259585013c6636",
+            "asset_id": "HTX:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N12",
+            "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+            "provider_id": "BITGET_SPOT_TRADES",
+            "upstream_id": "BITGET_OFFICIAL_PUBLIC_SPOT_TRADES",
+            "origin_event_id": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "dependency_group": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "source_ts": 1792771141000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "BOUNDED_DIRECTIONAL_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "USDT",
+            "value": 500000,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "d429dbe3ff7d67da584a656003b4396bc834c5aedfc9f083993b94b01987227c",
+            "expires_at": 1792771261000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "physical_root_key": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:SPOT:1000239",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "independent_venue_root": "BITGET",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "identity_method": "HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK",
+            "source_clock_policy": "ORIGINAL_BITGET_TRADE_TIMESTAMPS",
+            "valid_recent_rows": 5,
+            "buy_quote_turnover_usdt": 500000,
+            "sell_quote_turnover_usdt": 0,
+            "taker_imbalance": 1,
+            "whole_window_coverage_proven": false,
+            "score_contribution": 0,
+            "entry_authorized": false
+          },
+          {
+            "evidence_id": "EV2:6590c4260b1d170fa131913936355a9b1ab8e7a3a76a9ea4341124cad5f2eb12",
+            "asset_id": "HTX:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N12",
+            "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+            "provider_id": "BITGET_FUTURES_TRADES",
+            "upstream_id": "BITGET_OFFICIAL_PUBLIC_FUTURES_TRADES",
+            "origin_event_id": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:FUTURES:1000239",
+            "dependency_group": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:FUTURES:1000239",
+            "source_ts": 1792771141000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "BOUNDED_DIRECTIONAL_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "USDT",
+            "value": 500000,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "f56082c0468de3bf71dc800384e9fb814af9baee0288185c1abf83c3b3d89ac1",
+            "expires_at": 1792771261000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "physical_root_key": "BITGET_BOUNDED_TRADE_SAMPLE:ADA-USDT:FUTURES:1000239",
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "independent_venue_root": "BITGET",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "identity_method": "HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK",
+            "source_clock_policy": "ORIGINAL_BITGET_TRADE_TIMESTAMPS",
+            "valid_recent_rows": 5,
+            "buy_quote_turnover_usdt": 500000,
+            "sell_quote_turnover_usdt": 0,
+            "taker_imbalance": 1,
+            "whole_window_coverage_proven": false,
+            "score_contribution": 0,
+            "entry_authorized": false
+          }
+        ],
+        "components": [
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          },
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          }
+        ],
+        "receipts": [
+          {
+            "kind": "coins",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "spot",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+            "cache_status": "HIT"
+          },
+          {
+            "kind": "futures",
+            "received_ts": 1792771140000,
+            "http_status": 200,
+            "status": "RECEIVED_NOT_QUALIFIED",
+            "actual_http": 0,
+            "body_sha256": "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41",
+            "cache_status": "HIT"
+          }
+        ],
+        "cache_write_receipts": [],
+        "internal_only": true,
+        "adapter_reported_network_calls": 0,
+        "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+        "flow_network_calls": 0,
+        "selected_venue": "BITGET",
+        "selected_venues": [
+          "BITGET"
+        ],
+        "source_selection": "MAXIMUM_AVAILABLE_WITHIN_SHARED_FIVE_REQUEST_CAP",
+        "caller_reserved_requests": 0,
+        "source_priority": {
+          "status": "NO_PUBLIC_SOURCE_ALTERNATIVES",
+          "contract": "ADA-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "BITGET"
+          ],
+          "ordered_routes": [
+            "BITGET"
+          ],
+          "source_statistics": {
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        },
+        "source_chain_native_cost_unclosed": false,
+        "observed_transport_HTTP": 0,
+        "adapter_results": [
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "CLOSED_QUALIFIED_FLOW_COMPONENTS",
+            "check_completed": false,
+            "network_calls": 0,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 0,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          }
+        ]
+      },
+      "urls": [],
+      "grants": [],
+      "context": {
+        "status": "CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT",
+        "check_completed": true,
+        "evidence": [
+          {
+            "evidence_id": "EV2:4d4fdaabbfbd27f5497a8d3687a66c0a85b2201d8f54be1ae09290ac5161aca2",
+            "asset_id": "HTX:USDT_M_PERPETUAL:ADA-USDT",
+            "htx_contract": "ADA-USDT",
+            "block_id": "N05",
+            "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+            "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+            "upstream_id": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+            "origin_event_id": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000",
+            "dependency_group": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000",
+            "source_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "first_known_ts": 1792771201000,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "EXACT_WINDOW_LIMITED_VENUES",
+            "coverage_fraction": 0,
+            "unit": "PER_VENUE_RELATIVE_FLOW_IMBALANCE",
+            "value": null,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "d99333da1160fe2c284dff45dff3d4b7e3e43b531573a211240e3d81f6302d95",
+            "expires_at": 1792771500000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "available_flow_version": "available-venue-flow-v1-20261010",
+            "components": [
+              {
+                "version": "bitget-four-hour-flow-v1-20261010",
+                "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+                "check_completed": true,
+                "contract": "ADA-USDT",
+                "venue": "BITGET",
+                "market": "SPOT",
+                "quote": "USDT",
+                "window_start_ts": 1792756800000,
+                "window_end_ts": 1792771200000,
+                "observed_ts": 1792771201000,
+                "verified_minutes": 240,
+                "pages": 1,
+                "buy_quote": 24000000,
+                "sell_quote": 0,
+                "trade_count": 240,
+                "score_contribution": 0,
+                "entry_authorized": false,
+                "unreconciled_minutes": [],
+                "recent_windows": [
+                  {
+                    "minutes": 15,
+                    "window_start_ts": 1792770300000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 1500000,
+                    "sell_quote": 0,
+                    "trade_count": 15,
+                    "imbalance": 1
+                  },
+                  {
+                    "minutes": 60,
+                    "window_start_ts": 1792767600000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 6000000,
+                    "sell_quote": 0,
+                    "trade_count": 60,
+                    "imbalance": 1
+                  }
+                ],
+                "large_individual_trades_available": true,
+                "large_trade_context": {
+                  "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+                  "threshold_quote": 100000,
+                  "count": 240,
+                  "buy_quote": 24000000,
+                  "sell_quote": 0,
+                  "market_impact_verified": false,
+                  "score_contribution": 0
+                },
+                "imbalance": 1,
+                "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+                "raw_trade_counter_independently_verified": false,
+                "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+                "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+                "not_onchain_exchange_flows": true,
+                "cache_status": "HIT",
+                "exact_asset_binding": true,
+                "identity": {
+                  "chain": "cardano",
+                  "asset_kind": "NATIVE",
+                  "native_asset_id": "cardano:mainnet",
+                  "contract_or_mint": null
+                },
+                "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+                "receipt_hashes": [
+                  "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+                  "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+                  "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+                ],
+                "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+              },
+              {
+                "version": "bitget-four-hour-flow-v1-20261010",
+                "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+                "check_completed": true,
+                "contract": "ADA-USDT",
+                "venue": "BITGET",
+                "market": "FUTURES",
+                "quote": "USDT",
+                "window_start_ts": 1792756800000,
+                "window_end_ts": 1792771200000,
+                "observed_ts": 1792771201000,
+                "verified_minutes": 240,
+                "pages": 1,
+                "buy_quote": 24000000,
+                "sell_quote": 0,
+                "trade_count": 240,
+                "score_contribution": 0,
+                "entry_authorized": false,
+                "unreconciled_minutes": [],
+                "recent_windows": [
+                  {
+                    "minutes": 15,
+                    "window_start_ts": 1792770300000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 1500000,
+                    "sell_quote": 0,
+                    "trade_count": 15,
+                    "imbalance": 1
+                  },
+                  {
+                    "minutes": 60,
+                    "window_start_ts": 1792767600000,
+                    "window_end_ts": 1792771200000,
+                    "buy_quote": 6000000,
+                    "sell_quote": 0,
+                    "trade_count": 60,
+                    "imbalance": 1
+                  }
+                ],
+                "large_individual_trades_available": true,
+                "large_trade_context": {
+                  "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+                  "threshold_quote": 100000,
+                  "count": 240,
+                  "buy_quote": 24000000,
+                  "sell_quote": 0,
+                  "market_impact_verified": false,
+                  "score_contribution": 0
+                },
+                "imbalance": 1,
+                "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+                "raw_trade_counter_independently_verified": false,
+                "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+                "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+                "not_onchain_exchange_flows": true,
+                "cache_status": "HIT",
+                "exact_asset_binding": true,
+                "identity": {
+                  "chain": "cardano",
+                  "asset_kind": "NATIVE",
+                  "native_asset_id": "cardano:mainnet",
+                  "contract_or_mint": null
+                },
+                "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+                "receipt_hashes": [
+                  "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+                  "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+                  "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+                ],
+                "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+              }
+            ],
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "venue_count": 1,
+            "source_scope": "ONE_VENUE_ONLY",
+            "market_wide_direction_proven": false,
+            "absolute_cross_quote_turnover_summed": false,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "physical_root_key": "AVAILABLE_FLOW:ADA-USDT:1792756800000:1792771200000"
+          }
+        ],
+        "components": [
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          },
+          {
+            "version": "bitget-four-hour-flow-v1-20261010",
+            "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+            "check_completed": true,
+            "contract": "ADA-USDT",
+            "venue": "BITGET",
+            "market": "FUTURES",
+            "quote": "USDT",
+            "window_start_ts": 1792756800000,
+            "window_end_ts": 1792771200000,
+            "observed_ts": 1792771201000,
+            "verified_minutes": 240,
+            "pages": 1,
+            "buy_quote": 24000000,
+            "sell_quote": 0,
+            "trade_count": 240,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [],
+            "recent_windows": [
+              {
+                "minutes": 15,
+                "window_start_ts": 1792770300000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 1500000,
+                "sell_quote": 0,
+                "trade_count": 15,
+                "imbalance": 1
+              },
+              {
+                "minutes": 60,
+                "window_start_ts": 1792767600000,
+                "window_end_ts": 1792771200000,
+                "buy_quote": 6000000,
+                "sell_quote": 0,
+                "trade_count": 60,
+                "imbalance": 1
+              }
+            ],
+            "large_individual_trades_available": true,
+            "large_trade_context": {
+              "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+              "threshold_quote": 100000,
+              "count": 240,
+              "buy_quote": 24000000,
+              "sell_quote": 0,
+              "market_impact_verified": false,
+              "score_contribution": 0
+            },
+            "imbalance": 1,
+            "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+            "raw_trade_counter_independently_verified": false,
+            "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+            "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+            "not_onchain_exchange_flows": true,
+            "cache_status": "HIT",
+            "exact_asset_binding": true,
+            "identity": {
+              "chain": "cardano",
+              "asset_kind": "NATIVE",
+              "native_asset_id": "cardano:mainnet",
+              "contract_or_mint": null
+            },
+            "physical_root": "BITGET_OFFICIAL_PUBLIC_TRADES",
+            "receipt_hashes": [
+              "b657b1b82dbb6932e6c7cfff799e232110c74f9b206abf76e9fce51cba5f00b7",
+              "085bd8a358feb40334429a61da6f11f3157664230898066266e8a0751678be62",
+              "7559d8f0f8e4b7d4a43940477395dcaa302205c29b10eaac98bb0f90afb61a41"
+            ],
+            "n12_bounded_sample_status": "CLOSED_BOUNDED_SAMPLE"
+          }
+        ],
+        "network_calls": 0,
+        "internal_only": true
+      },
+      "health": [],
+      "CONTROLLED_store_snapshot": {
+        "unknown_ops": 0,
+        "operations_after_unknown": 0,
+        "daily_reserved": 0,
+        "minute_reserved": 0
+      },
+      "cache_reads": [
+        "METADATA:coins",
+        "METADATA:spot",
+        "METADATA:futures",
+        "FLOW:ADA-USDT:SPOT:1792771200000",
+        "FLOW:ADA-USDT:FUTURES:1792771200000"
+      ],
+      "cache_writes": 0,
+      "retained_spot_payload_sha256": "cf2b7d17573043ea1b340e92204b8d17b2d17981234fa7cc95ac8da27938a232"
+    }
+  ],
+  "native_provider_SQL_IO": 0,
+  "status": "CONTROLLED_AFFECTED_GROUP_COMPLETED"
+}

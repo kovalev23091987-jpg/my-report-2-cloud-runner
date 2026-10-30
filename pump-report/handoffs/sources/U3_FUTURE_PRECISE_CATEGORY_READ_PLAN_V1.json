@@ -1,0 +1,87 @@
+{
+  "schema": "SOURCE_U3_FUTURE_PRECISE_CATEGORY_READ_PLAN_V1",
+  "status": "FUTURE_ONLY_NOT_ADMITTED_NOT_EXECUTED_NOT_NEEDED_TO_DELAY_PRACTICAL_SCOPE_550",
+  "method": "GET",
+  "url": "https://api-app.acc-de.com/api/coin/v1/quotation/simple-list?bizType=20",
+  "params": {
+    "bizType": 20
+  },
+  "biz_type_semantics": "PERPETUAL_U, proved by retained exact enum and getPerpetualUCoinList consumer; FUTURES_U10 is a different product, TRADFI_U22 is separate.",
+  "signed_get_payload_literal": "{\"bizType\":\"20\"}",
+  "request_reconstruction": "Same public anonymous request headers/sign algorithm as CLOCK_CONTRACT_STATIC_SPANS_V1; new exact query-aware action required. Existing display-info-only factory must remain pinned and must not be silently reused with its empty{} preimage.",
+  "public_sign_preimage_order": [
+    "public build sign_prefix",
+    "Unix-ms timestamp",
+    "compact UUIDv4 traceId",
+    "anonymous device UUID",
+    "platformId30",
+    "app_version5.3.37",
+    "empty antiDeviceId",
+    "{\"bizType\":\"20\"}"
+  ],
+  "sign": "SHA256 uppercase hex; GET numeric20 normalized to string20 before stable sorted JSON.",
+  "static_sign_host_prefix_proof": "pump-report/handoffs/sources/CLOCK_CONTRACT_STATIC_SPANS_V1.json",
+  "static_sign_host_prefix_proof_sha256": "ef395a30cb5c81327ebaf1e1bb5dbc9e4338621a2b3880315fe3b4b3f1e85998",
+  "bounded_action_if_root_later_admits": {
+    "provider_attempts_max": 1,
+    "timeout_ms": 10000,
+    "max_response_bytes": 2097152,
+    "redirects": 0,
+    "retries": 0,
+    "host_fallback": 0,
+    "credentials_cookies_tokens": false
+  },
+  "expected_shape_from_consumer": "business response result[]; actual shape/field availability not yet observed for this endpoint.",
+  "minimal_export": [
+    "native/same-venue identity fields actually present",
+    "quotationId/coinId/coinName only if actually returned",
+    "product/category fields actually present",
+    "matches/missing/extra versus saved934 and proposed550"
+  ],
+  "private_only": "Whole response and any prices/market values; never export guessed fields or identify quotationId as contractId without evidence.",
+  "admissions_required_before_any_io": [
+    "ROOT exact new provider-family action",
+    "whole budget/caps/manual reserves",
+    "native SQL envelope if runtime needs it",
+    "exact runtime/server artifact and full readback"
+  ],
+  "no_rearm": "Metadata2of2 SPENT, old requests/unknowns/reserves/caps remain unchanged. This plan itself spends0 and grants0.",
+  "retained_static_spans": [
+    {
+      "input": "api_core",
+      "file_sha256": "0637057d5eaaf7c03ed912f0984aded646b0659bc39ff106b9a7ca70df259e89",
+      "byte_start": 174318,
+      "byte_end_exclusive": 174445,
+      "span_sha256": "f0096f95f50c2d13d26f774b82ba2a437e97974fb2ca48324346fb83ef9f20d8",
+      "utf8": "at={SPOT:30,CHAIN_SPOT:35,PERPETUAL_U:20,PERPETUAL_USDC:21,FUTURES_U:10,FUTURES_U_USDC:11,PERPETUAL_USDC_U:-99,TRADFI_U:22},Eh=",
+      "executed": false
+    },
+    {
+      "input": "api_core",
+      "file_sha256": "0637057d5eaaf7c03ed912f0984aded646b0659bc39ff106b9a7ca70df259e89",
+      "byte_start": 207772,
+      "byte_end_exclusive": 208123,
+      "span_sha256": "ab4caf1e5b27fabfcfffaf6492768c42cd6031c5988254544c113f8dcef64b59",
+      "utf8": "async getPerpetualUCoinList(a={},...c){const l=at.PERPETUAL_U,{coreServices:h,commit:u}=i(this,a,[a,c]);try{let d=await lt(l);if(d){u(ki,d);return}u(ge,!0),u(me,!1);const f=await h.common.getCoinSimpleList(l).then(o)||{},p=(f==null?void 0:f.result)||[];u(ki,p),ct(l,p)}catch(d){console.log(\"ERROR:getPerpetualUCoinList\",d),u(me,!0)}finally{u(ge,!1)}},",
+      "executed": false
+    },
+    {
+      "input": "api_core",
+      "file_sha256": "0637057d5eaaf7c03ed912f0984aded646b0659bc39ff106b9a7ca70df259e89",
+      "byte_start": 209659,
+      "byte_end_exclusive": 210132,
+      "span_sha256": "22a5bfadea62f0144a286bf16f0709ac862f8566e734815c4ead62a41540d0e3",
+      "utf8": "async getTradfiUCoinList(a={},c=!1){const l=at.TRADFI_U,{coreServices:h,commit:u,dispatch:d,fnArg:f}=i(this,a,[a,c]);try{const p=(f==null?void 0:f[0])===!0?null:await lt(l);if(p){p.length>0&&d(\"getZeroFeeBadgeStatus\"),u(Mi,p);return}u(ge,!0),u(me,!1);const y=await h.common.getCoinSimpleList(l).then(o)||{},m=(y==null?void 0:y.result)||[];u(Mi,m),m.length>0&&d(\"getZeroFeeBadgeStatus\"),ct(l,m)}catch(p){console.log(\"ERROR:getTradfiUCoinList\",p),u(me,!0)}finally{u(ge,!1)}},",
+      "executed": false
+    },
+    {
+      "input": "api_plugin",
+      "file_sha256": "0a0aa922b666b7de45f663afa3e63b192d9c3acdbc9e406c76bc4e7817de3449",
+      "byte_start": 1987,
+      "byte_end_exclusive": 2146,
+      "span_sha256": "be776ca49b3e9fc66ffb6985d3154ef127df1230b55f9d75bbd6f9f609a0e40c",
+      "utf8": "async getCoinSimpleList(e){try{return await this.request({method:\"GET\",url:\"/coin/v1/quotation/simple-list\",params:{bizType:e},timeout:3e4})}catch(r){throw r}}",
+      "executed": false
+    }
+  ]
+}

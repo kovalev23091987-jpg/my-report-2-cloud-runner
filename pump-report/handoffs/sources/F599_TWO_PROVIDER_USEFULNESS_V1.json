@@ -1,0 +1,192 @@
+{
+  "schema": "F599_TWO_NEW_FREE_SOURCE_CANDIDATES_V1",
+  "status": "DOCUMENTARY_CANDIDATES_NOT_QUALIFIED_ROUTES",
+  "selected": [
+    {
+      "id": "TOOBIT",
+      "lineage": "TOOBIT_NATIVE_EXCHANGE",
+      "utility": "Optional venue funding/OI/price/liquidity context; catalogue-first shared coverage path.",
+      "base": "https://api.toobit.com",
+      "access": {
+        "public_market": "KEYLESS_DOCUMENTED",
+        "evidence": "TB_PUBLIC_AUTOMATION/TB_BASICS",
+        "signup_new_key_paid_plan_required_for_public_market": false,
+        "hosted_permanent_free_entitlement": "NOT_GUARANTEED",
+        "automatic_access": "Official market-only tooling documented; actual Worker/IP/WAF compatibility NOT_TESTED."
+      },
+      "catalogue": {
+        "method": "GET",
+        "path": "/api/v1/exchangeInfo",
+        "weight": 1,
+        "fields": [
+          "contracts[].symbol",
+          "status",
+          "underlying",
+          "quoteAsset",
+          "marginToken",
+          "inverse",
+          "contractMultiplier",
+          "filters"
+        ],
+        "boundary": "baseAsset may itself be contract symbol. Use typed contracts/underlying, not spot symbols or ticker-stripping.",
+        "current_catalogue_count": "NOT_CHECKED",
+        "canonical_join550": "NOT_CHECKED_NOT_PROMOTED"
+      },
+      "fields": [
+        {
+          "route": "GET /api/v1/futures/historyFundingRate",
+          "fields": [
+            "symbol",
+            "settleTime",
+            "settleRate",
+            "period"
+          ],
+          "unit": "RATE_NUMERIC_SCALE_UNKNOWN",
+          "clock": "settleTime=settlement time; milliseconds; per-row period, no8h default",
+          "basis": "PRIMARY_SEARCH_EXCERPT_ONLY"
+        },
+        {
+          "route": "GET /api/v1/futures/fundingRate",
+          "fields": [
+            "symbol",
+            "rate",
+            "period",
+            "nextFundingTime"
+          ],
+          "unit": "RATE_NUMERIC_SCALE_UNKNOWN",
+          "clock": "nextFundingTime is future settlement, not quote-asof; quote clock unresolved",
+          "basis": "PRIMARY_SEARCH_EXCERPT_ONLY"
+        },
+        {
+          "route": "GET /quote/v1/openInterest",
+          "fields": [
+            "openInterestList[].size",
+            "symbol"
+          ],
+          "unit": "underlying-coin quantity described; exact mapping required",
+          "clock": "NOT_ESTABLISHED",
+          "basis": "PRIMARY_SEARCH_EXCERPT_ONLY"
+        },
+        {
+          "route": "GET /quote/v1/markPrice",
+          "fields": [
+            "exchangeId",
+            "symbolId",
+            "price",
+            "time"
+          ],
+          "unit": "native contract price; metadata quote required",
+          "clock": "time ms; freshness-role interpretation not independently closed",
+          "basis": "PRIMARY_SEARCH_EXCERPT_ONLY"
+        },
+        {
+          "route": "GET /quote/v1/depth?limit=5",
+          "fields": [
+            "b",
+            "a",
+            "price",
+            "quantity"
+          ],
+          "unit": "book quantity semantics UNQUALIFIED",
+          "clock": "NOT_QUALIFIED",
+          "weight": 1,
+          "basis": "DIRECT_PARTIAL_DOCUMENT"
+        }
+      ],
+      "quota": {
+        "cost_model": "REQUEST_WEIGHT; physicalHTTP is separate",
+        "minute_published": 3000,
+        "minute_unit": "weight",
+        "scope": "Published section labelled API Key limits; anonymous/IP/shared scope not explicitly established.",
+        "endpoint_mark_price_max_per_second": 5,
+        "day": "UNKNOWN_NOT_UNLIMITED",
+        "month": "UNKNOWN_NOT_UNLIMITED",
+        "account_remaining": "NOT_CHECKED",
+        "catalogue_cost": "1weight/GET",
+        "funding_OI_mark_weight": "NOT_ESTABLISHED",
+        "headers": [
+          "X-Api-Limit-Status",
+          "X-Api-Limit",
+          "X-Api-Limit-Reset-Timestamp"
+        ],
+        "shared_quota": "All routes consume weighted bucket; MCP wrapper is same upstream, not independent reserve.",
+        "warning": "exchangeInfo.rateLimits scheduled for removal; do not rely on its presence. No day/month allowance extrapolation."
+      },
+      "future_map": "NOT_ESTABLISHED; private user positions and risk parameters are not a public position census/map",
+      "gaps": [
+        "Actual keyless access and cost receipt",
+        "Anonymous quota scope/day/month remaining",
+        "Exact crypto underlying joins",
+        "Field-specific clocks and funding numeric scale",
+        "Book quantity semantics",
+        "Free hosting terms beyond documented public access"
+      ],
+      "recommendation": "BEST_NEXT_ONE_CATALOGUE_PROPOSAL_ONLY"
+    },
+    {
+      "id": "VEST",
+      "lineage": "VEST_NATIVE_PERPETUALS",
+      "utility": "Potential separate-venue funding/candle/trade/book context; not independent proof merely because wrapper changes.",
+      "base": "https://serverprod.vest.exchange/v2",
+      "evidence_grade": "OFFICIAL_SEARCH_EXCERPT_ONLY_DIRECT_DOC403",
+      "access": {
+        "public_REST_label": true,
+        "required_header_template": "xrestservermm: restserver{account_group}",
+        "actual_account_group_value": "UNKNOWN",
+        "keyless_complete_request_proven": false,
+        "pricing_free_entitlement": "UNKNOWN",
+        "automatic_access": "NOT_TESTED; public API documented, no machine-host permission/limit evidence",
+        "documentation403_is_API_denial": false
+      },
+      "catalogue": {
+        "route": "GET /exchangeInfo",
+        "symbols_optional_all_default": true,
+        "full_response_identity_fields": "UNKNOWN_NOT_FULLY_READ",
+        "minimum_contract_size": "10^-sizeDecimals described; not a unit multiplier guarantee",
+        "count": "NOT_CHECKED"
+      },
+      "routes": [
+        "GET /ticker/latest",
+        "GET /ticker/24hr",
+        "GET /funding/history",
+        "GET /klines",
+        "GET /trades",
+        "GET /depth"
+      ],
+      "data": {
+        "schema_fields": "Example response bodies not available in inspected excerpt.",
+        "units": "Monetary numeraire USDC; decimal strings; funding scale/size denomination UNKNOWN",
+        "clocks": "Timestamp format epoch ms stated; actual per-field event/asof clocks UNKNOWN",
+        "funding_interval": "Query sampling interval is not proved to be settlement period",
+        "bounds": "history/klines/trades limit<=1000; depth<=100",
+        "currency_conversion": "No USD/USDT parity or BingX executable price"
+      },
+      "quota": {
+        "minute": "UNKNOWN",
+        "day": "UNKNOWN",
+        "month": "UNKNOWN",
+        "per_route_weight": "UNKNOWN",
+        "remaining": "NOT_CHECKED",
+        "shared_scope": "UNKNOWN; REST/WS same provider, no independent quota assumed"
+      },
+      "future_map": "NOT_ESTABLISHED; LIQUIDATION order enum is not future exposure",
+      "gaps": [
+        "403 direct primary document",
+        "Public header/account_group/auth semantics",
+        "Free-access entitlement and anonymous limits",
+        "Complete fields/units/clocks",
+        "Actual crypto-only catalogue and canonical joins"
+      ],
+      "recommendation": "HOLD_NO_NATIVE_PROPOSAL"
+    }
+  ],
+  "coverage": {
+    "selected550": "UNCHANGED_NOT_CHECKED_FOR_BOTH_NEW_PROVIDERS",
+    "new_qualified_routes": 0,
+    "new_qualified_maps": 0,
+    "UNSUPPORTED_assigned": 0,
+    "one_common_batch_join": true,
+    "manual500_configurations": false
+  },
+  "old_spent_unknown_caps_reserves": "PRESERVED"
+}

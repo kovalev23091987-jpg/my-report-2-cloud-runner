@@ -1,0 +1,12 @@
+{
+  "schema": "PUMP_DELIVERY_PRE_SEND_STATE_V2_QUALIFICATION",
+  "reason": "Previously revalidate exception left SENDING and could later be mislabelled UNKNOWN although Telegram had not been attempted. New cards distinguish saved pre-send state from possible send; old schema remains conservative.",
+  "known_recheck_or_budget_refusal": "ERROR",
+  "lost_ACK_after_possible_send": "UNKNOWN_NO_RESEND",
+  "old_cards_compatible": true,
+  "new_affected_delivery_journal_worker_tests": 18,
+  "manual_selector_tests": 3,
+  "native_calls": 0,
+  "real_SENT239_not_replayed": true,
+  "legacy_report_paused": true
+}

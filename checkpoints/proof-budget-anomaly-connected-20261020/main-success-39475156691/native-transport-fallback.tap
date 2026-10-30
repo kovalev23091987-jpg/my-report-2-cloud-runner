@@ -1,0 +1,15 @@
+✔ the original gTrade 429 receipt survives a failed catalog and same-run reuse without another HTTP (23.462461ms)
+✔ parallel market snapshot failure retains each original endpoint, HTTP status and reason (27.870462ms)
+✔ serialized, foreign, stale or wrong-cost diagnostic cannot change operational classification (0.832545ms)
+✔ HTTP500 mixed with429 stays a transport failure; invalid JSON at200 stays a schema failure (0.453427ms)
+✔ diagnostics expose only bounded operational fields and reject unsafe URL or clocks (0.357097ms)
+✔ native429 does not penalize source reliability and falls through inside the unchanged four-call envelope (10.072632ms)
+✔ audit detail cannot leak payloads, mix runs or evict an otherwise bounded original audit (1.117688ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 159.078467

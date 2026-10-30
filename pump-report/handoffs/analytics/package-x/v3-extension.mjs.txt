@@ -1,0 +1,89 @@
+
+// PROPOSED X: append to materialized-summary.mjs only after ROOT storage
+// agreement. Old exports/states remain unchanged; this is a fresh namespace.
+export const MATERIALIZED_V3_VERSION='pump-materialized-summary-v3-external-replay-20261025';
+const receiptSchemaV3='pump-materialized-record-receipt-v3-20261025';
+const bindingSchemaV3='pump-materialized-instrument-binding-v3-20261025';
+const maturitySchemaV3='pump-materialized-maturity-reference-v3-20261025';
+function contextV3(aggregate,wave,at,{allow_pending=false}={}){
+  if(aggregate?.version!==MATERIALIZED_V3_VERSION||!text(aggregate.materialization_id)||!validTime(at)||at<aggregate.updated_ts||!Number.isSafeInteger(aggregate.source_cursor)||aggregate.source_cursor<0)throw Error('MATERIALIZED_V3_CONTEXT_REQUIRED');
+  if(wave&&(wave.version!==MATERIALIZED_V3_VERSION||wave.materialization_id!==aggregate.materialization_id||!Number.isSafeInteger(wave.state_revision)||at<wave.observed_as_of_ts))throw Error('MATERIALIZED_V3_WAVE_REQUIRED');
+  if(!allow_pending&&aggregate.maturity_pending)throw Error('MATERIALIZED_V3_PENDING_QUEUE_INTENT');
+  if(['record_digests','pending_deadlines','instrument_assets'].some(k=>Object.hasOwn(aggregate,k))||wave&&Object.hasOwn(wave,'record_digests'))throw Error('MATERIALIZED_V3_EXTERNAL_STATE_REQUIRED');
+}
+function shadowV3(aggregate,wave,binding=null){
+  const a=clone(aggregate);a.version=MATERIALIZED_VERSION;a.pending_deadlines={};a.instrument_assets={};
+  if(binding)a.instrument_assets['instrument:'+binding.instrument_id]=binding.asset_id;
+  delete a.maturity_pending;delete a.source_cursor;
+  const w=wave?clone(wave):null;if(w){delete w.version;w.record_digests={};}
+  return {aggregate:a,wave:w};
+}
+function finishV3Step(before,folded,{source_cursor,kind,record_id=null,fingerprint=null}={}){
+  if(!folded.write_required)return {...folded,aggregate:before};
+  const a=clone(folded.aggregate),w=clone(folded.wave);a.version=MATERIALIZED_V3_VERSION;w.version=MATERIALIZED_V3_VERSION;
+  delete a.pending_deadlines;delete a.instrument_assets;delete w.record_digests;
+  a.source_cursor=source_cursor;
+  // Only one external queue update may be in flight. Its durable intent is
+  // committed with the exact same wave and scalar cohort/global counters.
+  a.maturity_pending={transition_id:'V3:'+a.materialization_id+':'+a.revision,kind,record_id,fingerprint,
+    materialization_id:a.materialization_id,wave_key:w.wave_key,wave_state_revision:w.state_revision,source_cursor,
+    active:w.contribution.counters.pending_waves>0,deadline_ts:w.contribution.counters.pending_waves?w.origin.t0+14400000:null};
+  return {...folded,aggregate:a,wave:w,maturity_intent:clone(a.maturity_pending),external_record_receipt_is_not_an_applied_marker:true};
+}
+export function createMaterializedSummaryV3({materialization_id,as_of_ts}={}){
+  const a=createMaterializedSummary({materialization_id,as_of_ts});a.version=MATERIALIZED_V3_VERSION;a.source_cursor=0;a.maturity_pending=null;
+  delete a.pending_deadlines;delete a.instrument_assets;return a;
+}
+// ROOT stores this immutable cell and reads it back BEFORE atomic wave+global
+// commit. Existence means identity pinned, never that counters were applied.
+export function prepareMaterializedRecordReceiptV3({materialization_id,prepared_event,source_seq}={}){
+  if(!text(materialization_id)||!preparedEvents.has(prepared_event)||prepared_event.kind!=='OUTCOME_RECORD'||!Number.isSafeInteger(source_seq)||source_seq<1)throw Error('MATERIALIZED_V3_RECORD_RECEIPT_INPUT_REQUIRED');
+  return {schema:receiptSchemaV3,materialization_id,source_seq,record_id:prepared_event.record.record_id,fingerprint:prepared_event.fingerprint,wave_key:waveKey(prepared_event.record.origin)};
+}
+export function foldPreparedOutcomeRecordV3({aggregate,wave=null,prepared_event,source_seq,record_receipt,instrument_binding,as_of_ts}={}){
+  contextV3(aggregate,wave,as_of_ts);
+  if(!preparedEvents.has(prepared_event)||prepared_event.kind!=='OUTCOME_RECORD')throw Error('MATERIALIZED_V3_PREPARED_RECORD_REQUIRED');
+  const expected=prepareMaterializedRecordReceiptV3({materialization_id:aggregate.materialization_id,prepared_event,source_seq});
+  if(!record_receipt||Object.entries(expected).some(([k,v])=>record_receipt[k]!==v))throw Error('MATERIALIZED_V3_RECORD_RECEIPT_CONFLICT');
+  const r=prepared_event.record;
+  if(instrument_binding?.schema!==bindingSchemaV3||instrument_binding.materialization_id!==aggregate.materialization_id||instrument_binding.instrument_id!==r.origin.instrument_id||instrument_binding.asset_id!==r.origin.asset_id)throw Error('MATERIALIZED_V3_INSTRUMENT_ASSET_CONFLICT');
+  if(wave&&(wave.wave_key!==expected.wave_key||stable(wave.origin)!==stable(r.origin)))throw Error('IMMUTABLE_WAVE_ORIGIN_CONFLICT');
+  if(source_seq<=aggregate.source_cursor){
+    if(!wave)throw Error('MATERIALIZED_V3_REPLAY_WAVE_MISSING');
+    return {status:'REPLAY_BEHIND_COMMITTED_CURSOR',write_required:false,aggregate,wave,record_receipt_verified:true};
+  }
+  if(source_seq!==aggregate.source_cursor+1)throw Error('MATERIALIZED_V3_SOURCE_SEQUENCE_GAP');
+  const shadow=shadowV3(aggregate,wave,instrument_binding),folded=foldPreparedOutcomeRecord({...shadow,prepared_event,as_of_ts});
+  return finishV3Step(aggregate,folded,{source_cursor:source_seq,kind:'RECORD',record_id:r.record_id,fingerprint:prepared_event.fingerprint});
+}
+export function advanceWaveMaturityV3({aggregate,wave,as_of_ts,maturity_reference}={}){
+  contextV3(aggregate,wave,as_of_ts);if(!wave)throw Error('MATURITY_WAVE_REQUIRED');
+  const ref=maturity_reference;
+  if(ref?.schema!==maturitySchemaV3||ref.materialization_id!==aggregate.materialization_id||ref.wave_key!==wave.wave_key||ref.wave_state_revision!==wave.state_revision||ref.active!==true||ref.deadline_ts!==wave.origin.t0+14400000)throw Error('MATERIALIZED_V3_STALE_MATURITY_REFERENCE');
+  const shadow=shadowV3(aggregate,wave),folded=advanceWaveMaturity({...shadow,as_of_ts});
+  if(!folded.write_required)return {...folded,aggregate,wave};
+  return finishV3Step(aggregate,folded,{source_cursor:aggregate.source_cursor,kind:'CLOCK'});
+}
+// ROOT first installs or deactivates its single current queue reference and
+// verifies this exact persisted body. Old queue rows are never GC'd here.
+export function acknowledgeMaterializedMaturityV3({aggregate,maturity_reference,as_of_ts}={}){
+  contextV3(aggregate,null,as_of_ts,{allow_pending:true});const intent=aggregate.maturity_pending;
+  if(!intent)return {status:'NO_QUEUE_INTENT',write_required:false,aggregate};
+  const expected={schema:maturitySchemaV3,materialization_id:intent.materialization_id,wave_key:intent.wave_key,wave_state_revision:intent.wave_state_revision,active:intent.active,deadline_ts:intent.deadline_ts,transition_id:intent.transition_id};
+  if(!maturity_reference||Object.entries(expected).some(([k,v])=>maturity_reference[k]!==v))throw Error('MATERIALIZED_V3_QUEUE_READBACK_MISMATCH');
+  const next=clone(aggregate);next.maturity_pending=null;next.revision++;next.updated_ts=as_of_ts;
+  return {status:'QUEUE_INTENT_ACKNOWLEDGED',write_required:true,expected:{aggregate_revision:aggregate.revision,transition_id:intent.transition_id},aggregate:next};
+}
+export function readMaterializedSummaryV3(aggregate,{as_of_ts,maturity_boundary=null}={}){
+  contextV3(aggregate,null,as_of_ts,{allow_pending:true});
+  const view=readMaterializedSummary(shadowV3(aggregate,null).aggregate,{as_of_ts});
+  const b=maturity_boundary,empty=aggregate.counters.pending_waves===0;
+  const bound=b&&b.materialization_id===aggregate.materialization_id&&b.aggregate_revision===aggregate.revision&&b.as_of_ts===as_of_ts&&b.complete===true&&text(b.source_ref)&&Number.isSafeInteger(b.due_count)&&b.due_count>=0;
+  const due=empty?0:bound?b.due_count:null,current=!aggregate.maturity_pending&&due===0;
+  return {...view,schema:'PUMP_MATERIALIZED_SUMMARY_V3',version:MATERIALIZED_V3_VERSION,
+    source_cursor:aggregate.source_cursor,status:aggregate.maturity_pending?'MATURITY_QUEUE_SYNC_REQUIRED':due===null?'MATURITY_BOUNDARY_REQUIRED':due?'MATURITY_UPDATES_REQUIRED':'CURRENT',
+    maturity_current:current,pending_clock_transitions:due,maturity_intent_pending:Boolean(aggregate.maturity_pending),
+    maturity_boundary_ref:bound?b.source_ref:null,external_replay_receipts:true,scalar_cohort_counters:true,
+    originals_required:true,delete_allowed:false,approved_delete_ttl_ms:null,
+    limitations:[...view.limitations,'V3 requires exact ROOT record receipt/instrument binding readback and atomic source-cursor+wave+aggregate commit','Queue intent blocks new folds until actual persisted queue reference is acknowledged','CURRENT with pending waves requires a current complete ROOT maturity-queue boundary; caller flags are not native admission','Old v2 originals/digests remain historical; no cleanup or capacity test performed']};
+}

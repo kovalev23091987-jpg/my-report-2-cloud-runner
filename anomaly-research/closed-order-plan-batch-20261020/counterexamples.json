@@ -1,0 +1,41 @@
+{
+  "schema": "NEW_CODE_DERIVED_ANOMALY_COUNTEREXAMPLES_V1",
+  "status": "UNEXECUTED_STATIC_EXPECTATIONS_NOT_MEASURED_BASELINE_OUTPUT",
+  "baseline": "c861c7886254f5338b026ea9542f00e7efe48203",
+  "cases": [
+    {
+      "id": "CLOSED_WINDOW_REGRESSION",
+      "source": "observer.observe",
+      "input": "First1m window [T+60s,T+120s] closes above high at sourceT+121s; later snapshot sourceT+181s carries older window[T,T+60s] below low. Both satisfy300s freshness.",
+      "before_expected": "LONG incorrectly changes CONFIRMED→REFUTED on older close",
+      "after_expected": "STALE_CLOSED_WINDOW,0newtransitions,currentpriceclockadvances"
+    },
+    {
+      "id": "CONFIRMATION_PHASE_LOSS",
+      "source": "observer.observe vs existing durability.confirmationVerdict",
+      "input": "15m event offset0 requests1w confirmation with explicit CONTROLLED Monday offset4days; old observer reuses eventoffset0",
+      "before_expected": "Correctly phased larger candle rejected by grid0",
+      "after_expected": "Explicit supplied grid offset accepted; absent larger-grid offset rejects"
+    },
+    {
+      "id": "RECEIPT_VARIANT_CENSORS_ECONOMIC_PATH",
+      "source": "statistics.evaluateOutcome",
+      "input": "Same exact instrument/source_ts/price with later already-known received_ts and different raw_ref",
+      "before_expected": "INCOMPLETELY_OBSERVED/CONFLICTING_DUPLICATE_POINT",
+      "after_expected": "One sample with receipt/proof variant counters; actual conflicting price still censored"
+    },
+    {
+      "id": "OUTCOME_PLAN_HASH_NOT_BOUND",
+      "source": "outbox.EVENT_TRANSITION/exactAck",
+      "input": "Plans success5% and10% share card/horizons/directions/cellkeys but have differentplan_hash; sameevent mutation and ACK swap them",
+      "before_expected": "Plan ignored, changed-threshold transition/wrong-plan simulatedACK accepted",
+      "after_expected": "Immutable storedplanhash rejects changed/omittedplan and mismatchedACK; legacy unbound cannot silentlypromote"
+    }
+  ],
+  "future_claims": {
+    "production_events": false,
+    "timely_detection": false,
+    "native_ACK": false,
+    "tests_executed": 0
+  }
+}

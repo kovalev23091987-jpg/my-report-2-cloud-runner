@@ -1,0 +1,112 @@
+{
+  "schema": "F578_NEW_FREE_VENUES_DOC_ATTEMPTS_V1",
+  "maximum_total": 10,
+  "maximum_search_queries": 3,
+  "spent_total": 10,
+  "spent_search_queries": 3,
+  "remaining_total": 0,
+  "remaining_search_queries": 0,
+  "maximum_body_bytes": 2000000,
+  "charge_before_IO": true,
+  "failures_nonrefundable": true,
+  "retries": 0,
+  "fanout": 0,
+  "SDK_execution": 0,
+  "native_market_metadata_RPC_SQL_TG_Worker": 0,
+  "admission_expires_ts": 1792989802947,
+  "attempts": [
+    {
+      "attempt": 1,
+      "kind": "SINGLE_NEW_PRIMARY_VENUE_SEARCH",
+      "candidate": "MYX",
+      "query": "MYX Finance official API documentation public open positions liquidation price timestamp",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:31:02 UTC",
+      "status": "SPENT_PRIMARY_API_AND_CONTRACT_DOC_FOUND"
+    },
+    {
+      "attempt": 2,
+      "kind": "SINGLE_NEW_PRIMARY_VENUE_SEARCH",
+      "candidate": "BLUEFIN",
+      "query": "Bluefin official public API open interest liquidation positions timestamp documentation",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:31:02 UTC",
+      "status": "SPENT_PRIMARY_PRO_AND_LEGACY_DOC_FAMILIES_FOUND"
+    },
+    {
+      "attempt": 3,
+      "kind": "SINGLE_NEW_PRIMARY_VENUE_SEARCH",
+      "candidate": "ETHEREAL",
+      "query": "Ethereal official API documentation public open positions liquidation price open interest timestamp",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:31:02 UTC",
+      "status": "SPENT_PRIMARY_HOSTS_AND_SPEC_FOUND"
+    },
+    {
+      "attempt": 4,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "MYX",
+      "url": "https://myxfinance.gitbook.io/myx/protocol/api",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:31:42 UTC",
+      "status": "SPENT_PRIMARY_PUBLIC_OI_IN_CONTRACTS_NO_OI_CLOCK_NO_CENSUS"
+    },
+    {
+      "attempt": 5,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "BLUEFIN",
+      "url": "https://bluefin-exchange.readme.io/reference/how-to-use-this-guide",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:31:42 UTC",
+      "status": "SPENT_PRO_FAMILY_HOSTS_AND_GENERAL_E9_GUIDE"
+    },
+    {
+      "attempt": 6,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "ETHEREAL",
+      "url": "https://api.ethereal.trade/openapi.json",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:31:42 UTC",
+      "status": "SPENT_STATIC_SPEC_INACCESSIBLE_NO_RETRY"
+    },
+    {
+      "attempt": 7,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "BLUEFIN",
+      "url": "https://bluefin-exchange.readme.io/llms.txt",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:32:23 UTC",
+      "status": "SPENT_DOC_INDEX_INACCESSIBLE_NO_RETRY"
+    },
+    {
+      "attempt": 8,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "ETHEREAL",
+      "url": "https://docs.ethereal.trade/developer-guides/trading-api/products",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:32:23 UTC",
+      "status": "SPENT_MAINNET_PRODUCTS_DOC"
+    },
+    {
+      "attempt": 9,
+      "kind": "SINGLE_PRIMARY_STATIC_DOC_OPEN",
+      "candidate": "ETHEREAL",
+      "url": "https://docs.ethereal.trade/developer-guides/trading-api/system-limits",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:32:23 UTC",
+      "status": "SPENT_MAINNET_LIMIT_DOC"
+    },
+    {
+      "attempt": 10,
+      "kind": "SINGLE_PRIMARY_PUBLISHED_POSITION_SCHEMA",
+      "candidate": "BLUEFIN",
+      "url": "https://bluefin-exchange.readme.io/v2.0.1/reference/getuserposition",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:32:54 UTC",
+      "status": "SPENT_LEGACY_AUTHENTICATED_USER_ONLY_OPEN_POSITION_ROUTE"
+    }
+  ],
+  "final_status": "CLOSED_10_SPENT_OF10_3_SEARCHES_OF3_NATIVE0",
+  "unused_total": 0,
+  "no_automatic_refund_rearm_or_native_grant": true
+}

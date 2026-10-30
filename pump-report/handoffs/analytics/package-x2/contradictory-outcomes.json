@@ -1,0 +1,502 @@
+{
+  "evidence": "ARTIFICIAL_ANALYTIC_CONSUMER_NOT_RUNTIME_NATIVE_ACCEPTANCE",
+  "view": {
+    "schema": "PUMP_MATERIALIZED_SUMMARY_V3",
+    "version": "pump-materialized-summary-v3-external-replay-20261025",
+    "materialization_id": "ARTIFICIAL_X2",
+    "revision": 4,
+    "as_of_ts": 1800014460000,
+    "status": "CURRENT",
+    "maturity_current": true,
+    "pending_clock_transitions": 0,
+    "materialized_updated_ts": 1800014460000,
+    "independent_waves": 1,
+    "mature_waves": 1,
+    "pending_waves": 0,
+    "pending_known_hits": 0,
+    "gapped_mature_waves": 1,
+    "coverage_unknown_mature_waves": 0,
+    "enclosing_no_hit_proof_mature_waves": 0,
+    "origin_conflict_waves": 0,
+    "outcome_conflict_waves": 1,
+    "identity_conflict_waves": 0,
+    "outcomes": {
+      "hit": 0,
+      "miss": 0,
+      "unknown": 1
+    },
+    "mature_outcomes": {
+      "hit": 0,
+      "miss": 0,
+      "unknown": 1
+    },
+    "denominators": {
+      "all_independent_waves": 1,
+      "mature_waves": 1,
+      "resolved_mature_waves": 0,
+      "unknown_mature_waves": 1,
+      "pending_excluded_from_mature": 0
+    },
+    "publication_counts": {
+      "sent": 1,
+      "unsent": 0,
+      "unknown": 0
+    },
+    "reason_counts": {
+      "HIT_MISS_CONFLICT": 1
+    },
+    "adverse": {
+      "total_drawdown_known": 0,
+      "total_drawdown_unknown": 1,
+      "pre_hit_drawdown_known": 0,
+      "pre_hit_drawdown_unknown": 0,
+      "hit_after_invalidation_yes": 0,
+      "hit_after_invalidation_no": 0,
+      "hit_after_invalidation_unknown": 0
+    },
+    "cohorts": [
+      {
+        "cohort_key": "[\"AUTO\",\"SENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"ARTIFICIAL_PROFILE\",\"ARTIFICIAL\"]",
+        "mode": "AUTO",
+        "publication": "SENT",
+        "map_mode": "NO_MAP",
+        "rules_version": "ARTIFICIAL_RULES",
+        "profile_version": "ARTIFICIAL_PROFILE",
+        "evidence_class": "ARTIFICIAL",
+        "independent_waves": 1,
+        "mature_waves": 1,
+        "pending_waves": 0,
+        "pending_known_hits": 0,
+        "gapped_mature_waves": 1,
+        "coverage_unknown_mature_waves": 0,
+        "enclosing_no_hit_proof_mature_waves": 0,
+        "origin_conflict_waves": 0,
+        "outcome_conflict_waves": 1,
+        "identity_conflict_waves": 0,
+        "outcomes": {
+          "hit": 0,
+          "miss": 0,
+          "unknown": 1
+        },
+        "mature_outcomes": {
+          "hit": 0,
+          "miss": 0,
+          "unknown": 1
+        },
+        "denominators": {
+          "all_independent_waves": 1,
+          "mature_waves": 1,
+          "resolved_mature_waves": 0,
+          "unknown_mature_waves": 1,
+          "pending_excluded_from_mature": 0
+        },
+        "publication_counts": {
+          "sent": 1,
+          "unsent": 0,
+          "unknown": 0
+        },
+        "reason_counts": {
+          "HIT_MISS_CONFLICT": 1
+        },
+        "adverse": {
+          "total_drawdown_known": 0,
+          "total_drawdown_unknown": 1,
+          "pre_hit_drawdown_known": 0,
+          "pre_hit_drawdown_unknown": 0,
+          "hit_after_invalidation_yes": 0,
+          "hit_after_invalidation_no": 0,
+          "hit_after_invalidation_unknown": 0
+        }
+      }
+    ],
+    "success_rate_pct": null,
+    "probability": {
+      "value_pct": null,
+      "reason": "CALIBRATION_NOT_PERFORMED"
+    },
+    "calibration_validated": false,
+    "publication_allowed": false,
+    "external_provenance_authenticated": false,
+    "readiness_status": "SEPARATE_RESOURCE_ADMITTED_COHORT_AUDIT_REQUIRED",
+    "limitations": [
+      "Materialized counts require atomic aggregate+wave commit",
+      "Exact counters for frozen normalized append-only journal records; protocol conflicts stop reconciliation",
+      "When maturity_current=false mature/pending counters need explicit due transitions",
+      "No raw observations removed; no full-history read on query",
+      "No probability, calibration, profit or native storage capacity proven",
+      "V3 requires exact ROOT record receipt/instrument binding readback and atomic source-cursor+wave+aggregate commit",
+      "Queue intent blocks new folds until actual persisted queue reference is acknowledged",
+      "CURRENT with pending waves requires a current complete ROOT maturity-queue boundary; caller flags are not native admission",
+      "Old v2 originals/digests remain historical; no cleanup or capacity test performed"
+    ],
+    "source_cursor": 2,
+    "maturity_intent_pending": false,
+    "maturity_boundary_ref": "ARTIFICIAL_CURRENT_QUEUE_READBACK",
+    "external_replay_receipts": true,
+    "scalar_cohort_counters": true,
+    "originals_required": true,
+    "delete_allowed": false,
+    "approved_delete_ttl_ms": null
+  },
+  "wave": {
+    "materialization_id": "ARTIFICIAL_X2",
+    "wave_key": "[\"ARTIFICIAL:I_A\",\"ARTIFICIAL:W_A\"]",
+    "origin": {
+      "instrument_id": "ARTIFICIAL:I_A",
+      "asset_id": "ARTIFICIAL:ASSET_I_A",
+      "wave_id": "ARTIFICIAL:W_A",
+      "signal_id": "ARTIFICIAL:S_A",
+      "t0": 1800000000000,
+      "reference_price": 100,
+      "rules_version": "ARTIFICIAL_RULES",
+      "profile_version": "ARTIFICIAL_PROFILE",
+      "mode": "AUTO",
+      "map_mode": "NO_MAP",
+      "evidence_class": "ARTIFICIAL",
+      "run_purpose": "PRODUCTION",
+      "ready": true
+    },
+    "state_revision": 2,
+    "event_revision": 2,
+    "invalid": {},
+    "first": {
+      "record_id": "ARTIFICIAL:R_HIT",
+      "recorded_ts": 1800000060000,
+      "origin": {
+        "instrument_id": "ARTIFICIAL:I_A",
+        "asset_id": "ARTIFICIAL:ASSET_I_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "signal_id": "ARTIFICIAL:S_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "profile_version": "ARTIFICIAL_PROFILE",
+        "mode": "AUTO",
+        "map_mode": "NO_MAP",
+        "evidence_class": "ARTIFICIAL",
+        "run_purpose": "PRODUCTION",
+        "ready": true
+      },
+      "publication": {
+        "state": "SENT",
+        "message_id": "999",
+        "receipt_ref": "pump:card:ARTIFICIAL_A#receipt"
+      },
+      "outcome": {
+        "signal_id": "ARTIFICIAL:S_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "mode": "AUTO",
+        "map_mode": "WITHOUT_MAP",
+        "target_price": 110,
+        "deadline_ts": 1800014400000,
+        "status": "HIT",
+        "hit_ts": 1800000060000,
+        "hit_interval": null,
+        "drawdown_total_pct": null,
+        "drawdown_before_hit_pct": 5,
+        "hit_after_invalidation": false,
+        "coverage": {
+          "complete": false
+        },
+        "reasons": []
+      }
+    },
+    "last": {
+      "record_id": "ARTIFICIAL:R_MISS",
+      "recorded_ts": 1800014460000,
+      "origin": {
+        "instrument_id": "ARTIFICIAL:I_A",
+        "asset_id": "ARTIFICIAL:ASSET_I_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "signal_id": "ARTIFICIAL:S_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "profile_version": "ARTIFICIAL_PROFILE",
+        "mode": "AUTO",
+        "map_mode": "NO_MAP",
+        "evidence_class": "ARTIFICIAL",
+        "run_purpose": "PRODUCTION",
+        "ready": true
+      },
+      "publication": {
+        "state": "SENT",
+        "message_id": "999",
+        "receipt_ref": "pump:card:ARTIFICIAL_A#receipt"
+      },
+      "outcome": {
+        "signal_id": "ARTIFICIAL:S_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "mode": "AUTO",
+        "map_mode": "WITHOUT_MAP",
+        "target_price": 110,
+        "deadline_ts": 1800014400000,
+        "status": "MISS",
+        "hit_ts": null,
+        "hit_interval": null,
+        "drawdown_total_pct": 7,
+        "drawdown_before_hit_pct": null,
+        "hit_after_invalidation": null,
+        "coverage": {
+          "complete": true
+        },
+        "reasons": []
+      }
+    },
+    "valid": {
+      "record_id": "ARTIFICIAL:R_MISS",
+      "recorded_ts": 1800014460000,
+      "origin": {
+        "instrument_id": "ARTIFICIAL:I_A",
+        "asset_id": "ARTIFICIAL:ASSET_I_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "signal_id": "ARTIFICIAL:S_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "profile_version": "ARTIFICIAL_PROFILE",
+        "mode": "AUTO",
+        "map_mode": "NO_MAP",
+        "evidence_class": "ARTIFICIAL",
+        "run_purpose": "PRODUCTION",
+        "ready": true
+      },
+      "publication": {
+        "state": "SENT",
+        "message_id": "999",
+        "receipt_ref": "pump:card:ARTIFICIAL_A#receipt"
+      },
+      "outcome": {
+        "signal_id": "ARTIFICIAL:S_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "mode": "AUTO",
+        "map_mode": "WITHOUT_MAP",
+        "target_price": 110,
+        "deadline_ts": 1800014400000,
+        "status": "MISS",
+        "hit_ts": null,
+        "hit_interval": null,
+        "drawdown_total_pct": 7,
+        "drawdown_before_hit_pct": null,
+        "hit_after_invalidation": null,
+        "coverage": {
+          "complete": true
+        },
+        "reasons": []
+      }
+    },
+    "hit": {
+      "record_id": "ARTIFICIAL:R_HIT",
+      "recorded_ts": 1800000060000,
+      "origin": {
+        "instrument_id": "ARTIFICIAL:I_A",
+        "asset_id": "ARTIFICIAL:ASSET_I_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "signal_id": "ARTIFICIAL:S_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "profile_version": "ARTIFICIAL_PROFILE",
+        "mode": "AUTO",
+        "map_mode": "NO_MAP",
+        "evidence_class": "ARTIFICIAL",
+        "run_purpose": "PRODUCTION",
+        "ready": true
+      },
+      "publication": {
+        "state": "SENT",
+        "message_id": "999",
+        "receipt_ref": "pump:card:ARTIFICIAL_A#receipt"
+      },
+      "outcome": {
+        "signal_id": "ARTIFICIAL:S_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "mode": "AUTO",
+        "map_mode": "WITHOUT_MAP",
+        "target_price": 110,
+        "deadline_ts": 1800014400000,
+        "status": "HIT",
+        "hit_ts": 1800000060000,
+        "hit_interval": null,
+        "drawdown_total_pct": null,
+        "drawdown_before_hit_pct": 5,
+        "hit_after_invalidation": false,
+        "coverage": {
+          "complete": false
+        },
+        "reasons": []
+      }
+    },
+    "miss": {
+      "record_id": "ARTIFICIAL:R_MISS",
+      "recorded_ts": 1800014460000,
+      "origin": {
+        "instrument_id": "ARTIFICIAL:I_A",
+        "asset_id": "ARTIFICIAL:ASSET_I_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "signal_id": "ARTIFICIAL:S_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "profile_version": "ARTIFICIAL_PROFILE",
+        "mode": "AUTO",
+        "map_mode": "NO_MAP",
+        "evidence_class": "ARTIFICIAL",
+        "run_purpose": "PRODUCTION",
+        "ready": true
+      },
+      "publication": {
+        "state": "SENT",
+        "message_id": "999",
+        "receipt_ref": "pump:card:ARTIFICIAL_A#receipt"
+      },
+      "outcome": {
+        "signal_id": "ARTIFICIAL:S_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "mode": "AUTO",
+        "map_mode": "WITHOUT_MAP",
+        "target_price": 110,
+        "deadline_ts": 1800014400000,
+        "status": "MISS",
+        "hit_ts": null,
+        "hit_interval": null,
+        "drawdown_total_pct": 7,
+        "drawdown_before_hit_pct": null,
+        "hit_after_invalidation": null,
+        "coverage": {
+          "complete": true
+        },
+        "reasons": []
+      }
+    },
+    "sent": {
+      "record_id": "ARTIFICIAL:R_HIT",
+      "recorded_ts": 1800000060000,
+      "origin": {
+        "instrument_id": "ARTIFICIAL:I_A",
+        "asset_id": "ARTIFICIAL:ASSET_I_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "signal_id": "ARTIFICIAL:S_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "profile_version": "ARTIFICIAL_PROFILE",
+        "mode": "AUTO",
+        "map_mode": "NO_MAP",
+        "evidence_class": "ARTIFICIAL",
+        "run_purpose": "PRODUCTION",
+        "ready": true
+      },
+      "publication": {
+        "state": "SENT",
+        "message_id": "999",
+        "receipt_ref": "pump:card:ARTIFICIAL_A#receipt"
+      },
+      "outcome": {
+        "signal_id": "ARTIFICIAL:S_A",
+        "wave_id": "ARTIFICIAL:W_A",
+        "t0": 1800000000000,
+        "reference_price": 100,
+        "rules_version": "ARTIFICIAL_RULES",
+        "mode": "AUTO",
+        "map_mode": "WITHOUT_MAP",
+        "target_price": 110,
+        "deadline_ts": 1800014400000,
+        "status": "HIT",
+        "hit_ts": 1800000060000,
+        "hit_interval": null,
+        "drawdown_total_pct": null,
+        "drawdown_before_hit_pct": 5,
+        "hit_after_invalidation": false,
+        "coverage": {
+          "complete": false
+        },
+        "reasons": []
+      }
+    },
+    "last_recorded_ts": 1800014460000,
+    "observed_as_of_ts": 1800014460000,
+    "contribution": {
+      "cohort_key": "[\"AUTO\",\"SENT\",\"NO_MAP\",\"ARTIFICIAL_RULES\",\"ARTIFICIAL_PROFILE\",\"ARTIFICIAL\"]",
+      "descriptor": {
+        "mode": "AUTO",
+        "publication": "SENT",
+        "map_mode": "NO_MAP",
+        "rules_version": "ARTIFICIAL_RULES",
+        "profile_version": "ARTIFICIAL_PROFILE",
+        "evidence_class": "ARTIFICIAL"
+      },
+      "counters": {
+        "independent_waves": 1,
+        "mature_waves": 1,
+        "pending_waves": 0,
+        "pending_known_hits": 0,
+        "gapped_mature_waves": 1,
+        "coverage_unknown_mature_waves": 0,
+        "enclosing_no_hit_proof_mature_waves": 0,
+        "origin_conflict_waves": 0,
+        "outcome_conflict_waves": 1,
+        "identity_conflict_waves": 0,
+        "outcomes": {
+          "hit": 0,
+          "miss": 0,
+          "unknown": 1
+        },
+        "mature_outcomes": {
+          "hit": 0,
+          "miss": 0,
+          "unknown": 1
+        },
+        "denominators": {
+          "all_independent_waves": 1,
+          "mature_waves": 1,
+          "resolved_mature_waves": 0,
+          "unknown_mature_waves": 1,
+          "pending_excluded_from_mature": 0
+        },
+        "publication_counts": {
+          "sent": 1,
+          "unsent": 0,
+          "unknown": 0
+        },
+        "reason_counts": {
+          "HIT_MISS_CONFLICT": 1
+        },
+        "adverse": {
+          "total_drawdown_known": 0,
+          "total_drawdown_unknown": 1,
+          "pre_hit_drawdown_known": 0,
+          "pre_hit_drawdown_unknown": 0,
+          "hit_after_invalidation_yes": 0,
+          "hit_after_invalidation_no": 0,
+          "hit_after_invalidation_unknown": 0
+        }
+      },
+      "adverse": {
+        "drawdown_total_pct": null,
+        "drawdown_before_hit_pct": null,
+        "hit_after_invalidation": false,
+        "source_record_id": "ARTIFICIAL:R_HIT",
+        "outcome_conflicted": true,
+        "execution_proven": false,
+        "user_profit": null
+      }
+    },
+    "version": "pump-materialized-summary-v3-external-replay-20261025"
+  }
+}

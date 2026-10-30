@@ -1,0 +1,25 @@
+--- a/anomaly-research/saved-candle-typed-input-20261019/typed-input.mjs
++++ b/anomaly-research/saved-candle-typed-input-20261019/typed-input.mjs
+@@ -32,13 +32,21 @@
+  let quantity;
+  if(btc){
+   if(r.scope!=='BTC_DERIVED_RESEARCH_SAMPLE_LOCAL_READ'||r.body_sha256!==digest(sample.current)||r.raw_ref!==`${sample.parent.head}:${sample.parent.path}#${sample.current.event_id}`)fail('EXACT_RESEARCH_SAMPLE_MARKER_REQUIRED');
++  // Unit policy must use the market/symbol from the exact verified payload.
++  if(!['spot','usd_m_futures'].includes(sample.current.market)||sample.market!==sample.current.market||sample.contract!==sample.current.symbol||(sample.symbol!==undefined&&sample.symbol!==sample.current.symbol))fail('BTC_BOUND_MARKET_SYMBOL_REQUIRED');
+   if(!stamp(sample.original_immutable_card_first_known_ts)||sample.original_immutable_card_first_known_ts!==sample.current.first_known_ts||sample.current.candle.end_ts>sample.original_immutable_card_first_known_ts)fail('IMMUTABLE_RESEARCH_CARD_CLOCK_REQUIRED');
+   const col=policy.common_archive_columns?.find(x=>x.index===7);
+   if(policy.schema!=='SAVED_BINANCE_SIX_CSV_DOCUMENTARY_MAPPING_V1'||col?.quantity_basis!=='QUOTE_ASSET'||col.schema_status!=='OFFICIAL_PUBLIC_DATA_SCHEMA_CLOSED_BOTH_MARKETS')fail('COLUMN7_QUOTE_BASIS_REQUIRED');
+   if(!['spot','usd_m_futures'].includes(sample.market))fail('EXACT_BINANCE_MARKET_REQUIRED');
+-  const m=policy.market_specific_mapping[sample.market];
++  const m=policy.market_specific_mapping[sample.current.market];
++  if(m?.exact_symbol!==sample.current.symbol)fail('BTC_EXACT_SYMBOL_POLICY_REQUIRED');
++  const origin=sample.raw_source,csv=origin?.csv_member?.match(/^([A-Z0-9]+)-1m-(\d{4}-(?:0[1-9]|1[0-2]))\.csv$/);
++  if(!csv||csv[1]!==sample.current.symbol||origin.zip_member!==`binance-monthly/${sample.current.market}/${csv[2]}/original.zip`||!Array.isArray(sample.current.candle.source_ranges)||!sample.current.candle.source_ranges.length||sample.current.candle.source_ranges.some(x=>x.source_id!==`${sample.current.market}:${csv[2]}`))fail('BTC_BOUND_NATIVE_SOURCE_METADATA_REQUIRED');
+   quantity={native_field:'CSV[7]',basis:'QUOTE_ASSET',concrete_unit:sample.market==='spot'?m.column_7_unit:m.column_7_concrete_unit_independently_closed,declared_quote:sample.market==='spot'?m.quote_asset:m.saved_qualification_declares.quote,concrete_unit_status:sample.market==='spot'?'SPOT_DOCUMENTARY_UNIT_CLOSED':'FUTURES_CONCRETE_UNIT_NOT_INDEPENDENTLY_CLOSED',column5_unit:null,trade_count_basis:'TRADES',taker_subset_not_signed_flow:true};
+  }else{
++  // This retained source kind is the frozen HTX linear-swap-ex trade-kline route.
++  // Its body channel/period and original raw path must share the futures role.
++  if(sample.market!=='FUTURES'||sample.current.timeframe!=='4h'||sample.raw_source?.path!==`checkpoints/htx-compact-4h/${sample.contract}.raw.json.gz`)fail('HTX_NATIVE_FUTURES_ROLE_PERIOD_ORIGIN_REQUIRED');
+   if(r.scope!=='HTX_ORIGINAL_JSON_BODY_LOCAL_READ'||r.body_sha256!==sample.raw_source.body_sha256||r.raw_ref!==sample.raw_source.path+'#uncompressed')fail('EXACT_HTX_ORIGINAL_MARKER_REQUIRED');
+   if(input_value.ch!==`market.${sample.contract}.kline.4hour`||input_value.ts!==sample.original_source_ts)fail('EXACT_HTX_NATIVE_SCOPE_REQUIRED');
+   for(const b of [...sample.current.background,sample.current.candle]){

@@ -1,0 +1,33 @@
+{
+  "schema": "PUMP_M_SMALL_COUNTEREXAMPLE_V1",
+  "evidence": "ARTIFICIAL_ONLY",
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "engine_fix_applied": false,
+  "manual_first": {
+    "ready": true,
+    "current_threshold": false,
+    "automatic_eligible": false,
+    "qualification": []
+  },
+  "later_AUTO": {
+    "ready": true,
+    "current_threshold": true,
+    "automatic_eligible": false,
+    "qualification": [],
+    "reasons": [],
+    "minimum_potential_pct": 27.455976561556895,
+    "same_wave": true
+  },
+  "confirmed_defect": true,
+  "cause": "previous?.qualification ?? passedWindows retains an empty [] forever instead of admitting the first later true qualification",
+  "cancellation_control": {
+    "first": "CANCELLED",
+    "after_recovery": "CANCELLED",
+    "ready": false,
+    "same_wave": true
+  },
+  "next": "Present this receipt to ROOT. No engine change before ROOT agreement; preserve immutable old wave creation/expiry and nonempty qualifications."
+}

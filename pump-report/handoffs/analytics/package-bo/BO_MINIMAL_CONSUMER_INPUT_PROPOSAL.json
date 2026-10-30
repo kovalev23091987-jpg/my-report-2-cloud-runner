@@ -1,0 +1,112 @@
+{
+  "schema": "BO_MINIMAL_CONSUMER_FIELD_SPECIFICATION_V1",
+  "status": "PASS_STATIC_NO_CODE_NEEDED",
+  "operational_config": false,
+  "runtime_fact_or_admission": false,
+  "F603_frozen_manifest_sha256": "cba10047b0c55d59ce72b0b99f594e6de3ed51826b67cc91334a3f69205a41dc",
+  "current_actual_rows": 0,
+  "current_branch": "DOCUMENTED_METADATA_ONLY_HOLD_METRIC_ACTIVATION",
+  "canonical_metadata_minimum": {
+    "provider": "CoinGecko",
+    "exact_derivative_exchange_id": "REQUIRED_NOT_GUESSED_CURRENT_BINGX_NULL",
+    "source_venue": "EXPLICIT_NOT_FACTORY_DEFAULT",
+    "native_symbol": "EXACT",
+    "contract_type": "PERPETUAL_QUALIFIED_NOT_DATED_OR_EXCLUDED_ASSET",
+    "base_coin_id": "PROVIDER_BASE_ID_NOT_BINGX_NATIVE_ID",
+    "target_coin_id": "PROVIDER_TARGET_ID_DOCUMENTED_ROLE_NOT_SETTLEMENT_OR_MARGIN_PROOF",
+    "BingX_binding_or_separate_venue_binding": "ROOT_ACCEPTED_PROVEN_SCOPE",
+    "missing_ids": "UNKNOWN_NOT_SYMBOL_FILLED",
+    "new_matches_now": 0
+  },
+  "existing_Fact_envelope_field_requirements": {
+    "fact_id": "unique source receipt/metric reference",
+    "instrument_id": "accepted canonical input target, no invented identity",
+    "kind": "open_interest or funding",
+    "source": "actual data vendor attribution",
+    "primary_provider": "actual provider",
+    "venue": "actual metric native venue",
+    "origin": "documented observed quote or estimate meaning, not realized payment claim",
+    "event_ts": "proved per-metric source as-of, NEVER last_traded/received/cache refresh",
+    "received_ts": "original source receipt time",
+    "expires_ts": "event_ts + selected unchanged TTL, no cache rebasing",
+    "evidence_ref": "immutable original metric/schema/normalization proof reference",
+    "status": "USABLE only after all source semantics qualify; otherwise no Fact until identity known, then INCOMPLETE/value null if needed"
+  },
+  "OI_point": {
+    "source_field": "open_interest_usd",
+    "value": "finite >=0 provider-reported USD notional",
+    "unit": "USD_MUST_REMAIN_USD",
+    "source_clock": "OI_ASOF_REQUIRED_UNKNOWN_CURRENTLY",
+    "current_context_accepts_unit": false,
+    "current_card_line": false,
+    "future_minimal_change": "ROOT-approved USD whitelist point preservation after source qualification, no delta/new card line"
+  },
+  "OI_delta": {
+    "current_consumer": false,
+    "minimum_snapshots": 2,
+    "requirements": [
+      "same provider/upstream/native contract/canonical scope",
+      "same documented units/calculation/coverage",
+      "distinct original per-metric timestamps",
+      "valuation effect explicitly distinguished for USD series",
+      "positive denominator for percentage or unknown result"
+    ],
+    "single_snapshot_delta": false,
+    "no_long_short_direction_inferred": true
+  },
+  "funding": {
+    "value_fields": {
+      "rate": "finite RATE_FRACTION, percent conversion documented",
+      "period_ms": "actual period >0 <=86400000, not guessed8h"
+    },
+    "source_evidence": [
+      "per-metric asof",
+      "numeric scale",
+      "actual period/settlement meaning",
+      "quote/estimate/settled kind",
+      "actual native venue and canonical binding"
+    ],
+    "unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+    "current_generic_context": "can retain qualified external source fact",
+    "current_card": "only official BINGX_OFFICIAL_PUBLIC_API/BINGX/OBSERVED with evidence/factid/finding; CoinGecko omitted",
+    "vendor_relabel_to_BingX_official": false
+  },
+  "quiet_omission": {
+    "missing_or_stale_or_unqualified_optional": "omit optional numerical/card field",
+    "fill_missing_with_zero": false,
+    "new_warning_fillers": false,
+    "mandatory_signal_thresholds_unchanged": true
+  },
+  "future_single_affected_case": {
+    "status": "PROPOSAL_ONLY_NOT_AUTHORIZED_OR_RUN",
+    "only_after": [
+      "SOURCE original metric-clock/units/access/canonical row qualified",
+      "ROOT chooses OI-USD scope and route/whole budget",
+      "concrete consumer unitUSD point change accepted"
+    ],
+    "connected_flow": [
+      "ready mandatory base remains fixed",
+      "qualifiedUSDpoint retained asUSD/source/venue in optional context/capsule, no OI delta",
+      "same point missing per-metric clock is absent/INCOMPLETE and quietly omitted",
+      "qualified external funding retained in context while officialBingX card line stays absent"
+    ],
+    "not_in_scope": [
+      "new external card format",
+      "third hidden optional call",
+      "provider probe",
+      "strategy thresholds",
+      "new quota bucket"
+    ]
+  },
+  "BO_actual": {
+    "Node": 0,
+    "tests": 0,
+    "source_search": 0,
+    "source_API": 0,
+    "SQL": 0,
+    "MCP": 0,
+    "TG": 0,
+    "deploy": 0,
+    "code_edits": 0
+  }
+}

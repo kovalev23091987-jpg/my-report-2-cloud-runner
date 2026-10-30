@@ -1,0 +1,40 @@
+--- pump-report/handoffs/analytics/package-s/before-owner-removal/context.before.mjs	2026-10-25 20:28:41
++++ pump-report/analytics/context.mjs	2026-10-25 20:28:58
+@@ -1,5 +1,4 @@
+ import {factUsable, finite, positive, validTime} from '../contracts/index.mjs';
+-import {qualifyRelativeContext} from '../contracts/relative-context.mjs';
+ const clean=v=>{let out='';for(const p of String(v??'').replace(/[\r\n\p{C}]/gu,' ')){if(out.length+p.length>32)break;out+=p;}return out;};
+ const number=v=>Number(v.toPrecision(6)).toString();
+ const usable=(f,kind,at,ttl)=>f?.kind===kind&&factUsable(f,at)&&f.event_ts<=f.received_ts&&at-f.event_ts<=ttl;
+@@ -55,7 +54,7 @@
+     price_response:response,price_response_reason:reason,coverage,provenance,absorption_proven:false,market_path_proven:false,causation_proven:false}};
+ }
+ 
+-export function explainOptionalFacts(facts,at,profile,instrument){
++export function explainOptionalFacts(facts,at,profile){
+   const findings=[],used=[],optional_context={},out={findings,fact_ids:used,optional_context};
+   const add=(code,text,f)=>{findings.push({code,text,fact_ids:[f.fact_id]});used.push(f.fact_id);};
+   const retain=(kind,f,value)=>{optional_context[kind]={value:structuredClone(value),unit:f.unit,source:f.source,venue:f.venue,origin:f.origin,
+@@ -78,22 +77,6 @@
+     if(kind==='funding'&&f.unit==='RATE_FRACTION_PER_ACTUAL_PERIOD'&&finite(f.value?.rate)&&finite(f.value.rate*100)&&positive(f.value?.period_ms)&&f.value.period_ms<=86400000){
+       retain(kind,f,{rate:f.value.rate,period_ms:f.value.period_ms});add('FUNDING_SNAPSHOT','Фандинг '+source(f)+': '+number(f.value.rate*100)+'% за '+number(f.value.period_ms/3600000)+' ч; это контекст, а не направление будущей цены.',f);}
+   }
+-  const f=facts.market_context;
+-  if(f){
+-    let q;try{q=qualifyRelativeContext(f,{instrument,as_of_ts:at,freshness_ms:profile.freshness_ms.market_context});}
+-    catch{q={valid:false,reason:'RELATIVE_CONTEXT_MALFORMED',returns:[]};}
+-    const provenance={fact_id:f.fact_id,instrument_id:f.instrument_id,source:f.source,primary_provider:f.primary_provider,venue:f.venue,origin:f.origin,
+-      unit:f.unit,event_ts:f.event_ts,received_ts:f.received_ts,expires_ts:f.expires_ts,evidence_ref:f.evidence_ref??null};
+-    out.relative_context_diagnostic={valid:q.valid,reason:q.reason??null,start_ts:q.start_ts??null,end_ts:q.end_ts??null,coverage:q.coverage??null,
+-      independent_venue_count:q.independent_venue_count??null,provenance,...(!q.valid?{returns:[]}: {})};
+-    if(q.valid){
+-      retain('market_context',f,{schema_version:f.value.schema_version,returns:q.returns,start_ts:q.start_ts,end_ts:q.end_ts,coverage:q.coverage,
+-        partial:q.coverage==='ONE_BENCHMARK',independent_venue_count:q.independent_venue_count});
+-      Object.assign(optional_context.market_context,{instrument_id:f.instrument_id,primary_provider:f.primary_provider,expires_ts:f.expires_ts,evidence_ref:f.evidence_ref??null});
+-      const c=q.returns.find(r=>r.role==='CANDIDATE'),peers=['BTC','ETH'].flatMap(role=>q.returns.filter(r=>r.role===role));
+-      add('RELATIVE_RETURN','За одинаковое закрытое окно '+number((q.end_ts-q.start_ts)/60000)+' мин: монета '+number(c.return_pct)+'%, '+peers.map(r=>r.role+' '+number(r.return_pct)+'%').join(', ')+' ('+source(f)+'; одна площадка'+(q.coverage==='ONE_BENCHMARK'?'; один ориентир, контекст неполный':'')+').',f);
+-    }
+-  }
+   return out;
+ }
+ 

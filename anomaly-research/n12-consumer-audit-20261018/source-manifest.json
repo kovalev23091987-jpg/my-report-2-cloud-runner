@@ -1,0 +1,453 @@
+{
+  "schema": "N12_READ_ONLY_CODE_READER_MANIFEST_V1",
+  "audit_head": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+  "files": [
+    {
+      "path": "current-generation/files/src/block-result-context.mjs",
+      "sha256": "76ae667fba84f3a95c5495a1174639c9623870e4f05a97febc8f701b9b9ccc40",
+      "bytes": 88007,
+      "anchors": [
+        {
+          "line": 370,
+          "text": "export function consumeBlockResultContext({evidence=[],contract,now}={}){"
+        },
+        {
+          "line": 447,
+          "text": "export function confirmedBlockContextFacts(canonical){"
+        },
+        {
+          "line": 454,
+          "text": "export function auditRenderedBlockResults({canonical,manual,telegram}={}){"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/block-decision-use-audit.mjs",
+      "sha256": "5cf0a6a2349c4b74dcd174dc8228a039dae69b6aa83f59e23c66fa0acaab0360",
+      "bytes": 14158,
+      "anchors": [
+        {
+          "line": 12,
+          "text": "export function summarizeAssignedSourceUse(details={}) {"
+        },
+        {
+          "line": 33,
+          "text": "export function auditCanonicalBlockDecisionUse(canonical={}, {manual}={}) {"
+        },
+        {
+          "line": 56,
+          "text": "  const usedContext=rendered.context_receipts.filter(receipt=>receipt.block_id===block&&valid.some(row=>meaningful(row)&&(row.evidence_id===receipt.evidence_id||array(row.immutable_evidence_ids).length&&array(row.immutable_evidence_ids).eve"
+        },
+        {
+          "line": 58,
+          "text": "  const isRendered=row=>usedContext.some(receipt=>row.evidence_id===receipt.evidence_id||array(row.immutable_evidence_ids).length&&array(row.immutable_evidence_ids).every(id=>array(receipt.evidence_ids).includes(id)));"
+        },
+        {
+          "line": 60,
+          "text": "  const actuallyUsedIds=new Set(valid.filter(row=>meaningful(row)&&(receipts.some(r=>r.provider_object_id===row.evidence_id)||diagnosticReviews.some(r=>r.evidence_id===row.evidence_id)||assessedUseful.some(r=>r.provider_object_id===row.evid"
+        },
+        {
+          "line": 63,
+          "text": "   const sourceIds=new Set(array(check.valid_evidence_ids)),bound=valid.filter(row=>sourceIds.has(row.evidence_id));"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "sha256": "85785e34c52d67aac8ab981d6123c78fc8def8bcff4877c67459a8d601d389ec",
+      "bytes": 61352,
+      "anchors": [
+        {
+          "line": 38,
+          "text": "export function buildHtxFuturesFlowPrimary({contract,trajectory,now=Date.now()}={}){"
+        },
+        {
+          "line": 50,
+          "text": "export function nansenFlowEvidence(source,params){"
+        },
+        {
+          "line": 60,
+          "text": "export function resolveNansenFlowPrimary(source,params={}){"
+        },
+        {
+          "line": 81,
+          "text": "export function rotateEvidenceRoleRoutes(routes,key,{owner_priority=false}={}){"
+        },
+        {
+          "line": 96,
+          "text": "export function orderEvidenceRoutesBySourceHistory(routes=[],history={}, {contract,now=Date.now(),use_initial_preference=false}={}){"
+        },
+        {
+          "line": 110,
+          "text": "export function exactCapabilityIdentity(params={}){return verifiedAssetRouteIdentity(params);}"
+        },
+        {
+          "line": 114,
+          "text": "export function sourceCollectionPriorityProof(canonical={}){"
+        },
+        {
+          "line": 126,
+          "text": "export function unavailableExternalN05Route(params={},result){"
+        },
+        {
+          "line": 133,
+          "text": "export function capabilityCheckedNoExactRoute(params,source_id,reason){"
+        },
+        {
+          "line": 137,
+          "text": "export function retainCheckedSectorAbsence(params,result){"
+        },
+        {
+          "line": 148,
+          "text": "export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({"
+        },
+        {
+          "line": 160,
+          "text": " N12:{all:['HTX_LARGE_TRADES'],supplemental:[]},"
+        },
+        {
+          "line": 166,
+          "text": "export function classifyEvidenceSourceHealth(result={},valid_rows=0){"
+        },
+        {
+          "line": 178,
+          "text": "export function evidenceSourceHealthObservation(source_id,r={}, {contract,decision_ts=Date.now()}={}){"
+        },
+        {
+          "line": 185,
+          "text": "export function orderEvidenceDependencyRoutes(routes=[],asset_identity=null){"
+        },
+        {
+          "line": 192,
+          "text": "export function evidenceRouteObservationNow(route,params={}){"
+        },
+        {
+          "line": 198,
+          "text": "export function finalizedPrimaryTransferAvailable(source,{contract,decision_ts}={}){"
+        },
+        {
+          "line": 201,
+          "text": "export async function collectEvidenceRouteBlock({routes=[],collectors={},params={},max_requests=5}={}){"
+        },
+        {
+          "line": 234,
+          "text": "export function sourceWasActuallyChecked(source){"
+        },
+        {
+          "line": 246,
+          "text": "export function sourceWasAttempted(source){"
+        },
+        {
+          "line": 270,
+          "text": "export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.now(),strict_fresh=false}={}){"
+        },
+        {
+          "line": 282,
+          "text": "  const requirement=BLOCK_SOURCE_REQUIREMENTS[block]||{all:[],any:[],supplemental:[]};"
+        },
+        {
+          "line": 284,
+          "text": "  const owners=[...(requirement.all||[]),...(requirement.any||[]),...(requirement.supplemental||[])];"
+        },
+        {
+          "line": 320,
+          "text": "export function attributeSharedN05N12Http(flow){"
+        },
+        {
+          "line": 330,
+          "text": "export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={},contract=evidence_result.contract,decision_ts=evidence_result?.decision_ts??Date.now()}={}){"
+        },
+        {
+          "line": 338,
+          "text": "export function planCandidateEvidenceRoutes(params={}){"
+        },
+        {
+          "line": 349,
+          "text": "export async function collectCandidateEvidenceV2(params={}){"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/external-n05-flow-collector.mjs",
+      "sha256": "cbfcc3dda74e1c3102dc512d7f10539545db05c7d37c25d325a3ce53caa2bb9b",
+      "bytes": 9134,
+      "anchors": [
+        {
+          "line": 37,
+          "text": "export function orderN05VenueRoutes(contract,identity,routes){"
+        },
+        {
+          "line": 48,
+          "text": "export async function collectN05VenueRoutes(params={},routes=[],turnoverCollector=collectTurnoverBaseline){"
+        },
+        {
+          "line": 97,
+          "text": "export function planPublicVenueRoutes(params={}){"
+        },
+        {
+          "line": 115,
+          "text": "export async function collectExternalN05Flow(params={}){"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/bounded-money-flow-diagnostic.mjs",
+      "sha256": "fe46074b3b985f652f3970fa847e7f63d5a09e96aa409de8e2b291bd05b9d787",
+      "bytes": 7012,
+      "anchors": [
+        {
+          "line": 27,
+          "text": "export function reviewBoundedMoneyFlow({evidence=[],contract,run_id,snapshot_id,decision_ts}={}){"
+        },
+        {
+          "line": 54,
+          "text": "export function verifyBoundedMoneyFlowReviews(review,args){"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/evidence-v2.mjs",
+      "sha256": "dd939e4825e032d71eb41f8bc530419b78263d341f2491486279ef4a4be712e7",
+      "bytes": 8157,
+      "anchors": [
+        {
+          "line": 14,
+          "text": "export function validateEvidenceV2(row,{decision_ts=Infinity}={}){"
+        },
+        {
+          "line": 30,
+          "text": "export function evidenceDedupKey(row){if(row.physical_root_key)return String(row.physical_root_key);if(row.chain&&row.tx_hash&&row.log_index!==undefined)return `${row.chain}|${row.tx_hash}|${row.log_index}`;if(row.official_url&&row.event_ty"
+        },
+        {
+          "line": 32,
+          "text": "export function consumeEvidenceV2(rows,{base_interest,decision_ts,base_evidence_ids=[],base_evidence_roots=[],weight_policy_version,adaptive_policy}={}){"
+        },
+        {
+          "line": 47,
+          "text": "export function buildHotlist({active_publications=[],manual_contract=null,pending=[]}={}){const map=new Map();for(const row of active_publications)map.set(row.contract,{...row,tier:0});if(manual_contract)map.set(manual_contract,{contract:ma"
+        },
+        {
+          "line": 49,
+          "text": "export function nextSourceQuality({current=.8,attempted,response_usable,invalid_streak=0,probe_success_streak=0}={}){if(!attempted)return {quality:current,quarantined:invalid_streak>=3,invalid_streak,probe_success_streak};const quality=.9*c"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/observation-source-role-audit.mjs",
+      "sha256": "e197a38c8866b3f8c3b59b688797cd9477240452c37353467f4cfbeeea529e29",
+      "bytes": 2494,
+      "anchors": [
+        {
+          "line": 5,
+          "text": "export function auditObservationSourceRoles(c){"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/observation-source-role-gate.mjs",
+      "sha256": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
+      "bytes": 778,
+      "anchors": [
+        {
+          "line": 3,
+          "text": "export function earlySourceRolesClosed(c){"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/source-role-consumer.mjs",
+      "sha256": "81acb21b0eb4b10a3d12e02a564c5f712d31eff1857fef8dbf19e8cde8c1fb0f",
+      "bytes": 7976,
+      "anchors": [
+        {
+          "line": 18,
+          "text": "export function sourceKey(receipt={}){"
+        },
+        {
+          "line": 60,
+          "text": "export function classifyReceipt(receipt={},context={}){"
+        },
+        {
+          "line": 76,
+          "text": "export function buildRoleEvidenceView(receipts=[],context={}){"
+        },
+        {
+          "line": 93,
+          "text": "export function primaryReceiptForRole(receipts,role,context={}){const v=buildRoleEvidenceView(receipts,context);return Object.keys(v.independent_groups_by_comparison[role]??{}).length===1?v.roles[role]?.[0]??null:null;}"
+        },
+        {
+          "line": 94,
+          "text": "export function independentConfirmationCount(receipts,role,context={}){return buildRoleEvidenceView(receipts,context).independent_groups?.[role]?.length??0;}"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/source-role-registry.mjs",
+      "sha256": "9b15ed85a88210c22b8980845d84ec484ddcff48c33f22c10209bf06026b094d",
+      "bytes": 3440,
+      "anchors": [
+        {
+          "line": 22,
+          "text": "export function sourceForRole(role){return Object.entries(SOURCES).filter(([,v])=>v.roles.includes(role)).sort((a,b)=>b[1].priority-a[1].priority).map(([name,v])=>({name,...v,scope:'DECLARED_CAPABILITY_NOT_OBSERVED_EVIDENCE'}));}"
+        },
+        {
+          "line": 23,
+          "text": "export function independentFamilies(observations=[]){return [...new Set(observations.filter(x=>x.role_evidence_usable===true).map(x=>x.independence_group).filter(Boolean))];}"
+        },
+        {
+          "line": 24,
+          "text": "export function canPromoteEarlyObservation({has_htx_facts=false,has_actionable_trigger=false,independent_sources=[]}={}){return has_htx_facts===true&&has_actionable_trigger===true&&independentFamilies(independent_sources).length>=2;}"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/telegram-plain-facts.mjs",
+      "sha256": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+      "bytes": 18063,
+      "anchors": [
+        {
+          "line": 14,
+          "text": "export function plainSpotFuturesJointConclusion(c){"
+        },
+        {
+          "line": 21,
+          "text": "export function telegramPrice(v,{zone=false}={}){"
+        },
+        {
+          "line": 26,
+          "text": "export function plainRelativeComparison(c){"
+        },
+        {
+          "line": 37,
+          "text": "export function plainOpenInterest(c){"
+        },
+        {
+          "line": 49,
+          "text": "export function plainContextFact(f,c){"
+        },
+        {
+          "line": 95,
+          "text": "export function isApprovedTelegramContextFact(f,c){"
+        },
+        {
+          "line": 111,
+          "text": "export function plainCancellation(condition,{brief=false}={}){"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "sha256": "8113b3540a9d85fd6b05ab5e64013242a270831101229bbf95f6985c11991407",
+      "bytes": 47336,
+      "anchors": [
+        {
+          "line": 19,
+          "text": "export function canonicalFingerprint(result){const c={...(result||{})};delete c.analytical_fingerprint;return sha256(c);}"
+        },
+        {
+          "line": 38,
+          "text": "export function validateCanonicalIdentity(canonical,{contract,direction=null,run_id,snapshot_id,observed_ts}={}){"
+        },
+        {
+          "line": 50,
+          "text": "export function assessActionability({canonical,lifecycle_event,prior_sent=false}={}){"
+        },
+        {
+          "line": 88,
+          "text": "export function validateRemovalReceipt(r,{contract,direction,wave_id,observed_ts}={}){"
+        },
+        {
+          "line": 108,
+          "text": "export function renderRemovalNotice(canonical,{manual=false}={}){"
+        },
+        {
+          "line": 166,
+          "text": "export function renderCanonicalTelegram({canonical,lifecycle_event,context_policy='OWNER_APPROVED_BRIEF_20261007'}={}){"
+        },
+        {
+          "line": 201,
+          "text": "export function renderCanonicalManual({canonical,liquidation_policy=liquidationPresentationPolicy(canonical?.observed_ts)}={}){return canonical?.metadata?.lifecycle_removal?renderRemovalNotice(canonical,{manual:true}):formatManualReport(can"
+        },
+        {
+          "line": 203,
+          "text": "export function validatePresentation({canonical,manual_text,telegram_text,direction,lifecycle_event}={}){"
+        },
+        {
+          "line": 240,
+          "text": "export function makePublicationId({contract,direction,run_id,snapshot_id,observed_ts,analytical_fingerprint,wave_id=null}={}){"
+        },
+        {
+          "line": 245,
+          "text": "export async function persistCanonicalSnapshot(db,{canonical,presentation_inputs={},wave_id=null,decision_id=null,now_ts=Date.now()}={}){"
+        },
+        {
+          "line": 258,
+          "text": "export async function finalizePublication(db,{publication_id,lifecycle_event,direction,manual_text,telegram_text,prior_sent=false,now_ts=Date.now()}={}){"
+        },
+        {
+          "line": 272,
+          "text": "export async function bindDispatchToPublication(db,{idempotency_key,publication_id,contract,direction,wave_id,lifecycle_event,rules_version,decision_id=null,now_ts=Date.now()}={}){"
+        },
+        {
+          "line": 280,
+          "text": "export async function loadBoundTelegram(db,{idempotency_key,now_ts=Date.now()}={}){"
+        },
+        {
+          "line": 299,
+          "text": "export async function loadExactManual(db,{publication_id,expected_identity=null}={}){"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "sha256": "520baa83fd0acff55cd6335d3398f52ff10f7989940dab7ae71d52ca0b0cb25f",
+      "bytes": 133346,
+      "anchors": [
+        {
+          "line": 242,
+          "text": "          source_role_publication_audit:auditObservationSourceRoles(canonical),"
+        },
+        {
+          "line": 243,
+          "text": "          block_decision_use:auditCanonicalBlockDecisionUse(canonical||{},{manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null}}),"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/tests/source-use-accounting.test.mjs",
+      "sha256": "bfde0b6b2acf24a428d99391d05fd08a058a5bde47cbe86eaede1b392e842aef",
+      "bytes": 3053,
+      "anchors": []
+    },
+    {
+      "path": "current-generation/tests/source-accounting-20261005.test.mjs",
+      "sha256": "310544616014ae1ecfbf2d795e07fa1b979d66faa15ea2d8089015758c4ea5be",
+      "bytes": 3820,
+      "anchors": []
+    },
+    {
+      "path": "current-generation/tests/block-decision-use-audit.test.mjs",
+      "sha256": "12d452c04b12e21d7227f48a952b2ccd9ca69da71f0e1b787eed9cac6b86ad0e",
+      "bytes": 3833,
+      "anchors": []
+    },
+    {
+      "path": "current-generation/tests/source-role-publication-audit.test.mjs",
+      "sha256": "c7a0e2c61f52908ebebaa3d831f920795f3fb0d31c466a2149fa9dccbc4bcf5b",
+      "bytes": 2651,
+      "anchors": []
+    },
+    {
+      "path": "current-generation/tests/source-role-publication-audit.runtime.mjs",
+      "sha256": "8f33b074fb1b87fca6b23f87ebae36414cde77718364a3eae72ccc539260a847",
+      "bytes": 1566,
+      "anchors": []
+    }
+  ],
+  "BLOCK_SOURCE_REQUIREMENTS_runtime_readers": [
+    "candidate-evidence-v2-runtime.mjs:auditCandidateBlocks"
+  ],
+  "collection_planner_uses_separate_routes": true,
+  "runtime_tests_executed": false,
+  "collection_graph_scope": "Tracked current-generation overlay and literal export references; encrypted baseline not decrypted or reconstructed."
+}

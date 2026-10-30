@@ -1,0 +1,47 @@
+{
+  "schema": "PENDING_JOURNAL_EXISTING_SEAM_EVIDENCE_V1",
+  "working_base": "826bd2c15238b1904394cb6ec6c029631ec229b4",
+  "baseline_target_sha256": "db6b33383233cb1f594aac0f9072a812bf822d8479c2415fc5bb82d4d43f2dd3",
+  "seams": [
+    {
+      "label": "old_metadata_fs_wrapper",
+      "path": "current-generation/files/runner-main.mjs",
+      "start_line": 683,
+      "text": "async function persistRunnerAnomalyReceipts(snapshot) {\n  if (snapshot?.schema !== 'ANOMALY_PARENT_BOUNDED_RECEIPTS_V1') throw Error('ANOMALY_RECEIPT_SCHEMA_REQUIRED');\n  const body = JSON.stringify(snapshot);\n  if (Buffer.byteLength(body,'utf8') > 16384) throw Error('ANOMALY_RECEIPT_METADATA_BOUND');\n  const envelope = {schema:'RUNNER_ANOMALY_RECEIPT_ARTIFACT_V1',head:process.env.GITHUB_SHA||null,cloud_run_id:process.env.GITHUB_RUN_ID||null,recorded_ts:Date.now(),scope:'BOUND_OPERATION_METADATA_NOT_NATIVE_EVENT_FIRST_KNOWLEDGE_OR_DELIVERY',receipts:snapshot,additional_SQL:0,provider_HTTP:0,native_qualification_claimed:false,filesystem_durability_qualified:false};\n  const text = JSON.stringify(envelope);\n  if (Buffer.byteLength(text,'utf8') > 20480) throw Error('ANOMALY_RECEIPT_ARTIFACT_BOUND');\n  const file = 'report2-anomaly-domain-receipts.json';\n  await fs.writeFile(file+'.tmp',text);\n  await fs.rename(file+'.tmp',file);\n  return {bytes:Buffer.byteLength(text,'utf8'),sha256:crypto.createHash('sha256').update(text).digest('hex'),native_qualification_claimed:false};\n}\n\n",
+      "text_sha256": "0bfe15c6ab23b6d257703c9456008fc59b5785df94c372c84c77622cc96a960d"
+    },
+    {
+      "label": "old_transport_boundary",
+      "path": "current-generation/files/runner-main.mjs",
+      "start_line": 754,
+      "text": "  const wrapped_request=async function(payload){\n    if(in_prepare){reentrant=true;usage();throw Error('ANOMALY_PREPARE_SQL_REFUSED');}\n    const before=usage();if(!before)throw Error('ANOMALY_NATIVE_USAGE_NOT_CLOSED');\n    const domain=payload?.sql===ORIGIN_SQL||payload?.sql===COMMIT_SQL||payload?.sql===READBACK_SQL||payload?.sql===DUE_SQL;\n    if(domain){\n      const t=ticket;ticket=null;\n      if(!t||!parent_closed()||!same_usage(before,t.usage)||JSON.stringify(payload)!==t.wire||project(t.phase,before)?.allowed!==true)throw Error('ANOMALY_PARENT_WIRE_NOT_ADMITTED');\n    }\n    try {return await original_request.call(this,payload);}\n    finally {usage();}\n  };\n",
+      "text_sha256": "5f8c614c59b9055526ad9b9ee5de45a0ed3a1cd075f3f25c2445ae6e6df005bc"
+    },
+    {
+      "label": "old_prepared_then_commit",
+      "path": "current-generation/files/runner-main.mjs",
+      "start_line": 855,
+      "text": "      effective=validate_prepared(prepared,id,origin);expected_phase='WRITE';\n      const result=await commitAnomalyBundle({db,prepared:effective,admit,cost_bounds:policy});\n      const u=usage();\n      const uncertain=!u||result.cost_status==='PROJECTION_EXCEEDED_OR_UNKNOWN'||result.new_operation_id_allowed===false||['UNKNOWN_COMMIT_ACK','COMMIT_REPLY_RETAINED_RECONCILIATION_REQUIRED','READBACK_CONFLICT_OR_UNKNOWN_USAGE'].includes(result.status);\n      if(uncertain)stopped=true;\n      const returned={...result,effective_prepared:effective,original_origin_revision:origin?.revision??null,native_admission_qualified:false,event_first_knowledge_qualified:false,native_epoch_qualified:false,SENT_claimed:false};\n      if(uncertain||result.status!=='COMMITTED_RECEIPT_READBACK'&&result.status!=='COMMIT_NOT_ADMITTED'){\n        stopped=true;returned.new_operation_id_allowed=false;reconciliation.set(id,returned);\n      }\n      return returned;\n",
+      "text_sha256": "e894387c82c3068404a10f232bf92035d470b7f18e569fee6d461318230e2771"
+    },
+    {
+      "label": "old_post_hook_metadata",
+      "path": "current-generation/files/runner-main.mjs",
+      "start_line": 927,
+      "text": "      try{result=await run(input);}catch{stopped=true;result=refusal('ANOMALY_HOOK_NOT_CLOSED');}\n      const after=usage();retain_receipt(input,result,before,after);\n      if(typeof on_receipt==='function')try{await on_receipt(receipts());}catch{observer_failed=true;stopped=true;}\n      return result;\n    });tail=next.catch(()=>{});return next;\n  };\n",
+      "text_sha256": "58990cbc0f44ae2905e46eeb09f67d5737662e1ccc48976abea6cf76ccb71f98"
+    }
+  ],
+  "previous_qualified_limit": {
+    "path": "anomaly-research/native-card-watch-wire-20261021/README_RU.md",
+    "line": 19,
+    "scope": "CONTROLLED harness retained pending DTO; production durable pending artifact NOTqualified."
+  },
+  "unchanged_existing_domain_readback_unknown_guard": {
+    "path": "current-generation/files/src/anomaly-native-domain.mjs",
+    "lines": "readAnomalyCommit/commitAnomalyBundle",
+    "fact": "unknown_ops blocks new SQL; absence does not prove no commit; no new opid allowance on unknown."
+  },
+  "fresh_AGENTS_scope": "THIRD ownprefix separate branch, readback CAS lease <=90min; no shared/native writes",
+  "source_acquisition_or_native_read_this_package": 0
+}

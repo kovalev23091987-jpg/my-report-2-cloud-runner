@@ -1,0 +1,64 @@
+{
+  "schema": "F577_TARGETED_CONTEXT_DOC_ATTEMPTS_V1",
+  "maximum_total": 8,
+  "maximum_search_queries": 0,
+  "spent_total": 4,
+  "spent_search_queries": 0,
+  "remaining_total": 4,
+  "maximum_body_bytes": 2000000,
+  "failed_attempts_nonrefundable": true,
+  "charge_before_IO": true,
+  "retries": 0,
+  "fanout": 0,
+  "vendor_code_execution": 0,
+  "native_market_metadata_RPC_SQL_TG_Worker": 0,
+  "admission_expires_ts": 1792989732847,
+  "attempts": [
+    {
+      "attempt": 1,
+      "candidate": "STANDX",
+      "kind": "PRIMARY_PUBLISHED_SYMBOL_WIDTH",
+      "url": "https://docs.standx.com/standx-api/perps-reference",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:00:42 UTC",
+      "status": "SPENT_FETCH_FAILED_NO_RETRY"
+    },
+    {
+      "attempt": 2,
+      "candidate": "BLOFIN",
+      "kind": "PRIMARY_STATIC_DOC_SECTION_FIND",
+      "ref_id": "turn86view0",
+      "section": "WS Trades unit and side convention",
+      "pattern": "### WS Trades Channel",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:01:08 UTC",
+      "status": "SPENT_WS_PUBLIC_SIZE_AND_SIDE_NOT_DISAMBIGUATED"
+    },
+    {
+      "attempt": 3,
+      "candidate": "BLOFIN",
+      "kind": "PRIMARY_STATIC_DOC_SECTION_FIND",
+      "ref_id": "turn86view0",
+      "section": "Instrument contractValue unit",
+      "pattern": "### GET Instruments",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:01:08 UTC",
+      "status": "SPENT_CONTRACTVALUE_UNITS_AND_TYPED_METADATA_FOUND"
+    },
+    {
+      "attempt": 4,
+      "candidate": "BLOFIN",
+      "kind": "PRIMARY_STATIC_DOC_SECTION_FIND",
+      "ref_id": "turn86view0",
+      "section": "REST quota",
+      "pattern": "## REST API Limits",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 04:01:08 UTC",
+      "status": "SPENT_REST_LIMITS_FOUND"
+    }
+  ],
+  "final_status": "CLOSED_4_SPENT_4_UNUSED_NO_REARM_NATIVE0",
+  "unused_total": 4,
+  "unused_is_not_refund_or_native_grant": true,
+  "stop_reason": "StandX no confirmed eligible published overlap and new page failed; BloFin public trade denomination/aggressor semantics unresolved in both public schemas. Stop targeted paths rather than infer."
+}

@@ -1,0 +1,85 @@
+{
+  "schema": "PUMP_SOURCE_OFFICIAL_WEB_TAXONOMY_FINITE_HANDOFF_V1",
+  "status": "FROZEN_FINITE_LEAD_NO_POSITIVE_ENUM_OR_NATIVE_BINDING",
+  "created_at": "2026-10-25T14:38:18.963Z",
+  "authority": {
+    "authority_main": "39f8af9efbce2c17107b26e48b1b2a46af2c378e",
+    "own_lease_commit": "46b9b22285f597f17a7effaf2e40b464f39f8794",
+    "own_lease_owner": "CODEX:SOURCES:01a171fd:1792938402367",
+    "acquired_ts": 1792938402367,
+    "expires_ts": 1792939302367,
+    "root_lease_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792937785000",
+    "all4_equal": true,
+    "fence_active": false,
+    "generation_latest_only": true,
+    "new_primary_searches": 3,
+    "search_queries": [
+      "site:bingx.com (\"coin-info\" OR \"coinInfo\" OR \"assetType\" OR \"coinType\")",
+      "site:bingx.com (\"coinId\" OR \"assetId\" OR \"contractId\") (\"price\" OR \"coin\")",
+      "site:bingx.com/en/prices/ \"cryptocurrency\" \"Bitcoin\""
+    ],
+    "search_results": [
+      {
+        "query_indexes": [
+          1,
+          2
+        ],
+        "result": "EMPTY"
+      },
+      {
+        "query_index": 3,
+        "primary_pages": [
+          "https://bingx.com/en/price",
+          "https://bingx.com/en/price/bitcoin",
+          "https://bingx.com/en/prices"
+        ],
+        "result": "OFFICIAL_CRYPTO_PRICE_PAGES_NO_NATIVE_TYPE_ID_BINDING_IN_INDEXED_TEXT"
+      }
+    ],
+    "browser_UI_or_JS_execution": false,
+    "scope": "FINITE_NEW_OFFICIAL_WEB_TAXONOMY_LEAD_DOCS_ONLY_MAX3_SEARCHES_MAX15MIN"
+  },
+  "new_searches": 3,
+  "successful_static_document_GETs": 7,
+  "browser_or_JS_execution": false,
+  "concrete_new_lead": "common.requestCoinInfoList raw coinType/id; enum/URI/nativecontract bridge unknown; fallback0 not crypto proof",
+  "native_promotions": 0,
+  "preserved_counts": {
+    "known": 13,
+    "gold_excluded": 2,
+    "unknown_active_USDT": 919,
+    "complete_crypto_N": null
+  },
+  "exact_ROOT_metadata_GET_plan_issued": false,
+  "owner_minimum_option": "Explicit limited13 scope with incomplete global coverage; fullN needs official type+nativebinding export or a selected finite curated batch",
+  "source_registry_runtime_profile_policy_changed": false,
+  "marketHTTP": 0,
+  "WS": 0,
+  "SQL": 0,
+  "TG": 0,
+  "deploy": 0,
+  "affected_integrity": "PASS",
+  "old_audits_replayed": false,
+  "files": [
+    {
+      "path": "pump-report/handoffs/sources/BINGX_WEB_TAXONOMY_LEAD_AUTHORITY_V1.json",
+      "bytes": 1233,
+      "sha256": "cf0fd7dd23d640defe1b1b69c39c6bc882dc246caf16fcd25c3fe9ce27b14149"
+    },
+    {
+      "path": "pump-report/handoffs/sources/qualify-web-taxonomy-lead.mjs",
+      "bytes": 9714,
+      "sha256": "1c8b174c070f3a89ada2c2ddd75ae5df7d6229781d205249d9393156733b02ec"
+    },
+    {
+      "path": "pump-report/handoffs/sources/BINGX_WEB_TAXONOMY_LEAD_RESULT_V1.json",
+      "bytes": 9287,
+      "sha256": "da831c86418cff710a7f464fb17a2a3a434f2fd2c4f7b9b07a40a452dc8c4da7"
+    },
+    {
+      "path": "pump-report/handoffs/sources/BINGX_WEB_TAXONOMY_LEAD_RU.md",
+      "bytes": 3029,
+      "sha256": "5171a54a8ca0f2fad95bbb996fdb556fd88b589ef5f7d50f18104086320adae3"
+    }
+  ]
+}

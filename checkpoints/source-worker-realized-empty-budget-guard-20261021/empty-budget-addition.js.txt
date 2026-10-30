@@ -1,0 +1,15 @@
+    const emptyUsage = usageDelta(before, after);
+    if (emptyUsage && (
+      emptyUsage.rows_read > V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_read ||
+      emptyUsage.rows_written > V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_written ||
+      emptyUsage.unknown_ops > 0
+    )) {
+      return {
+        ...base,
+        status: 'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',
+        events_loaded: normalized.length,
+        contracts_selected: 0,
+        persisted: 0,
+        usage_delta: emptyUsage,
+      };
+    }

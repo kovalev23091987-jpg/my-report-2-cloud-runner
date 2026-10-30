@@ -1,0 +1,213 @@
+{
+  "schema": "SAVED_NATIVE_DAY_ACCOUNTING_AUDIT_V1",
+  "status": "NOT_CLOSED_NATIVE_POINTS_AND_PLANNED_ENVELOPES_ARE_DISTINCT",
+  "inputs": [
+    {
+      "path": "checkpoints/free-storage-20261016/native-tail-38888867181.json",
+      "sha256": "4b0e8c8e8c989a8e3f0d77551acdfef631f0eababd61051d8d5ad09ccd31765e"
+    },
+    {
+      "path": "checkpoints/free-storage-20261016/native-tail-38894299195.json",
+      "sha256": "e664cc7df7f32242599c8c5002c29d77eea2e260d40821a05a27763f7ad45c84"
+    }
+  ],
+  "existing_inventory": {
+    "path": "checkpoints/ACTIVE105_D1_FAMILY_INVENTORY_20261015.json",
+    "sha256": "55a7aa72e03616c8508c36ae5caaf3fe58b2b0ba0da493347aead775d7388224",
+    "known_nine_family_envelopes": {
+      "reads": 3266708,
+      "writes": 58920
+    },
+    "limit": {
+      "reads": 3500000,
+      "writes": 70000
+    },
+    "envelopes_are_not_actual_measured_costs": true,
+    "missing_families_preserved": [
+      "Primary HTX collector source-D1 native read/index write cost, including no-op invocations and cleanup; logical10000 cap is not a native cost proof.",
+      "Hourly compact HTX history source and archive D1 plus archive-run log. One bundled record per hour, not105 separate rows.",
+      "Bridge/control queries outside finalized reservations; failed/unknown replies and unfinished reservations must remain charged.",
+      "Exact overlap/difference from old3374000/66160 base and3413280/69738 maintenance scalar. Do not add whole scalar models together."
+    ],
+    "combined_with_point_cost_as_daily_bound": false,
+    "whole_day_closed": false
+  },
+  "source_hash_review": [
+    {
+      "path": "current-generation/files/src/two-candidate-policy.mjs",
+      "inventory_sha256": "5da3197efb29f176ad183b4f1f9cacf06c576978ce730699308f2d1a6312bcd5",
+      "current_sha256": "5da3197efb29f176ad183b4f1f9cacf06c576978ce730699308f2d1a6312bcd5",
+      "unchanged_since_inventory": true
+    },
+    {
+      "path": "runner/canonical-cold-copy.mjs",
+      "inventory_sha256": "137d912c9d9f3e2935cb70e8fa4fe246370764b840a545c834aee8d8bfb64495",
+      "current_sha256": "bf959c50f7bffaf79077e346ec1b66782f739ca3b5d29ac09409dc2563bc3096",
+      "unchanged_since_inventory": false
+    },
+    {
+      "path": "cloudflare/free-history/private-forecast-consumer.mjs",
+      "inventory_sha256": "ef676ef00a49d2f06629f996372e5117ffe496c42a233e609bad6b7cd3556e55",
+      "current_sha256": "a463d50acf613003ece5d513bc30900b3e4bf28912b785d29b48a0cbf706cda9",
+      "unchanged_since_inventory": false
+    },
+    {
+      "path": "cloudflare/public-collector/private-price-consumer.mjs",
+      "inventory_sha256": "087ea3371dd899748b40a386884de9621b4b52700d484693fda315e98f4fef9d",
+      "current_sha256": "a80dc59228871206c51a475902d6ac1af7b02207d1d6ddbe386bcc4dc42bad73",
+      "unchanged_since_inventory": false
+    },
+    {
+      "path": "current-generation/files/src/triggered-entry-recheck.mjs",
+      "inventory_sha256": "110b2709b1e581a6f996605079e23ec6612493286d6f5148665bd198e271ba0c",
+      "current_sha256": "110b2709b1e581a6f996605079e23ec6612493286d6f5148665bd198e271ba0c",
+      "unchanged_since_inventory": true
+    },
+    {
+      "path": "runner/lossless-full-evidence-recovery.mjs",
+      "inventory_sha256": "683a51af6349b4b8f37493dd04d35e022d21fe774ebae0ad4ad1d89926b224f6",
+      "current_sha256": "99c4a193a292ca0a368fb3ae3d11b4ecc2bcd109bece2b467f5303b9f3330a71",
+      "unchanged_since_inventory": false
+    },
+    {
+      "path": "runner/htx-weekly-universe-plan.mjs",
+      "inventory_sha256": "e9fe8887a696c35feec85583d84afe1175afd5a354a195ef0bfabcbbd6301d9a",
+      "current_sha256": "e9fe8887a696c35feec85583d84afe1175afd5a354a195ef0bfabcbbd6301d9a",
+      "unchanged_since_inventory": true
+    },
+    {
+      "path": "tools/liquidation-new-source-admission-20261015.mjs",
+      "inventory_sha256": "838ae32b16f6e250104f9e1db1f435010c5a234f6f87cf0c289e7d34fce0050f",
+      "current_sha256": "45908858a68fdafd64823a836f6b02e40658071c305d432224efae2ceda1c799",
+      "unchanged_since_inventory": false
+    },
+    {
+      "path": "cloudflare/public-collector/injected-worker-tail.js",
+      "inventory_sha256": "bbbd4a34042feb2c72702dcd199a2237ec7bfa907884852514ad1659dfd7af0a",
+      "current_sha256": "f2f1e89753cba90aa5c89531d9b49ec2567e407dbf75a7ead02a28b3064fe863",
+      "unchanged_since_inventory": false
+    },
+    {
+      "path": "cloudflare/free-history/hourly-archive.mjs",
+      "inventory_sha256": "e19fba3719b3cc315ead4b5a1975242d5d581887ec03d5795475aa7fb5b19924",
+      "current_sha256": "e19fba3719b3cc315ead4b5a1975242d5d581887ec03d5795475aa7fb5b19924",
+      "unchanged_since_inventory": true
+    },
+    {
+      "path": "cloudflare/free-history/spot-archive.mjs",
+      "inventory_sha256": "0b0fa4a7626abfe83c8b1b4f1f5f69012f280097f437eeb340802cad86b89638",
+      "current_sha256": "0b0fa4a7626abfe83c8b1b4f1f5f69012f280097f437eeb340802cad86b89638",
+      "unchanged_since_inventory": true
+    },
+    {
+      "path": "cloudflare/free-history/worker-entry.mjs",
+      "inventory_sha256": "ee2826e36f849d42122f98ca64c99d8f856146e0d1e6d951a0ecf8c1c1548239",
+      "current_sha256": "524e0e7f564dafd5fcc4b1e940cdafdc548feab8e181f4518a129bd3cf53ec7a",
+      "unchanged_since_inventory": false
+    }
+  ],
+  "observed_native_points": {
+    "schema": "DISJOINT_SAVED_NATIVE_POINT_RECONCILIATION_V1",
+    "observed_days": {
+      "2026-10-16": {
+        "unique_observed_invocations": 3,
+        "known_point_subtotal": {
+          "requests": 39,
+          "rows_read": 482,
+          "rows_written": 41,
+          "unknown_ops": 0
+        },
+        "inside_PRIVATE_PRICE_source_component": {
+          "requests": 4,
+          "rows_read": 147,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "outside_known_family_point_subtotal": {
+          "requests": 35,
+          "rows_read": 335,
+          "rows_written": 37,
+          "unknown_ops": 0
+        },
+        "unknown_receipts": 0,
+        "families": {
+          "PRIVATE_PRICE_SOURCE_COMPONENT": {
+            "requests": 4,
+            "rows_read": 147,
+            "rows_written": 4,
+            "unknown_ops": 0
+          },
+          "COLLECTOR_SOURCE_REMAINDER": {
+            "requests": 17,
+            "rows_read": 302,
+            "rows_written": 30,
+            "unknown_ops": 0
+          },
+          "HOURLY_DATA_DB": {
+            "requests": 2,
+            "rows_read": 8,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "HOURLY_ARCHIVE_DB": {
+            "requests": 16,
+            "rows_read": 25,
+            "rows_written": 7,
+            "unknown_ops": 0
+          }
+        }
+      }
+    },
+    "duplicate_receipts_not_added": 0,
+    "conflicting_invocations": [],
+    "conflicting_known_receipts": [],
+    "unallocated_receipts": [],
+    "known_subtotals_are_not_daily_cost_or_bounds": true,
+    "sampled_cost_extrapolation_performed": false,
+    "PRIVATE_PRICE_added_twice": false,
+    "whole_day_closed": false,
+    "daily_total": null,
+    "daily_upper_bound": null,
+    "admission_authorized": false,
+    "sourceHTTP": 0,
+    "SQL": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "bridge_contract_limit": {
+    "retained_fixture": "current-generation/tests/fixtures/actual-d1-bridge-20261008.mjs",
+    "sha256": "70c3b56e3c93612379e5d344ba9e856e0150d0be83e2fb9b66acdfc62dc99df8",
+    "either_counter_can_mark_fixture_measured": true,
+    "current_installed_bridge_requalified": false,
+    "old_fixture_does_not_prove_current_installed_metadata_contract": true
+  },
+  "nominal_storage_plan": {
+    "ordinary_slots_day": 2,
+    "rows_per_slot": 48,
+    "nominal_capacity": 96,
+    "planned_incoming_rows": 144,
+    "manual_reserve_incoming_rows": 188,
+    "scheduled_nominal_deficit": 48,
+    "with_manual_nominal_deficit": 92,
+    "proposal_minimum_slots_for188": 4,
+    "proposal_extra_reserved_reads": 10000,
+    "proposal_extra_reserved_writes": 800,
+    "proposal_enabled": false,
+    "native_throughput_qualified": false
+  },
+  "unresolved": [
+    "All collector callback paths including duplicate/no-op/error/reclaimed/late finalization need qualified day envelopes; one observed sample cannot provide them.",
+    "Hourly source/archive point cost does not bound every missing/partial/storage-guard/run-log cleanup path.",
+    "Control SQL, late finalization after a finalized reservation and unknown failed work must be allocated without refunds.",
+    "Native per-query partial-counter provenance through the currently installed bridge remains unqualified.",
+    "UTC16 unknown costs and both spent maintenance slots remain unchanged."
+  ],
+  "runtime_or_admission_changed": false,
+  "whole_day_closed": false,
+  "daily_total": null,
+  "daily_upper_bound": null,
+  "sourceHTTP": 0,
+  "SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0
+}

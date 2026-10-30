@@ -1,0 +1,89 @@
+{
+  "schema": "AP_BOUNDED_ACTUAL_ACCEPTANCE_V1",
+  "status": "PUBLIC_ACTUAL_MATCHES_EXACT_PRIVATE_SOURCE_NO_AUTO_SENT_IN_READ_SCOPE",
+  "public_actual": {
+    "path": "checkpoints/pump-report-20261025/ROOT_FIRST_SAVED_AUTO_OBSERVATION_ACTUAL.json",
+    "read_main": "070503e318306fd474f67f6b61ab14c56e708698",
+    "git_blob": "1eaf55d5e6b4493be39515b218fdd22bd9851980"
+  },
+  "private_source": {
+    "path": "pump-report/.private/observations/first-native-20261026-reply.json",
+    "bytes": 62858,
+    "sha256": "2dcd2b63aee134fcb9ecfe8f579554657a919fe90f484096cd876bfa3ab4be14",
+    "raw_analysis_copied_to_handoff": false
+  },
+  "checks": {
+    "private_sha256_matches": true,
+    "run_id_matches": true,
+    "observer_authority_matches": true,
+    "implementation_matches": true,
+    "status_matches": true,
+    "SENT_false_matches": true,
+    "scope_matches": true,
+    "latest_run_matches": true,
+    "finalized_matches": true,
+    "native_receipt_exact_matches": true,
+    "LOOKUP_reservation_bound": true,
+    "bounded_usage": true,
+    "issued_envelope_retained": true,
+    "whole_history_and_market_not_claimed": true,
+    "selected_card_and_original_absent": true,
+    "market_TG_zero": true,
+    "read_clocks_ordered": true,
+    "no_outcome_claim": true
+  },
+  "all_listed_checks_match": true,
+  "scope": {
+    "cards_read": 2,
+    "limit": 20,
+    "after_key": "pump:card:",
+    "next_after_key": "pump:card:PUMP:7505b17ae7bb53dcc63ee96978539b3345e18cc4aa8f6ea54b675e45d3c8510b",
+    "page_exhausted": true,
+    "whole_history_claimed": false,
+    "whole_market_claimed": false
+  },
+  "latest_executor_status": "COMPLETED_RUN_AVAILABLE",
+  "latest_saved_run_id": "pump-first-production-manual-20261026-three",
+  "latest_saved_run_status": "INCOMPLETE",
+  "historical_manual_metadata": {
+    "run_id": "pump-first-production-manual-20261026-three",
+    "status": "INCOMPLETE",
+    "manual_entries_count": 1,
+    "manual_entries_metadata": [
+      {
+        "request_id": "pump-first-production-manual-20261026-three",
+        "analysis_run_id": "pump-first-production-manual-20261026-three",
+        "mode": "MANUAL",
+        "run_purpose": "PRODUCTION",
+        "base": "APR",
+        "ready": false,
+        "delivery_present": false
+      }
+    ],
+    "outcomes_count": 0,
+    "run_delivery_count": 0
+  },
+  "selected_card": null,
+  "selected_original": null,
+  "native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-saved-auto-observation-20261026-one",
+    "usage": {
+      "requests": 7,
+      "rows_read": 10,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 10,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "response_bytes": 64194,
+  "historical_239_240_promoted_as_new_SENT": false,
+  "new_AUTO_SENT_or_READY_original_or_source_plan_outcome_proved": false,
+  "ROOT_cumulative_ledger_counters_not_independently_requeried": true,
+  "AP_new_web_provider_RPC_SQL_TG_tests_strategy_recompute_observer_runs": 0,
+  "old_spent_unknowns_reserves_caps9pauses2OWNERdeferrals_preserved": true
+}

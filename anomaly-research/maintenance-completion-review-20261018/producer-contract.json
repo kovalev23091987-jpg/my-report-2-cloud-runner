@@ -1,0 +1,107 @@
+{
+  "schema": "EFFECTIVE_MAINTENANCE_PRODUCER_CONTRACT_READ_ONLY_V1",
+  "base": "2711cad6b83e07d2336445441d9811eaa9c0e766",
+  "source_files": {
+    "post-v7-consolidated/final-reconciliation/files/src/scheduler-control.mjs": "ffdcde5a97aa58040e1bff4001bd3980e9e8799eaaa951e8ceeeecc4ba347cea",
+    "post-v7-consolidated/final-reconciliation/runtime-manifest.json": "6d5d98ea60e210cd7dd906185fe6aa04332239ab8ebe29a078256557281e61ab",
+    "post-v7-consolidated/full-validation/apply-all-runtime.mjs": "701e7c00798cf1699c827e59e6f7379becb110de6d4644edb5e3f9bae48bb949",
+    "current-generation/apply-runtime-overlay.mjs": "8ebbefc7752b6627f7585ecc24b5223cdca6bd2bef81d855f96733eec09f5286",
+    "current-generation/files/runner-main.mjs": "520baa83fd0acff55cd6335d3398f52ff10f7989940dab7ae71d52ca0b0cb25f"
+  },
+  "effective_producer_manifest_hash_verified": true,
+  "current_overlay_does_not_replace_scheduler": true,
+  "claim_returns": [
+    {
+      "status": "INVALID_INPUT",
+      "claimed": false,
+      "due": false,
+      "optional_fields": [],
+      "scope": "INPUT_NOT_QUALIFIED"
+    },
+    {
+      "status": "NOT_DUE",
+      "claimed": false,
+      "due": false,
+      "optional_fields": [
+        "last_success_ts",
+        "next_due_ts"
+      ],
+      "scope": "ONLY_THIS_STATUS_PROVES_NOT_DUE"
+    },
+    {
+      "status": "LEASE_ACTIVE",
+      "claimed": false,
+      "due": true,
+      "optional_fields": [
+        "lease_owner",
+        "lease_expires_ts"
+      ],
+      "scope": "NO_EXECUTION_GRANT"
+    },
+    {
+      "status": "CLAIM_RACE_LOST",
+      "claimed": false,
+      "due": true,
+      "optional_fields": [],
+      "scope": "NO_CLAIM"
+    },
+    {
+      "status": "CLAIM_READBACK_FAILED",
+      "claimed": false,
+      "due": true,
+      "optional_fields": [],
+      "scope": "NO_CONFIRMED_CLAIM"
+    },
+    {
+      "status": "CLOSED",
+      "claimed": true,
+      "due": true,
+      "optional_fields": [
+        "job_key",
+        "interval_ms",
+        "last_success_ts",
+        "lease_owner",
+        "lease_started_ts",
+        "lease_expires_ts"
+      ],
+      "scope": "CLAIM_ONLY_NOT_COMPLETION"
+    },
+    {
+      "status": "MIGRATION_REQUIRED|CLAIM_FAILED",
+      "claimed": false,
+      "due": false,
+      "optional_fields": [
+        "error"
+      ],
+      "scope": "ERROR_NOT_A_PROVEN_NOT_DUE;ERROR_MUST_BE_OMITTED"
+    }
+  ],
+  "completion_returns": [
+    {
+      "status": "INVALID_INPUT",
+      "completed": false,
+      "success_recorded": false
+    },
+    {
+      "status": "CLOSED",
+      "completed": true,
+      "success_recorded": "success===true;CAN_BE_FALSE"
+    },
+    {
+      "status": "NOT_UPDATED",
+      "completed": false,
+      "success_recorded": false
+    },
+    {
+      "status": "MIGRATION_REQUIRED|COMPLETE_FAILED",
+      "completed": false,
+      "success_recorded": "ABSENT_NOT_FALSE",
+      "unsafe_field_to_omit": "error"
+    }
+  ],
+  "execution_due_semantics": "source!=schedule OR (effective_unified ? claim.claimed===true : startedUTCminute===2); not raw claim.due",
+  "maintenance_success_scope": "recall.persisted && CLOSED/PARTIAL/ALREADY_FILLED_THIS_HOUR plus prospective CLOSED if enabled, DISABLED if disabled; excludes block_weights",
+  "closed_means": "Operation-specific, never native cost closure/market outcome/all-statistics/Telegram success",
+  "reviewer_tests": 0,
+  "provider_SQL_MAIN_Telegram": 0
+}

@@ -1,0 +1,10 @@
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -31,0 +32 @@
++import {runCapturedAnomalyDueCycle} from './anomaly-native-due-watch.mjs';
+@@ -19868,0 +19870,5 @@
++      if (typeof env?.REPORT2_ANOMALY_DOMAIN_DUE === 'function' && typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
++        try { await runCapturedAnomalyDueCycle({env,now_ts:Date.now(),logical_request_id:'ANOMALY_DUE:'+runId,limit:2}); }
++        catch { /* SOURCE retains uncertain operations and the SAME DB fence. */ }
++      }
++

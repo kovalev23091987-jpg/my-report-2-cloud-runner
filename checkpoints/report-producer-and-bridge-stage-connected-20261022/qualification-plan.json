@@ -1,0 +1,160 @@
+{
+  "schema": "FIRST_ORDINARY_CALLER_BRIDGE_STAGE_QUALIFICATION_V1",
+  "semantic_status": "UNEXECUTED",
+  "base_main": "3118d234741bf4b016e363445c09471570578d0b",
+  "baseline_git_commit": "3118d234741bf4b016e363445c09471570578d0b",
+  "baseline_targets": [
+    {
+      "repository": "current-generation/files/runner-main.mjs",
+      "runtime": "runner-main.mjs",
+      "sha256": "5833692779132840b2f6985a16da513b2128c3070acd5f575e3211e2e9866ff2"
+    }
+  ],
+  "targets": {
+    "current-generation/files/runner-main.mjs": {
+      "bytes": 184717,
+      "sha256": "db6b33383233cb1f594aac0f9072a812bf822d8479c2415fc5bb82d4d43f2dd3"
+    },
+    "tools/rollout-correlated-sql-bridge-20261022.mjs": {
+      "bytes": 38349,
+      "sha256": "191152b2f7d2c45a78c6755599cf07325dff3ad43c0550ab127015944b5f5a7d"
+    },
+    ".github/workflows/current-bridge-module-inspection-20261016.yml": {
+      "bytes": 5653,
+      "sha256": "993c5412bd7af78fbc6a0770cb2ed82ce625f2ee73eb00848a6655fb505aa489"
+    }
+  },
+  "new_common_cases": 1,
+  "new_CONTROLLED_groups": 12,
+  "components": [
+    {
+      "path": "checkpoints/source-worker-report-cost-correlation-wiring-20261022/connected.mjs",
+      "export": "runOrdinaryCallerCostCorrelationConnected",
+      "output": "ordinary-caller-component.json",
+      "groups": 5
+    },
+    {
+      "path": "checkpoints/report-producer-and-bridge-stage-connected-20261022/stage-case/connected.mjs",
+      "export": "runBridgeStageOnlyConnected",
+      "output": "stage-only-component.json",
+      "groups": 7
+    }
+  ],
+  "frozen_originals": {
+    "frozen": true,
+    "peers_accepted": true,
+    "source": {
+      "PR": 619,
+      "head": "fe3c990050c6d155b11616e84df7da9aa1f2bcc8",
+      "prefix": "checkpoints/source-worker-report-cost-correlation-wiring-20261022",
+      "files": {
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/PROTOCOL_RU.md": {
+          "bytes": 2722,
+          "sha256": "11296ac5a524c3ab737ecabf07514c599422b7b0845a002b996ef11edce46128"
+        },
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/README_RU.md": {
+          "bytes": 8830,
+          "sha256": "baf55458056a0e372eaaf2192bbb644249cd10c51e5d336bfb24d1fe8a4b1e6a"
+        },
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/connected.mjs": {
+          "bytes": 14144,
+          "sha256": "7a9702487f2081252b7cdfe26677103fd588be0cc47d1b9781f06afecdab64e8"
+        },
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/dependencies.json": {
+          "bytes": 2066,
+          "sha256": "b242accd0da48b77382c92402e6bff417152a03ee94117991bdb9ddb74fb10f9"
+        },
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/manifest.json": {
+          "bytes": 1325,
+          "sha256": "311333c5417f9142dfaf148d0ea53146d792babf29726fe324a9b643b00646fd"
+        },
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/peer-receipt.json": {
+          "bytes": 2428,
+          "sha256": "4d609e95c247144445d3db08b7cc68bec7f5faed138df3eafc0571e402624d99"
+        },
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/provenance.json": {
+          "bytes": 1318,
+          "sha256": "d490eaf3d55bde62861ea1b971e9e1188feea44248c72e5034224b5608aaf559"
+        },
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/runtime.patch": {
+          "bytes": 751,
+          "sha256": "095fd375827ea1582cc5f24d1198fbe6cdb174db5dff9e63f8f54d3537ea7e64"
+        },
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/target-bindings.json": {
+          "bytes": 1826,
+          "sha256": "1da12a205637c5e94727a6a7a5dc1a11f0cbbee89b4e10e5e46e6a719afcc392"
+        }
+      },
+      "peer_files": [
+        "checkpoints/source-worker-report-cost-correlation-wiring-20261022/peer-receipt.json"
+      ]
+    },
+    "third": {
+      "PR": 620,
+      "head": "75a6969b0d18ca96611174d04a7f92a0d1622a84",
+      "prefix": "anomaly-research/bridge-stage-only-provenance-20261022",
+      "files": {
+        "anomaly-research/bridge-stage-only-provenance-20261022/PROTOCOL_RU.md": {
+          "bytes": 6028,
+          "sha256": "0fc51f173b5f36f8039b8fd1d7755311aa301cb5086f46a9c2e38ca643bcc0f8"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/README_RU.md": {
+          "bytes": 7065,
+          "sha256": "62e6ba8d96e530f9675746c3d1d79eb51fece3886db78f146412eb56540fb23d"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/central-integration-plan.md": {
+          "bytes": 2475,
+          "sha256": "5d4a2e3d24ad746ca455d9a587771f3aa06ded14fbd1f6fe9c49c8aaa2947bf0"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/connected.mjs": {
+          "bytes": 18333,
+          "sha256": "03d81a603985157ba9532c4f89935ff74057c6073f776bdc0bf8a157b3acecfd"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/dependencies.json": {
+          "bytes": 2809,
+          "sha256": "12d9d35ae7c2cfc3b49a7dde000768e536b10e2798b094d61e5c106237015310"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/manifest.json": {
+          "bytes": 2037,
+          "sha256": "a69094cc6f6c58d4d0fc0fefba4e72a10ff75ccdc4619031ecd42f3d33115f70"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/provenance.json": {
+          "bytes": 7968,
+          "sha256": "7e148ad8e7d37594a822502b9a6a7494694cc18360f6115adc458463241de2ca"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/source-static-peer.json": {
+          "bytes": 2428,
+          "sha256": "4d609e95c247144445d3db08b7cc68bec7f5faed138df3eafc0571e402624d99"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/stage-control.proposed.txt": {
+          "bytes": 9380,
+          "sha256": "2f515ad4a32b7365a93a51b9d5c459cf3566477cf468ba13eae418acb56594f3"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/stage-static-peer.json": {
+          "bytes": 3887,
+          "sha256": "114b9b6db3522d2ec1e50a6a12c6d6aefafbcc0f226777be0cd988ec99906749"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/target-pins.json": {
+          "bytes": 1705,
+          "sha256": "1f5c785f787b40050339b913f7640d436834456ee788e017a9952c8d8b1994d1"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/tool-with-control.proposed.mjs": {
+          "bytes": 25527,
+          "sha256": "f8008faa03316278d6b6545744ae90512f8e1d7ff845af8c6aedf91caf1228b2"
+        },
+        "anomaly-research/bridge-stage-only-provenance-20261022/workflow.proposed.yml": {
+          "bytes": 5653,
+          "sha256": "993c5412bd7af78fbc6a0770cb2ed82ce625f2ee73eb00848a6655fb505aa489"
+        }
+      },
+      "peer_files": [
+        "anomaly-research/bridge-stage-only-provenance-20261022/source-static-peer.json",
+        "anomaly-research/bridge-stage-only-provenance-20261022/stage-static-peer.json"
+      ]
+    }
+  },
+  "native_activation": false,
+  "old_components_replayed": 0,
+  "actual_complete_pair_files": 618,
+  "all_non_target_files_equal": 617
+}

@@ -1,0 +1,89 @@
+{
+  "schema": "SOURCE_BINGX_PUBLIC_RESEARCH_EXCEPTION_TARGETED_STATIC_PEER_V1",
+  "status": "ACCEPTED_WITH_LIMITS",
+  "blockers": [],
+  "open_findings": [],
+  "mismatches": [],
+  "findings": [],
+  "closed_findings": [
+    {
+      "id": "F1_AUTHENTICATED_HELPER_CLOSURE_REQUIRED",
+      "status": "CLOSED_IN_EXACT_11904B_SNAPSHOT",
+      "prior_lines": "17-20",
+      "current_lines": "17-20",
+      "prior_finding": "Unbound caller capture-helper-pins.json allowed [] before importing two actual helpers. Protected code/plan approval did not commit the import closure. Static reachable path only; no executed attack/incident.",
+      "correction": "Literal nonempty exact two path/length/SHA closure is covered by code_sha256, which the protected lease scope and all4 admission bind before provider IO. Both literals match FULL existing immutable helper bytes.",
+      "limits": "No hostile filesystem race/native runtime or crash durability qualification."
+    },
+    {
+      "id": "F2_ACTUAL_DISPATCH_SPACING_REQUIRED",
+      "status": "CLOSED_FOR_REPORTED_STATIC_COUNTEREXAMPLE_IN_EXACT_11904B_SNAPSHOT",
+      "prior_lines": "86-88",
+      "current_lines": "56,62-63,86-87",
+      "prior_finding": "previousStart advanced before intent save. A slow first save could place actual request1 near next nominal intent time, permitting actual start gap<1100ms. This was a constructed source-static timing path, not a measurement/test.",
+      "correction": "previousStart=-Infinity and advances through performance.now() immediately next to actual counter and https.request. Subsequent wait derives from actual dispatch. Intent save retains prior actual count; live() follows save, no await before dispatch.",
+      "limits": "Closes the reported pre-save clock/counter/deadline paths. Timer scheduling precision, native latency and CPU timing unmeasured."
+    },
+    {
+      "id": "F3_KNOWN_RETURNED_FRAME_BEFORE_PERSISTENCE_AWAIT",
+      "status": "CLOSED_IN_EXACT_11904B_SNAPSHOT",
+      "prior_lines": "88-89",
+      "current_lines": "88-90",
+      "prior_finding": "Awaiting .bin write before out.captures.push dropped known frame/status/bytes/hash/clock if original write rejected while progress remained writable. No actual filesystem/provider failure occurred.",
+      "correction": "Actual returned frame is pushed before write await. original_body_saved starts false and becomes true only after known write; finally saves metadata. Rejection reaches STOP, no retry/refund/rearm.",
+      "limits": "No guaranteed body file after failed write or all-output-failure/crash/power-loss durability claim."
+    }
+  ],
+  "exact_reviewed_targets": [
+    {
+      "path": "checkpoints/bingx-catalog-bootstrap-connected-20261024/public-research-exception-request.json",
+      "bytes": 3808,
+      "sha256": "1450a4c7756aceb1528acd48a62377565b8a986352302720d64d2b4100cbc43a"
+    },
+    {
+      "path": "checkpoints/bingx-catalog-bootstrap-connected-20261024/public-research-session.proposed.mjs.txt",
+      "bytes": 11904,
+      "sha256": "ea16c352f2707ca107ae0a810ff85051fd24c0d65295b6302e088e5b90066993"
+    }
+  ],
+  "baseline_helpers": [
+    {
+      "path": "runner/github-bounded-phase-lease.mjs",
+      "bytes": 7370,
+      "sha256": "a04d1d0877cabd3dc92a2aa7e3033a21eecb9048f13810d0acd229ed2fb10ac7",
+      "git_blob": "50ec5b329ecb1db2933e3c732df3a778250d49f2",
+      "immutable_head": "6a5fe77903b50f7ee2b05a735cd7a8429707755d",
+      "working_equals_immutable_Git_blob": true
+    },
+    {
+      "path": "runner/github-four-mirror-cas.mjs",
+      "bytes": 11414,
+      "sha256": "fbd4b30314790bd91fc4b617365af80ebb6672e5ff8a7e26a394a4db9712ff39",
+      "git_blob": "87335b2e35e45a35ead9e8723f33013069fced04",
+      "immutable_head": "6a5fe77903b50f7ee2b05a735cd7a8429707755d",
+      "working_equals_immutable_Git_blob": true
+    }
+  ],
+  "scope": "ONE new targeted source-static review of the ROOT public-research-exception chain and requested precise draft-fix closures. Necessary existing helper call paths only; no old a70c/cases/other peers replay.",
+  "protocol_first": "7ef895b49f96b3ffbd01d7e5c14e4696a1c89ef5",
+  "human_approval_status": "NOT_REQUESTED_AT_ASSIGNMENT; SOURCE does not approve this exception",
+  "native_grant": false,
+  "execution_authorized_by_this_peer": false,
+  "positive_boundaries": [
+    "Full wrapper self SHA and full plan SHA are bound by protected owned phase lease scope marker and all4 APPROVED_NOT_STARTED record. Actual helper closure is now literal and code-hash-covered.",
+    "Exact plan has7 ordered official public BingX GET descriptors. No provider retry/domain fallback/proxy/API key/cookie/private endpoint/redirect-follow branch in reviewed code.",
+    "Before source IO, actual existing publishMirrorContext prepares all4 raw changes atomically. Positive known CAS ACK is mandatory: unknown ACK stops even with known-commit readback. Four FULL immutable blob replies must equal prepared exact full texts.",
+    "Every leaf has one fresh native pinned snapshot authenticating current main, six OIDs/lengths/retained FULL bytes, all4 active equality, fence/latest generation, exact live owner/scope. Main movement refuses; intent save is followed by live().",
+    "All7 attempts are held irrevocably through SPENT_NON_REFUNDABLE_BEFORE_IO before first source IO. Restart refuses spent session; no decrement/refund/rearm branch. Actual count advances synchronously at client attempt boundary.",
+    "Raw retained body cap, absolute headers/body timers, session deadline, done guard and partial/full returned frame precede parsing/assertion/next leaf when output works. Incomplete/cap/encoding/non200/native-envelope failures stop.",
+    "Reviewed path has no CF/D1/nativeSQL/production MAIN/manual report/TG/orders/settings/deploy operation. Proposed GitHub all4 spend is a future protected mutation needing actual HUMAN exception and ROOT scope.",
+    "Outbound timestamp is not a fact source clock. Candle candidate cut uses returned native serverTime. OI unit/funding period/clock semantics/crypto classification remain unqualified. Request7 retains max3 historical funding rows only."
+  ],
+  "limits": [
+    "SOURCE Node/import/syntax/tests/appsemantics/SQL/SQLite/gitapply/provider HTTP/WS/CF/dispatch/MAIN/manual/TG=0. No actual original catalogue, native result/grant/count created.",
+    "Static exact-byte acceptance of HUMAN-exception proposal is not HUMAN approval/native BingX grant/production integration/old unknown restoration/Telegram SENT. Future session/approval/context not faked as present.",
+    "No registry/DTO/history producer/Worker/618 whole assembly peer. Frozen479d/a70c/6a08 and background634/635 not edited/reviewed/replayed.",
+    "No CPU/heap/native latency/wire billing/request weight/fsrace/crash/power-loss durability qualification. GitHub arithmetic covers explicit adapter invocations; underlying gh/auth/transport wire counts not measured.",
+    "ROOT alone binds exact future code/plan/guard/scope inputs, qualifies new affected chain, requests separate HUMAN exception and performs any admitted execution/cleanup."
+  ]
+}

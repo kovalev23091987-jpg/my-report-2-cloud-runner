@@ -1,0 +1,190 @@
+{
+  "schema": "F560_SELECTED_COST_FUTURE_CAPACITY_V1",
+  "status": "FROZEN_PLANNING_BOUNDS_NOT_ADMISSION",
+  "authority_main": "ec7b51c15c6c929450acd537a23e2e393e9a2e3e",
+  "unified_spec_sha256": "384e038c734e02230845925fa564d46402ffc4be4555ca6345315ac5ea335048",
+  "source_base": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
+  "source_head_unchanged": true,
+  "reuse": {
+    "B550_manifest_sha256": "ea80e183bb3c0d9eaffa003ed9136c1c82cd4f55fcc40458c5cad3bfe7556d0d",
+    "B550_arithmetic_sha256": "d29c5a8a705a66908cc31eb4a7fe453079e1f68b1b596b05a03d4c599efa9978",
+    "old_arithmetic_unchanged": true
+  },
+  "route_upper_bounds": {
+    "fresh_auto_full_survey": {
+      "HTTP": 12,
+      "BINGX": 10,
+      "map_potential_unassigned": 1,
+      "TELEGRAM": 1
+    },
+    "cold_manual_full_survey": {
+      "HTTP": 13,
+      "BINGX": 11,
+      "map_potential_unassigned": 1,
+      "TELEGRAM": 1
+    },
+    "delivery": {
+      "BINGX": 2,
+      "TELEGRAM": 1,
+      "price_force_refresh_disables_fallback": true
+    },
+    "profile_conservative_candidate": {
+      "core": 5,
+      "optional": 2,
+      "map": 1,
+      "delivery": 4,
+      "sum": 12
+    },
+    "bounds_not_fresh_qualification_or_measured_native_costs": true,
+    "map_cost_1_is_reserved_capacity_not_working_selected_provider": true,
+    "no_eligible_map_currently_is_nonblocking": true
+  },
+  "future_manual": {
+    "checks": 3,
+    "execution_upper_HTTP": 39,
+    "execution_BINGX": 33,
+    "execution_map": 3,
+    "execution_TELEGRAM": 3,
+    "held_HTTP": 54,
+    "held_BINGX": 51,
+    "held_TELEGRAM": 3,
+    "held_conservative_per_check": {
+      "BINGX": 17,
+      "TELEGRAM": 1
+    },
+    "old_issued_obligations_and_unknowns_preserved": true
+  },
+  "continuity": {
+    "time_zone": "Europe/Moscow",
+    "window": "10:00 inclusive to 20:00 exclusive",
+    "discovery_every_ms": 300000,
+    "discovery_HTTP_per_tick": 2,
+    "full_day_discovery_runs": 120,
+    "full_day_discovery_HTTP": 240,
+    "future_hourly_survey_minimum": 1,
+    "full_day_future_hourly_periods": 10,
+    "full_day_survey_HTTP": 120,
+    "full_day_survey_BINGX": 100,
+    "full_day_survey_map": 10,
+    "full_day_survey_TELEGRAM": 10,
+    "not_a_fixed_daily_signal_count": true,
+    "formula": "D=remaining future 5m slots*2; H=remaining future hourly periods; hold D+12*H in addition to manual/delivery/outcome reserves; recompute against current UTC budget DAY and MONTH; no elapsed slot relabelled future.",
+    "candidate_inside_scheduled_invocation_has_no_second_SQL_envelope": true,
+    "ROOT_plan_proposal": {
+      "cadence_ms": 3600000,
+      "http_per_slot": 12,
+      "http_by_provider": {
+        "BINGX": 10,
+        "TELEGRAM": 1
+      },
+      "map_global_remainder_per_slot": 1,
+      "map_provider_to_add_only_after_selection_and_admission": true,
+      "start_hour": 10,
+      "end_hour": 20,
+      "time_zone": "Europe/Moscow"
+    }
+  },
+  "known_observed_floor_not_complete_current_ledger": {
+    "provider_attempts": 25,
+    "charged_provider_unknown_included": 2,
+    "native_requests": 436,
+    "rows_read": 894,
+    "rows_written": 272,
+    "SQL_unknown_observed": 0,
+    "not_reset_on_date_change": true,
+    "unquantified_legacy_holds": "RETAINED_SYMBOLIC_NOT_ZERO"
+  },
+  "HTTP_full_day_examples": {
+    "execution_only": {
+      "discovery": 240,
+      "hourly_surveys": 120,
+      "manual3": 39,
+      "outcome_retained_upper": 24,
+      "sum": 423,
+      "BINGX": 397,
+      "map_potential": 13,
+      "TELEGRAM": 13,
+      "not_executable_under_current_grants": true
+    },
+    "initial_governor_holds_example": {
+      "known_floor": 25,
+      "manual": 54,
+      "delivery": 24,
+      "outcomes": 24,
+      "discovery": 240,
+      "hourly_surveys": 120,
+      "sum_before_current_attempt": 487,
+      "headroom_to_720_before_current_attempt_unquantified_holds": 233,
+      "headroom_to_900_before_current_attempt_unquantified_holds": 413,
+      "formula": "25+54+24+24+240+120=487; add current attempt, all retained unquantified holds and exact current ledger.",
+      "execution_and_protection_overlap": "Do not sum 423 execution with the same manual/outcome/future holds as a minimal cost; the governor example deliberately models outstanding protections, not final consumption."
+    }
+  },
+  "SQL": {
+    "limits": {
+      "R": 3500000,
+      "W": 70000
+    },
+    "fixed_protection": {
+      "R": 140000,
+      "W": 10440
+    },
+    "per_invocation": {
+      "R": 5000,
+      "W": 300
+    },
+    "future_manual3": {
+      "R": 15000,
+      "W": 900
+    },
+    "full_5m_day_120_auto": {
+      "R": 600000,
+      "W": 36000
+    },
+    "with_fixed_manual_known_floor": {
+      "R": 755894,
+      "W": 47612
+    },
+    "writes_to_80pct_before_unquantified_holds": 8388,
+    "full_day_alternatives_with_same_holds": {
+      "3minute_200_AUTO_W": 71612,
+      "2minute_300_AUTO_W": 101612
+    },
+    "no_new_nightly_or_statistics_invocations": true,
+    "extra24_statistics_if_later_created": {
+      "R": 120000,
+      "W": 7200
+    },
+    "JSON_550_positions_not_550_SQL_rows": true
+  },
+  "minute_and_deadline": {
+    "BINGX_per_minute": 10,
+    "BINGX_per_second": 1,
+    "fresh_full_AUTO_BINGX": 10,
+    "cold_manual_BINGX": 11,
+    "cold_manual_requires_ROOT_prelude_or_minute_staging": true,
+    "shared_discovery2_and_full_auto10_must_not_be_packed_into_same_rolling_minute": true,
+    "stage_before_fresh_core_then_shared_absolute_optional_map_deadline": true,
+    "extra_fallback_delivery_3_BINGX_scenario": "REJECTED_BY_ROOT_FORCE_REFRESH; NOT_TESTED"
+  },
+  "blockers": {
+    "current_BINGX_qualification_spent": 15,
+    "qualification_cap": 24,
+    "remaining": 9,
+    "not_enough_for_all550_native_study": true,
+    "external_map_quota_price_and_selected_provider": "UNKNOWN_PENDING_SELECTION",
+    "production_provider_and_native_admissions": "REQUIRED_ROOT",
+    "full_day_latency_CPU_wire_SQL_cost": "UNMEASURED",
+    "global_900_run164_preserved": true
+  },
+  "new_IO": {
+    "provider": 0,
+    "documentation": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "deploy": 0
+  },
+  "old_suites_replayed": 0,
+  "source_runtime_changed": false,
+  "old9pauses2OWNERdeferrals_preserved": true
+}

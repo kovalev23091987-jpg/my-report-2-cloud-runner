@@ -1,0 +1,178 @@
+{
+  "schema": "F618_FROZEN_CONNECTED_CONSUMER_INPUTS_V1",
+  "status": "PREPARED_AWAITING_EXACT_ROOT_NODE_ADMISSION",
+  "prepared_utc": "2026-10-27T05:21:19.204921+00:00",
+  "paths": {
+    "writer": "pump-report/runtime/catalog-snapshot.mjs",
+    "reader": "pump-report/operator/saved-catalog-snapshot.mjs",
+    "consumer": "pump-report/sources/catalog-snapshot-review.mjs",
+    "canonical": "pump-report/sources/captured-bulk-price-coverage.mjs",
+    "selected_scope": "pump-report/handoffs/sources/F552_PROPOSED_NATIVE_BINDINGS_550_V1.json",
+    "old_private_capture": "pump-report/.private/evidence/pump-report-native-catalog-corrected.json"
+  },
+  "files": [
+    {
+      "path": "pump-report/registry/native-nontarget380-data.mjs",
+      "bytes": 348740,
+      "sha256": "11ca070b31b79d0a8c32f19f11c1b388473fd17ca0c444f13c30dd96024d7118"
+    },
+    {
+      "path": "pump-report/registry/native-reactivated53-data.mjs",
+      "bytes": 73090,
+      "sha256": "aba8084747a1f92aab1c5bdb0983c462f4fe78a83bc3cc738a0abf41aff92657"
+    },
+    {
+      "path": "pump-report/registry/native-usdkrw1-data.mjs",
+      "bytes": 1738,
+      "sha256": "0c6bbec412e5225fd9d42762f0934d7749159a4078d7becbc411304502a12758"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F552_PROPOSED_NATIVE_BINDINGS_550_V1.json",
+      "bytes": 1792804,
+      "sha256": "a1d1d8b96f6cf7106ba4224e1fbf4fe52059f4448cc4667e0332976b692eb66c"
+    },
+    {
+      "path": "pump-report/.private/evidence/pump-report-native-catalog-corrected.json",
+      "bytes": 606669,
+      "sha256": "7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5"
+    },
+    {
+      "path": "pump-report/sources/catalog-snapshot-review.mjs",
+      "bytes": 9425,
+      "sha256": "a134c25efabb57128dcd1454beb8aa4317cb7200bdc6340de822bfeb55e49074"
+    },
+    {
+      "path": "pump-report/sources/captured-bulk-price-coverage.mjs",
+      "bytes": 10471,
+      "sha256": "d3d2d2016e942a46e43a793fcdd935f08941b3bf5806fed9df8a750d2503e463"
+    },
+    {
+      "path": "pump-report/sources/saved-nontarget-decisions.mjs",
+      "bytes": 4948,
+      "sha256": "047bc88522f641ffc0f5d98d058494e0345f2c60713241e5484a5164fb59933b"
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 6230,
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08"
+    },
+    {
+      "path": "pump-report/runtime/catalog-snapshot.mjs",
+      "bytes": 3119,
+      "sha256": "922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8"
+    },
+    {
+      "path": "pump-report/runtime/text-hash.mjs",
+      "bytes": 206,
+      "sha256": "bffa6795f58925a43e1f14c08a7167fbf1fb8dbe1f44cadc1a9c9bb6c63c7677"
+    },
+    {
+      "path": "pump-report/operator/saved-catalog-snapshot.mjs",
+      "bytes": 2880,
+      "sha256": "643de7ce595018e1fd7a7f5f165048ff8500daef94071c71b616eba4240c92ed"
+    },
+    {
+      "path": "pump-report/tests/sources/F618-catalog-consumer-connected-once.mjs",
+      "bytes": 14337,
+      "sha256": "48e79647894630054cce65f7949060717f89af67493dc0368bcc0ec73900a12e"
+    }
+  ],
+  "network_guard": {
+    "path": "/private/tmp/pump-e-native-http-forbidden.mjs",
+    "bytes": 90,
+    "sha256": "7a57d4036d30146735628cb4013f69721fa7cb6794932362f3a2155e36cb6783"
+  },
+  "consumer_sha256": "a134c25efabb57128dcd1454beb8aa4317cb7200bdc6340de822bfeb55e49074",
+  "negative_parts": [
+    {
+      "path": "pump-report/registry/native-nontarget380-data.mjs",
+      "export": "NON_TARGET_BUNDLE",
+      "decisions": 380,
+      "bytes": 348740,
+      "sha256": "11ca070b31b79d0a8c32f19f11c1b388473fd17ca0c444f13c30dd96024d7118"
+    },
+    {
+      "path": "pump-report/registry/native-reactivated53-data.mjs",
+      "export": "REACTIVATED_NEGATIVE_BUNDLE",
+      "decisions": 53,
+      "bytes": 73090,
+      "sha256": "aba8084747a1f92aab1c5bdb0983c462f4fe78a83bc3cc738a0abf41aff92657"
+    },
+    {
+      "path": "pump-report/registry/native-usdkrw1-data.mjs",
+      "export": "USDKRW_NEGATIVE_BUNDLE",
+      "decisions": 1,
+      "bytes": 1738,
+      "sha256": "0c6bbec412e5225fd9d42762f0934d7749159a4078d7becbc411304502a12758"
+    }
+  ],
+  "complete_negative_records": 434,
+  "selected_scope_canonical_sha256": "d7f459fe5f6a226f1347674b0ee1c352f8b9f5b2cf74acec4ade4c97b5109a6c",
+  "negative_decisions_canonical_sha256": "fdb5695d5cd928e15cd0805d8208bb4ab10fec8eb9af4f1d7dd88f2886e4caef",
+  "canonical_preparation_method": "Python sorted-key compact UTF8 JSON; all parsed scope/negative keys ASCII, no floats/unsafe integers; admitted harness independently checks F551 stableCapturedJSON digests.",
+  "old_private_file_sha256": "7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5",
+  "old_private_file_bytes": 606669,
+  "fixture": {
+    "evidence_class": "ARTIFICIAL",
+    "consumer_mode": "ARTIFICIAL_PREPARATION",
+    "genuine_body_original_date": "2026-10-25",
+    "received_ts": 1792931870932,
+    "receipt_id": "0320c4b0-ce38-48dc-a275-88a6770ec2b1",
+    "saved_ts": 1792931870933,
+    "observed_ts": 1792931870934,
+    "as_of_ts": 1792931870935,
+    "clock_basis": "Controlled fixture wrapper clocks ONLY; original producer receive/receipt preserved. Not actual27Oct observation.",
+    "implementation_sha256": "d61b036f3bcb16636fd1e587c1cfe6f268f7d61dbcdc14a53f0ad02ddd557d50",
+    "implementation_basis": "SHA256(F618:ARTIFICIAL_PREPARATION:OLD25OCT1278:ONE_CONSUMER_CASE), synthetic test pin, not actual old/current deployment pin.",
+    "rows": 1278,
+    "body_and_snapshot_JSON_hashes": "Derived only inside admitted Node from exact hash-pinned private bytes and frozen writer; no raw export."
+  },
+  "historical_name_matches": [
+    {
+      "label": "HISTORICAL_NAME_MATCH",
+      "requested_literal": "AIN",
+      "native_contract_id": "101418",
+      "native_symbol": "AIN-USDT",
+      "native_asset": "AIN",
+      "currency": "USDT",
+      "status": 1,
+      "classification": "NOT_CHECKED_NO_NEW_DECISION"
+    },
+    {
+      "label": "HISTORICAL_NAME_MATCH",
+      "requested_literal": "Q",
+      "native_contract_id": "101574",
+      "native_symbol": "Q-USDT",
+      "native_asset": "Q",
+      "currency": "USDT",
+      "status": 1,
+      "classification": "NOT_CHECKED_NO_NEW_DECISION"
+    }
+  ],
+  "historical_name_matches_canonical_sha256": "f0d7e42442df4002b03f1a968d639f930a80da524efc7524d908bed001a9269d",
+  "QAIN_exact_old_match_found": false,
+  "execution_bounds": {
+    "Node_invocations": 1,
+    "logical_cases": 1,
+    "writer_calls": 1,
+    "reader_calls": 1,
+    "consumer_calls": 1,
+    "MemoryStore_SET": 1,
+    "MemoryStore_GET": 2,
+    "source_broker_calls": 0,
+    "source_HTTP": 0,
+    "native_SQL": 0,
+    "engine": 0,
+    "Telegram": 0,
+    "registry_activation": 0,
+    "build": 0,
+    "deploy": 0
+  },
+  "limitations": [
+    "Old1278 is not latest1294/249/current globalN.",
+    "Complete saved434 negatives are input records, not434 matches in this historical body.",
+    "One connected positive consumer path only; full7-case boundary matrix and generic unknown branch may be uncovered if historical body has no unknown rows.",
+    "No SOURCE12/BV/BS/719 replay, no getCatalog/engine/native runtime or current price coverage proof.",
+    "Metadata-only results; raw body remains in existing private file and memory."
+  ]
+}

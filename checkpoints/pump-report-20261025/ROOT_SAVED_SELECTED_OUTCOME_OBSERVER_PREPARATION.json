@@ -1,0 +1,49 @@
+{
+  "schema": "ROOT_SAVED_SELECTED_OUTCOME_OBSERVER_PREPARATION_V1",
+  "status": "PREPARED_OFFLINE_NOT_NATIVELY_EXECUTED",
+  "authority_main": "e11d0a471b1acfe1b0ac8d4a70fb58043e6bbeb0",
+  "recorded_ts": 1792987342446,
+  "own_root_owner": "CODEX:PUMP_LIVE_INTEGRATION:1792985696119",
+  "files": [
+    {
+      "path": "pump-report/operator/saved-outcome-observation.mjs",
+      "sha256": "2dae9ebc509524190cde770a02611f58d81d595d9f8f6882eb34c3cb737ad78f"
+    },
+    {
+      "path": "pump-report/operator/observe-production-once.mjs",
+      "sha256": "9636fe9249ecad32afb1b04321049c2de96287bfacfdeede4aa03742744ed6ae"
+    },
+    {
+      "path": "pump-report/operator/SAVED_AUTO_OBSERVATION_RU.md",
+      "sha256": "19796a2ed17ff1a337d1fea10537645125401420f140f79c1b3793d4068839be"
+    },
+    {
+      "path": "pump-report/tests/runtime/saved-outcome-observation-connected.test.mjs",
+      "sha256": "215ce23e731fdb485cb3f694f197e59086ea7bbc660c5ab016b30a924a154d83"
+    }
+  ],
+  "purpose": "Accept linkage of the persisted baseline outcome to the same original SENT card without market collection, strategy replay or Telegram resend.",
+  "maximum_additional_exact_PK_reads": 3,
+  "explicit_new_actual_admission_field": {
+    "read_saved_outcome": true
+  },
+  "existing_total_envelope": {
+    "SQL_API_attempts": 16,
+    "rows_read": 500,
+    "rows_written": 30,
+    "market_HTTP": 0,
+    "Telegram": 0
+  },
+  "saved_only_not_independent_market_history_proof": true,
+  "first_REAL_SAME_ORIGINAL_SENT_and_outcome": false,
+  "offline_qualification": {
+    "new_unique_case": 1,
+    "PASS": 1,
+    "FAIL": 0,
+    "case": "ARTIFICIAL original wave vs later card and changed deadline; pending outcome; unbound delivery causes zero reads",
+    "descriptor_smoke": "PASS_ZERO_NETWORK_SQL_CREDENTIAL_IO"
+  },
+  "server_66_modules_and_flags_and_schedule_changed": false,
+  "new_native_market_SQL_TG": 0,
+  "old_caps_spent_unknowns_reserves9pauses2deferrals_preserved": true
+}

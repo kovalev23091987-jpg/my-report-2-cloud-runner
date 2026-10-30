@@ -1,0 +1,13 @@
+{
+  "schema": "ANALYTICS_Z_ACTUAL_STORE_GAP_V1",
+  "status": "EXACT_ROOT_PATCH_PROPOSAL_NOT_APPLIED",
+  "original_runtime_sha256": "bccf5cdbb5beb6ecd00e93cd9cf8ea4ba522611f7df31a339cc1673436ca17a7",
+  "new_case": "Z03",
+  "observed_in_new_artificial_actual_journal_integration": "Pure expiry can freeze FIRST_READY and save UNSENT summary with journal.terminal=null; resolver refuses to invent missing persisted closure. Explicit CANCELLED terminal succeeds.",
+  "code": "SAVED_CAPSULE_UNSENT_TERMINAL_RECORD_REQUIRED",
+  "proposal": "Persist actual expiry terminal before first frozen anchor/summary only. Existing frozen old originals remain unbound; no retroactive timestamps or rewriting summary hashes.",
+  "patch": "ROOT_UNSENT_EXPIRY_TERMINAL_PROPOSAL.diff",
+  "ROOT_runtime_modified_by_ANALYTICS": false,
+  "proposal_executed": false,
+  "native_cost_admission": "ROOT must account for extra atomic point write/read before native application; no budget grant inferred."
+}

@@ -1,0 +1,98 @@
+{
+  "schema": "AU_ONE_REAL_AUTO_LIQUIDITY_RETENTION_AFFECTED_V1",
+  "status": "PASS_EXPECTED_LIQUIDITY_ONLY_DELTA",
+  "callbacks": 1,
+  "checks": {
+    "exactly_one_callback": true,
+    "input_unmutated": true,
+    "profile_unmutated": true,
+    "original_liquidity_was_null": true,
+    "all_other_analysis_fields_exact_equal": true,
+    "ready_stays_false": true,
+    "reasons_unchanged": true,
+    "plan_unchanged": true,
+    "card_stays_null": true,
+    "manual_text_unchanged": true,
+    "original_analysis_ts_preserved": true,
+    "new_liquidity_present": true,
+    "liquidity_fact_bound": true,
+    "liquidity_source_clock_preserved": true,
+    "liquidity_snapshot_only": true
+  },
+  "original_analysis_sha256": "fb73e93a0364c3eea289c1b75b115e193f05fbae11f38c7a0fc154dfb9a8bdc7",
+  "original_input_sha256": "c66e85344608b50c66d9b3bf9cfcdd3d899767cdbfad77de2a23f619c532d30f",
+  "new_analysis_sha256": "2f6e9c37ad11bf10a3d77af144bab93099608ffa05e606bedf62e62fff571105",
+  "new_liquidity_status": "INSUFFICIENT",
+  "new_liquidity_unit": "USDT",
+  "source_provenance_present": true,
+  "profile_value_sha256": "e557b045ce0c178d3b5fc54b47c65ee0b777335c6bfdcd8e051dc167d7173b5d",
+  "pure_module_digests": [
+    {
+      "path": "analytics/index.mjs",
+      "sha256": "80a6009b4f5f3a508da0b23aec73dfa907a52df747fa417aaeaceec9ebb83e50",
+      "baseline_git_blob": "3e228ea48b1269209030aef902555519e5ddfe7e"
+    },
+    {
+      "path": "analytics/movement.mjs",
+      "sha256": "a472e038a54ca2518f0660a9d7d22d1258f1e862202ead010a23e79c3f1604a5",
+      "baseline_git_blob": "0cf794b0cd0d24ce04f449b4698c34855960d619"
+    },
+    {
+      "path": "analytics/math.mjs",
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "baseline_git_blob": "84d526f14c505e23aa5cb72a7d3fdca7d14081b4"
+    },
+    {
+      "path": "analytics/liquidity.mjs",
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a",
+      "baseline_git_blob": "560ca16d61f7c7a0ca2b9a8a3e275252a074b356"
+    },
+    {
+      "path": "analytics/presentation.mjs",
+      "sha256": "376942638c3e6aefe9d638a199b70820eb648a2a1b2951e20867d45ac61c1451",
+      "baseline_git_blob": "2d529074100ed23621a97420a9bfa2dc803874ef"
+    },
+    {
+      "path": "analytics/manual-text.mjs",
+      "sha256": "9bd30e2665f159e4077fad8c02d4b19596d195472e45d560e983321ff755248f",
+      "baseline_git_blob": "c120b401573bcb7cbe0697bc025d6b9288ea83a1"
+    },
+    {
+      "path": "analytics/context.mjs",
+      "sha256": "6b63bf171033e945fd5f2f58c5a144209f83f9973b87d30077f9e1bb1c111673",
+      "baseline_git_blob": "03870c55896aa8a0663c55f4b7cfc13d3396b87d"
+    },
+    {
+      "path": "analytics/day-growth.mjs",
+      "sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1",
+      "baseline_git_blob": "af726423c9fdc355a77a09d3613f044d5f5cd20d"
+    },
+    {
+      "path": "analytics/zones.mjs",
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+      "baseline_git_blob": "02542b09ff5f157d701c79489369bce68456ca41"
+    },
+    {
+      "path": "analytics/outcome.mjs",
+      "sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753",
+      "baseline_git_blob": "2abb12048aa0b909aec2e87cd843c77e2c345d58"
+    },
+    {
+      "path": "contracts/index.mjs",
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08",
+      "baseline_git_blob": "e1fdc83afdf72b803806370d32f8d42c92630cd6"
+    },
+    {
+      "path": "profile/start-v1.mjs",
+      "sha256": "cfec445eb226f2bb109817474d0c0280adc70209fb2ec125288e44f1213ecdf2",
+      "baseline_git_blob": "e92ead1f1eb5fc05eeb2181c0280d262da7b90de"
+    }
+  ],
+  "strategy_gates_thresholds_or_public_text_changed": false,
+  "runtime_SOURCE_provider_store_delivery_imports": 0,
+  "native_HTTP_RPC_SQL_TG_Worker": 0,
+  "old_AT_manuals_fixtures_suites_replayed": 0,
+  "originals_overwritten": false,
+  "new_READY_SENT_or_profitability_proven": false,
+  "raw_prices_levels_or_input_exported": false
+}

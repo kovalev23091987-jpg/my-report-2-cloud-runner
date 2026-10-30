@@ -1,0 +1,61 @@
+{
+  "schema": "PUMP_Q_AUDIT_GAP_DELTA_V1",
+  "gap": "M-G02",
+  "status": "OBSERVED_SAMPLE_PRICE_RESPONSE_SUBSCOPE_VERIFIED_CODE",
+  "whole_gap_closed": false,
+  "TZ_atoms": [
+    {
+      "id": "TZ03.005",
+      "line": 72,
+      "text": "| **2** | **Реальные покупки и продажи** | Проверить, как исполненные сделки влияют на цену: выкупают ли продажи, поддерживают ли покупки рост | Дополнительный; отсутствие данных не останавливает весь отчёт |",
+      "prior_status": "PARTIAL"
+    },
+    {
+      "id": "TZ07.018",
+      "line": 250,
+      "text": "- исполненные продажи, если доступны;",
+      "prior_status": "PARTIAL"
+    },
+    {
+      "id": "TZ07.019",
+      "line": 251,
+      "text": "- способность цены продолжать падение под этими продажами;",
+      "prior_status": "PARTIAL"
+    },
+    {
+      "id": "TZ07.022",
+      "line": 255,
+      "text": "**Запрещённая формулировка:** «крупный игрок специально выбил стопы», если для этого нет прямых доказательств.",
+      "prior_status": "VERIFIED_CODE"
+    },
+    {
+      "id": "TZ07.024",
+      "line": 259,
+      "text": "Если сведения о направлении сделок неполные, нельзя заявлять, что продавцов точно поглощают. Можно описывать только наблюдаемую реакцию цены.",
+      "prior_status": "VERIFIED_CODE"
+    },
+    {
+      "id": "TZ07.026",
+      "line": 263,
+      "text": "Такие признаки близки к известным подходам анализа откатов и поглощения продаж, однако их полезность для наших монет должна проверяться отдельно. Описание подходов: [откаты и изменение объёма](https://www.warriortrading.com/pull-back-trading-strategy/), [поглощение и истощение движения](https://bookmap.com/en/learning-center/supply-demand-setups/supply-demand-setups/absorption-exhaustion).",
+      "prior_status": "PARTIAL"
+    }
+  ],
+  "scalar_semantics": [
+    "first_price",
+    "last_price",
+    "min_price",
+    "max_price",
+    "first_to_last_return_pct"
+  ],
+  "sample_and_aggressor_amounts_same_rows": true,
+  "full_market_path_or_price_impact_or_absorption_proven": false,
+  "native_verified": false,
+  "source_connection_claimed": false,
+  "remaining": [
+    "Direct SOURCE route, quantity and aggressor qualification pending",
+    "Sample response does not identify market causation or absorption",
+    "Empirical utility and source comparison require future qualified observations"
+  ],
+  "historical_checklists_rewritten": false
+}

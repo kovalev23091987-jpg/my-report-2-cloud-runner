@@ -1,0 +1,835 @@
+{
+  "key": "pump:feature-capsule:v2:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+  "sha256": "bf20459dae3ee7e680fefb3d25e3f510f199eb46df86e6e0aa3e990df044e71f",
+  "capsule": {
+    "schema": "pump-feature-capsule-v2-20261025",
+    "analysis_key": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+    "analysis_sha256": "c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+    "input_sha256": "397faab665ce4c5e8ed84ddae9b91b6c1b428f0c6a98347595a8d926cd8a70d2",
+    "implementation_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "recorded_ts": 1800000005000,
+    "origin": {
+      "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+      "asset_id": "ARTIFICIAL:TEST",
+      "wave_id": "PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "signal_id": "pump:signal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "t0": 1800000000000,
+      "reference_price": 112,
+      "rules_version": "pump-analytics-v4-first-qualification-20261025",
+      "profile_version": "pump-report-start-v1",
+      "mode": "AUTO",
+      "map_mode": "NO_MAP",
+      "evidence_class": "ARTIFICIAL",
+      "run_purpose": "ACCEPTANCE_TEST",
+      "ready": true
+    },
+    "contract_version": "pump-report-contract-v1.2-quote-notional",
+    "analysis_schema_version": "PUMP_REPORT_ANALYSIS_V1",
+    "instrument": {
+      "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+      "asset_id": "ARTIFICIAL:TEST",
+      "native_symbol": "TEST-USDT",
+      "venue": "BINGX",
+      "market_type": "PERPETUAL",
+      "base": "TEST",
+      "quote": "USDT",
+      "settle": "USDT",
+      "classification_status": "VERIFIED_CRYPTO",
+      "identity_evidence_ref": "ARTIFICIAL_FIXTURE_NOT_REAL_MARKET_PROOF"
+    },
+    "original_plan_sha256": "1c95705ddc7604efddc6eb11d99a0e798a841be29c28c6513b4bdefaa591091b",
+    "plan": {
+      "entry_zones": [
+        {
+          "lower": 101.47658477444273,
+          "upper": 102.52764129073788,
+          "confirmation_level": null,
+          "confirmation_status": "PRELIMINARY_AREA",
+          "basis_fact_ids": [
+            "ARTIFICIAL:candles:1800000000000"
+          ],
+          "basis_level": {
+            "kind": "HIGH",
+            "price": 102.0021130325903,
+            "event_ts": 1799992980000,
+            "known_ts": 1799993100000,
+            "fact_id": "ARTIFICIAL:candles:1800000000000"
+          }
+        }
+      ],
+      "exit_zone": {
+        "lower": 117.57447174185242,
+        "upper": 118.62552825814757,
+        "confirmation_level": null,
+        "confirmation_status": null,
+        "basis_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "basis_level": {
+          "kind": "HIGH",
+          "price": 118.1,
+          "event_ts": 1799999460000,
+          "known_ts": 1799999580000,
+          "fact_id": "ARTIFICIAL:candles:1800000000000"
+        }
+      },
+      "invalidation": {
+        "kind": "PRICE_BELOW",
+        "price": 99.9
+      },
+      "position_limit_usdt": 3000,
+      "potential_pct": {
+        "minimum": 14.675876926151265,
+        "maximum": 16.899409377860607,
+        "basis": "GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT"
+      },
+      "automatic_orders": false
+    },
+    "features": [
+      {
+        "name": "wave_state",
+        "value": "WEAKENING",
+        "unit": "STATE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:price:1800000000000",
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY",
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "growth_5m_pct",
+        "value": -1.7543859649122862,
+        "unit": "PERCENT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "growth_15m_pct",
+        "value": 12.00000000000001,
+        "unit": "PERCENT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "growth_60m_pct",
+        "value": 12.00000000000001,
+        "unit": "PERCENT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "growth_24h_pct",
+        "value": null,
+        "unit": "PERCENT",
+        "absence_reason": "EXACT_WINDOW_UNAVAILABLE",
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "current_to_impulse_volume_ratio",
+        "value": 1,
+        "unit": "RATIO",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "impulse_to_baseline_volume_ratio",
+        "value": 3,
+        "unit": "RATIO",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "current_volume_counter",
+        "value": 15000,
+        "unit": "BASE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "impulse_volume_counter",
+        "value": 15000,
+        "unit": "BASE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "baseline_median_volume_counter",
+        "value": 5000,
+        "unit": "BASE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "impulse_return_pct",
+        "value": 16.999999999999993,
+        "unit": "PERCENT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "impulse_baseline_windows",
+        "value": 12,
+        "unit": "COUNT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "impulse_baseline_status",
+        "value": "FULL",
+        "unit": "STATE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "normal_range",
+        "value": 2.102113032590296,
+        "unit": "USDT_PER_BASE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "position_limit_usdt",
+        "value": 3000,
+        "unit": "USDT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:orderbook:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "spread_pct",
+        "value": 0.17857142857141842,
+        "unit": "PERCENT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:orderbook:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "slippage_buy_pct",
+        "value": 0,
+        "unit": "PERCENT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:orderbook:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "slippage_sell_pct",
+        "value": 0,
+        "unit": "PERCENT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:orderbook:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "trade_buy_usdt",
+        "value": 50,
+        "unit": "USDT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:trades:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "trade_sell_usdt",
+        "value": 70,
+        "unit": "USDT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:trades:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "trade_netflow_usdt",
+        "value": -20,
+        "unit": "USDT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:trades:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "trade_first_price",
+        "value": 112,
+        "unit": "USDT_PER_BASE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:trades:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "trade_last_price",
+        "value": 113,
+        "unit": "USDT_PER_BASE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:trades:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "trade_min_price",
+        "value": 112,
+        "unit": "USDT_PER_BASE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:trades:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "trade_max_price",
+        "value": 113,
+        "unit": "USDT_PER_BASE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:trades:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "trade_first_to_last_return_pct",
+        "value": 0.8928571428571397,
+        "unit": "PERCENT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:trades:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "trade_unique_executions",
+        "value": 2,
+        "unit": "COUNT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:trades:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "open_interest",
+        "value": null,
+        "unit": null,
+        "absence_reason": "ORIGINAL_SOURCE_CLOCK_OR_EVIDENCE_UNBOUND",
+        "bound": false,
+        "source_fact_ids": [
+          null
+        ],
+        "source_event_ts": null,
+        "received_ts": null,
+        "known_ts": null,
+        "evidence_refs": [
+          null
+        ]
+      },
+      {
+        "name": "funding_rate",
+        "value": null,
+        "unit": "RATE_FRACTION",
+        "absence_reason": "ORIGINAL_SOURCE_CLOCK_OR_EVIDENCE_UNBOUND",
+        "bound": false,
+        "source_fact_ids": [
+          null
+        ],
+        "source_event_ts": null,
+        "received_ts": null,
+        "known_ts": null,
+        "evidence_refs": [
+          null
+        ]
+      },
+      {
+        "name": "funding_period_ms",
+        "value": null,
+        "unit": "MILLISECOND",
+        "absence_reason": "ORIGINAL_SOURCE_CLOCK_OR_EVIDENCE_UNBOUND",
+        "bound": false,
+        "source_fact_ids": [
+          null
+        ],
+        "source_event_ts": null,
+        "received_ts": null,
+        "known_ts": null,
+        "evidence_refs": [
+          null
+        ]
+      },
+      {
+        "name": "map_mode",
+        "value": "NO_MAP",
+        "unit": "STATE",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:price:1800000000000",
+          "ARTIFICIAL:candles:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY",
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "map_nearest_up_distance_pct",
+        "value": null,
+        "unit": "PERCENT",
+        "absence_reason": "NO_QUALIFIED_UPPER_MAP_ZONE",
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:price:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "map_nearest_down_distance_pct",
+        "value": null,
+        "unit": "PERCENT",
+        "absence_reason": "NO_QUALIFIED_LOWER_MAP_ZONE",
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:price:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY"
+        ]
+      },
+      {
+        "name": "plan_minimum_potential_pct",
+        "value": 14.675876926151265,
+        "unit": "PERCENT",
+        "absence_reason": null,
+        "bound": true,
+        "source_fact_ids": [
+          "ARTIFICIAL:candles:1800000000000",
+          "ARTIFICIAL:orderbook:1800000000000"
+        ],
+        "source_event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "known_ts": 1800000000000,
+        "evidence_refs": [
+          "ARTIFICIAL_ONLY",
+          "ARTIFICIAL_ONLY"
+        ]
+      }
+    ],
+    "source_facts": [
+      {
+        "fact_id": "ARTIFICIAL:price:1800000000000",
+        "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+        "kind": "price",
+        "unit": "USDT_PER_BASE",
+        "source": "ARTIFICIAL_FIXTURE",
+        "primary_provider": "ARTIFICIAL_FIXTURE",
+        "venue": "BINGX",
+        "origin": "OBSERVED",
+        "status": "USABLE",
+        "event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "expires_ts": 1800000030000,
+        "evidence_ref": "ARTIFICIAL_ONLY",
+        "reason": null,
+        "coverage": {
+          "scope": null,
+          "time_qualified": null,
+          "time_basis": null,
+          "volume_qualified": null,
+          "relative_volume_qualified": null,
+          "comparison_kind": null,
+          "volume_comparison_key": null,
+          "native_quantity_unit": null,
+          "base_volume_qualified": null,
+          "quote_volume_qualified": null,
+          "turnover_quote_qualified": null,
+          "absolute_base_amount_qualified": null,
+          "absolute_USD_amount_qualified": null,
+          "base_quantity_qualified": null,
+          "quote_notional_qualified": null,
+          "notional_quote_unit": null,
+          "aggressor_side_qualified": null
+        },
+        "provenance_authenticated": false
+      },
+      {
+        "fact_id": "ARTIFICIAL:candles:1800000000000",
+        "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+        "kind": "candles",
+        "unit": "OHLC_USDT_VOLUME_BASE",
+        "source": "ARTIFICIAL_FIXTURE",
+        "primary_provider": "ARTIFICIAL_FIXTURE",
+        "venue": "BINGX",
+        "origin": "OBSERVED",
+        "status": "USABLE",
+        "event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "expires_ts": 1800000090000,
+        "evidence_ref": "ARTIFICIAL_ONLY",
+        "reason": null,
+        "coverage": {
+          "scope": null,
+          "time_qualified": null,
+          "time_basis": null,
+          "volume_qualified": null,
+          "relative_volume_qualified": null,
+          "comparison_kind": null,
+          "volume_comparison_key": null,
+          "native_quantity_unit": null,
+          "base_volume_qualified": null,
+          "quote_volume_qualified": null,
+          "turnover_quote_qualified": null,
+          "absolute_base_amount_qualified": null,
+          "absolute_USD_amount_qualified": null,
+          "base_quantity_qualified": null,
+          "quote_notional_qualified": null,
+          "notional_quote_unit": null,
+          "aggressor_side_qualified": null
+        },
+        "provenance_authenticated": false
+      },
+      {
+        "fact_id": "ARTIFICIAL:orderbook:1800000000000",
+        "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+        "kind": "orderbook",
+        "unit": "USDT_PRICE_BASE_QUANTITY",
+        "source": "ARTIFICIAL_FIXTURE",
+        "primary_provider": "ARTIFICIAL_FIXTURE",
+        "venue": "BINGX",
+        "origin": "OBSERVED",
+        "status": "USABLE",
+        "event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "expires_ts": 1800000015000,
+        "evidence_ref": "ARTIFICIAL_ONLY",
+        "reason": null,
+        "coverage": {
+          "scope": null,
+          "time_qualified": null,
+          "time_basis": null,
+          "volume_qualified": null,
+          "relative_volume_qualified": null,
+          "comparison_kind": null,
+          "volume_comparison_key": null,
+          "native_quantity_unit": null,
+          "base_volume_qualified": null,
+          "quote_volume_qualified": null,
+          "turnover_quote_qualified": null,
+          "absolute_base_amount_qualified": null,
+          "absolute_USD_amount_qualified": null,
+          "base_quantity_qualified": null,
+          "quote_notional_qualified": null,
+          "notional_quote_unit": null,
+          "aggressor_side_qualified": null
+        },
+        "provenance_authenticated": false
+      },
+      {
+        "fact_id": "ARTIFICIAL:trades:1800000000000",
+        "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+        "kind": "trades",
+        "unit": "USDT_PRICE_QUOTE_NOTIONAL",
+        "source": "ARTIFICIAL_FIXTURE",
+        "primary_provider": "ARTIFICIAL_FIXTURE",
+        "venue": "BINGX",
+        "origin": "OBSERVED",
+        "status": "USABLE",
+        "event_ts": 1800000000000,
+        "received_ts": 1800000000000,
+        "expires_ts": 1800000090000,
+        "evidence_ref": "ARTIFICIAL_ONLY",
+        "reason": null,
+        "coverage": {
+          "scope": "RETURNED_RECENT_SAMPLE_ONLY",
+          "time_qualified": null,
+          "time_basis": null,
+          "volume_qualified": null,
+          "relative_volume_qualified": null,
+          "comparison_kind": null,
+          "volume_comparison_key": null,
+          "native_quantity_unit": null,
+          "base_volume_qualified": null,
+          "quote_volume_qualified": null,
+          "turnover_quote_qualified": null,
+          "absolute_base_amount_qualified": null,
+          "absolute_USD_amount_qualified": null,
+          "base_quantity_qualified": false,
+          "quote_notional_qualified": true,
+          "notional_quote_unit": "USDT",
+          "aggressor_side_qualified": null
+        },
+        "provenance_authenticated": false
+      }
+    ],
+    "trade_sample": {
+      "status": "QUALIFIED_SAMPLE",
+      "reason": null,
+      "unit": "USDT_PRICE_QUOTE_NOTIONAL",
+      "amount_basis": "OBSERVED_USDT_QUOTE_NOTIONAL",
+      "base_quantity_qualified": false,
+      "quote_divided_by_price": false,
+      "sample": {
+        "sample_start_ts": 1799999999000,
+        "sample_end_ts": 1800000000000,
+        "unique_executions": 2,
+        "direction_coverage": "ALL_RETURNED_TRADES",
+        "price_response_reason": null
+      },
+      "coverage": {
+        "scope": "QUALIFIED_UNIQUE_RETURNED_TRADES_ONLY",
+        "returned_rows": 2,
+        "qualified_unique_rows": 2,
+        "duplicate_rows": 0,
+        "conflicting_ids": 0,
+        "excluded_returned_rows": 0
+      },
+      "exclusion_reasons": [],
+      "full_market_coverage": false,
+      "absorption_proven": false,
+      "market_path_proven": false,
+      "causation_proven": false
+    },
+    "candle_comparison": {
+      "field": "volume_base",
+      "unit": "BASE",
+      "comparison_kind": "QUALIFIED_ABSOLUTE_SAME_FIELD",
+      "comparison_key": null,
+      "interval_ms": 60000
+    },
+    "map_sources": [],
+    "probability": {
+      "value_pct": null,
+      "reason": "NOT_CALIBRATED"
+    },
+    "audit_compatibility": "EXPLICIT_V2_READER_REQUIRED_NO_V1_PROMOTION",
+    "external_provenance_authenticated": false,
+    "retention": {
+      "automatic_delete": false,
+      "approved_delete_ttl_ms": null,
+      "originals_required": true,
+      "reference_closure_established": false
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import {approvedHtxLimitedReportNotice} from './approved-htx-analysis-scope.mjs';
 import {BLOCKS,ACTIVE_BLOCK_IDS,PAUSED_BLOCKS} from './evidence-v2.mjs';
 import {consumeExecutionReportContext} from './execution-report-context.mjs';
 const requiredBlockCount=ACTIVE_BLOCK_IDS.length;
@@ -96,12 +97,12 @@ export function enforceManualBlockCoverage(output={}){
  if(block_audit.all_candidates_fully_checked||accounted)return {...output,block_audit};
  return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'BLOCK_OUTCOME_AUDIT_MISSING',block_audit};
 }
-export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit,liquidation_policy}={}){
- const contextLines=confirmedRunContext(candidates,run_id);
+export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit,liquidation_policy,limited_report_scope}={}){
+ const contextLines=confirmedRunContext(candidates,run_id),limitedNotice=approvedHtxLimitedReportNotice(limited_report_scope);
  if(status==='PARTIAL_DATA_UNAVAILABLE'){
   const checked=Number(block_audit?.minimum_checked_block_count);
   const progress=Number.isFinite(checked)?` Фактически подтверждено блоков: ${checked} из ${requiredBlockCount}.`:'';
-  return `МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress}\n\nЛОНГ\nПолный вывод пока недоступен.\n\nШОРТ\nПолный вывод пока недоступен.${contextLines.length?'\n\n'+contextLines.join('\n'):''}\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
+  return `МОЙ ОТЧЁТ 2${limitedNotice?`\n${limitedNotice}`:''}\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress}\n\nЛОНГ\nПолный вывод пока недоступен.\n\nШОРТ\nПолный вывод пока недоступен.${contextLines.length?'\n\n'+contextLines.join('\n'):''}\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
  }
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
@@ -109,7 +110,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
   `Проверка дополнительных блоков: ${Number(block_audit?.minimum_checked_block_count||0)} из ${requiredBlockCount}; неподтверждённых: ${Number(block_audit?.maximum_not_checked_block_count||0)}.`,
   `Новые допущенные факты: ${Number(block_audit?.minimum_admissible_fact_block_count||0)} блока; сведения без допуска в решение: ${Number(block_audit?.minimum_filtered_fact_block_count||0)}; событий не обнаружено: ${Number(block_audit?.minimum_checked_no_event_block_count||0)}.`,
  ]:[];
- const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),...auditLines,''];
+ const lines=['МОЙ ОТЧЁТ 2',...(limitedNotice?[limitedNotice]:[]),...(stamp?[`${stamp} МСК`]:[]),...auditLines,''];
  let found=0;
  for(const direction of ['LONG','SHORT']){
   lines.push(direction==='LONG'?'ЛОНГ':'ШОРТ');

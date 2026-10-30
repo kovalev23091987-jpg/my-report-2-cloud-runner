@@ -1,0 +1,19 @@
+✔ CONTROLLED proven160-event input records159 backfills and admits the sole timely event under unchanged128/512 (434.238958ms)
+✔ backfill card saturation reserves existing card space without eviction or a raised limit (2.654667ms)
+✔ full global card capacity returns caller-owned complete payload and original clocks, not durable admission (0.6775ms)
+✔ full active queue records a pending prospective card and explicit retry preserves firstknown, old outbox and closed watch (1.5695ms)
+✔ historical review is explicit, cannot relabel a backfill as prospective or expire it at7days (0.754125ms)
+✔ a later live replay cannot rewrite a retained historical card or silently start its watch (0.811375ms)
+✔ restart retains inactive history, deferred watch, firstknown anchors and caller outcome links (2.2225ms)
+✔ legacy active history requires explicit upgrade and remains active while new prospective watch defers (15.10975ms)
+✔ legacy card debt is preserved, not silently evicted to create a new timely slot (1.327875ms)
+✔ legacy invalid global occupancy and false prospective class reject without truncating protected history (1.215041ms)
+✔ legacy missing limits cannot silently acquire larger default limits during explicit upgrade (0.850625ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 505.271458

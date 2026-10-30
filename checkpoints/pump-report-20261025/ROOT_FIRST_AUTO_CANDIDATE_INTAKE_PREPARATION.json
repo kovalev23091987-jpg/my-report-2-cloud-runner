@@ -1,0 +1,67 @@
+{
+  "schema": "ROOT_FIRST_AUTO_CANDIDATE_INTAKE_PREPARATION_V1",
+  "authority_main": "d9e1d07a7cc31465dacadc2135be29614c73063f",
+  "recorded_ts": 1792993153319,
+  "status": "OFFLINE_QUALIFIED_INDEPENDENT_DELTA_ACCEPTED_NATIVE_NOT_EXECUTED",
+  "files": [
+    {
+      "path": "pump-report/operator/saved-auto-candidate-observation.mjs",
+      "sha256": "a3465f62d65e93524f9b49758993df33d1a1eea6b0896784a4622ca85c96f893"
+    },
+    {
+      "path": "pump-report/operator/observe-production-once.mjs",
+      "sha256": "7a40fda4c28a32e92095586e07c3f6ad13fe133af4747e3d00239a440e880574"
+    },
+    {
+      "path": "pump-report/operator/SAVED_AUTO_OBSERVATION_RU.md",
+      "sha256": "7b255f0d4b2bd87b44f5def137465b062dcd3011b96582dbb609cdd3420b8ba8"
+    },
+    {
+      "path": "pump-report/tests/runtime/saved-auto-candidate-observation-connected.test.mjs",
+      "sha256": "081e1f513ed6a45f84978a5d1dab9fbd3afd346567cf43320c9308213292cd7c"
+    }
+  ],
+  "purpose": "Give SOURCE and ANALYTICS one exact saved input from the first normal AUTO candidate even if NOT_READY, without a second market run or Telegram send.",
+  "maximum_additional_PK_reads": 1,
+  "new_actual_admission_flag": "read_latest_auto_candidate:true",
+  "total_existing_envelope": {
+    "SQL_API_attempts": 16,
+    "rows_read": 500,
+    "rows_written": 30,
+    "market_HTTP": 0,
+    "Telegram": 0
+  },
+  "qualification": {
+    "new_ARTIFICIAL_unique_case": 1,
+    "PASS": 1,
+    "FAIL": 0,
+    "descriptor_smoke": "PASS_ZERO_NETWORK_SQL_CREDENTIAL_IO"
+  },
+  "not_independent_strategy_or_current_freshness_proof": true,
+  "server_artifact66_and_business_flags_and_cron_changed": false,
+  "source_F581_independent_review": {
+    "manifest": "pump-report/handoffs/sources/F581_PACKAGE_STATIC_AUTO_CANDIDATE_REVIEW_FINAL_V1.json",
+    "manifest_sha256": "5e16152e3dce89bf27578712b505e366934c225959c5f5d81bbec4922cd13968",
+    "finding": "P2_EQUAL_INCOMPLETE_INSTRUMENT_IDENTITY",
+    "release_FULL": "7ce92348f04953776f159aff76771b2fc024404d"
+  },
+  "first_normal_AUTO_and_SENT_proven": false,
+  "old_spent_unknowns_reserves9pauses2deferrals_preserved": true,
+  "defect_fix": {
+    "existing_contract": "assertInstrument and ownerInstrumentExcluded",
+    "ROOT_affected_qualification": {
+      "PASS": 2,
+      "FAIL": 0,
+      "new_unique_regression": 1,
+      "prior_case_updated_for_full_contract_schema": 1,
+      "full_suite_replayed": false,
+      "native_IO": 0
+    },
+    "source_F582_delta_review": {
+      "status": "PASS_STATIC_P2_CLOSED_NO_NEW_DELTA_FINDINGS",
+      "manifest": "pump-report/handoffs/sources/F582_PACKAGE_STATIC_P2_DELTA_FINAL_V1.json",
+      "manifest_sha256": "74888cbfba1d466b50f76a6f40a6334aaae3669dd18cd64fd7fbb6147435b58b",
+      "release_FULL": "a43a691bd12f015fb49f6c2fda66167fd5f170b1"
+    }
+  }
+}

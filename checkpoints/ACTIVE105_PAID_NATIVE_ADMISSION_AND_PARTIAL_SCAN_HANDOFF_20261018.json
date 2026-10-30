@@ -1,0 +1,187 @@
+{
+  "schema": "ACTIVE105_PAID_NATIVE_ADMISSION_PARTIAL_SCAN_HANDOFF_V1",
+  "recorded_utc": "2026-10-18T10:54:42.497344+00:00",
+  "save_base": "2e9ecf741a3bcfbb380d487de28f21bc825ec2d5",
+  "cloud_receipts": "checkpoints/paid-native-admission-20261018/cloud-and-native-receipts.json",
+  "native_review": "checkpoints/partial-cron-diagnostics-20261018/native-review.json",
+  "coordinator_PRs": {
+    "437": "56c1cd905a3ca0c2407358a0357d243af8b9ff9c",
+    "440": "2e9ecf741a3bcfbb380d487de28f21bc825ec2d5"
+  },
+  "new_cases": 44,
+  "native": {
+    "schema": "PARTIAL_CRON_EXACT_NATIVE_ACCOUNTING_REVIEW_V1",
+    "run": 39119616846,
+    "head": "56c1cd905a3ca0c2407358a0357d243af8b9ff9c",
+    "artifact": 12134096068,
+    "digest": "sha256:3198eebe7fd3fe241629743285d5fdf05df97babac49f9a3c9973a39e3bc78c8",
+    "usage_before": {
+      "requests": 630,
+      "rows_read": 33189,
+      "rows_written": 527,
+      "unknown_ops": 0
+    },
+    "usage_after": {
+      "requests": 631,
+      "rows_read": 33190,
+      "rows_written": 528,
+      "unknown_ops": 0
+    },
+    "receipt": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "R2RUN:1792319534403:65a2f7d46b6acfcc",
+      "source_run_id": "39119616846",
+      "measured_rows_read": 33189,
+      "finalization_read_padding": 1,
+      "reservation_never_reduced": true,
+      "measured_rows_written_accounted": 528,
+      "measured_requests_accounted": 631,
+      "unknown_ops": 0
+    },
+    "static_guard_status": "NATIVE_ADMISSION_REQUIRED_AFTER_VERIFIED_AGGREGATE_RECONCILIATION",
+    "runtime_log_observation": {
+      "source_witness_and_budget_admission_allowed": true,
+      "original_historical_unknown15_preserved": true,
+      "raw_daily_reserved_rows_read": 54000,
+      "raw_daily_reserved_rows_written": 840,
+      "universe_expected": 105,
+      "scanned": 99,
+      "universe_missing_names_not_retained": true,
+      "cron_status": "PARTIAL",
+      "reason": "STAGE0_SCAN_FAILED",
+      "endpoint_errors_all_null": true,
+      "canonical_persistence_reported_closed_for": [
+        "QNT-USDT",
+        "BTW-USDT"
+      ],
+      "canonical_exact_rows_not_retained_in_this_artifact": true,
+      "both_full_evidence_inserts_reported_closed": true,
+      "both_telegram_formatter_status": "MESSAGE_TOO_LONG",
+      "SENT_message_id": null,
+      "console_numbers_and_identifiers_partly_masked_by_GitHub": true
+    },
+    "acceptance": "LIMITED CURRENT NATIVE ADMISSION AND CLOSED USAGE ONLY. Not complete105/full-report/delivery/expanded-volume/expiry/sustainable throughput acceptance. No known-failing full rerun permitted for this unchanged cause."
+  },
+  "ready_source_queue": [
+    {
+      "PR": 433,
+      "head": "580ec10a5a4092f77a0836968df892742473508e",
+      "scope": "Gate SPOT N05/internal turnover fact preservation;39new cases",
+      "accepted": false
+    },
+    {
+      "PR": 434,
+      "head": "8d28b5494290452ad51342f5294234e6194529e4",
+      "scope": "CoinGecko exact cache binding/original knowledge clocks;36new",
+      "accepted": false
+    },
+    {
+      "PR": 435,
+      "head": "6ab7d72d97993a0232c2241871186901560add41",
+      "scope": "CoinBoss/Swole scalar schema and strict sourceclock;56new",
+      "accepted": false
+    },
+    {
+      "PR": 436,
+      "head": "cc5fb8e28c493b87de6cb6f8f7de1596390e51b6",
+      "scope": "HTX N12 retained typed facts/cache tuple;38new;NEAR original response clock absent, controlled observation explicit",
+      "accepted": false
+    },
+    {
+      "PR": 438,
+      "head": "f6727b59b382713594b9918dbb7811ab5e435b32",
+      "scope": "N05 turnover body/receipt tuple;66new plus10shared consumer proposal; integrate exact after433 overlap proposal",
+      "accepted": false
+    },
+    {
+      "PR": 439,
+      "head": "865ef8f95b9e1720c917c85f62721ee48d6b3e64",
+      "scope": "Orderly strict model clock/scalar schema;33new controlled cases;no actual original wire qualification",
+      "accepted": false
+    },
+    {
+      "PR": 441,
+      "head": "3dde1e02913b307617653fc728f4701e833789b6",
+      "scope": "Shared N15 malformed-row isolation and quote/window agreement;26new proposal cases;actual shared files unchanged",
+      "accepted": false
+    }
+  ],
+  "protected_technical_fields": {
+    "canonical_retention_cursor": {
+      "schema": "PROTECTED_CANONICAL_CURSOR_V1",
+      "database_id": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+      "cursor": 710,
+      "source_cursor": 0,
+      "run_id": "39022879318",
+      "source_head": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+      "updated_ts": 1792230897457,
+      "status": "PROTECTED_REJECTED_BODIES_COMPACTED_EXACTLY"
+    },
+    "latest_native_relocation": {
+      "run": 39022879318,
+      "head": "547346bd53df2598dad5dd819f5be9567c7f15b7",
+      "proof": "checkpoints/free-storage-20261017/native-39022879318.json",
+      "proof_raw_sha256": "f39937693ad0c70e54e70a60dd8ebef1caa99c0e8013543e83ee9884009c99a7",
+      "review": "checkpoints/free-storage-20261017/native-39022879318-review.json",
+      "completed_ts": 1792230899286,
+      "physical_bytes_reclaimed": 1126400,
+      "primary_database_bytes_after": 498737152,
+      "native_costs_closed": true,
+      "whole_day_closed": false,
+      "full_report_restored": false,
+      "sustainable_capacity_accepted": false
+    },
+    "paid_sliding_history": {
+      "policy": "checkpoints/OWNER_PAID_SLIDING_HISTORY_20261018.json",
+      "paid_UI_confirmed": true,
+      "paid_UI_basis": "Cloudflare exact account Workers plans page: Paid $5/month+usage / disabled Current plan",
+      "enabled": true,
+      "workflow": "paid-sliding-history-20261018.yml",
+      "schedule_UTC": [
+        "00:17",
+        "12:17"
+      ],
+      "chosen_account_ceiling_bytes": 5000000000,
+      "high_water_bytes": 4000000000,
+      "target_bytes": 3500000000,
+      "minimum_hot_ms": 172800000,
+      "body_updates_per_operation": 96,
+      "canonical_updates": 48,
+      "full_proof_updates": 48,
+      "shared_family": "RETAINED_HISTORY",
+      "shared_day_slots": 2,
+      "reservation_rows_read": 20000,
+      "reservation_rows_written": 400,
+      "legacy_lossless_bounds_unchanged": true,
+      "actual_volume_check": "checkpoints/paid-sliding-history-20261018/native-check-39108141802.json",
+      "actual_account_bytes": 518578176,
+      "actual_primary_bytes": 499974144,
+      "actual_observed_ts": 1792308860790,
+      "actual_expiry_rows": 0,
+      "actual_physical_bytes_freed": 0,
+      "native_expiry_qualified": false,
+      "native_throughput_qualified": false,
+      "all_rows_storage_bounded_forever_proven": false,
+      "native_full_restored": false,
+      "unknown_reset": false,
+      "caps_raised": false
+    },
+    "latest_actual_same_run_telegram_message_id": null
+  },
+  "previous_actual_full_run": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/38840064503",
+  "all4active_mirrors_identical": true,
+  "unmodified_root_value_spans_byte_exact": true,
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792318855209",
+    "acquired_ts": 1792318855209,
+    "expires_ts": 1792323655209,
+    "expected_main": "12896dca48f74465bc19aea7cf22e56f087e0661",
+    "scope": "Owner latest priority: resolve paid primary full-report blocker without new owner steps. Exact UTC18 saved native journals/originals and installed admission/bridge/control provenance audit, identify cause of15unknown and capacity refusal; implement concrete accounting/storage/recovery fix and connected offline/cloud branch/main verification. Read existing authenticated CF/GitHub control metadata and saved natural artifacts. New native SQL/Worker/report operation only after exact existing actual admission and purpose-bounded current-code provenance; never force known-failing MAIN/manual, reset/erase unknown, refund reservations, weaken guards or raise quotas. Retain historical costs and audit chain; independently verified recovery must resolve the cause, not hide the refusal. Preserve paid retention/cursor710/relocation/all4technical mirrors/105assets122contracts9pauses/strategy/forms. Source worker CG files/ownlease untouched; shared integration readiness only if independent. Save precise recovery evidence, read back, release only own lease.",
+    "released": true,
+    "released_ts": 1792320882457
+  },
+  "project_complete": false,
+  "all7directions_open": true,
+  "next_action": "Continue the owner-authorized plan in this chat without waiting for storage/report/accounting and keep the second source chat working through its accepted large queue. PR437 is merged: exact branch/main1379PASS0FAIL21TAP. Two independently timed unsampled Cloudflare billing observations for original UTC18 failure39081512792 equal30746R110W and240known native queries=255attempts-15unknown. The current-generation runner uses that exact offline certificate only together with a fresh native original ledger witness. Original15unknown and54000R840W stay unchanged; no source/day/month/minute/global caps or reserves were reset/refunded. One owner-authorized normal recovery39119616846/head56c1cd905 was actually admitted. Exact artifact12134096068/digestsha256:3198eebe7fd3fe241629743285d5fdf05df97babac49f9a3c9973a39e3bc78c8 contains631native attempts/33190R528W/unknown0 after finalization; ledger stores33189R plus1read padding. Its54000R840W reservation is spent without refund, as is the older UTC18 reservation. This is limited current native admission/write evidence, not full report recovery or expanded-volume/expiry/throughput acceptance. Runtime console reports exact QNT/BTW canonical and full-evidence writes CLOSED, but their complete exact native rows and identifiers were not retained in this artifact; do not claim independent both-finalist readback or SENT. Current report blocker is cronPARTIAL/STAGE0_SCAN_FAILED:105expected/99scanned, all endpoint errors null. Six missing identities were not retained, and GitHub masks numeric console data. Both selected candidates also have Telegram formatter MESSAGE_TOO_LONG, not a confirmed network send. PR440 captures only already available in-memory approved-universe/missing-set audit, selection, cron identity and day admission in the existing failure-accounting artifact. It keeps the same fatal refusal and accounting; adds0SQL/0sourceHTTP. Exact branch/main1382PASS0FAIL21TAP/3new/8related accepted. Read the next ALREADY SAVED NATURAL run after PR440 for the exact missing identities/classifications/source clocks or actual resolution. Do not force another unchanged failing MAIN/manual, invent six names, weaken105 completeness, change universe/forms/caps, or raise the formatter1600/850/1100 limits. Existing Oct14 default catalog already binds all105; margin-mode workaround is NOT established by the saved originals. While awaiting that evidence, independently review/integrate frozen source PR433/434/435/436/438/439/441 and exact shared proposals in a large connected package. Total268new provider cases plus36shared consumer proposal cases are READY, not accepted as integrated; expected assembled total1686 only if all are actually included and pass.433/438 overlap the turnover collector: use the precise after433 patch, never apply a stale whole WIP.434/435/436 source/code/proposal/TAP hashes were independently read back, receipts are retained in the cloud proof.438/439/441 still need full coordinator original/code/proposal readback. Keep all8golden forms exact and do not confuse historical replays/internal baseline with current105 coverage. Source worker01a14e11-ff1e-7ca1-9f7c-61666ef85c94 completed N15 shared-only441: malformed/null peer no longer throws away an earlier useful CG fact in the exact proposal; actual shared files unchanged. It immediately continued independent N10 raw-cache/component binding and useful delta/order/budget consolidation from existing originals, not repetitive census/scaffolding. It already completed438and439and441 without waiting for hourly heartbeat. At heartbeat start and meaningful package boundaries inspect compact wait_threads; if idle and independent queue remains, directly resume it, otherwise do not interrupt/spam. Owner has authorized mutual reading/messaging; no manual transfer or new keys required. All other native callers remain subject to their own unchanged admission; this certificate is not blanket authorization for collectors/history/manual retrieval. All7fixed directions remain open: storage/fullreport,wholebudget/manualreserve,usefulcoverage/order/fallback105,history/statistics,automatic priorities/weeklyHTX,integrated natural/manual/LIQ/bothpersisted/SENT,finalTelegram. Paid5GB/start4GB/target3.5GB/min48h remains, below-threshold metadata probe39108141802 accepted and not to repeat; native expiry/sustainable capacity remain open. Preserve cursor710/latest_native_relocation39022879318, technical root values/all4mirrors/105assets122contracts/9pauses/MAGIC106deferred/strategy/weights/forms/backoff. Fresh main/phase/fence/generation/status and a new own<=90minute scoped CAS lease/exact readback before further coordinator changes/tests/live; release only own. Decision score and exact owner final Telegram form remain required after blocks; project incomplete."
+}

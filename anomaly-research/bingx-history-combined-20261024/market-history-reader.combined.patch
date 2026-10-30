@@ -1,0 +1,68 @@
+--- a/current-generation/files/src/market-history-reader.mjs
++++ b/current-generation/files/src/market-history-reader.mjs
+@@ -1,3 +1,5 @@
++import {bindBingxHistoryRegistry,verifyBingxHistoryBucket} from './market-snapshot-batch.mjs';
++export {compareBingxHistoryPoint} from './market-snapshot-batch.mjs';
+ export const MARKET_HISTORY_READER_VERSION = 'market-history-reader-v3-contract-verified-20260928';
+ export const HISTORY_COMPATIBILITY = Object.freeze({
+   version:'report2-history-compatibility-v1-20260928',
+@@ -126,7 +128,8 @@
+   complete.sort((a,b)=>Math.abs(a.bucket-target)-Math.abs(b.bucket-target)||Number(b.generation===preferredGeneration)-Number(a.generation===preferredGeneration)||b.generation.localeCompare(a.generation));const chosen=complete.find(item=>Math.abs(item.bucket-target)<=tolerance);const map=new Map();if(!chosen)return map;for(const row of chosen.rows){const contract=normalizedContract(row?.contract),sourceTs=finite(row?.observed_ts);if(!contract||sourceTs===null||Math.abs(sourceTs-chosen.bucket)>SLOT_MS)continue;map.set(contract,{...compactCollectorPoint(row,chosen.bucket,chosen.generation),contract_code:row.contract,turnover_24h:finite(row?.turnover_24h_usdt),prior_discovery:null,history_provenance:'REPORT2_MARKET_SNAPSHOT_BATCH_V1'});}return map;
+ }
+ 
+-export async function readMarketHistoryTargets({db,now_ts=Date.now(),actor='HUB_PUBLIC_COLLECTOR',preferred_generation=null}={}){
++export async function readMarketHistoryTargets({db,now_ts=Date.now(),actor='HUB_PUBLIC_COLLECTOR',preferred_generation=null,venue='HTX',root_history_binding=null}={}){
++  if(venue!=='HTX'||root_history_binding!==null)return readBingxHistoryTargets({db,now_ts,venue,root_history_binding});
+   const now=finite(now_ts);if(!db?.prepare||!Number.isSafeInteger(now))return{available:false,reason:'HISTORY_INPUT_INVALID',targets:{}};
+   // The collector index starts with generation,bucket. Constrain both sides of
+   // the nearest-bucket lookup to the known compatible generations, otherwise
+@@ -186,7 +189,8 @@
+   return {series:dedup,rowsRead:rowsOf(result).length,parseErrors,expected:Math.max(1,Math.floor(hours*3))};
+ }
+ 
+-export async function readMarketHistoryForContract({db,contract,now_ts=Date.now(),hours=6,actor='HUB_PUBLIC_COLLECTOR',preferred_generation=null}={}) {
++export async function readMarketHistoryForContract({db,contract,now_ts=Date.now(),hours=6,actor='HUB_PUBLIC_COLLECTOR',preferred_generation=null,venue='HTX',instrument_identity=null}={}) {
++  if(venue!=='HTX'||instrument_identity!==null)return {version:MARKET_HISTORY_READER_VERSION,status:'NOT_CLOSED',source:null,contract,venue,series:[],reason:'VENUE_QUALIFIED_HISTORY_NAMESPACE_NOT_INSTALLED',legacy_HTX_history_reused:false,additional_SQL:0};
+   const normalized = normalizedContract(contract), now = finite(now_ts), span = Math.min(168,Math.max(.25,finite(hours)??6));
+   if (!db?.prepare || !normalized || !Number.isSafeInteger(now)) return {version:MARKET_HISTORY_READER_VERSION,status:'NOT_CLOSED',reason:'HISTORY_INPUT_INVALID',series:[]};
+   const start = now-span*60*60_000-SLOT_MS, end = now;
+@@ -242,3 +246,39 @@
+     return {status:snapshots.length?'CLOSED':'NOT_CLOSED',snapshots,rejections:verified.rejected,truncated:page.truncated,shard_rows_read:page.rows.length};
+   }catch(error){return {status:'NOT_CLOSED',snapshots:[],reason:'EARLY_COLLECTOR_READ_FAILED',error:String(error?.message||error).slice(0,160)};}
+ }
++
++// Existing table/PK; external expected pins are integrity inputs, NOT admission.
++async function readBingxHistoryTargets({db,now_ts,venue,root_history_binding}){
++ const maps=Object.fromEntries(TARGETS.map(([label])=>[label,new Map()])),base={version:MARKET_HISTORY_READER_VERSION,venue:'BINGX',targets:maps,fallback_source:null,legacy_HTX_history_reused:false,native_admission:false};
++ let context;
++ try{if(venue!=='BINGX')throw Error('EXPLICIT_BINGX_VENUE_REQUIRED');context=bindBingxHistoryRegistry(root_history_binding);}catch(error){return{...base,available:false,populated:false,reason:String(error.message),status:'REQUIRED_ROOT_BINDING',queries:0};}
++ if(!db?.prepare||!Number.isSafeInteger(now_ts)||now_ts<=0)return{...base,available:false,populated:false,reason:'HISTORY_INPUT_INVALID',queries:0};
++ const rejections=[],accepted=[],MAX_BYTES=2*1024*1024;let queries=0,shards=0,bytes=0,truncated=false,failed=false;
++ for(const [label,period,tolerance]of TARGETS){
++  const target=Math.floor((now_ts-period)/SLOT_MS)*SLOT_MS;
++  let returned=false;
++  try{
++   const before=typeof db.usageSnapshot==='function'?db.usageSnapshot().unknown_ops:null;queries++;
++   const result=await db.prepare(`SELECT bucket,actor,generation,schema_version,shard,substr(source_timestamps_json,1,4097) AS source_timestamps_json,received_ts,status,payload_hash,substr(payload,1,65537) AS payload,contract_count,payload_bytes
++    FROM report2_market_snapshot_batch_v1 AS s
++    WHERE s.actor=?1 AND s.schema_version=?2 AND s.status='COMPLETE'
++      AND (s.bucket,s.generation)=(SELECT bucket,generation FROM report2_market_snapshot_batch_v1
++        WHERE actor=?1 AND schema_version=?2 AND status='COMPLETE' AND generation IN (SELECT value FROM json_each(?3))
++          AND bucket BETWEEN ?4 AND ?5
++        ORDER BY ABS(bucket-?6),CASE WHEN generation=?7 THEN 0 ELSE 1 END,bucket ASC,generation ASC LIMIT 1)
++    ORDER BY shard ASC LIMIT 25`).bind(context.actor,context.schema_version,JSON.stringify(context.accepted_generations),target-tolerance,target+tolerance,target,context.accepted_generations[0]).all();
++   if(result?.success===false||before!==null&&db.usageSnapshot().unknown_ops!==before)throw Error('BINGX_HISTORY:NATIVE_READ_NOT_CLOSED_STOP');
++   returned=true;const rows=rowsOf(result);shards+=rows.length;
++   const receivedBytes=rows.reduce((n,r)=>n+new TextEncoder().encode(String(r?.payload??'')).byteLength,0);bytes+=receivedBytes;
++   if(rows.length>24||bytes>MAX_BYTES){truncated=true;rejections.push({label,reason:'BINGX_HISTORY_BOUNDED_READ_EXCEEDED'});break;}
++   if(!rows.length){rejections.push({label,reason:'NO_BINGX_BUCKET_IN_WINDOW'});continue;}
++   const verified=verifyBingxHistoryBucket(rows,{context,decision_ts:now_ts});
++   if(Math.abs(verified.bucket-target)>tolerance)throw Error('BINGX_HISTORY:ACTUAL_BUCKET_OUTSIDE_WINDOW');
++   for(const row of verified.rows)maps[label].set(row.instrument_ref,{...row,ts:row.metrics.price.source_ts,ts_bucket:verified.bucket,source_generation:verified.generation,history_provenance:'BINGX_EXACT_NATIVE_BATCH',prior_discovery:null});
++   accepted.push({label,bucket:verified.bucket,generation:verified.generation,registry_sha256:verified.registry_sha256,original_cohort_rows:verified.original_cohort_rows,current_compatible_rows:verified.current_compatible_rows});
++  }catch(error){failed=true;rejections.push({label,reason:String(error.message).slice(0,160)});if(!returned)break;}
++ }
++ const found=Object.values(maps).filter(m=>m.size).length;
++ const target_coverage=Object.fromEntries(TARGETS.map(([label])=>[label,{expected_current_instruments:context.current_instruments,matching_current_points:maps[label].size,missing_current_points:context.current_instruments-maps[label].size,per_metric_usability_separate:true}]));
++ return{...base,context,target_coverage,available:true,populated:found>0,snapshots_found:found,status:truncated||failed?'PARTIAL_BOUNDED_HISTORY':found?'BINGX_COHORT_POINTS_AVAILABLE':'WARMING',reason:found?null:'NO_EXACT_BINGX_COHORT_POINTS',preferred_source:'REPORT2_MARKET_SNAPSHOT_BATCH_V1',decision_ts:now_ts,accepted_buckets:accepted,validation_rejections:rejections,queries,shard_rows_read:shards,payload_bytes:bytes,truncated,logical_read_limits:{max_queries:5,max_shards_per_target:24,sentinel:25,received_payload_stop_threshold_bytes:MAX_BYTES,pre_receive_wire_bound_qualified:false},native_billable_cost:null,whole_primary_selection_or_coverage_qualified:false};
++}

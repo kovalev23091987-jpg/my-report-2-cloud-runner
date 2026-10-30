@@ -1,0 +1,136 @@
+{
+  "schema": "SOURCE_WORKER_BACKPACK_REFUSAL_DIAGNOSTIC_V1",
+  "recorded_utc": "2026-10-18T12:23:29.608975+00:00",
+  "parent_main": "463ccd76917e7760eef5add1294b80802bb9434a",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "Backpack provider-only reason propagation: missing markets/candles because of caller/native/HTTP refusal is not an asset binding or received-grid schema finding. No change to eligibility or flow facts.",
+  "new_cases": 12,
+  "baseline": "3PASS9FAIL. Genuine empty-binding and received malformed-candle guards already passed;9cases detect related refusal/status defects, not9independent provider incidents.",
+  "tests": {
+    "baseline12": {
+      "path": "checkpoints/source-worker-backpack-admission-reason-20261018/baseline12.tap.gz",
+      "gzip_sha256": "a4237ee049a4f5da77de4ded35003c73785cd10c3cb6d4a39c713b250e860882",
+      "raw_sha256": "53254f0cc5f30b881306458a739e488cf2c46c81812523fce9f43bde6ac0f87a",
+      "counts": {
+        "tests": 12,
+        "pass": 3,
+        "fail": 9
+      }
+    },
+    "related28": {
+      "path": "checkpoints/source-worker-backpack-admission-reason-20261018/related28.tap.gz",
+      "gzip_sha256": "6745cbf5abe28947a09786dc7b031e51bb26af5b48d244b64c97921365047e78",
+      "raw_sha256": "8199bed735a4b97f2edd756cb409731e416e41d600453ae986549877b19550a0",
+      "counts": {
+        "tests": 28,
+        "pass": 28,
+        "fail": 0
+      }
+    }
+  },
+  "connected_scope": "12newcases +16affected original Backpack preservation/unknown/admission/fullN05/manual/bothTelegram cases from n05-venue-fact-preservation.test.mjs. Other venues not executed; unchanged output-contract suite not rerun for reason-only source edit.",
+  "source_inputs": {
+    "checkpoints/n05-backpack-missing4-38134543735/batch-summary.json": {
+      "file_sha256": "811b0c4fe9f403390af54d15275020bf41d05282e674dde0ed22aeac1770eb82",
+      "raw_sha256": "811b0c4fe9f403390af54d15275020bf41d05282e674dde0ed22aeac1770eb82"
+    },
+    "checkpoints/n05-backpack-missing4-38134543735/BACKPACK-ASSETS.json.gz": {
+      "file_sha256": "097f57dccacdf31559353686b382b81cd0d67105754248f46b9433fcca2f452e",
+      "raw_sha256": "831439a4702f4957ee2b9b22bfa5ca1687a7fbbb750130124bd1001da5946c49"
+    },
+    "checkpoints/n05-backpack-missing4-38134543735/BACKPACK-MARKETS.json.gz": {
+      "file_sha256": "fcfad5708852967c952b34ba5e9ffd2c178ce315658bc5f5fffaf205c780ee19",
+      "raw_sha256": "80def488230e5cea02e0a712c8b20adb900984f307d5a5f27ffdd05962667251"
+    },
+    "checkpoints/n05-backpack-missing4-38134543735/BACKPACK-ENA-CANDLES.json.gz": {
+      "file_sha256": "82fa171ff8c69b36724de71d76ea2146cd3a1deab4a601590e40b1c0bc024fa9",
+      "raw_sha256": "870690eddb1561b4fddbac6f063760f1059de7027d3794b8e17af1763e767127"
+    },
+    "checkpoints/n05-backpack-missing4-38134543735/BACKPACK-ENA-TRADES.json.gz": {
+      "file_sha256": "f10015822412d18fc3eaa47e0d864eab9a2bb7097a5e7da384b8049a5a9f8526",
+      "raw_sha256": "977cf73baade691a88b17ede7385d4f577c16320f8411bbc035b2df7f79774fd"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+    },
+    "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/CT-USDT.canonical.json.gz": {
+      "file_sha256": "9924a0f8005ad20e6e3de43c805460dfa7a0623a31617f955295f09d930e0dc8",
+      "raw_sha256": "607a13f9ad7ebd30eabbe16447c78ed2c9ff47daf35069faa6d398674e1e4236"
+    }
+  },
+  "actual_CT_witness": {
+    "path": "checkpoints/source-worker-backpack-admission-reason-20261018/ct-original-refusal-witness.json",
+    "sha256": "84cc05b98803272f430b90824296b81f0f55abfe674ac898bdc191dbeea6af69",
+    "conclusion": "Saved currentCT markets request was not dispatched due shared5cap; asset incompatibility was not established by that request.",
+    "new_live_source_or_asset_qualification": false
+  },
+  "controlled_cases": [
+    "Actual saved ENA Backpack metadata/candles/tape and original cutoff; callerdenial/manualprotected/HTTP429/nativeunknown/schema/emptycatalog mutations are explicit controls.",
+    "Markets and candles each preserve caller5cap,manualreserve,HTTP429,unknown-native chain stop.",
+    "Received200wrongobject marketmetadata stays INVALID_BACKPACK_MARKET_METADATA; receivedwrong240grid stays NATIVE_240_MINUTE_GRID_REQUIRED.",
+    "Empty validcatalog arrays remain checked negative binding, no candle/tape calls.",
+    "Unknown remains1, no laterSQL/HTTP, admitted attempts remainspent; no counter refund/reset."
+  ],
+  "behavior": [
+    "Add early null-markets return with original failed request status before binding check.",
+    "For missing/invalidcandles use original failure status unless a body was actually received; only received malformed shape gets nativegrid reason.",
+    "Sourceversion/cache/identity/quote/240minute reconciliation and useful fact/consumer semantics unchanged.",
+    "No providerhealthpolicy or calibration/weights modified. Correct leafreason can flow through existing operational diagnostics.",
+    "All logical HTTP/SQL counts and5sharedHTTP/source/day/minute/manual/global caps unchanged."
+  ],
+  "implementation": {
+    "current-generation/files/src/backpack-flow-collector.mjs": {
+      "before_sha256": "34de1d5715e08e4a91b139aae1db541e8239024ce6aa4e499c3513e33ad8201f",
+      "after_sha256": "defd82645f5b08af71f05bd3476149773c9bf1c82f6ddb542869fbc349987e84"
+    },
+    "current-generation/tests/backpack-admission-reason.test.mjs": {
+      "sha256": "41cc205e14ef2bb257499e5a77984f986fca27381dd561f371ca4e7f1e62c287"
+    }
+  },
+  "shared_CI_proposal": {
+    "path": "checkpoints/source-worker-backpack-admission-reason-20261018/shared-CI.proposed.patch",
+    "sha256": "835c280d16bd3fcde4b8cce87cef739e2920ed6648c91dd870b148724aa0adf5",
+    "before_sha256": "875c3cc661954779855142075ddbfdf7608fe366a70ccfef24d07ff66fae872b",
+    "proposed_sha256": "052df1b52d70f05c3ce84bf5dd00b9a91672ef395d5a8e6f32237f0c0bf8953b",
+    "actual_workflow_modified": false,
+    "dry_check_passed": true
+  },
+  "protected_outputs": {
+    "all10fixture_files_byte_unchanged": true,
+    "sha256": {
+      "current-generation/tests/fixtures/output-contract/short-wait-coin.json": "8151567e17668baf3869780644216292bff5a3d6704dcc36c8d6f3ff81c6d665",
+      "current-generation/tests/fixtures/output-contract/long-entry-full.json": "1d1d61ba2332e5b330b9fc2c17fe9f8ff7954f023a02387bf8fb6781b3c007f3",
+      "current-generation/tests/fixtures/output-contract/long-removed-full.json": "cc58cef16c931daec831234808ff080c33b6140860db84e75d193d6e085d364f",
+      "current-generation/tests/fixtures/output-contract/long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
+      "current-generation/tests/fixtures/output-contract/missing-data.json": "14c7851efc2bffb9318142d8d0ba81ceb8a4d9a326ea10fe57ed9fe766179371",
+      "current-generation/tests/fixtures/output-contract/README.md": "86b69186180f6a72166832f9ad3dba2c159318a81ec77fbce44d7db764a6508c",
+      "current-generation/tests/fixtures/output-contract/short-entry-coin.json": "f91398c11b6544afc4d3e955b71e61d5ad50880ea7911bb58326a6378bf0645d",
+      "current-generation/tests/fixtures/output-contract/MANIFEST.json": "addeca77bb9721bef2dbe0e8a87073c713107ec8fd96e7ece335a6b6ba7b6cd8",
+      "current-generation/tests/fixtures/output-contract/short-removed-coin.json": "36fa5aa33a30202981ea812fd57f7d88589f26d7392ed18257bc0c17ee11d901",
+      "current-generation/tests/fixtures/output-contract/pump-liquidation-only.json": "add2e33d053fad5a7a8cb37fff29cb8b51d79a058ccfc231401200a13ea31b12"
+    },
+    "existing_Backpack_manual_V5_brief_original_cases_in_related28_pass": true,
+    "new_golden_or_render_policy": false
+  },
+  "own_lease": {
+    "commit": "6b8f11d9e70bee642f872e7b221e7115de7d6998",
+    "owner": "CODEX:SOURCES:01a14e11:1792325875043",
+    "expires_ts": 1792330675043,
+    "exact_readback": true
+  },
+  "limits": {
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "extra_normal_SQL_HTTP": 0,
+    "sharedruntime_guards_status_generation_changed": false,
+    "strategy_weights_threshold70_forms_pauses_caps_unknown_spent_reserves_changed": false,
+    "new_current_asset_or_source_coverage": false,
+    "historical_predictive_accuracy_claim": false
+  },
+  "exact_next_action": "Coordinator integrate frozen source/new12tests/preciseCIproposal in next connected package. Worker immediately freshmain/newownlease source-only honest technical feasibility of independent anomaly→inside-candle/orderflow→delayedconfirmation→short separate sameTelegram observer: actual complete1m3m5mOHLCV/tape vsrolling24h/partialpages, existingcaps/manualprotectedcost and105vsselected/rotationlatency from savedCTBR/APRTIA/currentcode. No observeractivation/mainselection/weight/form/cap changes."
+}

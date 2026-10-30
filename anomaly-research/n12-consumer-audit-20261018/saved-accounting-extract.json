@@ -1,0 +1,300 @@
+{
+  "schema": "N12_SAVED_ACCOUNTING_GAP_EXTRACT_V1",
+  "audit_head": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+  "source_file": "/private/tmp/report2-price-repair-20261018/natural-later/39133840839/12138787149/report2-run-result.json",
+  "source_sha256": "a8129fe2d7e130cdd0a35cb045f879f90458833a82bf5d930ab3591b46a2d9d1",
+  "coordinator_review_file": "/private/tmp/report2-price-repair-20261018/natural-later/review.json",
+  "coordinator_review_sha256": "8537265dc92d62bed85d5e521878d970838f05be73ab301a8158a8a57e802136",
+  "source_run": 39133840839,
+  "source_head": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+  "run_id": "1792331883613-1792331891442",
+  "artifact_id": 12138787149,
+  "zip_sha256": "91e315ecaf015fff224cfa828caf79b6c39e921e20d0695a3ef40ad4fb1d66cc",
+  "full_canonical_evidence_retained": false,
+  "raw_provider_bodies_reconstructed": false,
+  "runtime_replay_executed": false,
+  "candidates": [
+    {
+      "contract": "APR-USDT",
+      "snapshot_id": "S392:APR-USDT:1792331980053",
+      "observed_ts": 1792331980053,
+      "canonical_projection_keys": [
+        "contract",
+        "status",
+        "state",
+        "direction",
+        "scores",
+        "reasons",
+        "entry",
+        "trigger",
+        "invalidation",
+        "targets",
+        "liquidations",
+        "data_quality",
+        "changes_from_previous",
+        "observed_ts",
+        "snapshot_id",
+        "run_id",
+        "analytical_fingerprint"
+      ],
+      "full_evidence_present": false,
+      "N12_counts": {
+        "observed_fact_count": 2,
+        "valid_fact_count": 2,
+        "decision_assessment_receipt_count": 2,
+        "unscored_diagnostic_receipt_count": 1,
+        "score_application_receipt_count": 0,
+        "score_contribution": 0,
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN"
+      },
+      "N12_accounting": {
+        "configured_route_count": 1,
+        "used_provider_ids": [
+          "HTX_SPOT_FUTURES_TRADES"
+        ],
+        "rendered_provider_ids": [
+          "HTX_SPOT_FUTURES_TRADES"
+        ],
+        "nonzero_score_provider_ids": [],
+        "used_declared_upstream_ids": [
+          "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS"
+        ],
+        "used_physical_root_keys": [
+          "HTX_SPOT_FUTURES_TRADE_SAMPLE:APR-USDT:APR-USDT:BOUNDED:1000001723286190000:HTX_SPOT_TRADE_SAMPLE:APR-USDT:18195940"
+        ],
+        "http_per_route_is_not_additive_across_blocks": true
+      },
+      "N12_source_check_keys": [
+        "HTX_LARGE_TRADES"
+      ],
+      "N12_checked_membership": {
+        "HTX_LARGE_TRADES": [
+          "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0"
+        ]
+      },
+      "N05_external_check": {
+        "status": "PARTIAL_FOUR_HOUR_FLOW",
+        "network_calls": 5,
+        "valid_evidence_ids": []
+      },
+      "N12_impact_rows": [
+        {
+          "evidence_id": "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+          "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+          "validation": "VALID",
+          "actual_score_contribution": 0,
+          "reasons": [
+            "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+            "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+          ]
+        },
+        {
+          "evidence_id": "EV2:a8393bf2cc71745e8a390ed14a88658a5ab571642a48232b4a691a386377b909",
+          "metric_family": "ACTUAL_BITGET_TAKER_TRADES_BOUNDED",
+          "validation": "VALID",
+          "actual_score_contribution": 0,
+          "reasons": [
+            "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+            "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+          ]
+        }
+      ],
+      "N12_manual_receipts": [
+        {
+          "block_id": "N12",
+          "source_block_ids": [
+            "N12",
+            "N05"
+          ],
+          "evidence_id": "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+          "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:APR-USDT:APR-USDT:BOUNDED:1000001723286190000:HTX_SPOT_TRADE_SAMPLE:APR-USDT:18195940",
+          "evidence_ids": [
+            "EV2:e8056399baf038a1f938f75e2fb94db8a1a1511e3e83dece6f8e93772d5b0ba0",
+            "EV2:043d0fc3744466460ae484e98c1c0c158796aefa31862c1b20a3287464959ec9",
+            "EV2:a8393bf2cc71745e8a390ed14a88658a5ab571642a48232b4a691a386377b909"
+          ],
+          "physical_root_keys": [
+            "HTX_SPOT_FUTURES_TRADE_SAMPLE:APR-USDT:APR-USDT:BOUNDED:1000001723286190000:HTX_SPOT_TRADE_SAMPLE:APR-USDT:18195940"
+          ],
+          "source_ts": 1792331889518,
+          "observed_ts": 1792331954956,
+          "label": "Направление последних сделок HTX",
+          "value": "HTX фьючерсы: 7 сделок, покупки 0,16, продажи 1 377,1 USDT; спот: 11 сделок, покупки 299,39, продажи 220,62 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен; Bitget спот: 371 сделок, покупки 3 896,64, продажи 7 584,33 USDT; общего направления по всем доступным неполным выборкам нет; Bitget — одна отдельная биржа, её спот и фьючерсы не считались двумя независимыми площадками",
+          "source": "HTX / спот и фьючерсы / HTX / Bitget",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        }
+      ],
+      "N12_telegram_receipts": [],
+      "telegram_payload_status": "APPROVED_PAYLOAD_TEXT_OBSERVED",
+      "shared_http_attribution": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 5,
+        "n12_http": 0,
+        "n12_routes": [
+          {
+            "venue": "GATE_FUTURES_N12",
+            "http": 0,
+            "status": "EXACT_GATE_IDENTITY_AND_SHARED_METADATA_REQUIRED"
+          },
+          {
+            "venue": "KUCOIN_N12_EXACT_TOKEN",
+            "http": 0,
+            "status": "CALLER_FIVE_REQUEST_CAP"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "distinct_OBSERVE_role_origins": [
+        "GATE_OFFICIAL",
+        "HTX_OFFICIAL",
+        "OKX_OFFICIAL"
+      ],
+      "OBSERVE_role_closed": true,
+      "OBSERVE_role_is_not_N12_printed_use": true
+    },
+    {
+      "contract": "NEAR-USDT",
+      "snapshot_id": "S392:NEAR-USDT:1792331943696",
+      "observed_ts": 1792331943696,
+      "canonical_projection_keys": [
+        "contract",
+        "status",
+        "state",
+        "direction",
+        "scores",
+        "reasons",
+        "entry",
+        "trigger",
+        "invalidation",
+        "targets",
+        "liquidations",
+        "data_quality",
+        "changes_from_previous",
+        "observed_ts",
+        "snapshot_id",
+        "run_id",
+        "analytical_fingerprint"
+      ],
+      "full_evidence_present": false,
+      "N12_counts": {
+        "observed_fact_count": 2,
+        "valid_fact_count": 2,
+        "decision_assessment_receipt_count": 2,
+        "unscored_diagnostic_receipt_count": 1,
+        "score_application_receipt_count": 0,
+        "score_contribution": 0,
+        "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN"
+      },
+      "N12_accounting": {
+        "configured_route_count": 1,
+        "used_provider_ids": [
+          "HTX_SPOT_FUTURES_TRADES"
+        ],
+        "rendered_provider_ids": [
+          "HTX_SPOT_FUTURES_TRADES"
+        ],
+        "nonzero_score_provider_ids": [],
+        "used_declared_upstream_ids": [
+          "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS"
+        ],
+        "used_physical_root_keys": [
+          "HTX_SPOT_FUTURES_TRADE_SAMPLE:NEAR-USDT:NEAR-USDT:BOUNDED:1000020874350870000:HTX_SPOT_TRADE_SAMPLE:NEAR-USDT:148024107"
+        ],
+        "http_per_route_is_not_additive_across_blocks": true
+      },
+      "N12_source_check_keys": [
+        "HTX_LARGE_TRADES"
+      ],
+      "N12_checked_membership": {
+        "HTX_LARGE_TRADES": [
+          "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8"
+        ]
+      },
+      "N05_external_check": {
+        "status": "CLOSED_MULTIPLE_QUALIFIED_VENUE_COMPONENTS",
+        "network_calls": 5,
+        "valid_evidence_ids": []
+      },
+      "N12_impact_rows": [
+        {
+          "evidence_id": "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+          "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+          "validation": "VALID",
+          "actual_score_contribution": 0,
+          "reasons": [
+            "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+            "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+          ]
+        },
+        {
+          "evidence_id": "EV2:7a41f3b913d119e0e352c81788f4deb7d41e39c507adcccdb83ddf9c7b0211dd",
+          "metric_family": "ACTUAL_NATIVE_PUBLIC_TAKER_TRADES_BOUNDED",
+          "validation": "VALID",
+          "actual_score_contribution": 0,
+          "reasons": [
+            "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+            "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+          ]
+        }
+      ],
+      "N12_manual_receipts": [
+        {
+          "block_id": "N12",
+          "source_block_ids": [
+            "N12",
+            "N05"
+          ],
+          "evidence_id": "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+          "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:NEAR-USDT:NEAR-USDT:BOUNDED:1000020874350870000:HTX_SPOT_TRADE_SAMPLE:NEAR-USDT:148024107",
+          "evidence_ids": [
+            "EV2:4c67068c3b81bd9b95660bf50e93bb51ea18fe08a692c72e1cfe9705280ca0d8",
+            "EV2:4eec42121391258120c710ab390137e8d109f847944d9e4d37523353c8b4019c",
+            "EV2:7a41f3b913d119e0e352c81788f4deb7d41e39c507adcccdb83ddf9c7b0211dd"
+          ],
+          "physical_root_keys": [
+            "HTX_SPOT_FUTURES_TRADE_SAMPLE:NEAR-USDT:NEAR-USDT:BOUNDED:1000020874350870000:HTX_SPOT_TRADE_SAMPLE:NEAR-USDT:148024107"
+          ],
+          "source_ts": 1792331885195,
+          "observed_ts": 1792331912979,
+          "label": "Направление последних сделок HTX",
+          "value": "HTX фьючерсы: 9 сделок, покупки 154,21, продажи 1 947,27 USDT; спот: 245 сделок, покупки 7 192,79, продажи 7 102 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки BINANCE / POLONIEX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен; OKX спот: 304 сделок, покупки 16 287,26, продажи 111 146,48 USDT; общего направления по всем доступным неполным выборкам нет; спот и фьючерсы одной биржи не считались двумя независимыми площадками",
+          "source": "HTX / спот и фьючерсы / BINANCE / POLONIEX / OKX",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        }
+      ],
+      "N12_telegram_receipts": [],
+      "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+      "shared_http_attribution": {
+        "status": "RECONCILED_ADAPTER_TRANSPORT",
+        "total_http": 5,
+        "n05_http": 3,
+        "n12_http": 2,
+        "n12_routes": [
+          {
+            "venue": "OKX_N12_NATIVE",
+            "http": 2,
+            "status": "CLOSED_BOUNDED_N12_PUBLIC_TRADES"
+          },
+          {
+            "venue": "KUCOIN_N12_NATIVE",
+            "http": 0,
+            "status": "NO_USEFUL_PUBLIC_TRADE_SAMPLE"
+          }
+        ],
+        "no_double_count": true,
+        "score_changed": false
+      },
+      "distinct_OBSERVE_role_origins": [
+        "GATE_OFFICIAL",
+        "HTX_OFFICIAL",
+        "OKX_OFFICIAL"
+      ],
+      "OBSERVE_role_closed": true,
+      "OBSERVE_role_is_not_N12_printed_use": true
+    }
+  ]
+}

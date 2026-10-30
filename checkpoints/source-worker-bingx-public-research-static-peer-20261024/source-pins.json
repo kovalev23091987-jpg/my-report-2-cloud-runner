@@ -1,0 +1,51 @@
+{
+  "schema": "SOURCE_BINGX_PUBLIC_RESEARCH_EXACT_REVIEWED_SOURCE_PINS_V1",
+  "working_base": "6a5fe77903b50f7ee2b05a735cd7a8429707755d",
+  "ROOT_checkout": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-bingx-migration-20261024",
+  "ROOT_target_binding": "Explicit assigned final working proposal snapshots; no prior immutable ROOT commit/manifest pin claimed. FULL exact proposal bytes now copied as data into this SOURCE packet.",
+  "targets": [
+    {
+      "path": "checkpoints/bingx-catalog-bootstrap-connected-20261024/public-research-exception-request.json",
+      "bytes": 3808,
+      "sha256": "1450a4c7756aceb1528acd48a62377565b8a986352302720d64d2b4100cbc43a"
+    },
+    {
+      "path": "checkpoints/bingx-catalog-bootstrap-connected-20261024/public-research-session.proposed.mjs.txt",
+      "bytes": 11904,
+      "sha256": "ea16c352f2707ca107ae0a810ff85051fd24c0d65295b6302e088e5b90066993"
+    }
+  ],
+  "helpers": [
+    {
+      "path": "runner/github-bounded-phase-lease.mjs",
+      "bytes": 7370,
+      "sha256": "a04d1d0877cabd3dc92a2aa7e3033a21eecb9048f13810d0acd229ed2fb10ac7",
+      "git_blob": "50ec5b329ecb1db2933e3c732df3a778250d49f2",
+      "immutable_head": "6a5fe77903b50f7ee2b05a735cd7a8429707755d",
+      "working_equals_immutable_Git_blob": true
+    },
+    {
+      "path": "runner/github-four-mirror-cas.mjs",
+      "bytes": 11414,
+      "sha256": "fbd4b30314790bd91fc4b617365af80ebb6672e5ff8a7e26a394a4db9712ff39",
+      "git_blob": "87335b2e35e45a35ead9e8723f33013069fced04",
+      "immutable_head": "6a5fe77903b50f7ee2b05a735cd7a8429707755d",
+      "working_equals_immutable_Git_blob": true
+    }
+  ],
+  "import_closure": "Both helpers fully read/Git-byte-matched. Their only nonbuiltin dependency is bounded-phase-lease -> four-mirror-cas; latter builtin crypto/fs. No app imports executed.",
+  "prior_mutable_target_pins_for_precise_delta_history": [
+    {
+      "path": "checkpoints/bingx-catalog-bootstrap-connected-20261024/public-research-exception-request.json",
+      "bytes": 3808,
+      "sha256": "1450a4c7756aceb1528acd48a62377565b8a986352302720d64d2b4100cbc43a"
+    },
+    {
+      "path": "checkpoints/bingx-catalog-bootstrap-connected-20261024/public-research-session.proposed.mjs.txt",
+      "bytes": 11522,
+      "sha256": "bc1eb7759f97d57c1a3ed9bbb6f3e94c4b3f3ae67a666562ffe6ace76e6c385b"
+    }
+  ],
+  "snapshot_copies": "reviewed-inputs/<same filenames>; data only, not installed executable",
+  "earlier_counter_delta": "ROOT11497->11522: unchanged actual counter during intent save, live after save, actual count immediately before https.request. Closed for exact final snapshot, not an open finding."
+}

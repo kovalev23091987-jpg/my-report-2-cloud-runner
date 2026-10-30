@@ -1,0 +1,55 @@
+{
+  "schema": "F564_GENERAL_NATIVE_COIN_QUALIFICATION_V1",
+  "status": "ONE_NEW_CONNECTED_CASE_PASS_AFTER_TEST_ASSERTION_FIX",
+  "first_attempt": {
+    "pass": 0,
+    "fail": 1,
+    "duration_ms": 71.478417,
+    "cause": "Test used reference equality across independent structured-clone resolver reads; no native IO and no source defect.",
+    "reached_real_source_before_failure": false,
+    "log": "pump-report/handoffs/sources/F564_GENERAL_NATIVE_COIN_CONNECTED_FIRST.log"
+  },
+  "affected_rerun": {
+    "pass": 1,
+    "fail": 0,
+    "duration_ms": 74.958125,
+    "case_ms": 30.941667,
+    "log": "pump-report/handoffs/sources/F564_GENERAL_NATIVE_COIN_CONNECTED_AFTER_FIX.log"
+  },
+  "unique_new_case": 1,
+  "old_accepted_cases_replayed": 0,
+  "checks": [
+    "All550 exact reviewed rows partition541 eligible/9 UNKNOWN; no unsupported",
+    "Existing independent ROOT identity resolver, no duplicate classification",
+    "541 semantics include old11+APT1, newly eligible529; old13/APT qualifications preserved",
+    "Numeric ordinary 0G/1INCH/2Z/4/4STOCK and Chinese display BNLIFE remain eligible",
+    "Changed native id/asset/base/symbol/family/margin/settle and unknown classification fail closed",
+    "Actual createPumpSources/getCore uses Coin fields to real measureLiquidity; contradictory STANDARD arrays ignored",
+    "Missing Coin arrays and missing originalT remain unusable",
+    "Scaled package1000PEPE remains unusable even when Coin arrays are present",
+    "No unit, multiplier, quantity step, candle or crossvenue promotion outside scope"
+  ],
+  "artificial_fixture_broker_calls": 4,
+  "native_provider_calls": 0,
+  "docs_SQL_Telegram_deploy": 0,
+  "actual_native_book_qualified": 0,
+  "ROOT_adoption_pending": true,
+  "immutable_shared_input_hashes": {
+    "pump-report/registry/index.mjs": {
+      "bytes": 27554,
+      "sha256": "56fb530b6cbcec49bfe4dc6912ff466272d1896ee3869cad1d5fa9d68d980005"
+    },
+    "pump-report/registry/native-execution-qualifications.mjs": {
+      "bytes": 1304,
+      "sha256": "c1676640dc2ce34504e9914e1ede6a77beec2ee2e26717d3a5fdb08028459f7b"
+    },
+    "pump-report/sources/index.mjs": {
+      "bytes": 37587,
+      "sha256": "c0afe8614fa927fecf40b51b3df76624d3472ebba9f6ebd49cdb317d111ffb84"
+    },
+    "checkpoints/pump-report-20261025/ROOT_BINGX_GENERAL_NATIVE_UNIT_PRIMARY_DELTA.json": {
+      "bytes": 1631,
+      "sha256": "f134338081199a26f7f2aa66ea29b6fb68535961500b81373a831e052e1b0f8b"
+    }
+  }
+}

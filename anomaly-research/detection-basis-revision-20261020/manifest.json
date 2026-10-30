@@ -1,0 +1,57 @@
+{
+  "schema": "DETECTION_BASIS_NEXT_PROPOSED_PACKAGE_MANIFEST_V1",
+  "base_main": "0c763eb4d03ba66bad1b98d26ab45376da87942e",
+  "target": {
+    "path": "anomaly-research/durability/identity-retention-grid.mjs",
+    "before_sha256": "0ef21ef929c69896fd6a1c8a6742e3e9a66071b99e6e0cfc4a6c936daeab2788",
+    "after_sha256": "aa14fb0189c80d3dc925c4ff48cd39a9c67e67fb5b3e4ee8bc6be6c88f594af7",
+    "applied": false,
+    "CURRENT569group_apply_allowed": false
+  },
+  "patch_sha256": "51883c017269b490b7e5af1ba44eabd09701a10ba8b23b92502bb927dfd97cc0",
+  "retained_inputs": [
+    {
+      "id": "samples",
+      "path": "anomaly-research/saved-candle-typed-input-20261019/sample-inputs.json",
+      "sha256": "c8f3d9b5447f4779c7bb3a565ea0f58a3a3a165e66a3d310f5f88a2b8d42ce62"
+    },
+    {
+      "id": "witness",
+      "path": "anomaly-research/saved-candle-typed-input-20261019/witness.json",
+      "sha256": "3b01303ca6c4450de64a84000c4360a00da36adef65b763be7e94ce08236dd84"
+    }
+  ],
+  "callable": "runDetectionBasisRevisionConnected({baseline_root,candidate_root,repo_root})",
+  "roots": "FULL_REPOSITORY_BASELINE_CANDIDATE_REPO; sameobserver, onlydurabilitytargetdiff",
+  "qualification": "UNEXECUTED_NEXT_COMMON_ONLY",
+  "files": {
+    "README_RU.md": {
+      "bytes": 8541,
+      "sha256": "2f0c9291f91522a4570b80e5e7f63ce699de4c50bbeaa7cede4175386452e734"
+    },
+    "connected.mjs": {
+      "bytes": 12587,
+      "sha256": "b6c2b10402c76883fb5c07bc3533ef84458a7c4f2acf8b977d892cfa682dfd90"
+    },
+    "counterexamples.json": {
+      "bytes": 1960,
+      "sha256": "99336bb82e20a37167b9a0e1c0f59b8ee06671de80d05dc2092dd8d5cfdcef81"
+    },
+    "proposed.patch": {
+      "bytes": 12083,
+      "sha256": "51883c017269b490b7e5af1ba44eabd09701a10ba8b23b92502bb927dfd97cc0"
+    },
+    "provenance.json": {
+      "bytes": 24142,
+      "sha256": "498dae99da9b03279bb6e30a60e6d3e39a417ca952ce590bb00eac7c081d2fc8"
+    },
+    "registry.after.mjs": {
+      "bytes": 12638,
+      "sha256": "aa14fb0189c80d3dc925c4ff48cd39a9c67e67fb5b3e4ee8bc6be6c88f594af7"
+    },
+    "registry.before.mjs": {
+      "bytes": 8523,
+      "sha256": "0ef21ef929c69896fd6a1c8a6742e3e9a66071b99e6e0cfc4a6c936daeab2788"
+    }
+  }
+}

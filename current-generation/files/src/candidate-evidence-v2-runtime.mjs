@@ -157,7 +157,7 @@ export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
  N09:{all:['HTX_PUBLIC_RISK'],supplemental:[]},
  N10:{all:['PRIMARY_TECHNICAL_CONTEXT'],supplemental:[]},
  N11:{all:['PRIMARY_EXECUTION_STRESS'],supplemental:[]},
- N12:{all:['HTX_LARGE_TRADES'],supplemental:[]},
+ N12:{all:['HTX_LARGE_TRADES'],supplemental:['EXTERNAL_N05_FLOW']},
  N14:{any:['DERIBIT_ALT_OPTIONS','DELTA_OPTIONS','BYBIT_OPTIONS','BINANCE_OPTION_INTEREST'],supplemental:[]},
  N15:{any:['COINGECKO_SECTOR','COINPAPRIKA_SECTOR'],supplemental:[]},
  N16:{all:['PRIMARY_EXECUTION_COST'],supplemental:[]},
@@ -284,7 +284,7 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   const owners=[...(requirement.all||[]),...(requirement.any||[]),...(requirement.supplemental||[])];
   const sourceStatuses=Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||'NOT_EVALUATED')]));
    const sourceChecks=Object.fromEntries(owners.map(name=>{
-    const source=sources?.[name]||{},sourceRows=(Array.isArray(source.evidence)?source.evidence:[]).filter(row=>row?.block_id===block&&rows.some(fact=>fact.evidence_id===row.evidence_id&&fact.htx_contract===row.htx_contract));
+    const source=sources?.[name]||{},sourceRows=(Array.isArray(source.evidence)?source.evidence:[]).filter(row=>row?.block_id===block&&rows.some(fact=>fact.evidence_id===row.evidence_id&&fact.htx_contract===row.htx_contract&&(block!=='N12'||name!=='EXTERNAL_N05_FLOW'||['provider_id','upstream_id','asset_id','metric_family','source_ts','observed_ts','first_known_ts','expires_at','raw_hash','value','coverage_fraction'].every(k=>fact[k]===row[k])&&evidenceDedupKey(fact)===evidenceDedupKey(row))));
     const valid=sourceRows.filter(row=>validateEvidenceV2(row,{decision_ts}).usable);
     return[name,{status:String(source.status||'NOT_EVALUATED'),attempted:sourceWasAttempted(source),checked:sourceWasActuallyChecked(source),capability_resolved_without_route:source.status==='CAPABILITY_CHECKED_NO_EXACT_ROUTE',network_calls:Number(source.network_calls||0),cache_status:String(source.cache_status||'')||null,receipt_count:Array.isArray(source.receipts)?source.receipts.length:0,admission_status:source.admission?.status??source.whole_job_admission?.status??null,blocking_checks:Array.isArray(source.blocking_checks)?source.blocking_checks:[],...(retainHtxFlowClosureDiagnostic(source.closure_diagnostic)?{source_diagnostic:retainHtxFlowClosureDiagnostic(source.closure_diagnostic)}:{}),valid_evidence_ids:valid.map(row=>row.evidence_id),provider_ids:[...new Set(valid.map(row=>row.provider_id))],declared_upstream_ids:[...new Set(valid.map(row=>row.upstream_id))],physical_root_keys:[...new Set(valid.map(evidenceDedupKey))],receipts:Array.isArray(source.receipts)?source.receipts.slice(0,8).map(r=>({route:r.route??null,status:r.status??null,http_status:r.http_status??null,error:r.error??null})):[]}];
    }));
@@ -346,6 +346,9 @@ export function planCandidateEvidenceRoutes(params={}){
  return{routes,key,chainName,chainEligible,nativeSectorEligible,nativeSupplyEligible,nativeChainEventsEligible,supplyEligible,chainEventsEligible,evmEligible,socialEligible,officialEligible,gdeltEligible,blockscoutEligible};
 }
 
+export function externalN12ContextEvidence(result){
+ return(Array.isArray(result?.evidence)?result.evidence:[]).filter(row=>row?.block_id==='N12'&&['GATE_SPOT_TRADES','BITFINEX_SPOT_TRADES','KRAKEN_SPOT_TRADES','GATE_FUTURES_TRADES','BITGET_SPOT_TRADES','BITGET_FUTURES_TRADES','OKX_SPOT_TRADES','OKX_FUTURES_TRADES','KUCOIN_SPOT_TRADES','KUCOIN_FUTURES_TRADES'].includes(row?.provider_id));
+}
 export async function collectCandidateEvidenceV2(params={}){
  const requestedCap=Number(params.max_requests??process.env.REPORT2_EVIDENCE_HTTP_CAP);const evidenceCap=Number.isSafeInteger(requestedCap)?Math.max(5,Math.min(28,requestedCap)):5;
  // One transport guard also covers the compulsory sources and exceptions.
@@ -375,7 +378,7 @@ export async function collectCandidateEvidenceV2(params={}){
  const cgSector=retainCheckedSectorAbsence(params,routeBlock.results.SECTOR_COINGECKO||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0});
  const supplementalSources=params?.supplemental_context?.sources||{};
  const nansen=resolveNansenFlowPrimary(supplementalSources.NANSEN_FLOWS,params);
- const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(bybitOptions.evidence||[]),...(binanceOptionInterest.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(routeBlock.results.JOINT_FLOW?.evidence||[]).filter(row=>row?.block_id==='N12'&&['GATE_FUTURES_TRADES','BITGET_SPOT_TRADES','BITGET_FUTURES_TRADES','OKX_SPOT_TRADES','OKX_FUTURES_TRADES','KUCOIN_SPOT_TRADES','KUCOIN_FUTURES_TRADES'].includes(row?.provider_id)),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]&&!PAUSED_BLOCKS[row?.block_id]&&row?.block_id!=='N05');
+ const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(bybitOptions.evidence||[]),...(binanceOptionInterest.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...externalN12ContextEvidence(routeBlock.results.JOINT_FLOW),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]&&!PAUSED_BLOCKS[row?.block_id]&&row?.block_id!=='N05');
  const wikimedia=PAUSED_BLOCKS.N06?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:routeBlock.results.WIKIMEDIA||{status:'EXACT_VERIFIED_PAGE_BINDING_REQUIRED',evidence:[],network_calls:0};
  const htxAnnouncements=PAUSED_BLOCKS.N07?{status:'BLOCK_PAUSED_BY_OWNER',evidence:[],network_calls:0,check_completed:false,internal_only:true}:routeBlock.results.HTX_ANNOUNCEMENTS||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};
  const pausedN01={status:'BLOCK_PAUSED_BY_OWNER',pause_reason:PAUSED_BLOCKS.N01,network_calls:0,evidence:[],check_completed:false,internal_only:true};

@@ -1,0 +1,61 @@
+✖ ordinary storage retains all796 inactive card proofs instead of replacing them with compact rows (1.0945ms)
+✖ peak protected storage is a declared one-body-per-card scenario, never native free memory or activation (0.18925ms)
+✔ year-long active episodes cannot disappear at the90day projection window or understate the card deficit (0.123334ms)
+✔ a short summary window cannot discard a longer declared hot window and its raw is counted only once (0.40475ms)
+✔ protecting retained inactive proofs does not change source traffic, queue visits, caps or native flags (0.078084ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51.90775
+
+✖ failing tests:
+
+test at anomaly-research/statistics/retained-capacity.test.mjs:5:1
+✖ ordinary storage retains all796 inactive card proofs instead of replacing them with compact rows (1.0945ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 55951636
+  - 55951436
+         ^
+  
+      at TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-anomaly-worker/anomaly-research/statistics/retained-capacity.test.mjs:7:204)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 55951636,
+    expected: 55951436,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at anomaly-research/statistics/retained-capacity.test.mjs:9:1
+✖ peak protected storage is a declared one-body-per-card scenario, never native free memory or activation (0.18925ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 637227000
+  - 637225000
+         ^
+  
+      at TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-anomaly-worker/anomaly-research/statistics/retained-capacity.test.mjs:11:55)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 637227000,
+    expected: 637225000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

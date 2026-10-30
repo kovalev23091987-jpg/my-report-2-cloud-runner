@@ -1,0 +1,269 @@
+{
+  "schema": "AU_REDACTED_ONE_EXACT_AUTO_BLOCK_TRACE_V1",
+  "private_capture_path": "pump-report/.private/observations/exact-auto-20261026-reply.json",
+  "private_capture_sha256": "53f6976b062d92a63f3085eccb516309ddd84a4f9190fe66e9a18d7bb575889a",
+  "private_capture_bytes": 461226,
+  "observer_lookup_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-exact-observed-auto-20261026-one",
+    "usage": {
+      "requests": 6,
+      "rows_read": 21,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 21,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "observer_new_market_HTTP": 0,
+  "observer_new_Telegram": 0,
+  "run_id": "8169859d-4721-442b-a08e-8a4e9dfc2fd9",
+  "run_status": "INCOMPLETE",
+  "run_discovery_result": "INCOMPLETE_COVERAGE_OR_RESOURCES",
+  "catalog_counts": {
+    "total": 1284,
+    "qualified": 552,
+    "unqualified": 732,
+    "verified_crypto_count": 552,
+    "delivery_eligible_verified_count": 550,
+    "owner_delivery_excluded_count": 2
+  },
+  "bulk_counts": {
+    "status": "CHECKED",
+    "expected": 550,
+    "checked": 550
+  },
+  "semantic_source_evidence": {
+    "eligible_for_deep_check": 541,
+    "temporarily_deferred": 9,
+    "reason_counts": {
+      "NATIVE_CORE_UNIT_EVIDENCE_REQUIRED": 9
+    },
+    "not_an_asset_exclusion": true,
+    "current_CORE_proven": false
+  },
+  "checked_runtime_summaries": [
+    {
+      "base": "KIMCHI",
+      "mode": "AUTO",
+      "run_purpose": "PRODUCTION",
+      "ready": false,
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "original_independently_bound_here": true
+    },
+    {
+      "base": "ARIA",
+      "mode": "AUTO",
+      "run_purpose": "PRODUCTION",
+      "ready": false,
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "original_independently_bound_here": false
+    },
+    {
+      "base": "KNOTS",
+      "mode": "AUTO",
+      "run_purpose": "PRODUCTION",
+      "ready": false,
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "original_independently_bound_here": false
+    },
+    {
+      "base": "DARKSWAP",
+      "mode": "AUTO",
+      "run_purpose": "PRODUCTION",
+      "ready": false,
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "original_independently_bound_here": false
+    },
+    {
+      "base": "CLAUDIA",
+      "mode": "AUTO",
+      "run_purpose": "PRODUCTION",
+      "ready": false,
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "original_independently_bound_here": false
+    },
+    {
+      "base": "DACITY",
+      "mode": "AUTO",
+      "run_purpose": "PRODUCTION",
+      "ready": false,
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "original_independently_bound_here": false
+    },
+    {
+      "base": "DOOD",
+      "mode": "AUTO",
+      "run_purpose": "PRODUCTION",
+      "ready": false,
+      "reasons": [
+        "PLAN_INVALIDATED"
+      ],
+      "original_independently_bound_here": false
+    },
+    {
+      "base": "ERA",
+      "mode": "AUTO",
+      "run_purpose": "PRODUCTION",
+      "ready": false,
+      "reasons": [
+        "PLAN_INVALIDATED"
+      ],
+      "original_independently_bound_here": false
+    }
+  ],
+  "checked_count": 8,
+  "run_delivery_count": 0,
+  "errors": [
+    {
+      "reason": "SOURCE_EVIDENCE_PENDING",
+      "count": 9
+    },
+    {
+      "reason": "UNIVERSE_QUALIFICATION_INCOMPLETE",
+      "unqualified": 18
+    },
+    "RUN_RESOURCES_DEFERRED"
+  ],
+  "resources_top_keys": [
+    "total",
+    "lanes",
+    "liquidations",
+    "candidates",
+    "unknown",
+    "receipts",
+    "run_id",
+    "mode",
+    "limits",
+    "protected_reserves"
+  ],
+  "resource_total": 34,
+  "resource_lanes": {
+    "hot": 34,
+    "background": 0,
+    "statistics": 0
+  },
+  "resource_provider_keys": [],
+  "bound_original": {
+    "asset": "KIMCHI",
+    "analysis_key": "pump:analysis:fb73e93a0364c3eea289c1b75b115e193f05fbae11f38c7a0fc154dfb9a8bdc7",
+    "analysis_sha256": "fb73e93a0364c3eea289c1b75b115e193f05fbae11f38c7a0fc154dfb9a8bdc7",
+    "input_sha256": "c66e85344608b50c66d9b3bf9cfcdd3d899767cdbfad77de2a23f619c532d30f",
+    "original_sha256": "dc4c7459e392058690992c8f032b74206ddcfee90d4c8587ac9844becbb66807",
+    "implementation_sha256": "8a0a7ea93f5dd50299bff22b6aac24e98a3abb3dbfc99b79b97981be94e77d44",
+    "evidence_class": "OBSERVED",
+    "mode": "AUTO",
+    "run_purpose": "PRODUCTION",
+    "ready": false,
+    "automatic_eligible": false,
+    "reasons": [
+      "CURRENT_ACTIVITY_NOT_CONFIRMED"
+    ],
+    "core": {
+      "price": {
+        "status": "USABLE",
+        "unit": "USDT_PER_BASE",
+        "origin": "OBSERVED",
+        "venue": "BINGX",
+        "source": "BINGX_OFFICIAL_PUBLIC_API",
+        "same_instrument": true,
+        "clocks_valid_at_original": true,
+        "source_coverage_present": false
+      },
+      "candles": {
+        "status": "USABLE",
+        "unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+        "origin": "OBSERVED",
+        "venue": "BINGX",
+        "source": "BINGX_OFFICIAL_PUBLIC_API",
+        "same_instrument": true,
+        "clocks_valid_at_original": true,
+        "source_coverage_present": true
+      },
+      "orderbook": {
+        "status": "USABLE",
+        "unit": "USDT_PRICE_BASE_QUANTITY",
+        "origin": "OBSERVED",
+        "venue": "BINGX",
+        "source": "BINGX_OFFICIAL_PUBLIC_API",
+        "same_instrument": true,
+        "clocks_valid_at_original": true,
+        "source_coverage_present": true
+      }
+    },
+    "original_clock_binding": true,
+    "core_fresh_now_claimed": false,
+    "input_fact_keys": [
+      "price",
+      "ticker_24h",
+      "candles",
+      "orderbook",
+      "growth_24h"
+    ],
+    "optional_trades_OI_funding_present": [],
+    "growth_proof_status": "CURRENT",
+    "day_growth_usable": true,
+    "growth_windows": [
+      {
+        "window_ms": 300000,
+        "passed": false,
+        "reason": null
+      },
+      {
+        "window_ms": 900000,
+        "passed": false,
+        "reason": null
+      },
+      {
+        "window_ms": 3600000,
+        "passed": false,
+        "reason": null
+      },
+      {
+        "window_ms": 86400000,
+        "passed": true,
+        "reason": null
+      }
+    ],
+    "activity_details_status": "OBSERVED_CLOSED_WINDOW_MEASUREMENTS",
+    "stored_activity_window_flags": [
+      {
+        "window_ms": 180000,
+        "positive_growth_accelerated": true,
+        "volume_at_least_previous_with_less_growth": null,
+        "reason": null
+      },
+      {
+        "window_ms": 300000,
+        "positive_growth_accelerated": false,
+        "volume_at_least_previous_with_less_growth": false,
+        "reason": null
+      }
+    ],
+    "volume_comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+    "current_to_impulse_ratio_present": false,
+    "liquidity_status": null,
+    "plan_present": false,
+    "card_text_state": "NULL",
+    "map_status": "NOT_CHECKED",
+    "map_reason": "OPTIONAL_MAP_NOT_REQUESTED"
+  },
+  "new_strategy_replay_or_core_callback": 0,
+  "other7_originals_bound_here": false,
+  "raw_prices_levels_input_source_bodies_exported": false
+}

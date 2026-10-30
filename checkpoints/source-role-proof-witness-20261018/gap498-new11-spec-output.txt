@@ -1,0 +1,19 @@
+✔ saved default128 before-fixture:129/130 fresh closed snapshots now progress without erasing128 intervals (23.802667ms)
+✔ overflow receipt preserves the exact caller snapshot/interval and never claims durable ingress (0.926584ms)
+✔ duplicate/conflicting/stale source points after overflow create no new gap, transition or notice (1.014625ms)
+✔ continuous snapshots do not invent extra gaps; later enclosing bounds never claim contiguous missing history (0.694458ms)
+✔ restart preserves overflow, firstknown, cohort, proof refs, existing outcome links and outbox IDs (1.235916ms)
+✔ overflow current LONG confirmation stays explicitly gapped and non-trading (4.317667ms)
+✔ overflow current SHORT confirmation stays explicitly gapped and non-trading (0.707083ms)
+✔ invalid future, wrong-market or malformed closed snapshots cannot advance or damage a full gap journal (1.0905ms)
+✔ overflow is bounded through long residence and does not touch a second event or pending historical card (32.501417ms)
+✔ a restored pre-overflow full journal needs no migration or raised capacity to resume (1.043791ms)
+✔ malformed overflow count or clocks reject without silently resetting missing-history evidence (2.687042ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 115.510834

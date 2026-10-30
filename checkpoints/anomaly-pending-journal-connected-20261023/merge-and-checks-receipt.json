@@ -1,0 +1,884 @@
+{
+  "schema": "CENTRAL627_PENDING_JOURNAL_MERGE_AND_CHECKS_RECEIPT_V1",
+  "recorded_utc": "2026-10-23T11:19:44.997Z",
+  "qualification": {
+    "schema": "ACTUAL_PENDING_JOURNAL_NEW_COMPONENT_QUALIFICATION_V1",
+    "run": 39942917070,
+    "head": "7b14091b73d6d3ce058e5b779caa777000195250",
+    "conclusion": "success",
+    "actual_SPEC_pass": 1,
+    "actual_SPEC_fail": 0,
+    "actual_NEW_CONTROLLED_groups": 12,
+    "actual_NEW_CONTROLLED_variants": 32,
+    "artifact": 12496223300,
+    "ZIP_bytes": 8480,
+    "digest": "sha256:ae3dc8dd3a8a7a106f8aa3cddfec0646e85fc2b837424e68c0ba06effc839946",
+    "wholeZIPverified": true,
+    "members": [
+      {
+        "path": "component-return.json",
+        "bytes": 3451,
+        "sha256": "b640dc0f0eb2507fab79ef4e78883138e627693abdfe2b8107a207a01d4aeb68"
+      },
+      {
+        "path": "guard-before.json",
+        "bytes": 8105,
+        "sha256": "82ced05d38a346ba4f3e9675a8a6b4dd0c84f40365987690bc8dc8ba59cf1f59"
+      },
+      {
+        "path": "guard-after.json",
+        "bytes": 8104,
+        "sha256": "78215a93e5dce31c037070c176d32d967add21a148921360256998a505c2942c"
+      },
+      {
+        "path": "new-gate.spec.txt",
+        "bytes": 180,
+        "sha256": "bf68bbf0f9169b44230d7630ab321bce8e3f46c69d6e1a6c5681540bc68dc48e"
+      }
+    ],
+    "exact_sourcepins_before_after": 52,
+    "first_failed_setup_run": 39941887750,
+    "first_completed_groups": 0,
+    "old_or_completed_groups_replayed": 0,
+    "private_assembly": false,
+    "native_SQL": 0,
+    "SQLite": 0,
+    "provider": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_private_fs_files": "CONTROLLED real OStemp only/cleaned",
+    "native_ACK_or_crossjobdurability_claimed": false
+  },
+  "merge": {
+    "schema": "CENTRAL627_EXACT_MERGE_RECEIPT_V1",
+    "PR": 627,
+    "frozen_head": "403bffd6f47beb1e9d30fbb1bc503f8c70bbcd46",
+    "merge_head": "3647858233aa736b42901e2b3e4fe7c29feeb956",
+    "files": 47,
+    "all_files_exact_Git_blob_readback": true,
+    "authority_roots_unchanged": 9,
+    "actual_required_checks": [
+      {
+        "name": "verify",
+        "conclusion": "success",
+        "id": 120383426710
+      }
+    ],
+    "runtime_target": "runner-main ECC202183",
+    "source_original_local_frozen": "9b834acad5b4d5a41e201f33aaa579660c34e4c5",
+    "source13_byteexact": true,
+    "third_original626": "de70ec02ae855e8bf79488f225930aa144d2658e",
+    "third12_byteexact": true,
+    "native_activation": false,
+    "Telegram_restored": false,
+    "previous_accepted_full_runtime_files": 618,
+    "current_private_full_inventory_exported": false,
+    "runtime_change_bound_by_exact_overlay_file": "runner-main.mjs db6b333→ecc6cab8",
+    "automatic_assembly": {
+      "status": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+      "base": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+      "production_overlays": 15,
+      "worker_sha256": "5d97133c892d81d35b384edaa2e6c601fdabba5090e08add6415e8df5f452d45",
+      "source_mode_default": "OFF",
+      "production_changed": true
+    },
+    "automatic_binding": {
+      "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "worker_sha256": "5d97133c892d81d35b384edaa2e6c601fdabba5090e08add6415e8df5f452d45",
+      "runtime_checked": true
+    }
+  },
+  "automaticMAIN": {
+    "schema": "ACTUAL_AUTOMATIC_MAIN_627_RECEIPT_V1",
+    "run": 39944744259,
+    "head": "3647858233aa736b42901e2b3e4fe7c29feeb956",
+    "event": "push",
+    "conclusion": "success",
+    "artifact": {
+      "id": 12497357667,
+      "bytes": 292447,
+      "digest": "sha256:d50e35cbcdf0f705db9800fd8c7447a158d5b3c1990c4d632fd645b34b2aa2df",
+      "members": 44,
+      "whole_ZIP_verified": true
+    },
+    "actual_SPEC_files": 21,
+    "actual_pass": 2084,
+    "actual_fail": 0,
+    "actual_files": [
+      {
+        "path": "active-source-finalist-and-markets.tap",
+        "pass": 29,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "active-source-headroom.tap",
+        "pass": 403,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "exact-asset-role-and-collector-audit.tap",
+        "pass": 28,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "cold-archive.tap",
+        "pass": 242,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "hourly-native-usage.tap",
+        "pass": 41,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "index-useful-only.tap",
+        "pass": 21,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "native-identity-source-handoff.tap",
+        "pass": 39,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "native-sector-provider-binding.tap",
+        "pass": 260,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "native-transport-fallback.tap",
+        "pass": 7,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "native-useful-budget.tap",
+        "pass": 19,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "native-useful-runtime.tap",
+        "pass": 24,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "new-liq-research-admission.tap",
+        "pass": 6,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "private-forecast-consumer.tap",
+        "pass": 10,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "private-reader-runtime.tap",
+        "pass": 38,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "private-price-connected.tap",
+        "pass": 154,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "public-venue-health-priority.tap",
+        "pass": 281,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "retained-write-failure-guard.tap",
+        "pass": 110,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "scheduled-evidence-budget.tap",
+        "pass": 3,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "source-health-priority.tap",
+        "pass": 17,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "target.tap",
+        "pass": 223,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "weekly-htx-synchronized-plan.tap",
+        "pass": 129,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      }
+    ],
+    "all_members": [
+      {
+        "path": "active-source-finalist-and-markets.tap",
+        "bytes": 3851,
+        "sha256": "eb922cdde6bde3f2fb807abccb693d6dea4de3e86b59293b5362a21fc070a0eb"
+      },
+      {
+        "path": "active105-initial-source-queues.json",
+        "bytes": 299714,
+        "sha256": "e46bef359ea4a1bad67c6610304d246e097bff4a6d254b8730387f2e55ce2edd"
+      },
+      {
+        "path": "active-source-headroom.tap",
+        "bytes": 41730,
+        "sha256": "243b31be65153af157a88421a97227fc99012c2ce5b54d6018329fcc3acc4157"
+      },
+      {
+        "path": "assembly.json",
+        "bytes": 261,
+        "sha256": "dcae3c7d024f3be9db13c67a7afed042b5c08337d183205f82d23784cb2e8737"
+      },
+      {
+        "path": "binding.json",
+        "bytes": 218,
+        "sha256": "7abeddfa9a9b3071d6d9276dd569edf90ed2a4931d19f839b8fa41e8357c159d"
+      },
+      {
+        "path": "exact-asset-role-and-collector-audit.tap",
+        "bytes": 3018,
+        "sha256": "558e86362d69f26ce0c16df3ae1a4f1ad528e9d3700076cf7108fefa21f1ec88"
+      },
+      {
+        "path": "cold-archive.tap",
+        "bytes": 27134,
+        "sha256": "fa70380efba15a66a8200a36c600353b3a8f97e7d9c652a18f491bfd53544bdf"
+      },
+      {
+        "path": "hourly-native-usage-proof.json",
+        "bytes": 2463,
+        "sha256": "23b391b3348189c0b51ffde8673b9886323d48bbc20a3c6f5d14149ce6448783"
+      },
+      {
+        "path": "hourly-native-usage.tap",
+        "bytes": 5120,
+        "sha256": "1076529956daac409424f9de4707c4e722242431f8ff34815ebd0b236ecbc2b5"
+      },
+      {
+        "path": "index-useful-only.tap",
+        "bytes": 2286,
+        "sha256": "fcca9805e6523df6c754d441a2a18454c9efeffd9d210ad83f06d648a2f68879"
+      },
+      {
+        "path": "n11-rendered-source-coverage-summary.json",
+        "bytes": 2297,
+        "sha256": "7fad31da02cd5e68e14a08a46de7a2a582553236297bae89b097892e43e133c1"
+      },
+      {
+        "path": "n11-rendered-source-coverage.json",
+        "bytes": 2205188,
+        "sha256": "2bf8e477251c8605e7c9ef535d8906d86724727961b1c496749e5a11bdf264dc"
+      },
+      {
+        "path": "native-identity-source-handoff.tap",
+        "bytes": 4186,
+        "sha256": "0e4c8bd0b8946d391608ff7a54a76d1716568838030d13367acc1a937994c93a"
+      },
+      {
+        "path": "native-sector-denominations-retained-proof.json",
+        "bytes": 34993,
+        "sha256": "63e509401e8ef80a908bb133fd393bf79bb694f3eae2cde0616f52b75a90ba17"
+      },
+      {
+        "path": "native-sector-provider-binding.tap",
+        "bytes": 26238,
+        "sha256": "990844d45166cfb91964a7d8e82312b191beaa4a57405776f635122815bc881b"
+      },
+      {
+        "path": "native-sector-validation-plan.json",
+        "bytes": 515,
+        "sha256": "8cf00904ee9610d58cf4968e0eeaff9556b0bf88a3cb339c19be4b58fb54c882"
+      },
+      {
+        "path": "native-transport-fallback.tap",
+        "bytes": 881,
+        "sha256": "f0f70e60167b081fa669a58d4c46910b06f65ce24176f83fbe23468486c8023f"
+      },
+      {
+        "path": "native-useful-budget.tap",
+        "bytes": 2316,
+        "sha256": "6470132d45b92d0cbf18d3214840758766237b74a8435e98736e2a835064818a"
+      },
+      {
+        "path": "native-useful-runtime.tap",
+        "bytes": 3148,
+        "sha256": "2bd6ef11a8689c1e16bdd84a5313b433a9160fa2ca0f30e952577ce0959e3cb3"
+      },
+      {
+        "path": "new-liq-research-admission.tap",
+        "bytes": 742,
+        "sha256": "fd182ef53e01a12c37efa97a0881f34e5692acdb2c42d856f4c47f5b9bd77462"
+      },
+      {
+        "path": "private-forecast-consumer.tap",
+        "bytes": 1219,
+        "sha256": "8dbc1f507b8f4fb0f851a1865010d490f55ad98d2799cb398220f530b7524e2d"
+      },
+      {
+        "path": "private-reader-runtime.tap",
+        "bytes": 4343,
+        "sha256": "d07ab3f6ffe0dc48d7ecd877ea9a96492a9efb099f4c1db0bb082a8a0a0225fd"
+      },
+      {
+        "path": "private-price-connected.tap",
+        "bytes": 25563,
+        "sha256": "fa8bfe305514a188acbc94089f1166c97f6eb0926fa1d89c98d439b2c2683f8b"
+      },
+      {
+        "path": "proof-read-shapes-admission-scope.json",
+        "bytes": 8381,
+        "sha256": "69fcc2277abc153f0c51681af7ee6a4eb6813b575167ed081f867c35397e39c5"
+      },
+      {
+        "path": "protected-canonical-cases.json",
+        "bytes": 12075,
+        "sha256": "6c9551c85ac4429859cd0653a10cc43bf4df77add48d5772c66e3b8dac7eeecf"
+      },
+      {
+        "path": "public-venue-health-original-proof.json",
+        "bytes": 1920,
+        "sha256": "440ba076bf9e4b172bf714394e1d412b019d1d97367d2e0bda76425fa501a2b0"
+      },
+      {
+        "path": "public-venue-health-priority.tap",
+        "bytes": 25917,
+        "sha256": "5cc4b8f3db40968f9e1547385374cb725cc0af9f00bc90b218ebf69f7e560524"
+      },
+      {
+        "path": "qnt-lsk-native4-retained-proof.json",
+        "bytes": 16373,
+        "sha256": "410a6004319e20183221001cc5e6218ddcdb6f6150a82cb65f4abf3458ed76ce"
+      },
+      {
+        "path": "retained-storage-flow.json",
+        "bytes": 63805,
+        "sha256": "3f092f38df6fdc4a9a0a2f03c45ccf2f4c4f8b9af76e32d85a3cd3c2aeee88e5"
+      },
+      {
+        "path": "retained-write-failure-guard.tap",
+        "bytes": 11008,
+        "sha256": "693f3f18e8b2edd795c73091abf2a82017ac1a6c173ca74dcb86b22991edac53"
+      },
+      {
+        "path": "saved-native-day-accounting.json",
+        "bytes": 8819,
+        "sha256": "db748309d6cf21410a4306d5b7953a531228a8843e7c36cf903746a085c53f94"
+      },
+      {
+        "path": "scheduled-evidence-budget.tap",
+        "bytes": 490,
+        "sha256": "6e5f613d71badc21d45b6840176aa22f5cda91d984ddde71e3d7fe05bf81e0fd"
+      },
+      {
+        "path": "sector-effective105-retained.json",
+        "bytes": 186642,
+        "sha256": "45607df9aefa04ad0348c1426e6e907a8a0728a49121071152426c146d0bceee"
+      },
+      {
+        "path": "sector-exact-target-controlled-proof.json",
+        "bytes": 2279,
+        "sha256": "2cb5f9a93977bd2ca58499d8b38703121b1f49cab9b5eae8e618c5a6245fd07d"
+      },
+      {
+        "path": "source-health-priority-retained-proof.json",
+        "bytes": 27375,
+        "sha256": "d76c988f27687c3d0a93dc2022cbb615524061c296850aa883e26b12193c2c30"
+      },
+      {
+        "path": "source-health-priority.tap",
+        "bytes": 2006,
+        "sha256": "13db3570bf14fdfb6d55fc9659fdd0fd73a4d3cd71ad34cae0c742b1070e5b69"
+      },
+      {
+        "path": "storage-flow-summary.json",
+        "bytes": 610,
+        "sha256": "fc7a6c22d07eaae50190681049be5e77e227b4454cbfce28df0790f760d8cee5"
+      },
+      {
+        "path": "sql-bridge-counter-repair-qualification.json",
+        "bytes": 3773,
+        "sha256": "08299ed6ec0b46da67c445cb62a8133f047b72ed41d91797bc12d8fef8faea96"
+      },
+      {
+        "path": "target.tap",
+        "bytes": 22201,
+        "sha256": "e5aef342133a41c04303bf98249a072c3092ac9f1537a23e1b4d8a7c29f2904f"
+      },
+      {
+        "path": "tron-sector-retained-four-proof.json",
+        "bytes": 45860,
+        "sha256": "380b918f303abeeb2febda3eac284b7c936ed4860a23444264ef88fd09770fe7"
+      },
+      {
+        "path": "validation.log",
+        "bytes": 417,
+        "sha256": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f"
+      },
+      {
+        "path": "weekly-disabled-controlled-proof.json",
+        "bytes": 897,
+        "sha256": "82c28a8a3b59be67165774c07fab9a4d181451f9f48164c75ad5abc30edb5cc7"
+      },
+      {
+        "path": "weekly-htx-synchronized-plan.tap",
+        "bytes": 13422,
+        "sha256": "5a5e77efcca7c33233b7bfb8b81b10e886df55067f379adaa01807f21cc7d1c5"
+      },
+      {
+        "path": "weekly-retained106-package.json",
+        "bytes": 595,
+        "sha256": "1b03107ed07662ba8a76dfacd240dee7a369f81ba5185397176eb596f2708934"
+      }
+    ],
+    "manual_old_suite_dispatch": false,
+    "Telegram_restored": false
+  },
+  "automaticPR": {
+    "schema": "ACTUAL_AUTOMATIC_PR_627_RECEIPT_V1",
+    "run": 39944415611,
+    "head": "403bffd6f47beb1e9d30fbb1bc503f8c70bbcd46",
+    "event": "pull_request",
+    "conclusion": "success",
+    "artifact": {
+      "id": 12496304761,
+      "bytes": 4950,
+      "digest": "sha256:84f20bdd680b7f9446f4d3022659e146744c6d80b107607c6b8607428c57679d",
+      "members": 6,
+      "whole_ZIP_verified": true
+    },
+    "actual_SPEC_files": 3,
+    "actual_pass": 69,
+    "actual_fail": 0,
+    "actual_files": [
+      {
+        "path": "current-report-telegram.tap",
+        "pass": 9,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "target-runtime.tap",
+        "pass": 11,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      },
+      {
+        "path": "target-unit.tap",
+        "pass": 49,
+        "fail": 0,
+        "actual_format": "NODE_SPEC"
+      }
+    ],
+    "all_members": [
+      {
+        "path": "assembly.json",
+        "bytes": 261,
+        "sha256": "dcae3c7d024f3be9db13c67a7afed042b5c08337d183205f82d23784cb2e8737"
+      },
+      {
+        "path": "binding.json",
+        "bytes": 218,
+        "sha256": "7abeddfa9a9b3071d6d9276dd569edf90ed2a4931d19f839b8fa41e8357c159d"
+      },
+      {
+        "path": "current-report-telegram.tap",
+        "bytes": 1098,
+        "sha256": "f1cb6a274b4bb569f8d93f50c6f44c3e69d28c404e750f95d968a9fcd33708cf"
+      },
+      {
+        "path": "generation.log",
+        "bytes": 417,
+        "sha256": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f"
+      },
+      {
+        "path": "target-runtime.tap",
+        "bytes": 1312,
+        "sha256": "df11285c1c5ea12263fa5e34fe3b669c2449a7809598c3351323d130b7e14605"
+      },
+      {
+        "path": "target-unit.tap",
+        "bytes": 4955,
+        "sha256": "6ade435c356a35fe75ddd223eca9bda65eebaf9d757d5df251db96efaaecb231"
+      }
+    ],
+    "manual_old_suite_dispatch": false,
+    "Telegram_restored": false
+  },
+  "source_static_peer": {
+    "schema": "SOURCE_PENDING_OPERATION_JOURNAL_TARGETED_STATIC_PEER_V1",
+    "status": "ACCEPTED_WITH_LIMITS",
+    "reviewed_head": "de70ec02ae855e8bf79488f225930aa144d2658e",
+    "reviewed_prefix": "anomaly-research/pending-operation-journal-20261023",
+    "manifest_sha256": "349a1a4586213238274085d15a9cddd8c9edf7f1997f6694c6bf3fd611cc648b",
+    "review_scope": "ONE new existing runner fs/capability/early-preflight delta and ONE new callable only; immutable local Git objects",
+    "blockers": [],
+    "open_findings": [],
+    "mismatches": [],
+    "verified": {
+      "full_payloads": 11,
+      "total_files_including_manifest": 12,
+      "all_payload_full_bytes_lengths_SHA256": true,
+      "all_changed_paths_only_author_prefix": true,
+      "baseline_bytes": 184717,
+      "baseline_sha256": "db6b33383233cb1f594aac0f9072a812bf822d8479c2415fc5bb82d4d43f2dd3",
+      "target_bytes": 202183,
+      "target_sha256": "ecc6cab8956fbcb8f9485a2f8c48e693cb2149b57985b485685c3d9e8699d20d",
+      "case_bytes": 24151,
+      "case_sha256": "2a48433c35e5cd8b271aea90702fd6c3a00ae4845168acca435be98c11ed2397",
+      "exact_unified_diff_reconstructs_full_target": true,
+      "full_fs_insert_occurs_once": true,
+      "four_source_evidence_fragments_match_exact_baseline": true,
+      "eight_declared_dependencies_full_pins_exact": true,
+      "prepared_new_CONTROLLED_groups": 12,
+      "prepared_new_CONTROLLED_variants": 32,
+      "author_groups_executed": 0,
+      "source_groups_executed": 0
+    },
+    "static_observations": [
+      "Complete canonical prepared/opid/logical key/revision/first-known retained before ambiguous WRITE; journal intent persisted before WRITE/READBACK; current parent/usage/projection checked again after fs-await.",
+      "Known bounded SDK reply is saved before returning to kernel. Unknown usage is fenced before fs-await. Persistence failure or oversized known reply keeps the original full reply in RAM, marks failure and prevents next SQL; no invented on-disk reply recovery.",
+      "Independent expected full-file SHA and exact execution identity required on reopen. INITIALIZE_EMPTY is explicit trusted initialization; ENOENT is not automatic empty state. File/mode/symlink/bounds, unresolved .next/next claim and last sequence claim are checked.",
+      "Persistent exclusive sequence claims plus before-replace hash checks prevent the declared delayed same-sequence writer overwrite. This is bounded local same-workspace continuity, not distributed CAS or global durable once.",
+      "Restored pending/unknown operation preserves exact prepared and saved replies/usage, denies a new operation/SQL and is checked in early main preflight before new parent setup. Fresh SDK zeros do not reconcile retained unknown.",
+      "Native policy remains NULL/default OFF; no journal means capability absent. New private file/step claims are absent from the existing exact-name report2 artifact upload list.",
+      "Callable has literal 12 groups/32 variants, pre-import target/dependency pins, real RemoteD1 with CONTROLLED response transport and real local fs; records actual partial counts, restores fetch/Date in nested finally, and has no registration/autorun."
+    ],
+    "limits": [
+      "Static review only; new callable remains PREPARED_UNEXECUTED. No Node/import/syntax/application semantics/tests/SQL/SQLite/gitapply/provider/CF/MAIN/manual/Telegram executed by SOURCE.",
+      "External protected expected-SHA/identity anchor, launch installation, actual persistent platform carrier, crash/power-loss durability, fs races, native commit/ACK/schema/cost/current-day admission/CPU/heap/latency remain unqualified.",
+      "Declared conservative worst replacement writes 1616904192 bytes and reads 4850712576 bytes are arithmetic, not measured platform capacity or a native budget grant.",
+      "No activation, unknown restoration, SOURCE105 coverage, SAVING or SENT follows from this peer. Two OWNER deferrals and existing limits remain.",
+      "Old16/20/33/21/gate8/32 and all accepted cases were not replayed."
+    ],
+    "source_actions": {
+      "immutable_Git_readonly": true,
+      "Node": 0,
+      "import": 0,
+      "syntax": 0,
+      "tests": 0,
+      "application_semantics": 0,
+      "SQL": 0,
+      "SQLite": 0,
+      "gitapply": 0,
+      "native": 0,
+      "provider": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "new_lease": 0,
+      "Git_writes": 0
+    },
+    "delivery": {
+      "canonical_result_saved_locally": true,
+      "outbound_message_sent": false,
+      "reason": "Existing automatic approval review rejection is not retried or bypassed; ROOT/THIRD can inspect requested local result through their own authorized ordinary artifact reads."
+    },
+    "next": "Only exact final peer/manifest metadata delta may need metadata ACK; no repeated full static review or case execution absent a concrete new defect."
+  },
+  "third_actual_result_peer": {
+    "schema": "THIRD_ACTUAL_PENDING_JOURNAL_RESULT_TARGETED_PEER_V1",
+    "status": "ACCEPTED_WITH_LIMITS",
+    "run": 39942917070,
+    "head": "7b14091b73d6d3ce058e5b779caa777000195250",
+    "artifact": 12496223300,
+    "ZIP_bytes": 8480,
+    "ZIP_digest": "sha256:ae3dc8dd3a8a7a106f8aa3cddfec0646e85fc2b837424e68c0ba06effc839946",
+    "wholeZIP_verification": "ROOT already verified; THIRD did not download or re-read ZIP",
+    "all4_local_members_match_ROOT_receipt_FULL_bytes": true,
+    "members": [
+      {
+        "path": "component-return.json",
+        "bytes": 3451,
+        "sha256": "b640dc0f0eb2507fab79ef4e78883138e627693abdfe2b8107a207a01d4aeb68"
+      },
+      {
+        "path": "guard-after.json",
+        "bytes": 8104,
+        "sha256": "78215a93e5dce31c037070c176d32d967add21a148921360256998a505c2942c"
+      },
+      {
+        "path": "guard-before.json",
+        "bytes": 8105,
+        "sha256": "82ced05d38a346ba4f3e9675a8a6b4dd0c84f40365987690bc8dc8ba59cf1f59"
+      },
+      {
+        "path": "new-gate.spec.txt",
+        "bytes": 180,
+        "sha256": "bf68bbf0f9169b44230d7630ab321bce8e3f46c69d6e1a6c5681540bc68dc48e"
+      }
+    ],
+    "actual_result": {
+      "Node_SPEC": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "NEW_CONTROLLED_groups": 12,
+      "variants_sum": 32,
+      "groups_are_not_Node_SPEC_test_count": true,
+      "group_variant_counts": [
+        1,
+        6,
+        2,
+        1,
+        5,
+        3,
+        1,
+        2,
+        2,
+        3,
+        5,
+        1
+      ]
+    },
+    "bindings": {
+      "all52_before_after_equal": true,
+      "source_pins_map_sha256_peer_computed": "54d65a591723fc670e93bc38b1befa40c0c6ae32c26835299f25fec473ef3c27",
+      "guard_main": "47729645100eaca3848f0e713d9e6aa54bca916e",
+      "guard_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792752244598",
+      "separate_known_GH_guard_replies": 2,
+      "setup_derived_case_sha256": "2770476049c9289c6c9e655bf4a97f7aa63380fc319a28c9b848b58c82bf3c42",
+      "production_runner_sha256": "ecc6cab8956fbcb8f9485a2f8c48e693cb2149b57985b485685c3d9e8699d20d",
+      "frozen_original_case_sha256": "2a48433c35e5cd8b271aea90702fd6c3a00ae4845168acca435be98c11ed2397",
+      "frozen_original_manifest_sha256": "349a1a4586213238274085d15a9cddd8c9edf7f1997f6694c6bf3fd611cc648b"
+    },
+    "findings": [],
+    "limits": [
+      "Actual case uses real local OStemp files, real SDK with CONTROLLED replies and fresh factory/SDK reopen; no actual OS process kill, cold restart or power-loss experiment.",
+      "Controlled known/unknown reply preservation and stop/reconciliation were exercised. This does not establish native commit ACK, installed schema/caller, distributed durability, cross-job private carrier, independent checkpoint transport, cost/day admission, CPU/heap/latency or all105 cadence.",
+      "Oversized or failed reply persistence remains explicitly unqualified; returning known RAM reply is not proof of durable disk recovery.",
+      "12 groups/32 nested variants are actual returned CONTROLLED assertions within ONE Node SPEC, not 12/32 native operations or SPEC tests.",
+      "Prior setup39941887750 completed0groups/0variants; this is FIRST semantic12/32, no accepted group replay. Production runnerECC and reviewed setup277 bindings are unchanged.",
+      "Source coverage, runtime activation, unknown refund/reset and same-run Telegram SENT are not implied."
+    ],
+    "peer_actions": {
+      "local_result_read_once": true,
+      "new_archive_downloads": 0,
+      "Node": 0,
+      "imports": 0,
+      "syntax": 0,
+      "tests_or_group_execution": 0,
+      "application_semantics": 0,
+      "SQL": 0,
+      "native": 0,
+      "provider": 0,
+      "Git_writes": 0,
+      "frozen626_changes": 0,
+      "new_lease": 0
+    }
+  },
+  "originals_exact": {
+    "schema": "ORIGINAL626_AND_SOURCE_LOCAL_EXACT_THROUGH627_V1",
+    "merge": "3647858233aa736b42901e2b3e4fe7c29feeb956",
+    "files": [
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/EXECUTION_PLAN_RU.md",
+        "bytes": 2864,
+        "sha256": "8943e5ac8cebeff9fbcdbc30923d15af5f57aaea176fa161366fed7d81338351"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/README_RU.md",
+        "bytes": 9702,
+        "sha256": "afb04ca899ddea04649e24d79053feb075d7168c752406d31493ce5fc093a01c"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/author-scope-readback.json",
+        "bytes": 3600,
+        "sha256": "763475730ecc64a56f15f608b6ee62351e2e317bfa400ed29629305e9a5a1339"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/budget-and-boundaries.json",
+        "bytes": 1963,
+        "sha256": "271d5157ba16d95c3436ba423216dfa79efccdbc507a5a65153b3a388ca86199"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/connected.mjs",
+        "bytes": 24151,
+        "sha256": "2a48433c35e5cd8b271aea90702fd6c3a00ae4845168acca435be98c11ed2397"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/contract.json",
+        "bytes": 1397,
+        "sha256": "4a8fc36966ab1e37b509607da8b53bb385e1ef4845728f002a952a8980488624"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/journal-fs.insertion.txt",
+        "bytes": 14135,
+        "sha256": "c7c6d971447a6dcff3c8f7e2e473a7197d75fbd73a18c07903de884fdfcc0d96"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/manifest.json",
+        "bytes": 1804,
+        "sha256": "349a1a4586213238274085d15a9cddd8c9edf7f1997f6694c6bf3fd611cc648b"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/runner-main.proposed.mjs.txt",
+        "bytes": 202183,
+        "sha256": "ecc6cab8956fbcb8f9485a2f8c48e693cb2149b57985b485685c3d9e8699d20d"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/runner-main.proposed.patch",
+        "bytes": 29172,
+        "sha256": "7f95311b7a26d52df8835afa475ee8d5169df03dc810372ca6758cd76613a633"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/source-evidence.json",
+        "bytes": 5006,
+        "sha256": "2acece5ceec4b3d7d3914fe1c744901af4f7ca26536268c4819a4027e77a0ee8"
+      },
+      {
+        "path": "anomaly-research/pending-operation-journal-20261023/target-bindings.json",
+        "bytes": 1837,
+        "sha256": "bd0af03a00783a8d59fdbcf1dc79f73a3092ba2ccd1bd7e34c9c7c94d25ee0e3"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/PROTOCOL_RU.md",
+        "bytes": 1497,
+        "sha256": "5652ee4f3440c1a6ceee1341069317cbdc36fc41b7344f238ad2baa81eca453b"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/README_RU.md",
+        "bytes": 7746,
+        "sha256": "395def7f4255cfda0837513cad916ba7f1c25edbf1b3365b3053e478fafd5ab9"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/chain-bindings.json",
+        "bytes": 10171,
+        "sha256": "a8301176c10af71b3ae2484df9f2bd7699aa9d22758cf50b42b405595cd3f9da"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/consumer-manual-links.json",
+        "bytes": 4231909,
+        "sha256": "1c4c38d4fbd9c7a075460971de6579f8d167333ae360a5836dac8d6b9721322a"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/contract.json",
+        "bytes": 2584,
+        "sha256": "3053c07b89c73bb45c7edaca9bfbfae7558715111ebfb92ee4d1f25be43931b4"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/manifest.json",
+        "bytes": 1999,
+        "sha256": "e6cf9a7ac4cf01daf14cb4b601a6e415b8b2eee7a26fc330be6218e28aab68f5"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/matrix105.json",
+        "bytes": 427012,
+        "sha256": "6aec13638e2dcdf220c4336d2a4ced7dc545dc87a25446b072c99ecd9eee9d20"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/next-original-input.json",
+        "bytes": 2067,
+        "sha256": "7d6107f85171c6f961b96a908e90855c17109afb7ce0a4d9a992d56c23d0aff8"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/provenance.json",
+        "bytes": 33309,
+        "sha256": "a1a0ebe916f7c70eb62038ef2fe7e2aeffd7c5908b734fd14dd38ce7c1ac6c58"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/retained-provider-facts.json",
+        "bytes": 174296,
+        "sha256": "4e40fbc47379e1d6c1bae984b8ccb1c95af51823ef352e04534d51165516a116"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/selected17-liq-mapping.json",
+        "bytes": 21606,
+        "sha256": "7001bb41575db142bb21b69947a56336b91efb0b41940072755514f125de4654"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/source-priority-weekly.json",
+        "bytes": 190075,
+        "sha256": "4c9fa2467589015bd9799411ef9ec4e8499dd8c5cbfa0e1249bc8fb378325289"
+      },
+      {
+        "path": "checkpoints/source-worker-useful105-retained-evidence-20261023/verification.json",
+        "bytes": 2139,
+        "sha256": "ec56e2ebab17de05e0ea17574249525a07397bf78a71ad5ae84ce41ebeac8bc1"
+      }
+    ],
+    "frozen_third": "de70ec02ae855e8bf79488f225930aa144d2658e",
+    "frozen_source": "9b834acad5b4d5a41e201f33aaa579660c34e4c5",
+    "byte_exact": true,
+    "source_remote_PR_claimed": false
+  },
+  "original626_closed": {
+    "PR": 626,
+    "state": "closed",
+    "merged_at": null,
+    "frozen_head": "de70ec02ae855e8bf79488f225930aa144d2658e",
+    "integrated_through": "3647858233aa736b42901e2b3e4fe7c29feeb956",
+    "12files_exact": true
+  },
+  "frozen_originals": [
+    {
+      "PR": 626,
+      "head": "de70ec02ae855e8bf79488f225930aa144d2658e",
+      "files": 12,
+      "closed_unmerged": true,
+      "byteexact_through_central": true
+    },
+    {
+      "head": "9b834acad5b4d5a41e201f33aaa579660c34e4c5",
+      "files": 13,
+      "local_only_no_PR_publication_claim": true,
+      "byteexact_through_central": true
+    }
+  ],
+  "runner_after_sha256": "ecc6cab8956fbcb8f9485a2f8c48e693cb2149b57985b485685c3d9e8699d20d",
+  "runner_after_bytes": 202183,
+  "final_offline_workflow": "14c66612609ef49ae60e91040b295f874c2820cfb4f162184e6bc4b2b282d54f",
+  "temporary_workflow_restored": true,
+  "guard_wrapper_archived_removed": true,
+  "first_failed_setup_completed_groups": 0,
+  "old_or_completed_components_replayed": 0,
+  "local_reopen_only": true,
+  "native_ACK": false,
+  "cross_job_durability_qualified": false,
+  "physical_capacity_tests": 0,
+  "native_policy": null,
+  "native_schema_installed": false,
+  "native": {
+    "status": "EXISTING_ACTIVATION_ACK_UNKNOWN_STOP",
+    "run": 39939775748,
+    "owner_single_repeat_consumed": true,
+    "observed_active_version": "86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e",
+    "observed_active_deployment": "722570de-64c4-4cbf-a5a1-5f954212e832",
+    "known_activation_ACK": false,
+    "activation_ownership_proven": false,
+    "repeat_adoption_rollback_logging_allowed": false,
+    "previous_exact_safe_receipt": "checkpoints/native-qualification-gate-connected-20261023/merge-and-checks-receipt.json",
+    "new_native_calls_in_this_package": 0
+  },
+  "Telegram_restored": false,
+  "current_SENT_message_id": null,
+  "unknowns_reserves_preserved": true,
+  "attach627": "AttemptedONCE identitycount100, linkvalid/no retry/delete"
+}

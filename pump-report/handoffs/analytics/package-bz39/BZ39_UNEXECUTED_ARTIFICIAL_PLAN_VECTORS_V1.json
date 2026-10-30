@@ -1,0 +1,351 @@
+{
+  "schema": "BZ39_UNEXECUTED_ARTIFICIAL_PLAN_VECTORS_V1",
+  "status": "UNEXECUTED_NOT_TEST_PASS",
+  "all_vectors": "EXPLICIT_ARTIFICIAL pure target/plan adapter, not native/market/realreport; <=26 bars, not asserted as a production1440 history fact",
+  "factory": {
+    "base_epoch_ms": 1800000000000,
+    "step_ms": 60000,
+    "OHLC_rule": "open=close=close_series[i], high=close+0.2, low=close-0.2; then apply overrides; closed=true",
+    "overrides": {
+      "11": {
+        "open": 100.5,
+        "low": 100
+      }
+    },
+    "core_slice_start_index": 11,
+    "fact_clock_rule": "event_ts=last_close; received=event+500; asof=event+1000; expires=event+90000",
+    "history_coverage_start_rule": "first row open; history flag is a prequalified ARTIFICIAL target-context adapter, not production1440 source qualification",
+    "profile_overrides": {
+      "entry_zone_normal_range_fraction": 0.25,
+      "price_tick": 0.01,
+      "pivot_radius_bars": 2
+    },
+    "movement": {
+      "active": true,
+      "state": "CALM_PULLBACK",
+      "seed_start_index": 11,
+      "seed_end_index": 15,
+      "seed_low": 100,
+      "invalidation_price": 100,
+      "volume_and_growth_prequalified": "ARTIFICIAL pure-plan precondition, no engine qualification claimed",
+      "expires_rule": "created_ts + profile.wave_max_age_ms (14400000); no restart at asof",
+      "normal_range": 2,
+      "created_ts_rule": "asof (first observation), after completed seed.end",
+      "impulse_fields": {
+        "start_ts": "base_epoch+11*step",
+        "end_ts": "base_epoch+16*step",
+        "low": 100,
+        "normal_range": 2,
+        "ratio": 2.5,
+        "volume": 100,
+        "baseline_median": 40,
+        "precondition": "ARTIFICIAL already-qualified movement; do not call source/movement engine for pure plan vector"
+      }
+    },
+    "history_fact_id": "ARTIFICIAL:HISTORY",
+    "core_fact_id": "ARTIFICIAL:CORE",
+    "history_qualified": true,
+    "core_qualified": true
+  },
+  "vectors": [
+    {
+      "id": "HISTORICAL_RANGE_WITH_MINOR",
+      "close_series": [
+        118,
+        120,
+        126,
+        130,
+        126,
+        122,
+        114,
+        106,
+        100.2,
+        104,
+        106,
+        108,
+        111,
+        109,
+        107,
+        108,
+        110,
+        112,
+        114,
+        112,
+        110,
+        111,
+        113
+      ],
+      "current_price": 113,
+      "expected": {
+        "selected_price": 130.2,
+        "selected_kind": "HISTORICAL_OUTER_RANGE",
+        "intermediate114_2": "MINOR_HIGHER_LOW_REACTION; subsequent109.8 intact throughasof",
+        "card": "historical range explanation + intermediate levels + not automatically passed",
+        "selection_before10": true
+      }
+    },
+    {
+      "id": "LATER_REBREACH_OR_UNRESOLVED",
+      "close_series": [
+        118,
+        120,
+        126,
+        130,
+        126,
+        122,
+        114,
+        106,
+        100.2,
+        104,
+        106,
+        108,
+        111,
+        109,
+        107,
+        108,
+        110,
+        112,
+        114,
+        112,
+        110,
+        111,
+        113,
+        112,
+        109,
+        111
+      ],
+      "current_price": 111,
+      "expected": {
+        "selected_kind": "NEARER_STRUCTURAL_BARRIER",
+        "selected_price_at_most": 114.2,
+        "must_not_select": 130.2,
+        "reason": "later108.8 breaches109.8; recent113.2 has unresolved after-LOW structure",
+        "no_new_low_reanchor": true
+      }
+    },
+    {
+      "id": "HISTORY_MICRO_DOES_NOT_HIDE_WAVE",
+      "close_series": [
+        103,
+        104,
+        106,
+        107,
+        106,
+        105,
+        104,
+        102,
+        100.2,
+        104,
+        106,
+        108,
+        111,
+        109,
+        107,
+        108,
+        110,
+        112,
+        114,
+        112,
+        110,
+        111,
+        113
+      ],
+      "current_price": 113,
+      "expected": {
+        "qualified_historical_ceilings": 0,
+        "selected_kind": "CURRENT_WAVE_CEILING",
+        "selected_price": 114.2,
+        "micro107_2_not_primary": true
+      }
+    },
+    {
+      "id": "INVALID_FUTURE_UNBOUND_CONTEXT",
+      "close_series": [
+        118,
+        120,
+        126,
+        130,
+        126,
+        122,
+        114,
+        106,
+        100.2,
+        104,
+        106,
+        108,
+        111,
+        109,
+        107,
+        108,
+        110,
+        112,
+        114,
+        112,
+        110,
+        111,
+        113
+      ],
+      "current_price": 113,
+      "variants": [
+        {
+          "injected_supplied_pivots": [
+            {
+              "kind": "HIGH",
+              "price": 1000,
+              "event_ts": "asof+60000",
+              "known_ts": "asof+180000",
+              "fact_id": "UNBOUND:OLD"
+            }
+          ],
+          "expected": "injected old/future value never selected; refs only freshCORE/HISTORY; event/known not changed"
+        },
+        {
+          "history_fact_overrides": {
+            "received_ts": "asof+1"
+          },
+          "expected": "history ignored, valid current CORE wave114.2 retained"
+        },
+        {
+          "core_fact_overrides": {
+            "received_ts": "asof+1"
+          },
+          "expected": "TARGET_CORE_CONTEXT_UNBOUND"
+        }
+      ]
+    },
+    {
+      "id": "ENTRY_CROSSES10_TARGET_FIXED",
+      "close_series": [
+        103,
+        104,
+        106,
+        107,
+        106,
+        105,
+        104,
+        102,
+        100.2,
+        104,
+        106,
+        108,
+        111,
+        109,
+        107,
+        108,
+        110,
+        112,
+        114,
+        112,
+        110,
+        111,
+        113
+      ],
+      "current_price": 113,
+      "entry_support_variants": [
+        {
+          "price": 102.5,
+          "kind": "LOW",
+          "fact_id": "ARTIFICIAL:CORE",
+          "known_before_asof": true,
+          "expected_minimum_pct_expression": "100*(113.7/103-1)",
+          "expected_plan": "minimum>=10"
+        },
+        {
+          "price": 105,
+          "kind": "LOW",
+          "fact_id": "ARTIFICIAL:CORE",
+          "known_before_asof": true,
+          "expected_minimum_pct_expression": "100*(113.7/105.5-1)",
+          "expected_plan": "NO_ENTRY_MEETS_OWNER_MINIMUM"
+        }
+      ],
+      "expected": {
+        "both_selected_price": 114.2,
+        "both_selected_kind": "CURRENT_WAVE_CEILING",
+        "entry_pool_only_mutated": "ARTIFICIAL pure-plan support pool; context OHLC/target data identical",
+        "no_fallback_to_other_target_on_min10_failure": true
+      }
+    },
+    {
+      "id": "QUALIFIED_INCOMPLETE_CORE_OPTIONAL_HISTORY_BAD",
+      "close_series": [
+        118,
+        120,
+        126,
+        130,
+        126,
+        122,
+        114,
+        106,
+        100.2,
+        104,
+        106,
+        108,
+        111,
+        109,
+        107,
+        108,
+        110,
+        112,
+        114,
+        112,
+        110,
+        111,
+        113
+      ],
+      "current_price": 113,
+      "core_fact_overrides": {
+        "status": "INCOMPLETE",
+        "coverage": {
+          "time_qualified": true,
+          "relative_volume_qualified": true
+        }
+      },
+      "context_overrides": {
+        "core_qualified": true,
+        "history_qualified": false
+      },
+      "expected": {
+        "selected_kind": "CURRENT_WAVE_CEILING",
+        "selected_price": 114.2,
+        "must_not_refuse": "TARGET_CORE_CONTEXT_UNBOUND",
+        "raw_status_remains": "INCOMPLETE",
+        "history_not_required_for_CORE_plan": true
+      }
+    }
+  ],
+  "actual_original_bindings": [
+    {
+      "packet_sha256": "ec86ddd4195121d8b56e3493652f05ef93dcbf4b2ccadbce0e6667639d1325bc",
+      "analysis_key": "pump:analysis:39ef87a6355220e2b631b93f07688fd9ed84d079a850bc0eb648d3472356f2b1",
+      "instrument": "INIT",
+      "expected_checks": [
+        "same original facts/clocks; no data rewriting",
+        "automatic_eligible remains false regardless of new plan READY",
+        "0.24294 is not preapproved; require fresh-context floor/obstacle proof",
+        "no claim current native READY/SENT"
+      ]
+    },
+    {
+      "packet_sha256": "ec86ddd4195121d8b56e3493652f05ef93dcbf4b2ccadbce0e6667639d1325bc",
+      "analysis_key": "pump:analysis:4150bf418dcea8df33c764a3b14420867b469646edac6750d9fd5dc13228d550",
+      "instrument": "IDOL",
+      "expected_checks": [
+        "first-null earlier intact seed v7 selection unchanged",
+        "retained non-null CANCELLED never revived",
+        "no predicted new readiness before ROOT engine",
+        "immutable original/capsule hashes not relabelled"
+      ]
+    }
+  ],
+  "ROOT_executes_only_after_separate_affected_admission": true,
+  "Node": 0,
+  "imports": 0,
+  "engine": 0,
+  "tests": 0,
+  "builds": 0,
+  "SQL": 0,
+  "provider": 0,
+  "Cloudflare": 0,
+  "Telegram": 0
+}

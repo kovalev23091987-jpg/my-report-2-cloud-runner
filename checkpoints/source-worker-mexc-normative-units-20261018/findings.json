@@ -1,0 +1,49 @@
+{
+  "schema": "MEXC_TARGETED_NORMATIVE_UNIT_CLOCK_SIDE_FINDINGS_V1",
+  "status": "TARGETED_PRIMARY_DOC_GAP_REMAINS_NOT_QUALIFIED",
+  "existing_PR476_reused_without_rerun": {
+    "path": "checkpoints/source-worker-mexc-phemex-doc-blockers-20261018/findings.json",
+    "sha256": "5c4235d0b109ef4d98c69c0074bd9f8cffd7be6ff6fc84665df79cbe123edbc1",
+    "published_route_rates_changed": false
+  },
+  "positive_narrow_document_facts": {
+    "official_Chinese_legacy_url_redirects_to_current_zh_MY": true,
+    "kline_start_and_end_request_units": "SECONDS",
+    "T_label_values": {
+      "1": "BUY",
+      "2": "SELL"
+    },
+    "O_scope": "BOTH_MAKER_AND_TAKER_OPENING_RELATION_NOT_AGGRESSOR_ASSIGNMENT",
+    "guide_millisecond_statement_scope": "SIGNED_REQUEST_TIME_HEADER_ONLY"
+  },
+  "unresolved_normative_fields": {
+    "REST_kline_vol_unit": null,
+    "REST_kline_amount_unit": null,
+    "REST_recent_trade_v_unit": null,
+    "REST_recent_trade_t_unit": null,
+    "REST_recent_trade_T_is_aggressor": null
+  },
+  "basis": {
+    "vol": "Current Chinese response schema labels volume only; no lots/base/quote denomination.",
+    "amount": "Only sample key in retrieved response; no response-table unit definition found in markdown or processed HTML.",
+    "T": "Trade direction buy/sell does not explicitly assign aggressor. O discusses both maker and taker without binding T to either.",
+    "t": "Response table says trade time. Signed Request-Time milliseconds cannot be transferred to this public response.",
+    "samples": "Magnitude and arithmetic examples do not establish normative units, market identity or current availability.",
+    "other_provider": "KuCoin lots/USDT definitions returned by developer search are a different provider; not borrowed."
+  },
+  "limits": {
+    "targeted_pages_only_not_all_official_docs": true,
+    "no_claim_provider_is_broken_or_unsupported": true,
+    "no_third_party_semantics_upgraded_to_primary": true,
+    "no_full_body_or_native_replay": true
+  },
+  "consumer_admission": {
+    "N05_taker_flow": false,
+    "N12_taker_CVD": false,
+    "anomaly_closed_15m_quote_volume": false,
+    "current_asset_listing_or_binding": null,
+    "current_useful_fact_or_delivery": false,
+    "source_connected": false
+  },
+  "next_action": "Preserve PR476 rates and current UNKNOWNs. Do not install a MEXC signed-volume/taker consumer from these docs. Future qualification needs explicit route semantics and independently admitted exact asset/time/units original; all market/native execution stays central."
+}

@@ -1,0 +1,54 @@
+{
+  "schema": "F572_NEW_PRIMARY_DOC_ATTEMPTS_V1",
+  "admission_path": "checkpoints/pump-report-20261025/ROOT_F572_NEW_PRIMARY_DOC_ADMISSION.json",
+  "admission_expires_ts": 1792975920718,
+  "maximum_total": 6,
+  "maximum_search_queries": 2,
+  "spent_total": 2,
+  "spent_search_queries": 2,
+  "remaining_total": 4,
+  "remaining_search_queries": 0,
+  "failed_attempts_nonrefundable": true,
+  "charge_before_IO": true,
+  "maximum_body_bytes_per_fetch": 2000000,
+  "retry": 0,
+  "automatic_fanout": 0,
+  "static_text_only_no_execution": true,
+  "attempts": [
+    {
+      "attempt": 1,
+      "kind": "NEW_PRIMARY_DOMAIN_SEARCH",
+      "query": "site:bingx.com \"1000PEPE\" \"合约单位\"",
+      "domains": [
+        "bingx.com"
+      ],
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 00:39:18 UTC",
+      "status": "EMPTY_SEARCH_SPENT_NO_UNIT_EVIDENCE",
+      "cached_result_characters": 67
+    },
+    {
+      "attempt": 2,
+      "kind": "NEW_PRIMARY_CODE_DISCOVERY_SEARCH",
+      "query": "\"bidsCoin\" \"asksCoin\" \"BingX\" SDK source",
+      "domains": [
+        "github.com",
+        "bingx.com"
+      ],
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-26 00:39:39 UTC",
+      "status": "EMPTY_SEARCH_SPENT_NO_OFFICIAL_FIELD_SPECIFIC_CODE_FOUND",
+      "cached_result_characters": 67
+    }
+  ],
+  "old_F5666_F5708_and_metadata2_still_SPENT": true,
+  "market_provider_metadata_RPC_SQL_TG_deploy_private_market_captures": 0,
+  "finalized_utc": "2026-10-26 00:40:37 UTC",
+  "stopped_early": true,
+  "stop_reason": "Both new targeted searches empty; retained official growth/price static modules have no target raw-field/unit/package keys and no new exact field-specific primary material URL.",
+  "unspent_attempts_not_refunded_or_rearmed": true,
+  "closed_for_this_package": true,
+  "new_documentary_units_proved": 0,
+  "new_price_denominators_proved": 0,
+  "explicit_page_or_asset_opens": 0
+}

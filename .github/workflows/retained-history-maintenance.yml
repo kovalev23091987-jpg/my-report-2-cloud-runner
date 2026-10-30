@@ -75,6 +75,8 @@ jobs:
       LOSSLESS_EXECUTE: ${{ github.event_name == 'schedule' || inputs.execute == true }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.expected_main || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: '24'

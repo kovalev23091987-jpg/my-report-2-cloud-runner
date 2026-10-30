@@ -1,0 +1,245 @@
+{
+  "schema": "BH_ONE_SAVED_ACTUAL_STAGE_EVIDENCE_V1",
+  "original": {
+    "path": "pump-report/.private/observations/bf-quiescence-saved-auto-one-result.json",
+    "sha256": "bc8c7fcc0bb17f58504052b8050d165eec34cc7e8a83be11937a6b6ef1131836",
+    "implementation": "3bd0cbd96b9bdc1525fb6b06831749451cb612976632a4cb5d5c15c5f064f0aa",
+    "lookup_run_id": "pump-bf-funding-maintenance-20261026-one-owner-extra",
+    "captured_at_ms": 1793019497958,
+    "captured_at_moscow": "2026-10-26T15:58:17.958000+03:00",
+    "private_body_copied": false
+  },
+  "actual_run": {
+    "run_id": "7de14263-15a1-4207-89d9-4fa8c942a04d",
+    "status": "INCOMPLETE",
+    "checked_count": 0,
+    "manual_count": 0,
+    "delivery": [],
+    "deferred": [
+      {
+        "instrument_id": "BINGX:USDT_M:104219:DARKSWAP-USDT",
+        "status": "DEFERRED",
+        "source_coverage": {
+          "status": "NOT_CHECKED",
+          "reason": "PROTECTED_DAY_RESERVE",
+          "detail": "EVEN_DAY_CANDIDATE_ALLOCATION"
+        },
+        "delivery": null
+      }
+    ],
+    "errors": [
+      {
+        "reason": "SOURCE_EVIDENCE_PENDING",
+        "count": 9
+      },
+      {
+        "reason": "UNIVERSE_QUALIFICATION_INCOMPLETE",
+        "unqualified": 24
+      },
+      "SOURCE_BUDGET_DEFERRED"
+    ],
+    "discovery_result": "INCOMPLETE_COVERAGE_OR_RESOURCES",
+    "outcomes_count": 0,
+    "executor_released_at": 1793019050679,
+    "executor_released_moscow": "2026-10-26T15:50:50.679000+03:00",
+    "executor_owner": null,
+    "saved_analysis_original": null,
+    "saved_card": null
+  },
+  "original_run_resources": {
+    "total": 2,
+    "mode_at_final_summary": "STATISTICS",
+    "candidates": {},
+    "unknown_in_this_run_only": 0,
+    "receipts": [
+      {
+        "provider": "BINGX",
+        "family": "USDT_M",
+        "purpose": "DISCOVERY",
+        "cost": 1,
+        "state": "CONFIRMED",
+        "http_status": 200
+      },
+      {
+        "provider": "BINGX",
+        "family": "USDT_M",
+        "purpose": "DISCOVERY",
+        "cost": 1,
+        "state": "CONFIRMED",
+        "http_status": 200
+      }
+    ]
+  },
+  "pacing_saved_values_not_recomputed": {
+    "allocation": {
+      "version": "pump-even-day-deep-v2",
+      "created_ts": 1793005850578,
+      "first_period": "1793005200000",
+      "remaining_periods": 8,
+      "http_upper_bound": 12,
+      "http_by_provider": {
+        "BINGX": 10,
+        "TELEGRAM": 1
+      },
+      "candidates_per_period": 1,
+      "baseline_auto_charged": 350
+    },
+    "hour_rows": [
+      {
+        "period_start": 1793005200000,
+        "period_moscow": "2026-10-26T12:00:00+03:00",
+        "version": "pump-even-day-deep-v2",
+        "day": "2026-10-26",
+        "key": "1793005200000",
+        "created_ts": 1793005861434,
+        "limit": 12,
+        "charged": 4,
+        "candidate_count": 1,
+        "carried_in": 0,
+        "maximum": 1,
+        "issued_before": 0
+      },
+      {
+        "period_start": 1793008800000,
+        "period_moscow": "2026-10-26T13:00:00+03:00",
+        "version": "pump-even-day-deep-v2",
+        "day": "2026-10-26",
+        "key": "1793008800000",
+        "created_ts": 1793008857831,
+        "limit": 12,
+        "charged": 4,
+        "candidate_count": 1,
+        "carried_in": 0,
+        "maximum": 1,
+        "issued_before": 1
+      },
+      {
+        "period_start": 1793012400000,
+        "period_moscow": "2026-10-26T14:00:00+03:00",
+        "version": "pump-even-day-deep-v2",
+        "day": "2026-10-26",
+        "key": "1793012400000",
+        "created_ts": 1793012456658,
+        "limit": 12,
+        "charged": 4,
+        "candidate_count": 1,
+        "carried_in": 0,
+        "maximum": 1,
+        "issued_before": 2
+      },
+      {
+        "period_start": 1793016000000,
+        "period_moscow": "2026-10-26T15:00:00+03:00",
+        "version": "pump-even-day-deep-v2",
+        "day": "2026-10-26",
+        "key": "1793016000000",
+        "created_ts": 1793016051164,
+        "limit": 12,
+        "charged": 4,
+        "candidate_count": 1,
+        "carried_in": 0,
+        "maximum": 1,
+        "issued_before": 3
+      }
+    ]
+  },
+  "distinct_saved_counters_no_available_balance_claim": {
+    "project_day": 467,
+    "BINGX_day": 466,
+    "automatic_plan": {
+      "schema": "PUMP_PLANNED_AUTOMATIC_DAY_V1",
+      "day": "2026-10-26",
+      "created_ts": 1792998049811,
+      "baseline_charged": 5,
+      "protected_at_creation": 102,
+      "fraction": 0.8,
+      "limit": 634,
+      "charged": 448
+    },
+    "outstanding_count_at_read": 0,
+    "prior_unknown_entries_present": true,
+    "whole_account_day_known": false
+  },
+  "other_incomplete_reasons": {
+    "source_evidence_coverage": {
+      "eligible_for_deep_check": 541,
+      "temporarily_deferred": 9,
+      "reason_counts": {
+        "NATIVE_CORE_UNIT_EVIDENCE_REQUIRED": 9
+      },
+      "not_an_asset_exclusion": true,
+      "current_CORE_proven": false
+    },
+    "unresolved_catalog_reason": "UNIVERSE_QUALIFICATION_INCOMPLETE",
+    "unresolved_catalog_count": 24
+  },
+  "read_scope": {
+    "status": "NO_PRODUCTION_AUTO_SENT_IN_READ_SCOPE",
+    "cards_read": 3,
+    "limit": 20,
+    "page_exhausted": true,
+    "whole_history_claimed": false,
+    "whole_market_claimed": false,
+    "saved_candidate_status": "NO_SAVED_AUTO_CANDIDATE_IN_LATEST_RUN",
+    "independent_strategy_validation": false
+  },
+  "ROOT_lookup_only_usage": {
+    "requests": 8,
+    "rows_read": 92,
+    "rows_written": 4,
+    "unknown_ops": 0
+  },
+  "ROOT_lookup_market_HTTP": 0,
+  "ROOT_lookup_Telegram": 0,
+  "exact_BA_stage_code": {
+    "artifact_path": "pump-report/.private/native-20261026/pump-live66-ba-current-near-queue-artifact.json",
+    "artifact_sha256": "896cf1427d947054d5a61acc051be83a78cb1b5d4c6ac9a7d11eeec2ae586a7a",
+    "pin": "3bd0cbd96b9bdc1525fb6b06831749451cb612976632a4cb5d5c15c5f064f0aa",
+    "modules": {
+      "runtime/runner.mjs": {
+        "sha256": "03f8f0cfb13ed86e64500b681f9b33e500bee7630d67b955296c316597bce722",
+        "bytes": 24461
+      },
+      "runtime/budget.mjs": {
+        "sha256": "b06164a4df191c8a9e37b9345ebe4f69c816e3e4d85e52f2fc20fb87655b377f",
+        "bytes": 29935
+      },
+      "runtime/production-policy.mjs": {
+        "sha256": "5fdcc2ce2d843c98935d867332d67180265fa3eb3b3429d7b4e77ccd73f36ea2",
+        "bytes": 3680
+      }
+    },
+    "runner_lines": {
+      "budget_before_CORE": 108,
+      "deferred_early_return": 109,
+      "first_analyzePump": 120,
+      "publication": 139,
+      "enqueue": 143,
+      "dispatch": 144,
+      "final_statistics_mode": 157,
+      "deferred_not_added_to_checked": 232,
+      "drain": 239,
+      "incomplete_label": 244
+    },
+    "budget_lines": {
+      "pacing_cap_deny": 177,
+      "count_increment_once_admitted": 191,
+      "quota_never_refunded": 192,
+      "HTTP_charged_separately": 119
+    }
+  },
+  "BH_IO": {
+    "Node": 0,
+    "project_imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "provider_HTTP": 0,
+    "MCP": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "deploy": 0,
+    "LOOKUP": 0,
+    "code_changes": 0,
+    "GitHub": "Authority/own lease only"
+  }
+}

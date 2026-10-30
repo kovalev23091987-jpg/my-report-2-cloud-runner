@@ -1,0 +1,37 @@
+{
+  "schema": "ANOMALY_DUE_PARENT_ONE_TARGET_TEXT_V1",
+  "working_base": "4f8fc99ffdf656b45aa2bb7d8d224fced6c8a115",
+  "targets": [
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "before_bytes": 177020,
+      "before_sha256": "c72f8f26850089c0dc8a8514abad257afa80c3699af79427ec0f2fb77c0eb4ac",
+      "after_bytes": 182871,
+      "after_sha256": "2bacab5bc4cd7dbdf6a8906455ff35be82e387195859ae3936dc22a9336ae737"
+    }
+  ],
+  "function": {
+    "start": "function installRunnerAnomalyParentCapability(",
+    "end": "\\nasync function main()",
+    "bytes": 23244,
+    "sha256": "87e86c66caf89e7c842bbc73dae85ac2894e64f69e67dfb2b98863ed4de0473c",
+    "before_sha256": "b5aa092c2a9b9d95b3b2f13a77cb6f922beb8c13972c8d45a6136eb2fbef6c9c",
+    "before_bytes": 17423
+  },
+  "patch_sha256": "2d3f57697101418108112f350e8209adfdd25b24c82a0fa59baa08642d9a3305",
+  "new_SQL_templates": 0,
+  "old_components_imported_or_replayed": 0,
+  "semantic_status": "UNEXECUTED",
+  "import_before": "import {readAnomalyOrigin,commitAnomalyBundle,ORIGIN_SQL,COMMIT_SQL,READBACK_SQL} from './src/anomaly-native-domain.mjs';",
+  "import_after": "import {readAnomalyOrigin,commitAnomalyBundle,readDueAnomalyBundles,ORIGIN_SQL,COMMIT_SQL,READBACK_SQL,DUE_SQL} from './src/anomaly-native-domain.mjs';",
+  "full_runtime_pair": {
+    "candidate": 618,
+    "baseline": 618,
+    "non_runner_equal": 617,
+    "third_changes_present_both": true,
+    "runner_baseline_current606": "c72f8f26850089c0dc8a8514abad257afa80c3699af79427ec0f2fb77c0eb4ac",
+    "Worker_after": "5d97133c892d81d35b384edaa2e6c601fdabba5090e08add6415e8df5f452d45",
+    "new_consumer_sha256": "224a90f1358c9b996bd78fdaecbd233f0be7b2e6fecf4a9fb56097d0270b9b74",
+    "old_component_replay": 0
+  }
+}

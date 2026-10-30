@@ -1,0 +1,44 @@
+{
+  "schema": "PROVIDER_FUTURE_VISIBILITY_TEXT_TARGET_BINDINGS_V1",
+  "target": {
+    "path": "current-generation/files/src/provider-minute-ledger.mjs",
+    "before_sha256": "af60f7e3cc6187cef4583c4df4e3ecbc5ae8f96e3bffff9bd037a1b22049c045",
+    "after_sha256": "cbc4ee5440d3f3e1da1bf1cde34a1f809b2fe87d366b8f34a2e3aa6a9be275f3"
+  },
+  "unchanged_dependencies": [
+    {
+      "name": "evidence-source-store.mjs",
+      "path": "current-generation/files/src/evidence-source-store.mjs",
+      "sha256": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38"
+    },
+    {
+      "name": "provider-reference-cache.mjs",
+      "path": "current-generation/files/src/provider-reference-cache.mjs",
+      "sha256": "3ecbb81a55827069041a0175cfe9d61de0a92042338bab2d5df7dce4dc96748b"
+    },
+    {
+      "name": "unified-budget.mjs",
+      "path": "current-generation/files/src/unified-budget.mjs",
+      "sha256": "664ba92581f413ae57f62a785403a0f90f29975f015b0484d2dc7dd00e29175f"
+    },
+    {
+      "name": "evidence-source-adapters.mjs",
+      "path": "current-generation/files/src/evidence-source-adapters.mjs",
+      "sha256": "d8b740fd0b61989a80ddafdb29e2b31cb2311b45625ee428397fcc1f26cbad54"
+    }
+  ],
+  "runtime_roots": "BOTH_DISTINCT_ACTUAL_ASSEMBLED_SRC_FULL_TREES",
+  "production_edit_by_source": false,
+  "SQL_statements_per_valid_reserve_before_after": [
+    3,
+    3
+  ],
+  "atomic_bind_parameter_count_before_after": [
+    7,
+    7
+  ],
+  "new_atomic_clause": "AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)",
+  "new_D_parameter": null,
+  "full_dispatch_holding_contract_closed": false,
+  "native_exists_seek_read_cost": null
+}

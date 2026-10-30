@@ -1,0 +1,130 @@
+{
+  "schema": "ROOT_CURRENT_SAVED_AUTO_DIAGNOSIS12_ACTUAL_V1",
+  "recorded_utc": "2026-10-29T09:36:14.470820+00:00",
+  "private_path": "pump-report/.private/observations/oct29-current-analysis-diagnosis12-result.json",
+  "private_sha256": "ec86ddd4195121d8b56e3493652f05ef93dcbf4b2ccadbce0e6667639d1325bc",
+  "state": "FINALIZED",
+  "observed_ts": 1793266418587,
+  "current_pin": "27258b810da32584cde054712e72be67e84d004e9af4874a4755a816e9c55bdf",
+  "candidates": [
+    {
+      "instrument_id": "BINGX:USDT_M:101138:INIT-USDT",
+      "analysis_ts": 1793265120249,
+      "run_id": "3e59320c-dc3c-4bdd-81b3-339915630844",
+      "original_bound": true,
+      "analysis_key": "pump:analysis:39ef87a6355220e2b631b93f07688fd9ed84d079a850bc0eb648d3472356f2b1",
+      "status": "REJECTED",
+      "ready": false,
+      "wave_state": "CALM_PULLBACK",
+      "reasons": [
+        "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
+      ],
+      "plan_present": false,
+      "price_status": "USABLE",
+      "orderbook_status": "USABLE",
+      "candles_status": "USABLE",
+      "actual_closed_candles": 305,
+      "actual_price_only_context": 1440
+    },
+    {
+      "instrument_id": "BINGX:USDT_M:101334:IDOL-USDT",
+      "analysis_ts": 1793264969642,
+      "run_id": "96a10752-9169-4511-9fcd-27214d24bec5",
+      "original_bound": true,
+      "analysis_key": "pump:analysis:4150bf418dcea8df33c764a3b14420867b469646edac6750d9fd5dc13228d550",
+      "status": "REJECTED",
+      "ready": false,
+      "wave_state": "CANCELLED",
+      "reasons": [
+        "PLAN_INVALIDATED"
+      ],
+      "plan_present": false,
+      "price_status": "USABLE",
+      "orderbook_status": "USABLE",
+      "candles_status": "USABLE",
+      "actual_closed_candles": 305,
+      "actual_price_only_context": 1440
+    }
+  ],
+  "latest_executor": {
+    "owner": null,
+    "run_id": "f8940f3c-c598-4fe9-8a8f-af09fe147e14",
+    "released_ts": 1793266260284
+  },
+  "latest_saved_executor_run": {
+    "run_id": "f8940f3c-c598-4fe9-8a8f-af09fe147e14",
+    "status": "INCOMPLETE",
+    "errors": [
+      {
+        "reason": "SOURCE_EVIDENCE_PENDING",
+        "count": 9
+      },
+      {
+        "reason": "UNIVERSE_QUALIFICATION_INCOMPLETE",
+        "unqualified": 38
+      },
+      "SOURCE_BUDGET_DEFERRED"
+    ],
+    "deferred": [
+      {
+        "instrument_id": "BINGX:USDT_M:102176:MAGMA-USDT",
+        "status": "DEFERRED",
+        "source_coverage": {
+          "status": "NOT_CHECKED",
+          "reason": "PROTECTED_DAY_RESERVE",
+          "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION"
+        },
+        "delivery": null
+      }
+    ],
+    "not_the_same_runs_as_both_latest_analysis_indexes": true
+  },
+  "card_page": {
+    "cards_read": 4,
+    "limit": 20,
+    "after_key": "pump:card:",
+    "next_after_key": "pump:card:PUMP:7505b17ae7bb53dcc63ee96978539b3345e18cc4aa8f6ea54b675e45d3c8510b",
+    "page_exhausted": true,
+    "whole_history_claimed": false,
+    "whole_market_claimed": false,
+    "executor_context_requested": false,
+    "confirmed_not_before_ts": 1793262947821
+  },
+  "current_auto_delivery_status": "NO_PRODUCTION_AUTO_SENT_IN_READ_SCOPE",
+  "first_genuine_current_AUTO_SENT_confirmed": false,
+  "native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-auto-diagnosis-20261029-one-owner-extra-12",
+    "usage": {
+      "requests": 13,
+      "rows_read": 59,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 59,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "owner_extra12": "SPENT_FINALIZED_NO_REPLAY",
+  "own_known_UTC29_totals": {
+    "LOOKUP_runs": 12,
+    "ordinary": 10,
+    "owner_extras": 2,
+    "queries": 93,
+    "rows_read": 295,
+    "rows_written": 48,
+    "unknown_ops": 0,
+    "whole_account_day_closed": false
+  },
+  "limits": [
+    "Only latesttwo checkedindexes incapturedqueue afterinstall, notallmarket",
+    "Sourcefactsactual305both; notfresh atreadtime orperpetualfutureexecutionguarantee",
+    "Latestexecutorreceiptrun differsfromoriginals; do notmergeastheirrun",
+    "No conclusionsonstrategyprofitability or noREADYall548",
+    "Currentbudgetdenialexactreasonrecorded; arithmeticneedsas-ofsnapshotqualification"
+  ]
+}

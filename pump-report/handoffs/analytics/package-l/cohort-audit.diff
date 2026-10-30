@@ -1,0 +1,50 @@
+--- pump-report/handoffs/analytics/package-l/baseline/cohort-audit.before.mjs	2026-10-25 18:11:11
++++ pump-report/analytics/cohort-audit.mjs	2026-10-25 18:12:13
+@@ -1,7 +1,8 @@
+ import {finite,validTime} from '../contracts/index.mjs';
+ import {summarizeOutcomes,PROPOSED_SAMPLE_REQUIREMENTS} from './summary.mjs';
++import {recordPurpose,productionRecord} from '../contracts/run-purpose.mjs';
+ 
+-export const COHORT_AUDIT_VERSION='pump-cohort-input-audit-v1-tz2-20261025';
++export const COHORT_AUDIT_VERSION='pump-cohort-input-audit-v2-purpose-20261025';
+ export const FEATURE_SCHEMA_VERSION='pump-initial-features-v1';
+ export const AUDIT_BOUNDS=Object.freeze({records:2048,bytes:2000000,features_per_record:64,pairs:64});
+ const fields=new Set(['wave_state','growth_5m_pct','growth_15m_pct','growth_60m_pct','growth_24h_pct','current_to_impulse_volume_ratio','position_limit_usdt','spread_pct','slippage_buy_pct','slippage_sell_pct','trade_buy_usdt','trade_sell_usdt','open_interest','funding_rate','funding_period_ms','relative_return_btc_pct','relative_return_eth_pct','map_mode','map_nearest_up_distance_pct','map_nearest_down_distance_pct']);
+@@ -64,10 +65,17 @@
+ export function auditCohortSample(records,{as_of_ts,split_plan}={}){
+   bounded(records,AUDIT_BOUNDS.records);
+   if(!validTime(as_of_ts)||!validTime(split_plan?.split_ts))throw Error('AUDIT_TIME_AND_SPLIT_REQUIRED');
+-  const summary=summarizeOutcomes(records,{as_of_ts}),split=split_plan.split_ts;
++  // Purpose is additive metadata; the immutable historical origin stays raw.
++  // A conflicting update cannot promote a known nonproduction wave into train.
++  const blocked=new Set(records.filter(r=>validTime(r?.recorded_ts)&&r.recorded_ts<=as_of_ts&&text(r.origin?.instrument_id)&&text(r.origin?.wave_id)&&!productionRecord(r)).map(r=>key(r.origin)));
++  const eligible=records.filter(r=>productionRecord(r)&&!blocked.has(key(r.origin??{})));
++  const purpose_exclusions={acceptance_test:records.filter(r=>recordPurpose(r)==='ACCEPTANCE_TEST').length,unclassified:records.filter(r=>recordPurpose(r)==='UNCLASSIFIED').length,
++    non_observed_production:records.filter(r=>recordPurpose(r)==='PRODUCTION'&&!productionRecord(r)).length,
++    production_wave_conflict:records.filter(r=>productionRecord(r)&&blocked.has(key(r.origin??{}))).length};
++  const summary=summarizeOutcomes(eligible,{as_of_ts}),split=split_plan.split_ts;
+   const planValid=validTime(split_plan.declared_ts)&&split_plan.declared_ts<=split&&text(split_plan.plan_ref);
+   const badIds=new Set(summary.invalid_record_details.map(r=>r.record_id)),groups=new Map(),assets=new Map(),reasons={};
+-  for(const r of records){
++  for(const r of eligible){
+     if(!r?.origin?.ready||!validTime(r.recorded_ts)||r.recorded_ts>as_of_ts||badIds.has(r.record_id))continue;
+     const k=key(r.origin),xs=groups.get(k)??[];if(!xs.some(x=>stable(x)===stable(r)))xs.push(r);groups.set(k,xs);
+     const set=assets.get(r.origin.instrument_id)??new Set();set.add(r.origin.asset_id);assets.set(r.origin.instrument_id,set);
+@@ -105,7 +113,7 @@
+     return {requirements:{...PROPOSED_SAMPLE_REQUIREMENTS},observed,counts_met:Object.entries(PROPOSED_SAMPLE_REQUIREMENTS).every(([k,n])=>observed[k]>=n),
+       status:'PROPOSED_ENGINEERING_FLOORS_NOT_QUALITY_OR_PROVENANCE_PROOF',calibration_validated:false};
+   };
+-  return {version:COHORT_AUDIT_VERSION,as_of_ts,split_plan:structuredClone(split_plan),split_predeclared:planValid,input_records:records.length,declared_independent_waves:summary.independent_waves,
++  return {version:COHORT_AUDIT_VERSION,as_of_ts,split_plan:structuredClone(split_plan),split_predeclared:planValid,input_records:records.length,purpose_eligible_records:eligible.length,excluded_by_purpose:records.length-eligible.length,purpose_exclusions,declared_independent_waves:summary.independent_waves,
+     inspected_waves:waves.length,invalid_records:summary.invalid_records,excluded_future_records:summary.excluded_future_records,duplicate_record_replays:summary.duplicate_record_replays,
+     assets:new Set([...groups.values()].map(xs=>xs[0].origin.asset_id)).size,distinct_origin_times:new Set(waves.map(w=>w.origin_t0)).size,
+     partitions:counts(waves),quality_reason_wave_counts:reasons,waves,
+@@ -136,6 +144,8 @@
+   for(const p of pairs){
+     const a=p?.baseline?.analysis,b=p?.enriched?.analysis,issues=[],contrast=p?.contrast??'MAP';
+     if(!text(p?.pair_id)||!a||!b||!['MAP','TRADES','FUTURES','RELATIVE_CONTEXT'].includes(contrast)){results.push({pair_id:p?.pair_id??null,issues:['PAIR_SHAPE_UNQUALIFIED'],qualified:false});continue;}
++    const production=x=>productionRecord({origin:{instrument_id:x.instrument?.instrument_id,wave_id:x.wave_id,t0:x.analysis_ts,run_purpose:x.run_purpose,evidence_class:p.evidence_class??'UNCLASSIFIED'}});
++    if(!production(a)||!production(b))issues.push('PAIR_NOT_OBSERVED_PRODUCTION');
+     if(seenIds.has(p.pair_id)&&seenIds.get(p.pair_id)===stable(p)){replays++;continue;}
+     if(seenIds.has(p.pair_id)){issues.push('PAIR_ID_CONFLICT');for(const prior of results.filter(r=>r.pair_id===p.pair_id)){prior.issues=[...new Set([...prior.issues,'PAIR_ID_CONFLICT'])];prior.qualified=false;}}
+     seenIds.set(p.pair_id,stable(p));

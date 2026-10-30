@@ -1,0 +1,40 @@
+{
+  "schema": "BS_PRELAUNCH_OWNER_BINDING_HOLD_V1",
+  "status": "NODE_NOT_STARTED_ADMISSION_OWN_OWNER_STALE",
+  "at": "2026-10-26 18:31:20 UTC",
+  "all_guards_valid": {
+    "all4_equal": true,
+    "owner_paused": false,
+    "fence": false,
+    "rootowner": "CODEX:PUMP_LIVE_INTEGRATION:1793038000000",
+    "rootexpiry": 1793043100000,
+    "released": false,
+    "phase_matches": true,
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "stable": true
+  },
+  "authority_main": "a484b3689498649dd2443ba09cb484aa95535da4",
+  "admission_path": "checkpoints/pump-report-20261025/ROOT_BS_ONE_CONNECTED_AUTO_CASE_ADMISSION.json",
+  "admission_sha256": "2de86289cc9a98a08c6a7c28e50e43bac96b4057b4d477709838f169e500b864",
+  "admission_owner": "CODEX:OFFLINE_ANOMALIES:1793038121000",
+  "actual_own_owner": "CODEX:OFFLINE_ANOMALIES:1793038650000",
+  "actual_own_expires_ts": 1793040450000,
+  "actual_own_commit": "d3247edfc6d9a20264b2e52aa56c342b18e5393d",
+  "own_exact_bytes_match": true,
+  "own_actual_ref_match": true,
+  "previous_feasibility_lease_release": {
+    "at": "2026-10-26 18:17:30 UTC",
+    "exact_bytes_match": true,
+    "actual_ref_match": true,
+    "commit": "f0b1391e4565b301495f15e6c358aa8103b63e25"
+  },
+  "current_harness_preparation_lease_FULL": {
+    "at": "2026-10-26 18:17:59 UTC",
+    "exact_bytes_match": true,
+    "actual_ref_match": true,
+    "commit": "d3247edfc6d9a20264b2e52aa56c342b18e5393d"
+  },
+  "reason": "ROOT explicitly authorized executable preparation after feasibility-only scope; feasibility lease timely released/FULL and new30min harness scope acquired/FULL. Exact harness admission still names released feasibility owner. Cannot write false old-owner execution-authority or run before corrected binding.",
+  "needed_ROOT_correction": "Only replace admission own_owner with CODEX:OFFLINE_ANOMALIES:1793038650000; retain same80d0e36d harness/oneNode bounds. Expiry can remain conservative1793039921000 (before actual1793040450000) or bind actual liveexpiry.",
+  "Node": 0
+}

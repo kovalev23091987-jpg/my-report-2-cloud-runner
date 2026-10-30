@@ -1,0 +1,202 @@
+{
+  "schema": "BP_ONE_CONNECTED_COUNTEREXAMPLE_ACTUAL_V1",
+  "status": "PASS_COUNTEREXAMPLE_ORDERING_RISK_NOT_ACTUAL_DAY_CAUSE",
+  "ARTIFICIAL_ONLY": true,
+  "Node": 1,
+  "connected_cases": 1,
+  "real_selector_unchanged": true,
+  "real_priority_unchanged": true,
+  "real_analysisQueueEvidence": true,
+  "real_budget": true,
+  "real_MemoryStore": true,
+  "actual_engine_calls": 0,
+  "market_HTTP": 0,
+  "native_SQL": 0,
+  "TG": 0,
+  "deploy": 0,
+  "old_tests": 0,
+  "clock": 1793021400000,
+  "trace": [
+    {
+      "selected": "BINGX:USDT_M:ARTIFICIAL_BP_OLD",
+      "at": 1793021400000,
+      "scores": [
+        {
+          "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_OLD",
+          "preliminary_growth": 0,
+          "reported_day_growth": 30,
+          "movement_event_ts": 1793003400000,
+          "first_seen": 1793003400000,
+          "last_checked_ts": null,
+          "priority": {
+            "score": 300,
+            "waiting_minutes": 300,
+            "movement_freshness": 0,
+            "entry_proximity": 0,
+            "confirmed_data_fraction": 0
+          }
+        },
+        {
+          "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+          "preliminary_growth": 12.00000000000001,
+          "reported_day_growth": 5,
+          "movement_event_ts": 1793021400000,
+          "first_seen": 1793021400000,
+          "last_checked_ts": null,
+          "priority": {
+            "score": 20,
+            "waiting_minutes": 0,
+            "movement_freshness": 1,
+            "entry_proximity": 0,
+            "confirmed_data_fraction": 0
+          }
+        }
+      ],
+      "admission": {
+        "allowed": true,
+        "scope": "BOUNDED_WHOLE_CANDIDATE_FORECAST_NOT_AN_IO_RESERVATION",
+        "http_upper_bound": 12,
+        "candidate_quota": {
+          "period_start": 1793019600000,
+          "maximum": 1,
+          "base_per_period": 1,
+          "carried_in": 0,
+          "issued": 1,
+          "remaining": 0,
+          "day_issued": 5,
+          "never_refunded": true
+        }
+      },
+      "slot": "BASE"
+    },
+    {
+      "selected": "BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+      "at": 1793021410000,
+      "scores": [
+        {
+          "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_OLD",
+          "preliminary_growth": 0,
+          "reported_day_growth": 30,
+          "movement_event_ts": null,
+          "first_seen": 1793003400000,
+          "last_checked_ts": 1793021410000,
+          "priority": {
+            "score": 6.666666666666666,
+            "waiting_minutes": 0,
+            "movement_freshness": 0,
+            "entry_proximity": 0,
+            "confirmed_data_fraction": 0.3333333333333333
+          }
+        },
+        {
+          "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+          "preliminary_growth": 12.00000000000001,
+          "reported_day_growth": 5,
+          "movement_event_ts": 1793021400000,
+          "first_seen": 1793021400000,
+          "last_checked_ts": null,
+          "priority": {
+            "score": 20.15277777777778,
+            "waiting_minutes": 0.16666666666666666,
+            "movement_freshness": 0.9993055555555556,
+            "entry_proximity": 0,
+            "confirmed_data_fraction": 0
+          }
+        }
+      ],
+      "admission": {
+        "allowed": true,
+        "scope": "CONDITIONAL_UNASSIGNED_WHOLE_OPERATION_HOLD",
+        "surplus_grant_id": "ARTIFICIAL_BP_ONE_COUNTEREXAMPLE|BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+        "candidate_quota": {
+          "kind": "UNASSIGNED_SURPLUS",
+          "logical_spent": true,
+          "never_refunded": true,
+          "idempotent": false,
+          "http_upper_bound": 12
+        }
+      },
+      "slot": "CONDITIONAL_EXTRA"
+    }
+  ],
+  "stubCalls": {
+    "catalog": 1,
+    "discovery": 1,
+    "deep_overview": 2,
+    "core": 2,
+    "analysis_stub": 2
+  },
+  "result_summary": {
+    "status": "COMPLETE",
+    "checked": 2,
+    "ready": 0,
+    "errors": [],
+    "delivery": 0
+  },
+  "queue_after": {
+    "BINGX:USDT_M:ARTIFICIAL_BP_OLD": {
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_OLD",
+      "first_seen": 1793003400000,
+      "last_seen": 1793021400000,
+      "preliminary_growth": 0,
+      "reported_day_growth": 30,
+      "active_wave": false,
+      "next_check_ts": 1793021710000,
+      "movement_event_ts": null,
+      "entry_distance_pct": null,
+      "confirmed_core_count": 1,
+      "core_expires_ts": 1793021430000,
+      "price_expires_ts": 1793021430000,
+      "last_checked_ts": 1793021410000,
+      "last_status": "REJECTED",
+      "priority_evidence_ts": 1793021410000,
+      "priority_is_not_signal_eligibility": true,
+      "entry_zones": []
+    },
+    "BINGX:USDT_M:ARTIFICIAL_BP_NEW": {
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+      "first_seen": 1793021400000,
+      "last_seen": 1793021400000,
+      "preliminary_growth": 12.00000000000001,
+      "reported_day_growth": 5,
+      "active_wave": false,
+      "next_check_ts": 1793021710000,
+      "price_expires_ts": 1793021430000,
+      "entry_distance_pct": null,
+      "movement_event_ts": null,
+      "last_checked_ts": 1793021410000,
+      "last_status": "REJECTED",
+      "confirmed_core_count": 1,
+      "core_expires_ts": 1793021430000,
+      "priority_evidence_ts": 1793021410000,
+      "priority_is_not_signal_eligibility": true,
+      "entry_zones": []
+    }
+  },
+  "resource_summary": {
+    "current_base": 1,
+    "conditional_extra_grants": 1,
+    "extra_candidate": "BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+    "extra_state": "CLOSED",
+    "extra_held_http": 12
+  },
+  "delay": {
+    "actual_in_artificial_clock_ms": 10000,
+    "old_service_declared_artificial_ms": 10000,
+    "same_invocation": true,
+    "additional_hour_wait_proved": false,
+    "if_no_extra_and_no_other_carry_or_extra_admission": {
+      "not_executed_counterfactual": true,
+      "next_base_ts": 1793023200000,
+      "wait_from_new_seen_ms": 1800000
+    },
+    "actual_live_latency_or_queue_unknown": true
+  },
+  "movement_clock_note": "Discovery new movement_event_ts equals synthetic price event, not an observed impulse. Actual analysisQueueEvidence clears it without retained impulse.",
+  "limits": [
+    "Two rows and both artificial base+conditional-extra admissions available; new is second, not skipped this run",
+    "10s old service is declared artificial, not a measured market/provider duration",
+    "No real candidate analysis was executed; two explicit NOT_READY stubs keep the selector flow connected",
+    "Actual today/historical DOOD AUTO queue not read"
+  ]
+}

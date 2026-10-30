@@ -1,0 +1,174 @@
+{
+  "schema": "F583_TZ_SOURCE_CONSUMER_MATRIX_V1",
+  "authority_main": "101313e398a2914ee7059a31ef5b5029d7118afb",
+  "original_TZ_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "gate": {
+    "path": "pump-report/runtime/runner.mjs",
+    "lines": [
+      117,
+      120,
+      129,
+      131
+    ],
+    "behavior": "Mandatory core→analyze→onlyifanalysis.ready map+optional→reanalyze",
+    "all8_AUTO_rejected_before_optional": true,
+    "does_not_prove_full_TZ_complete": true,
+    "strategy_changed": false
+  },
+  "rows": [
+    {
+      "block": 1,
+      "source": "BINGX",
+      "operation": "catalogue",
+      "route": "GET /openApi/swap/v2/quote/contracts",
+      "code": "sources/index.mjs:getCatalog:188",
+      "consumer": "runtime/worker.mjs createReviewedNativeScopeRegistry; runner.mjs:204",
+      "identity": "552 verified exactnative IDs; excludeBTCETH→550;9deep deferred remain selected",
+      "data_unit_clock": "nativecontractid/base/family/quote/settle/online; received catalog snapshot not market time",
+      "actual": "1284 returned;552 verified;550 selected;18 broaderunresolved UNKNOWN",
+      "utility": "Discovery exact market identity, not full CORE",
+      "cost": "1HTTP cold=warm becauseTTL0; no ordinary raw catalogue cache"
+    },
+    {
+      "block": 1,
+      "source": "BINGX",
+      "operation": "bulkprice",
+      "route": "GET /openApi/swap/v2/quote/ticker (symbol omitted)",
+      "code": "sources/index.mjs:getOverview",
+      "consumer": "runner discovery and reusedprice getCore",
+      "data_unit_clock": "lastPrice USDT_PER_BASE;closeTime Unixms;TTL30s",
+      "actual": "550 fresh at saved originalreceive; nowEXPIRED; tick24hopenINCOMPLETE",
+      "utility": "Discovery/price reuse; no candle/daygrowth substitute",
+      "cost": "1HTTP cold,0warm onlysameURLfreshcached/inflight"
+    },
+    {
+      "block": 1,
+      "source": "BINGX",
+      "operation": "closedcandles",
+      "route": "GET /openApi/swap/v3/quote/klines?symbol=EXACT&interval=1m&startTime=END-125m&endTime=END-1&limit=125",
+      "code": "sources/index.mjs:getCore:264;coverage.mjs",
+      "consumer": "analytics/index.mjs analyzeMovement/constructPlan",
+      "data_unit_clock": "125 closed1m =60wave+5impulse+60baseline;CCXT OPEN_TIME qualification;nativequantity UNKNOWN;relativeonly;TTL90s",
+      "actual": "10unique production instrumentCORE;540NOT_CHECKED;SOLtechnical121excluded",
+      "utility": "Mandatory growth/activity/structure; absoluteBASE/USDTvolume UNKNOWN",
+      "cost": "1HTTP cold,0sameURLwarm; newtimeboundsnewURL"
+    },
+    {
+      "block": 1,
+      "source": "BINGX",
+      "operation": "closeddaygrowth",
+      "route": "GET /openApi/swap/v3/quote/klines?symbol=EXACT&interval=1m&limit=1440&startTime=END-24h&endTime=END-1",
+      "code": "sources/day-growth.mjs",
+      "consumer": "analytics/day-growth.mjs consumeObservedDayGrowth",
+      "data_unit_clock": "PRICEONLY USDT_CLOSED_ROLLING_24H;closed1m nativeclock, no absolutevolume",
+      "actual": "3manual+8AUTO saved currentatcapture, KIMCHIoverlap unique10",
+      "utility": "Observed day growth independently from ticker24hopen",
+      "cost": "1HTTP cold,0sameURLfreshwarm"
+    },
+    {
+      "block": 3,
+      "source": "BINGX",
+      "operation": "orderbook",
+      "route": "GET /openApi/swap/v2/quote/depth?symbol=EXACT&limit=1000",
+      "code": "sources/bingx.mjs parseOrderBook;sources/index.mjs:getCore",
+      "consumer": "analytics/liquidity.mjs measureLiquidity",
+      "data_unit_clock": "bidsCoin/asksCoin explicitBASE;priceUSDT;T Unixms;TTL15s",
+      "actual": "10uniqueproductionusableatsavedanalysis;boundedvisiblebook,notfullcensus",
+      "utility": "Spread,bookdepth,size700/2000feasibility;no persistenceclaim",
+      "cost": "1HTTP cold,0freshsameURLwarm;deliveryforce1"
+    },
+    {
+      "block": 2,
+      "source": "BINGX",
+      "operation": "recenttrades",
+      "route": "GET /openApi/swap/v2/quote/trades?symbol=EXACT&limit=100",
+      "code": "sources/recent-trades.mjs;index.mjs:getOptional:325",
+      "consumer": "analytics/context.mjs summarizeTradeSample/explainOptionalFacts",
+      "data_unit_clock": "quoteQty USDT_PRICE_QUOTE_NOTIONAL;timeUnixms;id/fillId exact;isBuyerMaker trueSELL/falseBUY;qtyBASEUNKNOWN;TTL30s",
+      "actual": "Current8AUTO optionalHTTP0 earlyrefusals;actualselected550coverage NOT_CHECKED;primaryT3/F555retainedproof reused",
+      "utility": "Boundeduniqueexecutionsandpriceresponse;not wholeintervaldelta/absorptionproof",
+      "cost": "1HTTP if gate/admission;0warm;100requested may1000returned;no pagination/retry"
+    },
+    {
+      "block": 4,
+      "source": "BINGX",
+      "operation": "openinterest",
+      "route": "GET /openApi/swap/v2/quote/openInterest?symbol=EXACT",
+      "code": "sources/index.mjs:371-378",
+      "consumer": "analytics/context.mjs optional_context.open_interest",
+      "data_unit_clock": "No independently qualified bindingunit in active552;TTL120s onlyifqualified",
+      "actual": "NOT_CHECKED_OPEN_INTEREST_UNIT_UNQUALIFIED;currentAUTO0",
+      "utility": "Additional context;onevalue≠delta or shortbuild",
+      "cost": "0current;future1HTTP withqualifiedunit+clock"
+    },
+    {
+      "block": 4,
+      "source": "BINGX",
+      "operation": "funding",
+      "route": "GET /openApi/swap/v2/quote/premiumIndex?symbol=EXACT",
+      "code": "sources/index.mjs:371-384",
+      "consumer": "analytics/context.mjs optional_context.funding",
+      "data_unit_clock": "Need RATE_FRACTION_PER_ACTUAL_PERIOD + actualrateclock;updateTime/nextFundingTime not proof;TTL300s",
+      "actual": "NOT_CHECKED_FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED;currentAUTO0",
+      "utility": "Additional context;not shortdirection/profitproof",
+      "cost": "0current;future1HTTP;optional cap2 trades/OI/funding alternatives"
+    },
+    {
+      "block": 5,
+      "source": "NONE",
+      "operation": "marketcomparison",
+      "route": null,
+      "code": "Owner NO_MARKET_COMPARISON;no active collection",
+      "consumer": "CANCELLED",
+      "actual": "CANCELLED notcoveragegap",
+      "utility": "None afterownercancellation",
+      "cost": "0"
+    },
+    {
+      "block": 6,
+      "source": "HYPERLIQUID/ORDERLY/SWOLECHARTS dormantadapters",
+      "operation": "futureliquidations",
+      "route": "All552 entry.liquidations.routes=[]",
+      "code": "sources/index.mjs:getLiquidations:392",
+      "consumer": "analytics/zones.mjs selectZones;analytics/context.mjs explainMapPlan",
+      "data_unit_clock": "OBSERVED_POSITION or EXTERNAL_MODEL only;nativeevent+units+coverage+conversionrequired",
+      "actual": "0qualified550routes;NOT_CHECKED notUNSUPPORTED;currentAUTO0",
+      "utility": "Optional independentzonecontext withoutblockingstandaloneplan",
+      "cost": "0current;profilemaphardmax1;productiononlyBINGX/TG unfinishedconfiguration"
+    },
+    {
+      "block": 7,
+      "source": "BINGX plusqualifiedtrades iflater",
+      "operation": "supportpersistence",
+      "route": null,
+      "code": "TZ section3 deferred usefulness/cost qualification",
+      "consumer": "No single snapshot canprove persistent support",
+      "actual": "NOT_ACTIVATED",
+      "utility": "Onlyafterprovenadditionalutility",
+      "cost": "No addedrepeatedbooks inF583"
+    }
+  ],
+  "composition": {
+    "seed13_plus539": 552,
+    "selected550": true,
+    "allowed_production_providers": [
+      "BINGX",
+      "TELEGRAM"
+    ],
+    "dormant_extra_adapters": [
+      "ORDERLY",
+      "HYPERLIQUID",
+      "SWOLECHARTS"
+    ],
+    "active_extra_provider_routes": 0,
+    "old_report_paused": true
+  },
+  "coverage_definitions": {
+    "RETURNED": "Response rows observed;not semanticorfullcoverage",
+    "ELIGIBLE": "Staticsemanticpermission notmarketproof",
+    "CATALOGUE_OVERLAP": "Namesoverlap only;notcanonicalidentity",
+    "NOT_CHECKED": "No qualifiedactualfact checked",
+    "UNSUPPORTED": "Requires exact currentauthoritative marketabsence,not budget/schema/404 guess",
+    "UNKNOWN": "Evidence insufficient;missingvalue null"
+  }
+}

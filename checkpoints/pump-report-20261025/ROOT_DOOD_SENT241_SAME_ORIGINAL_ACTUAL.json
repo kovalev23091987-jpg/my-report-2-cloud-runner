@@ -1,0 +1,205 @@
+{
+  "schema": "ROOT_DOOD_SENT241_SAME_ORIGINAL_ACTUAL_V1",
+  "status": "GENUINE_OWNER_MANUAL_READY_SENT_SAME_ORIGINAL_CONFIRMED",
+  "recorded_at": "2026-10-26T10:18:57.908520+00:00",
+  "implementation_sha256": "af5e03781bf42ec58d9404c845b5995c97ab82c5226e7c60774b2539892f5824",
+  "run_id": "bdd7a2db-87bc-4a32-90d0-8f29705f1ae4",
+  "analysis_key": "pump:analysis:aeda56fc607889c8252a97ef36469492f0268d323647e105501a59496f4fe3bb",
+  "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+  "analysis_ts": 1793008557222,
+  "reference_price": 0.002257,
+  "run_purpose": "PRODUCTION",
+  "mode": "MANUAL",
+  "ready": true,
+  "automatic_eligible": true,
+  "wave_state": "RESUMING",
+  "card_id": "PUMP:4715fbd0e40176ec1ff06d125a49e32f9e501fe3bb8dae84ab9af5e97bccb0da",
+  "message_id": "241",
+  "text_hash": "87ee4404654376243a723f50aac990275682c75810e7a731833e7f7608e29e43",
+  "card_text": "DOOD-USDT · Ручная проверка\nПодтверждённый рост: +56.310014% за 24 ч (порог +20%); окно 25.10 12:55:00–26.10 12:55:00 МСК.\nБудущее событие для статистики — +10% за 4 часа: вероятность пока не оценена. Отсчёт от исходной цены отчёта.\nПоследнее закрытое окно выросло; активность выше предыдущего наблюдения. Активность текущего окна ниже исходного импульса.\nПокупка на откате: 0.002009125–0.002038875 (прежняя вершина 0.002024; предварительная область); 0.001972125–0.002001875 (прежняя вершина 0.001987; предварительная область).\nФиксация всей позиции: 0.002308125–0.002337875 — ближайшая подтверждённая вершина выше цены.\nКарта ликвидаций недоступна. Области входа и выхода определены по движению цены и объёму; текущая ликвидность проверена.\nВажно: пересмотреть план при цене ниже 0.001972.",
+  "receipt": {
+    "message_id": "241",
+    "card_id": "PUMP:4715fbd0e40176ec1ff06d125a49e32f9e501fe3bb8dae84ab9af5e97bccb0da",
+    "text_hash": "87ee4404654376243a723f50aac990275682c75810e7a731833e7f7608e29e43",
+    "confirmed_ts": 1793008561961,
+    "telegram_date": 1793008561,
+    "http_started_ts": 1793008561596,
+    "http_ack_received_ts": 1793008561872,
+    "http_clock_basis": "CALL_TO_FETCH_AND_PARSED_ACK_NOT_WIRE_TIMESTAMP"
+  },
+  "checks": {
+    "original_pin": true,
+    "original_key": true,
+    "exact_owner_manual": true,
+    "current_qualified_analysis": true,
+    "original_saved_clock": true,
+    "owner_minimum_plan": true,
+    "original_facts_fresh": true,
+    "card_original": true,
+    "approved_recipient": true,
+    "receipt_bound": true,
+    "clock_bound": true,
+    "truthful_clock_basis": true
+  },
+  "plan": {
+    "entries": [
+      {
+        "lower": 0.002009125,
+        "upper": 0.0020388750000000003,
+        "confirmation_level": null,
+        "confirmation_status": "PRELIMINARY_AREA"
+      },
+      {
+        "lower": 0.001972125,
+        "upper": 0.002001875,
+        "confirmation_level": null,
+        "confirmation_status": "PRELIMINARY_AREA"
+      }
+    ],
+    "exit": {
+      "lower": 0.002308125,
+      "upper": 0.002337875,
+      "explanation": "Ближайшая подтверждённая вершина 0.002323 выше текущей цены; фиксация всей позиции."
+    },
+    "invalidation": {
+      "kind": "PRICE_BELOW",
+      "price": 0.001972,
+      "explanation": "Цена ниже сохранённой границы основания волны."
+    },
+    "potential_pct": {
+      "minimum": 13.205812028692264,
+      "maximum": 18.54598466121571,
+      "basis": "GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT"
+    }
+  },
+  "original_fact_status_clocks": {
+    "price": {
+      "status": "USABLE",
+      "reason": null,
+      "event_ts": 1793008550000,
+      "received_ts": 1793008552284,
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:price:5a630b09-5a0f-4743-a707-13686edb7394"
+    },
+    "ticker_24h": {
+      "status": "INCOMPLETE",
+      "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+      "event_ts": 1793008550000,
+      "received_ts": 1793008552284,
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:ticker_24h:5a630b09-5a0f-4743-a707-13686edb7394"
+    },
+    "candles": {
+      "status": "USABLE",
+      "reason": null,
+      "event_ts": 1793008500000,
+      "received_ts": 1793008554218,
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:candles:f6328741-a661-4428-a219-77e8ced67d79"
+    },
+    "orderbook": {
+      "status": "USABLE",
+      "reason": null,
+      "event_ts": 1793008556193,
+      "received_ts": 1793008556277,
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:orderbook:2a3b1396-946d-4a44-9942-62ff4b88c3b3"
+    },
+    "growth_24h": {
+      "status": "USABLE",
+      "reason": null,
+      "event_ts": 1793008500000,
+      "received_ts": 1793008553541,
+      "fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101207:DOOD-USDT:a2376c22-8255-4ed4-9701-9feaf3725936"
+    },
+    "trades": {
+      "status": "USABLE",
+      "reason": null,
+      "event_ts": 1793008556937,
+      "received_ts": 1793008557061,
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:trades:ac459070-a0c5-472a-87d0-1a4c4d87c7cc"
+    },
+    "open_interest": {
+      "status": "NOT_CHECKED",
+      "reason": "OPEN_INTEREST_UNIT_UNQUALIFIED",
+      "event_ts": null,
+      "received_ts": 1793008557222,
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:open_interest:OPEN_INTEREST_UNIT_UNQUALIFIED"
+    },
+    "funding": {
+      "status": "NOT_CHECKED",
+      "reason": "FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED",
+      "event_ts": null,
+      "received_ts": 1793008557222,
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:funding:FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED"
+    }
+  },
+  "liquidations": {
+    "qualified_routes": 0,
+    "status": "NOT_CHECKED",
+    "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+    "absence_nonblocking": true,
+    "ordinary_price_levels_are_not_liquidations": true
+  },
+  "funding_minus1percent": "USER_ASSERTED_NOT_CONFIRMED_NOT_PUBLISHED",
+  "actual_manual": {
+    "provider_HTTP": 9,
+    "BINGX": 8,
+    "TELEGRAM": 1,
+    "provider_unknown": 0,
+    "native_receipt": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:MANUAL:bdd7a2db-87bc-4a32-90d0-8f29705f1ae4",
+      "usage": {
+        "requests": 307,
+        "rows_read": 381,
+        "rows_written": 134,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 381,
+        "rows_written": 134
+      },
+      "original_envelope_never_reduced": true
+    }
+  },
+  "actual_exact_saved_readback": {
+    "market_HTTP": 0,
+    "Telegram": 0,
+    "native_receipt": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:pump-owner-dood-sent241-original-readback-20261026-one",
+      "usage": {
+        "requests": 10,
+        "rows_read": 57,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 57,
+        "rows_written": 4
+      },
+      "original_envelope_never_reduced": true
+    },
+    "completed_ts": 1793009234253
+  },
+  "resource_day_snapshot": {
+    "day": "2026-10-26",
+    "HTTP_charged": 397,
+    "basis": "SAVED_ORIGINAL_READBACK_SNAPSHOT_NOT_CURRENT_WHOLE_ACCOUNT_DAY"
+  },
+  "private_reply_sha256": "aaefa38da2979724b809b7795f7edd199787c23e664b36f84767fd2e48ed2c3a",
+  "private_readback_sha256": "16f7e35adc8584de9d6f834dc070f50e82eea8c27aeff2503a62f8d512506f47",
+  "private_raw_recipient_exported": false,
+  "manual_is_not_AUTO_discovery_delivery_proof": true,
+  "first_current_AUTO_SENT_confirmed": false,
+  "first_signal_outcome_confirmed": false,
+  "qualified_production_CORE_unique": 10,
+  "not_checked_CORE_selected": 540,
+  "full_TZ_complete": false,
+  "known_engineering_lower_bound_excluding_AUTO_and_wholeaccountday": {
+    "requests": 1315,
+    "rows_read": 2146,
+    "rows_written": 652,
+    "unknown_ops": 0
+  },
+  "LOOKUP_operations_spent": 9,
+  "LOOKUP_operations_remaining": 1,
+  "old_caps_spends_unknowns_reserves_9pauses_2deferrals_preserved": true
+}

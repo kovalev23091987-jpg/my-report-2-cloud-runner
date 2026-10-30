@@ -1,0 +1,50 @@
+{
+  "schema": "EXACT_OFFICIAL_MEXC_RATE_BLOCK_EXCERPTS_V1",
+  "excerpts": [
+    {
+      "id": "mexcKlineHiddenRate",
+      "request_and_rate_excerpt": "WebSocket API Get Candlestick Data HTTP Request GET /api/v1/contract/kline/{symbol} Rate limit: 20 times / 2 seconds",
+      "exact_numeric_rate": {
+        "requests": 20,
+        "window_ms": 2000
+      },
+      "raw_HTML_retains_rate": true,
+      "main_markdown_retains_rate": null,
+      "new_entitlement": false
+    },
+    {
+      "id": "mexcKlineDualRate",
+      "request_and_rate_excerpt": "WebSocket API Get Candlestick Data HTTP Request GET /api/v1/contract/kline/{symbol} Rate limit: 20 times / 2 seconds",
+      "exact_numeric_rate": {
+        "requests": 20,
+        "window_ms": 2000
+      },
+      "raw_HTML_retains_rate": true,
+      "main_markdown_retains_rate": false,
+      "new_entitlement": false
+    },
+    {
+      "id": "mexcTradesHiddenRate",
+      "request_and_rate_excerpt": "ade WebSocket API Get Recent Trades HTTP Request GET /api/v1/contract/deals/{symbol} Rate limit: 20 times / 2 seconds",
+      "exact_numeric_rate": {
+        "requests": 20,
+        "window_ms": 2000
+      },
+      "raw_HTML_retains_rate": true,
+      "main_markdown_retains_rate": null,
+      "new_entitlement": false
+    },
+    {
+      "id": "mexcContractHiddenRate",
+      "request_and_rate_excerpt": "ade WebSocket API Get Contract Info HTTP Request GET /api/v1/contract/detail/country Rate limit: 10 time / 2 seconds",
+      "exact_numeric_rate": {
+        "requests": 10,
+        "window_ms": 2000
+      },
+      "raw_HTML_retains_rate": true,
+      "main_markdown_retains_rate": null,
+      "new_entitlement": false
+    }
+  ],
+  "scope": "Technical short official request/rate blocks; no generic exchange-wide entitlement or actual source qualification."
+}

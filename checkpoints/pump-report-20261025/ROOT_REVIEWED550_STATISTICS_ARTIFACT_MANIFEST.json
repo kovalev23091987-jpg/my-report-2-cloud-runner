@@ -1,0 +1,288 @@
+{
+  "schema": "PUMP_WORKER_ARTIFACT_V1",
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "main_module": "worker-entry.mjs",
+  "module_count": 54,
+  "implementation_pin": {
+    "schema": "PUMP_BUNDLED_IMPLEMENTATION_PIN_V1",
+    "sha256": "b35a4bbaaee2d66bd9b97006f174fc4769dc2177631943ba2ec4ec7023e82d60",
+    "modules": {
+      "analytics/anchors.mjs": "b2c34fdde0dcdf90a1e8b79c900f3f9313440470e737745ba94a2e0102dc6fdf",
+      "analytics/cohort-audit.mjs": "cfe56fb9ce94cc6a8725293249b8c04c2df0ad2e7ab6aedd5d668e0ebddfa099",
+      "analytics/context.mjs": "6b63bf171033e945fd5f2f58c5a144209f83f9973b87d30077f9e1bb1c111673",
+      "analytics/day-growth.mjs": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1",
+      "analytics/feature-capsule.mjs": "8be9718362308645efe6ebd3b9f3e8738749a3fe130b1a48bdd8551a2279e143",
+      "analytics/index.mjs": "e25dedc87048dc4fcbabc3b43c3bf6b7bd056e8102fca1e6c65834e48eee3ebd",
+      "analytics/liquidity.mjs": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a",
+      "analytics/manual-text.mjs": "9bd30e2665f159e4077fad8c02d4b19596d195472e45d560e983321ff755248f",
+      "analytics/materialized-summary.mjs": "53f06bf9d3ca228c4d957bf93cb4abb241ec3f1be653a5bc7847da21601e46a3",
+      "analytics/math.mjs": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "analytics/movement.mjs": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0",
+      "analytics/outcome.mjs": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753",
+      "analytics/presentation.mjs": "4db478513ec9c927c92bea68e2a799a3dd3dfaaad122403d1f733378a4a180b4",
+      "analytics/saved-capsule-audit.mjs": "4dd363981f0feaa8853e6ccd5868c5247ffb6d85b3ff60d0c59c47828e8f5d4a",
+      "analytics/summary.mjs": "3a34c86dc1df257eb845d41f847d7db753a2dd008d13ae8cdfda9d48d2b265ff",
+      "analytics/zones.mjs": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+      "contracts/index.mjs": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08",
+      "contracts/run-purpose.mjs": "edb8d8cf4e13cacf2fb3c70585a18c59a2668f7210c746514cd53d73908b55c3",
+      "legacy-worker.mjs": "34d4db2ea9667e000107effa5b7b17c01cb699fc5b33ceb64e1a652b34b38e10",
+      "profile/start-v1.mjs": "8e7100655d96a9b550e8a8c6debdfb9164280259394823e5c596d70c847d16ce",
+      "registry/index.mjs": "56fb530b6cbcec49bfe4dc6912ff466272d1896ee3869cad1d5fa9d68d980005",
+      "registry/native-nontarget380-data.mjs": "11ca070b31b79d0a8c32f19f11c1b388473fd17ca0c444f13c30dd96024d7118",
+      "registry/native-reviewed550-data.mjs": "23f109dd0da3a4f17fc1ff6cd0ee233f250972d2cfba05adda6278a5a8203617",
+      "registry/native-reviewed550.mjs": "ed1567c13b7a90b6e1783b3215bb2d73954f469c0f8003c9abd9d5f653545a91",
+      "runtime/budget.mjs": "74c7bd864028ca2a4127e9066c32e265b4c44b882e5767ed0a2d2fd1838d7831",
+      "runtime/candidate-priority.mjs": "a2c161cbfe0c5cd3d01a18e63b59f72291c9445e7e6d91d21025a648bb328274",
+      "runtime/delivery.mjs": "e0a7e2ae0739996259e7229d826de33d7fb2b5c7c294fc53783a2692c2d9bd9e",
+      "runtime/discovery-reserve.mjs": "e4f4864b4c0f19238a33164e388ed0fa817a053cfaddc0fc30347c6e2d89a881",
+      "runtime/manual-input.mjs": "651dd7640ba5280a4ab8c6d6d93a472840494203e95d951c2e7a0a57c62f1360",
+      "runtime/manual-response.mjs": "0e4bf8ccd2b6fb90d5702abbbdab72b8608c83e996922c96530786b6860673f7",
+      "runtime/materialized-v3-store.mjs": "e5d5806ba4db33e65239c424846722f8b52ab6865039fb32682c2980dea3b75a",
+      "runtime/native-budget.mjs": "6269a5faedbcd22444bd98ee18eb1017aa0aefae7cadfbc54e9c7fabe83fae8b",
+      "runtime/outcome-journal.mjs": "228efb9f44254e40585652e63ba95f9435af32a70fd461d7a2f019fbf93b8f65",
+      "runtime/provider-policy.mjs": "1032b08fb9f66ca857e0e6e3ef684873e860f021075401bc4337b8793e1085ec",
+      "runtime/retained-capsules.mjs": "ffad983ce19ffbf415e2767579ec0f4f5935d1fe7c63ce51fc049d0a8c7175b7",
+      "runtime/runner.mjs": "b9f2896bec35a384bcc02201382f531ce07fc676bd7eb577052b8e50223c06eb",
+      "runtime/saved-statistics-audit.mjs": "84dcfc2faade0dace23a987f650c74a465e676c414dfcb57f74aa26332658b4f",
+      "runtime/source-error-policy.mjs": "2f51fbe6caf9ea37990998a12542ad00e2861d3aefddc160bedc0d0b6e5526ce",
+      "runtime/source-feasibility.mjs": "f9b0fe29394d91665350051226da2ddbe8adb1e42d7283674beb51f5b599c9d5",
+      "runtime/store.mjs": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf",
+      "runtime/summary-index.mjs": "6bcd1ce9fae3d9e875ade28d7ae166b2a11f5326349b4ee86ff9065effc3e784",
+      "runtime/text-hash.mjs": "bffa6795f58925a43e1f14c08a7167fbf1fb8dbe1f44cadc1a9c9bb6c63c7677",
+      "runtime/work-index.mjs": "b5514b625407c98764d36f376dfb38440e4711d48b6405e69cb68a60df7db7a0",
+      "runtime/worker.mjs": "0120fed7bbfd0c150ba493de67582db5aa8d054cf4817bec7c65ff04b84cf6ef",
+      "sources/bingx-anonymous-display-info-request.mjs": "ba89cf7123d7012a0b24bc6cdb7ce8aa497b0b62ebf172cd3f003d317525d2a1",
+      "sources/bingx.mjs": "4b835db4ba9e8514c5bef26ab287aed99b982d409976ebff540fdf8403052308",
+      "sources/day-growth.mjs": "6e397080a7fd99fb466b286d916e7df97ce17eedea244ac9cdf3230d3f0c8b93",
+      "sources/index.mjs": "8f87d577837b03d821bcab1d41147e353d556132b88d25b34f7289c024da6c6f",
+      "sources/liquidations.mjs": "7fd1e6cca4eb6037ecbe5d6e9296c681aaa19dfb6248ef38da8bf0e5c2de744e",
+      "sources/native-relative-qualification.mjs": "c9ab4bd23cf10376a3abd7b66490679121362286efdc82ed95d19fdf29ca753f",
+      "sources/recent-trades.mjs": "bc6843634b65ddc6c65a0aa4747f2580d309620ef46b7b86da865fada0f68549",
+      "sources/saved-nontarget-decisions.mjs": "047bc88522f641ffc0f5d98d058494e0345f2c60713241e5484a5164fb59933b",
+      "worker-entry.mjs": "6394151b49a961717e255db5d960f99f1cba5d6335767b86bb34b5db2b0879b7"
+    },
+    "excluded_self_module": "runtime/implementation-pin.mjs"
+  },
+  "modules": {
+    "worker-entry.mjs": {
+      "bytes": 138,
+      "sha256": "6394151b49a961717e255db5d960f99f1cba5d6335767b86bb34b5db2b0879b7"
+    },
+    "legacy-worker.mjs": {
+      "bytes": 1214199,
+      "sha256": "34d4db2ea9667e000107effa5b7b17c01cb699fc5b33ceb64e1a652b34b38e10"
+    },
+    "runtime/worker.mjs": {
+      "bytes": 25285,
+      "sha256": "0120fed7bbfd0c150ba493de67582db5aa8d054cf4817bec7c65ff04b84cf6ef"
+    },
+    "sources/index.mjs": {
+      "bytes": 34914,
+      "sha256": "8f87d577837b03d821bcab1d41147e353d556132b88d25b34f7289c024da6c6f"
+    },
+    "contracts/index.mjs": {
+      "bytes": 6230,
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08"
+    },
+    "profile/start-v1.mjs": {
+      "bytes": 1774,
+      "sha256": "8e7100655d96a9b550e8a8c6debdfb9164280259394823e5c596d70c847d16ce"
+    },
+    "sources/bingx.mjs": {
+      "bytes": 13925,
+      "sha256": "4b835db4ba9e8514c5bef26ab287aed99b982d409976ebff540fdf8403052308"
+    },
+    "sources/native-relative-qualification.mjs": {
+      "bytes": 3126,
+      "sha256": "c9ab4bd23cf10376a3abd7b66490679121362286efdc82ed95d19fdf29ca753f"
+    },
+    "sources/liquidations.mjs": {
+      "bytes": 6512,
+      "sha256": "7fd1e6cca4eb6037ecbe5d6e9296c681aaa19dfb6248ef38da8bf0e5c2de744e"
+    },
+    "sources/day-growth.mjs": {
+      "bytes": 9123,
+      "sha256": "6e397080a7fd99fb466b286d916e7df97ce17eedea244ac9cdf3230d3f0c8b93"
+    },
+    "sources/saved-nontarget-decisions.mjs": {
+      "bytes": 4948,
+      "sha256": "047bc88522f641ffc0f5d98d058494e0345f2c60713241e5484a5164fb59933b"
+    },
+    "sources/recent-trades.mjs": {
+      "bytes": 5593,
+      "sha256": "bc6843634b65ddc6c65a0aa4747f2580d309620ef46b7b86da865fada0f68549"
+    },
+    "analytics/index.mjs": {
+      "bytes": 16189,
+      "sha256": "e25dedc87048dc4fcbabc3b43c3bf6b7bd056e8102fca1e6c65834e48eee3ebd"
+    },
+    "analytics/math.mjs": {
+      "bytes": 4477,
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c"
+    },
+    "analytics/movement.mjs": {
+      "bytes": 17043,
+      "sha256": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0"
+    },
+    "analytics/liquidity.mjs": {
+      "bytes": 3326,
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a"
+    },
+    "analytics/zones.mjs": {
+      "bytes": 7668,
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6"
+    },
+    "analytics/context.mjs": {
+      "bytes": 9360,
+      "sha256": "6b63bf171033e945fd5f2f58c5a144209f83f9973b87d30077f9e1bb1c111673"
+    },
+    "analytics/day-growth.mjs": {
+      "bytes": 3782,
+      "sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1"
+    },
+    "analytics/manual-text.mjs": {
+      "bytes": 6627,
+      "sha256": "9bd30e2665f159e4077fad8c02d4b19596d195472e45d560e983321ff755248f"
+    },
+    "analytics/presentation.mjs": {
+      "bytes": 7271,
+      "sha256": "4db478513ec9c927c92bea68e2a799a3dd3dfaaad122403d1f733378a4a180b4"
+    },
+    "analytics/outcome.mjs": {
+      "bytes": 9914,
+      "sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753"
+    },
+    "registry/index.mjs": {
+      "bytes": 27554,
+      "sha256": "56fb530b6cbcec49bfe4dc6912ff466272d1896ee3869cad1d5fa9d68d980005"
+    },
+    "registry/native-reviewed550.mjs": {
+      "bytes": 3596,
+      "sha256": "ed1567c13b7a90b6e1783b3215bb2d73954f469c0f8003c9abd9d5f653545a91"
+    },
+    "registry/native-reviewed550-data.mjs": {
+      "bytes": 91735,
+      "sha256": "23f109dd0da3a4f17fc1ff6cd0ee233f250972d2cfba05adda6278a5a8203617"
+    },
+    "registry/native-nontarget380-data.mjs": {
+      "bytes": 348740,
+      "sha256": "11ca070b31b79d0a8c32f19f11c1b388473fd17ca0c444f13c30dd96024d7118"
+    },
+    "runtime/manual-input.mjs": {
+      "bytes": 1552,
+      "sha256": "651dd7640ba5280a4ab8c6d6d93a472840494203e95d951c2e7a0a57c62f1360"
+    },
+    "runtime/manual-response.mjs": {
+      "bytes": 2879,
+      "sha256": "0e4bf8ccd2b6fb90d5702abbbdab72b8608c83e996922c96530786b6860673f7"
+    },
+    "runtime/budget.mjs": {
+      "bytes": 17298,
+      "sha256": "74c7bd864028ca2a4127e9066c32e265b4c44b882e5767ed0a2d2fd1838d7831"
+    },
+    "runtime/source-error-policy.mjs": {
+      "bytes": 953,
+      "sha256": "2f51fbe6caf9ea37990998a12542ad00e2861d3aefddc160bedc0d0b6e5526ce"
+    },
+    "runtime/discovery-reserve.mjs": {
+      "bytes": 1522,
+      "sha256": "e4f4864b4c0f19238a33164e388ed0fa817a053cfaddc0fc30347c6e2d89a881"
+    },
+    "runtime/delivery.mjs": {
+      "bytes": 9592,
+      "sha256": "e0a7e2ae0739996259e7229d826de33d7fb2b5c7c294fc53783a2692c2d9bd9e"
+    },
+    "runtime/text-hash.mjs": {
+      "bytes": 206,
+      "sha256": "bffa6795f58925a43e1f14c08a7167fbf1fb8dbe1f44cadc1a9c9bb6c63c7677"
+    },
+    "runtime/work-index.mjs": {
+      "bytes": 7779,
+      "sha256": "b5514b625407c98764d36f376dfb38440e4711d48b6405e69cb68a60df7db7a0"
+    },
+    "runtime/native-budget.mjs": {
+      "bytes": 8444,
+      "sha256": "6269a5faedbcd22444bd98ee18eb1017aa0aefae7cadfbc54e9c7fabe83fae8b"
+    },
+    "runtime/store.mjs": {
+      "bytes": 10994,
+      "sha256": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf"
+    },
+    "contracts/run-purpose.mjs": {
+      "bytes": 1398,
+      "sha256": "edb8d8cf4e13cacf2fb3c70585a18c59a2668f7210c746514cd53d73908b55c3"
+    },
+    "runtime/provider-policy.mjs": {
+      "bytes": 3720,
+      "sha256": "1032b08fb9f66ca857e0e6e3ef684873e860f021075401bc4337b8793e1085ec"
+    },
+    "runtime/runner.mjs": {
+      "bytes": 22100,
+      "sha256": "b9f2896bec35a384bcc02201382f531ce07fc676bd7eb577052b8e50223c06eb"
+    },
+    "runtime/outcome-journal.mjs": {
+      "bytes": 11862,
+      "sha256": "228efb9f44254e40585652e63ba95f9435af32a70fd461d7a2f019fbf93b8f65"
+    },
+    "analytics/anchors.mjs": {
+      "bytes": 6253,
+      "sha256": "b2c34fdde0dcdf90a1e8b79c900f3f9313440470e737745ba94a2e0102dc6fdf"
+    },
+    "runtime/materialized-v3-store.mjs": {
+      "bytes": 7487,
+      "sha256": "e5d5806ba4db33e65239c424846722f8b52ab6865039fb32682c2980dea3b75a"
+    },
+    "analytics/materialized-summary.mjs": {
+      "bytes": 22491,
+      "sha256": "53f06bf9d3ca228c4d957bf93cb4abb241ec3f1be653a5bc7847da21601e46a3"
+    },
+    "analytics/summary.mjs": {
+      "bytes": 11984,
+      "sha256": "3a34c86dc1df257eb845d41f847d7db753a2dd008d13ae8cdfda9d48d2b265ff"
+    },
+    "runtime/summary-index.mjs": {
+      "bytes": 6392,
+      "sha256": "6bcd1ce9fae3d9e875ade28d7ae166b2a11f5326349b4ee86ff9065effc3e784"
+    },
+    "runtime/candidate-priority.mjs": {
+      "bytes": 2466,
+      "sha256": "a2c161cbfe0c5cd3d01a18e63b59f72291c9445e7e6d91d21025a648bb328274"
+    },
+    "runtime/retained-capsules.mjs": {
+      "bytes": 4376,
+      "sha256": "ffad983ce19ffbf415e2767579ec0f4f5935d1fe7c63ce51fc049d0a8c7175b7"
+    },
+    "analytics/feature-capsule.mjs": {
+      "bytes": 23355,
+      "sha256": "8be9718362308645efe6ebd3b9f3e8738749a3fe130b1a48bdd8551a2279e143"
+    },
+    "runtime/implementation-pin.mjs": {
+      "bytes": 5272,
+      "sha256": "3318b428745e56a0a06de0bc6f9766705c66fae4e7481d2e65b03f1f9fddd46a"
+    },
+    "runtime/source-feasibility.mjs": {
+      "bytes": 3418,
+      "sha256": "f9b0fe29394d91665350051226da2ddbe8adb1e42d7283674beb51f5b599c9d5"
+    },
+    "runtime/saved-statistics-audit.mjs": {
+      "bytes": 4635,
+      "sha256": "84dcfc2faade0dace23a987f650c74a465e676c414dfcb57f74aa26332658b4f"
+    },
+    "analytics/saved-capsule-audit.mjs": {
+      "bytes": 11763,
+      "sha256": "4dd363981f0feaa8853e6ccd5868c5247ffb6d85b3ff60d0c59c47828e8f5d4a"
+    },
+    "analytics/cohort-audit.mjs": {
+      "bytes": 32999,
+      "sha256": "cfe56fb9ce94cc6a8725293249b8c04c2df0ad2e7ab6aedd5d668e0ebddfa099"
+    },
+    "sources/bingx-anonymous-display-info-request.mjs": {
+      "bytes": 4573,
+      "sha256": "ba89cf7123d7012a0b24bc6cdb7ce8aa497b0b62ebf172cd3f003d317525d2a1"
+    }
+  },
+  "legacy_scheduled_invoked": false,
+  "schedules": [],
+  "native_market_proof": false,
+  "telegram_proof": false
+}

@@ -1,0 +1,19 @@
+--- a/.github/workflows/liq-assembled-offline-20261012.yml
++++ b/.github/workflows/liq-assembled-offline-20261012.yml
+@@ -23,6 +23,7 @@
+       - current-generation/tests/n10-raw-component-binding.test.mjs
+       - current-generation/tests/n10-full-cache-inputs.mjs
+       - current-generation/tests/coingecko-cache-binding.test.mjs
++      - current-generation/tests/coingecko-raw-numbers.test.mjs
+       - current-generation/tests/n15-consumer-isolation.test.mjs
+       - current-generation/tests/htx-n12-retained-facts.test.mjs
+       - current-generation/tests/turnover-cache-binding.test.mjs
+@@ -411,7 +412,7 @@
+           node --test tools/liquidation-new-source-admission-20261015.test.mjs tools/permitted-new-liquidation-source-plan-20261015.test.mjs > audit-output/liq-assembled/new-liq-research-admission.tap
+           node --check tools/validate-native-sector-batch-20261014.mjs
+           node tools/validate-native-sector-batch-20261014.mjs --plan > audit-output/liq-assembled/native-sector-validation-plan.json
+-          REPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_SECTOR_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/coingecko-cache-binding.test.mjs current-generation/tests/n15-consumer-isolation.test.mjs current-generation/tests/coinpaprika-cache-scope.test.mjs current-generation/tests/sector-cache-preservation.test.mjs current-generation/tests/native-sector-provider-binding.test.mjs current-generation/tests/tron-sector-source.test.mjs current-generation/tests/sector-exact-fallback.test.mjs current-generation/tests/native-sector-validation-admission.test.mjs current-generation/tests/shared-sector-batch.test.mjs current-generation/tests/coingecko-demo-access.test.mjs current-generation/tests/sector-context.test.mjs > audit-output/liq-assembled/native-sector-provider-binding.tap
++          REPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_SECTOR_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/coingecko-cache-binding.test.mjs current-generation/tests/coingecko-raw-numbers.test.mjs current-generation/tests/n15-consumer-isolation.test.mjs current-generation/tests/coinpaprika-cache-scope.test.mjs current-generation/tests/sector-cache-preservation.test.mjs current-generation/tests/native-sector-provider-binding.test.mjs current-generation/tests/tron-sector-source.test.mjs current-generation/tests/sector-exact-fallback.test.mjs current-generation/tests/native-sector-validation-admission.test.mjs current-generation/tests/shared-sector-batch.test.mjs current-generation/tests/coingecko-demo-access.test.mjs current-generation/tests/sector-context.test.mjs > audit-output/liq-assembled/native-sector-provider-binding.tap
+           cp audit-output/native-sector-denominations-retained-proof.json audit-output/liq-assembled/
+           cp audit-output/tron-sector-retained-four-proof.json audit-output/liq-assembled/
+           cp audit-output/sector-exact-target-controlled-proof.json audit-output/liq-assembled/

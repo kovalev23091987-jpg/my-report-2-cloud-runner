@@ -1,0 +1,19 @@
+{
+  "schema": "RETAINED_BASELINE_LOGICAL_SQL_SHAPES_NOT_NATIVE_COST_V1",
+  "module_sha256": "ee9f18108e66d87f2daa4da22b3a5c3abc257beb5dacd398de84b3915f67e4a7",
+  "source_PR480_comparison_sha256": "f511b969963dbc866e8e6780e4488e7e24f50d735731a31f64049da75837f9fb",
+  "logical_sql_shapes": [
+    "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+    "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,attempts INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+    "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_cache(source TEXT NOT NULL,asset_key TEXT NOT NULL,observed_ts INTEGER NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(source,asset_key))",
+    "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_daily(source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL DEFAULT 0,last_reservation_id TEXT,updated_at INTEGER NOT NULL,PRIMARY KEY(source,day_utc))",
+    "run:CREATE TABLE IF NOT EXISTS report2_evidence_source_credit_reservation(reservation_id TEXT PRIMARY KEY,source TEXT NOT NULL,day_utc TEXT NOT NULL,credits INTEGER NOT NULL,created_at INTEGER NOT NULL)",
+    "first:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1",
+    "first:SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2",
+    "run:INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,last_reservation_id,updated_at) VALUES(?1,?2,0,NULL,?3) ON CONFLICT(source,day_utc) DO NOTHING",
+    "run:UPDATE report2_evidence_source_daily SET attempts=attempts+?1,last_reservation_id=?2,updated_at=?3 WHERE source=?4 AND day_utc=?5 AND attempts+?1<=?6 AND NOT EXISTS(SELECT 1 FROM report2_evidence_source_reservation WHERE reservation_id=?2)",
+    "run:INSERT INTO report2_evidence_source_reservation(reservation_id,source,day_utc,attempts,created_at) SELECT ?1,?2,?3,?4,?5 FROM report2_evidence_source_daily WHERE source=?2 AND day_utc=?3 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING",
+    "first:SELECT source,attempts FROM report2_evidence_source_reservation WHERE reservation_id=?1",
+    "run:INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json"
+  ]
+}

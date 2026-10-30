@@ -1,0 +1,262 @@
+{
+  "schema": "BZ29_ACTUAL_ON_READONLY_FINDINGS_V1",
+  "status": "BOUND_CURRENT_AUTO_ORIGINAL_NOT_READY_EXPIRED_WAVE_NO_CARD",
+  "raw_file": "pump-report/.private/observations/oct29-known-on-run-six-result.json",
+  "raw_sha256": "0df36660050b049d9339bda7ae83ae946c8558d79a6661dc44e622d7ec2361e4",
+  "run_id": "9cf8cdfa-99bc-4ea0-9c43-595a77ca5623",
+  "implementation_sha256": "ca0ac26fb8ff0847b61a4c9a1fb2dd34a7dffc44bcc7c30fecf5840ddec98d91",
+  "evidence_class": "OBSERVED",
+  "analysis_key": "pump:analysis:ea73f249045d28e1792e62d5ea9dfea982770a24b12ea6d9a02d217405b52db7",
+  "literal_original_token_hashes": {
+    "known_run.checked.0.analysis": "ea73f249045d28e1792e62d5ea9dfea982770a24b12ea6d9a02d217405b52db7",
+    "known_candidates.0.private_evidence.original.analysis": "ea73f249045d28e1792e62d5ea9dfea982770a24b12ea6d9a02d217405b52db7",
+    "known_candidates.0.private_evidence.original.input": "cff50b3d9d9d6fbef62cff930db2e43e761d062da31bb7e67880ca8db5599d42"
+  },
+  "known_run_original_analysis_equal": true,
+  "input_analysis_run_clocks_identity_equal": true,
+  "analysis_mode": "AUTO",
+  "run_purpose": "PRODUCTION",
+  "rules_version": "pump-analytics-v6-price-structure-20261029",
+  "profile_version": "pump-report-start-v1",
+  "analysis_ts": 1793257622265,
+  "analysis_Moscow": "2026-10-29T10:07:02.265+03:00",
+  "original_saved_ts": 1793257622440,
+  "original_saved_Moscow": "2026-10-29T10:07:02.440+03:00",
+  "observed_ts": 1793259785886,
+  "observed_Moscow": "2026-10-29T10:43:05.886+03:00",
+  "run_status": "INCOMPLETE",
+  "known_run_checked_count": 1,
+  "ready": false,
+  "automatic_eligible": false,
+  "status_analysis": "REJECTED",
+  "reasons": [
+    "WAVE_LIFETIME_EXPIRED"
+  ],
+  "wave_state": "EXPIRED",
+  "previous_wave": {
+    "wave_id": "PUMP:BINGX:USDT_M:101825:ON-USDT:1793176920000",
+    "created_ts": 1793178116252,
+    "expires_ts": 1793192516252,
+    "state": "EXPIRED",
+    "qualification_known_ts": null,
+    "cancelled_ts": 1793178116252
+  },
+  "previous_wave_expiry_Moscow": "2026-10-28T16:01:56.252+03:00",
+  "previous_wave_expiry_rule_equals_4h": true,
+  "current_retained_wave_PK_captured": false,
+  "current_threshold_passed": true,
+  "growth_windows": [
+    {
+      "window_ms": 300000,
+      "start_ts": 1793257260000,
+      "end_ts": 1793257560000,
+      "return_pct": -2.0674646354733373,
+      "passed": false,
+      "basis": null
+    },
+    {
+      "window_ms": 900000,
+      "start_ts": 1793256660000,
+      "end_ts": 1793257560000,
+      "return_pct": 1.066816395283543,
+      "passed": false,
+      "basis": null
+    },
+    {
+      "window_ms": 3600000,
+      "start_ts": 1793253960000,
+      "end_ts": 1793257560000,
+      "return_pct": -2.1207177814029476,
+      "passed": false,
+      "basis": null
+    },
+    {
+      "window_ms": 86400000,
+      "start_ts": 1793171160000,
+      "end_ts": 1793257560000,
+      "return_pct": 21.70385395537524,
+      "passed": true,
+      "basis": "OBSERVED_CLOSED_OHLC_24H"
+    }
+  ],
+  "plan": null,
+  "plan_diagnostic": {
+    "stage": "MOVEMENT",
+    "code": "WAVE_LIFETIME_EXPIRED",
+    "required_minimum_pct": 10,
+    "best_candidate_minimum_potential_pct": null
+  },
+  "price_structure_diagnostic": {
+    "status": "NOT_EVALUATED",
+    "reason": "CORE_ANALYSIS_NOT_READY",
+    "used_for_plan": false
+  },
+  "notification_eligibility": {
+    "eligible": false,
+    "reason": "ANALYSIS_NOT_READY",
+    "required_potential_pct": 10,
+    "minimum_potential_pct": null,
+    "comparison": null
+  },
+  "card_text": null,
+  "selected_delivery": null,
+  "run_delivery": [],
+  "run_outcomes": [],
+  "CORE_fact_metadata": {
+    "price": {
+      "status": "USABLE",
+      "unit": "USDT_PER_BASE",
+      "event_ts": 1793257612000,
+      "received_ts": 1793257615518,
+      "expires_ts": 1793257642000,
+      "reason": null,
+      "evidence_ref": "eaf12504-146d-4dc6-8cb9-ac964111f8c1",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101825:ON-USDT:price:eaf12504-146d-4dc6-8cb9-ac964111f8c1",
+      "fresh_at_original_analysis": true
+    },
+    "ticker_24h": {
+      "status": "INCOMPLETE",
+      "unit": "USDT_ROLLING_24H",
+      "event_ts": 1793257612000,
+      "received_ts": 1793257615518,
+      "expires_ts": 1793257642000,
+      "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+      "evidence_ref": "eaf12504-146d-4dc6-8cb9-ac964111f8c1",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101825:ON-USDT:ticker_24h:eaf12504-146d-4dc6-8cb9-ac964111f8c1"
+    },
+    "candles": {
+      "status": "USABLE",
+      "unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+      "event_ts": 1793257560000,
+      "received_ts": 1793257620084,
+      "expires_ts": 1793257650000,
+      "reason": null,
+      "evidence_ref": "3ab579ef-4bae-4092-9867-c0c7533945cb",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101825:ON-USDT:candles:3ab579ef-4bae-4092-9867-c0c7533945cb",
+      "fresh_at_original_analysis": true
+    },
+    "orderbook": {
+      "status": "USABLE",
+      "unit": "USDT_PRICE_BASE_QUANTITY",
+      "event_ts": 1793257621334,
+      "received_ts": 1793257621402,
+      "expires_ts": 1793257636334,
+      "reason": null,
+      "evidence_ref": "c910149c-cd5d-4312-bc44-6f8cf404ff95",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101825:ON-USDT:orderbook:c910149c-cd5d-4312-bc44-6f8cf404ff95",
+      "fresh_at_original_analysis": true
+    },
+    "growth_24h": {
+      "status": "USABLE",
+      "unit": "USDT_CLOSED_ROLLING_24H",
+      "event_ts": 1793257560000,
+      "received_ts": 1793257617828,
+      "expires_ts": 1793257650000,
+      "reason": null,
+      "evidence_ref": "42d86178-679c-4e2f-868e-578c51310d20",
+      "fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101825:ON-USDT:42d86178-679c-4e2f-868e-578c51310d20"
+    },
+    "price_structure": {
+      "status": "USABLE",
+      "unit": "USDT_OHLC_MINUTE_PRICE_ONLY",
+      "event_ts": 1793257560000,
+      "received_ts": 1793257617828,
+      "expires_ts": 1793257650000,
+      "reason": null,
+      "evidence_ref": "42d86178-679c-4e2f-868e-578c51310d20",
+      "fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101825:ON-USDT:price_structure:42d86178-679c-4e2f-868e-578c51310d20"
+    }
+  },
+  "CORE_source_coverage": {
+    "status": "USABLE",
+    "reason": null,
+    "facts_status": {
+      "price": "USABLE",
+      "candles": "USABLE",
+      "orderbook": "USABLE"
+    }
+  },
+  "CORE_candles": {
+    "captured_rows": 125,
+    "coverage": {
+      "window_start": 1793250060000,
+      "window_end": 1793257560000,
+      "complete": true,
+      "time_qualified": true,
+      "relative_volume_qualified": true,
+      "absolute_base_amount_qualified": false,
+      "absolute_USD_amount_qualified": false
+    },
+    "native_volume_unit": "UNKNOWN_NATIVE_UNIT / SAME_NATIVE_REPORTED_QUANTITY; not USD/base/order flow"
+  },
+  "liquidity_stored": {
+    "status": "USABLE",
+    "reason": null,
+    "unit": "USDT",
+    "spread_pct": 0.057257371886624095,
+    "position_limit_usdt": 3000,
+    "snapshot_only": true
+  },
+  "same_request_price_context": {
+    "fact_status": "USABLE",
+    "coverage_complete": true,
+    "included_closed_rows": 1440,
+    "serialized_value_utf8_bytes": 62713,
+    "additional_request": false,
+    "engine_evaluation": {
+      "status": "NOT_EVALUATED",
+      "reason": "CORE_ANALYSIS_NOT_READY",
+      "used_for_plan": false
+    }
+  },
+  "liquidations_status": "NOT_CHECKED",
+  "input_optional_fact_kinds": [],
+  "deferred_after_ON": [
+    {
+      "instrument_id": "BINGX:USDT_M:101719:EVAA-USDT",
+      "status": "DEFERRED",
+      "source_coverage": {
+        "status": "NOT_CHECKED",
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "SURPLUS_LOGICAL_GRANT_LIMIT"
+      },
+      "delivery": null
+    }
+  ],
+  "candidate_quota": {
+    "kind": "UNASSIGNED_SURPLUS",
+    "logical_spent": true,
+    "never_refunded": true,
+    "idempotent": false,
+    "http_upper_bound": 12
+  },
+  "bookkeeping_error": null,
+  "ROOT_lookup_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-oct29-known-on-run-six",
+    "usage": {
+      "requests": 8,
+      "rows_read": 22,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 22,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "helper_executions": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "tests": 0,
+    "build": 0,
+    "nativeSQL": 0,
+    "Cloudflare": 0,
+    "provider": 0,
+    "Telegram": 0,
+    "code_edits": 0
+  },
+  "interpretation": "Saved expiry refusal, before plan/context or Telegram; CORE freshness/visible liquidity are not blocking. Day+21.7 alone does not revive expired prior wave. No plan potential/no missing zones failure inferred because plan never evaluated. Packet contains no current retained-wave PK, no card/ACK/outcome proof. Queue expiry bug can waste selection but is not the direct ON delivery refusal. No strategy recomputation or alternate seed/history used."
+}

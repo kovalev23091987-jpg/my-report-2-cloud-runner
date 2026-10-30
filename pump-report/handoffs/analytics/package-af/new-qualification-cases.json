@@ -1,0 +1,153 @@
+{
+  "schema": "AF_NEW_AFFECTED_QUALIFICATION_V1",
+  "evidence": "NEW_ARTIFICIAL_ONLY_NOT_NATIVE_OR_A_REAL_SIGNAL",
+  "old_tests_replayed": false,
+  "native_HTTP": 0,
+  "SQL": 0,
+  "Telegram": 0,
+  "results": [
+    {
+      "case": "AF01",
+      "windows": [
+        3,
+        5
+      ],
+      "baseline_windows": [
+        20,
+        12
+      ],
+      "current_excluded": true
+    },
+    {
+      "case": "AF02",
+      "zero_not_infinity": true,
+      "missing_not_zero": true,
+      "short_history_explicit": true,
+      "native_no_absolute_unit_claim": true
+    },
+    {
+      "case": "AF03",
+      "adjacent_window_only": true,
+      "effort_not_causation": true,
+      "no_classifier_gate_changed": true
+    },
+    {
+      "case": "AF04",
+      "distinct_bars": 2,
+      "preknown_only": true,
+      "no_full_wave_count_claim": true,
+      "current_break_above_suppresses_stale_failure_warning": true
+    },
+    {
+      "case": "AF05",
+      "OHLC_extreme_time_bounds": true,
+      "same_bar_upper_unknown": true,
+      "missing_path_unknown": true,
+      "closed_reclaim_and_live_price_distinct": true
+    },
+    {
+      "case": "AF06",
+      "new_artificial_full_core_traces": [
+        {
+          "mode": "AUTO",
+          "native_volume": false,
+          "state": "WEAKENING",
+          "ready": true,
+          "minimum_plan_pct": 14.675876926151265,
+          "reasons": [
+            "WEAKENING",
+            "CLOSED_WINDOW_ACCELERATION"
+          ]
+        },
+        {
+          "mode": "AUTO",
+          "native_volume": true,
+          "state": "WEAKENING",
+          "ready": true,
+          "minimum_plan_pct": 14.675876926151265,
+          "reasons": [
+            "WEAKENING",
+            "CLOSED_WINDOW_ACCELERATION"
+          ]
+        },
+        {
+          "mode": "MANUAL",
+          "native_volume": false,
+          "state": "WEAKENING",
+          "ready": true,
+          "minimum_plan_pct": 14.675876926151265,
+          "reasons": [
+            "WEAKENING",
+            "CLOSED_WINDOW_ACCELERATION"
+          ]
+        },
+        {
+          "mode": "MANUAL",
+          "native_volume": true,
+          "state": "WEAKENING",
+          "ready": true,
+          "minimum_plan_pct": 14.675876926151265,
+          "reasons": [
+            "WEAKENING",
+            "CLOSED_WINDOW_ACCELERATION"
+          ]
+        }
+      ],
+      "before_numeric_core_unchanged": true
+    },
+    {
+      "case": "AF07",
+      "controls": [
+        {
+          "name": "BTC",
+          "status": "REJECTED",
+          "reasons": [
+            "OWNER_ASSET_DELIVERY_EXCLUDED"
+          ]
+        },
+        {
+          "name": "ETH",
+          "status": "REJECTED",
+          "reasons": [
+            "OWNER_ASSET_DELIVERY_EXCLUDED"
+          ]
+        },
+        {
+          "name": "stale_book",
+          "status": "WAITING",
+          "reasons": [
+            "MANDATORY_ORDERBOOK_NOT_USABLE"
+          ]
+        },
+        {
+          "name": "unknown_book",
+          "status": "WAITING",
+          "reasons": [
+            "ORDERBOOK_UNIT_UNQUALIFIED"
+          ]
+        },
+        {
+          "name": "no_candles",
+          "status": "WAITING",
+          "reasons": [
+            "MANDATORY_CANDLES_NOT_USABLE"
+          ]
+        },
+        {
+          "name": "zero_volume",
+          "status": "WAITING",
+          "reasons": [
+            "VOLUME_BASELINE_ZERO_OR_UNKNOWN"
+          ]
+        }
+      ],
+      "no_gate_relaxed": true
+    },
+    {
+      "case": "AF08",
+      "unbound_observation_does_not_publish_new_fact": true,
+      "missing_profile_not_new_signal_gate": true,
+      "new_thresholds": 0
+    }
+  ]
+}

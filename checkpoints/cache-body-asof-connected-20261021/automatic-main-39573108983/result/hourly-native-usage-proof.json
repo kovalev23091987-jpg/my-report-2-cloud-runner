@@ -1,0 +1,72 @@
+{
+  "schema": "HOURLY_NATIVE_OBSERVER_OFFLINE_QUALIFICATION_V1",
+  "exact_sql_params_and_archived_bytes_preserved": true,
+  "fixture_source_HTTP": 2,
+  "additional_SQL": 0,
+  "native_cost_qualified": false,
+  "fixture_receipt": {
+    "schema": "FREE_HISTORY_NATIVE_INVOCATION_USAGE_V1",
+    "invocation_id": "3956e26f-60a2-4a5e-8241-16726554ac17",
+    "scheduled_ts": 1792042500000,
+    "day_utc": "2026-10-15",
+    "scheduled_day_utc": "2026-10-15",
+    "execution_started_ts": 1792042500000,
+    "execution_completed_ts": 1792042500000,
+    "execution_day_unambiguous": true,
+    "execution_day_utc": "2026-10-15",
+    "execution_completed": true,
+    "bindings": {
+      "DATA_DB": {
+        "attempted_statements": 2,
+        "measured_rows_read_subtotal": 184,
+        "measured_rows_written_subtotal": 0,
+        "unknown_operations": 0,
+        "row_totals_closed": true,
+        "total_rows_read": 184,
+        "total_rows_written": 0
+      },
+      "ARCHIVE_DB": {
+        "attempted_statements": 16,
+        "measured_rows_read_subtotal": 669,
+        "measured_rows_written_subtotal": 35,
+        "unknown_operations": 0,
+        "row_totals_closed": true,
+        "total_rows_read": 669,
+        "total_rows_written": 35
+      }
+    },
+    "row_totals_closed": true,
+    "total_rows_read": 853,
+    "total_rows_written": 35,
+    "additional_SQL": 0,
+    "cost_admission_changed": false,
+    "daily_total": false,
+    "source_clocks_refreshed": false
+  },
+  "files": [
+    {
+      "path": "cloudflare/free-history/worker-entry.mjs",
+      "sha256": "524e0e7f564dafd5fcc4b1e940cdafdc548feab8e181f4518a129bd3cf53ec7a"
+    },
+    {
+      "path": "cloudflare/free-history/native-usage-receipt.mjs",
+      "sha256": "698a9e46539496ecec6dd9b57ea6132fd00b0a1195610b3c97ca604a60aa3e14"
+    },
+    {
+      "path": "cloudflare/free-history/fixtures/worker-entry-before-native-20261016.mjs",
+      "sha256": "ee2826e36f849d42122f98ca64c99d8f856146e0d1e6d951a0ecf8c1c1548239"
+    },
+    {
+      "path": "cloudflare/free-history/hourly-archive.mjs",
+      "sha256": "e19fba3719b3cc315ead4b5a1975242d5d581887ec03d5795475aa7fb5b19924"
+    },
+    {
+      "path": "cloudflare/free-history/spot-archive.mjs",
+      "sha256": "0b0fa4a7626abfe83c8b1b4f1f5f69012f280097f437eeb340802cad86b89638"
+    },
+    {
+      "path": "cloudflare/public-collector/native-cost-observer.mjs",
+      "sha256": "97713b0393b9bf1962692c8a06b32bd846f649312556dc6a45f9c5cef9daeb70"
+    }
+  ]
+}

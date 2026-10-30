@@ -1,0 +1,158 @@
+{
+  "schema": "ACTUAL_POST590_OVERSIZE_CATALOG_AND_PRIMARY_REFUSAL_V1",
+  "run": 39577753806,
+  "head": "f3ce49b21c68f51fb467618649db6cbeaaaf65bb",
+  "source_run": "1792575175771-1792575186511",
+  "artifact": 12335091438,
+  "zip_bytes": 5333,
+  "zip_sha256": "b65bda9db9d66194a2e2f1e92b4e683ba6d6bcb52fbaad534f089c18a21379d4",
+  "members": 2,
+  "cron": {
+    "run_id": "1792575175771-1792575186511",
+    "scheduled_time": 1792575175771,
+    "started_ts": 1792575186511,
+    "completed_ts": 1792575258668,
+    "status": "PARTIAL",
+    "universe_total": 105,
+    "scanned": 99,
+    "persistence_status": "NOT_CLOSED",
+    "error_text": "{\"contracts\":null,\"market\":null,\"oi\":null,\"funding\":null,\"history\":null}",
+    "v3_discovery_shortlist_count": 21,
+    "v3_live_shortlist_count": 21,
+    "v3_live_deep_check_count": 2,
+    "v3_live_zero_reason": "STAGE0_SCAN_FAILED",
+    "v3_pipeline_health_status": "DEGRADED_PIPELINE",
+    "v3_pipeline_health_reason": "STAGE0_SCAN_FAILED",
+    "v3_live_lane": "LIVE_DISCOVERY",
+    "v3_maintenance_deferred": 0
+  },
+  "catalog_gate": {
+    "first_failed_term": null,
+    "ok": true,
+    "http_status": 200,
+    "source_url_exact": true,
+    "payload_status": "ok",
+    "data_is_array": true,
+    "catalog_rows_count": 388,
+    "classifier_is_function": true
+  },
+  "current_catalog_rows_count": 388,
+  "catalog_snapshot": {
+    "schema": "APPROVED_HTX_PUBLIC_PARSED_CATALOG_V1",
+    "status": "OMITTED_OVERSIZE",
+    "complete": false,
+    "representation": "ALREADY_PARSED_JSON_NOT_ORIGINAL_RESPONSE_TEXT_OR_WIRE",
+    "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+    "http_status": 200,
+    "transport_ok": true,
+    "payload_status": "ok",
+    "evaluation_ts": 1792575186675,
+    "catalog_observed_ts": 1792575187913,
+    "catalog_source_ts": 1792575187653,
+    "original_body_completion_ts": null,
+    "raw_body_sha256": null,
+    "max_snapshot_utf8_bytes": 262144,
+    "emitted_json_basis": "EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH3",
+    "parsed_payload_utf8_bytes": 179284,
+    "omission_reason": "SNAPSHOT_UTF8_LIMIT",
+    "parsed_payload": null,
+    "attempted_snapshot_utf8_bytes": 345857
+  },
+  "actual_payload_complete": false,
+  "catalog_body_recovered": false,
+  "unknown_operations_preserved": 0,
+  "native_usage_before": {
+    "requests": 484,
+    "rows_read": 38816,
+    "rows_written": 318,
+    "unknown_ops": 0
+  },
+  "native_usage_after": {
+    "requests": 485,
+    "rows_read": 38817,
+    "rows_written": 319,
+    "unknown_ops": 0
+  },
+  "day_admission_at_cut": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-21",
+      "run_count": 134,
+      "reserved_rows_read": 837700,
+      "reserved_rows_written": 15192,
+      "measured_rows_read": 552460,
+      "measured_rows_written": 5903,
+      "unknown_ops": 0,
+      "unfinished_count": 0,
+      "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+      "raw_reserved_rows_read": 837700,
+      "raw_reserved_rows_written": 15192,
+      "adaptive_effective_rows_read": 837700,
+      "adaptive_effective_rows_written": 15192,
+      "unfinished_reservations_charged_by_own_ledger_caps": true,
+      "no_completed_reservation_refund": true
+    },
+    "next_reservation": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "projected_reserved": {
+      "rows_read": 891700,
+      "rows_written": 16032
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "candidate_selection": {
+    "schema": "report2-candidate-selection-audit-v1",
+    "run_id": "1792575175771-1792575186511",
+    "lane": "LIVE_DISCOVERY",
+    "minimum_turnover_24h_usdt": 100000,
+    "top_two_contracts": [
+      "BR-USDT",
+      "APR-USDT"
+    ],
+    "registry_did_not_change_rank": true,
+    "deep_check_selected": [
+      "BR-USDT",
+      "APR-USDT"
+    ],
+    "deep_check_capacity_this_invocation": 2
+  },
+  "both_canonical_and_full_evidence_CLOSED_from_masked_log": true,
+  "canonical_states_from_same_log": [
+    {
+      "contract": "BR-USDT",
+      "state": "REJECTED",
+      "direction": null
+    },
+    {
+      "contract": "APR-USDT",
+      "state": "REJECTED",
+      "direction": null
+    }
+  ],
+  "private_originals_after_worker": "RUNNER_PATH_NOT_REACHED",
+  "Telegram_SENT": false,
+  "masked_native_values_not_reconstructed": true,
+  "job_log": {
+    "job": 119147476972,
+    "bytes": 244333,
+    "sha256": "fbcdb214bcfce71eb413c320618dba6b8bf038a293b5310a63b25bf425d4251a"
+  },
+  "first_selector_correction": "event=schedule excluded normal scheduled-recovery workflow_dispatch; corrected only metadata selector, no run initiated",
+  "new_exact_bound_counterexample": {
+    "compact_parsed_json_bytes": 179284,
+    "pretty_snapshot_depth3_bytes": 345857,
+    "same_cap": 262144,
+    "compact_string_encoded_size_unknown_until_actual_serialization": true
+  },
+  "next": "SAME-cap explicit compact JSON TEXT fallback proposal; no truncation or cap increase, future actual output needed. Separate initial primary reason copy requires existing full canonical bundle feasibility; discovery SHORT is not canonical direction."
+}

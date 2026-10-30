@@ -1,0 +1,121 @@
+{
+  "schema": "PACKAGE_BE_NATIVE_MODEL_STATIC_INPUTS_V1",
+  "review_kind": "STATIC_ONLY_NOT_EXECUTABLE_QUALIFICATION",
+  "captured_original": {
+    "path": "pump-report/.private/observations/0xarchive-hype-future-model-one-result.json",
+    "sha256": "8d286b57c00cea4a8bf326c91ed19067d0d3d0d27fcf3df3efd9e0c878b72442",
+    "private_original_copied": false,
+    "request_coin": "HYPE",
+    "request_range_pct": 50,
+    "request_buckets": 100,
+    "payload_echoes_coin": false,
+    "binding_required": "Original complete capture request + exact native catalogue identity + canonical SOURCE join; symbol text alone insufficient",
+    "structured_and_text_JSON_equal": true
+  },
+  "ROOT_public_receipt": {
+    "path": "checkpoints/pump-report-20261025/ROOT_0XARCHIVE_NATIVE_HYPE_MODEL_ACTUAL_ONE.json",
+    "main": "e389462e852d04c94ef4426dbae1a98ba6c1569a",
+    "git_blob": "ccbce163270381bc82538ac364efc617cbb573bf",
+    "exact_local_match": true,
+    "sha256": "c743e3ccb3c921e3da6c002ecb20189b50d47347feb531647fd76ff95e924e73"
+  },
+  "observed_shape": {
+    "data_keys": [
+      "block_number",
+      "flagged_notional",
+      "levels",
+      "mid_price",
+      "snapshot_ts",
+      "snapshot_ts_ms",
+      "source",
+      "total_long",
+      "total_short"
+    ],
+    "level_keys": [
+      "long_count",
+      "long_notional",
+      "price",
+      "short_count",
+      "short_notional"
+    ],
+    "returned_rows": 100,
+    "unique_positive_price_centers": 100,
+    "rows_with_nonnegative_amounts_and_integer_counts": 100,
+    "declared_interval_or_width_keys": [],
+    "source": "raw",
+    "basis_type_from_ROOT_evidence": "EXTERNAL_MODEL_PROJECTED_FORCED_LIQUIDATIONS",
+    "source_raw_is_not_observed_future_orders": true
+  },
+  "clocks": {
+    "snapshot_ts_ms": 1793015301000,
+    "snapshot_ISO": "2026-10-26T11:48:21.000Z",
+    "snapshot_fields_agree": true,
+    "received_ts": 1793015505055,
+    "age_at_receive_ms": 204055,
+    "base_block_number": 1197850000,
+    "base_state_ts": null,
+    "base_state_time_reason": "NOT_SUPPLIED_NOT_INFERRED_FROM_BLOCK",
+    "model_map_profile_ceiling_ms": 300000,
+    "profile_expiry_ceiling_ts": 1793015601000,
+    "remaining_at_original_receive_ms": 95945,
+    "expiry_ceiling_moscow": "2026-10-26 14:53:21 Europe/Moscow",
+    "expiry_claim": "Ceiling only, not newly assigned usable expiry/admission; effective expiry may be earlier",
+    "current_capture": "HISTORICAL_ALREADY_PAST_MODEL_MAP_CEILING_AT_REVIEW"
+  },
+  "consumer_files": [
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08"
+    },
+    {
+      "path": "pump-report/analytics/context.mjs",
+      "sha256": "6b63bf171033e945fd5f2f58c5a144209f83f9973b87d30077f9e1bb1c111673"
+    },
+    {
+      "path": "pump-report/analytics/presentation.mjs",
+      "sha256": "2311867fe5dbb906a765ea29af9454a9e7305b65a15d4eca5efe99e2474aa535"
+    },
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "sha256": "bed8fa4b257003f939790e6e3ba04ea93d0bbba1b9c4a2b2b0e0fdc60d5ddeae"
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6"
+    },
+    {
+      "path": "pump-report/analytics/manual-text.mjs",
+      "sha256": "9bd30e2665f159e4077fad8c02d4b19596d195472e45d560e983321ff755248f"
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "sha256": "cfec445eb226f2bb109817474d0c0280adc70209fb2ec125288e44f1213ecdf2"
+    },
+    {
+      "path": "pump-report/CONTRACT_RU.md",
+      "sha256": "53e4b6751b4433b21b1656523969d713af6a0d207946aba288dbee29e2013ffe"
+    }
+  ],
+  "reused_existing_SOURCE_evidence": {
+    "path": "pump-report/handoffs/sources/F590_0XARCHIVE_PROVIDER_PROFILE_V1.json",
+    "sha256": "bd8c9efe37cd59c55786cf9f28d54b9fa1b56ac5807e062c5884af2ac13c656e",
+    "scope": "Only already supplied units/model-base-clock/window-total caveats read; no catalogue join or primary documentation research repeated"
+  },
+  "static_work": {
+    "project_modules_imported": 0,
+    "Node_invocations": 0,
+    "tests": 0,
+    "controlled_cases": 0,
+    "full_engine": 0,
+    "source_API_HTTP": 0,
+    "source_MCP": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "Worker_deploy": 0,
+    "CONTROL": 0,
+    "LOOKUP": 0,
+    "GitHub": "Authority and own lease control-plane only",
+    "read_only_JSON_parsing": "jq only; one inspection corrected ISO millisecond parsing, no project code or fixture executed",
+    "code_changes": 0
+  }
+}

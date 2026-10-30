@@ -1,0 +1,54 @@
+{
+  "schema": "F577_CONDITIONAL_ROUTE_COST_AND_NO_ADMISSION_V1",
+  "decision": "NO_ACTUAL_ADMISSION_REQUESTED; DO_NOT_CONNECT",
+  "reason": "No confirmed selected overlap for StandX. BloFin public trade unit/aggressor proof missing; not an economic or directional flow consumer.",
+  "cost_is": "Documentary logical GET shape only; not measured native cost, reservation, free quota grant or activation",
+  "standx": {
+    "hypothetical": "GET /api/query_market_overview",
+    "logical_GETs": 1,
+    "actual_HTTP": 0,
+    "utility_for_selected550": "UNPROVEN; no route proposal",
+    "additional_clock_counting_reads": 0
+  },
+  "blofin": {
+    "cold_shape": [
+      {
+        "method": "GET",
+        "path": "/api/v1/market/instruments",
+        "role": "one all-instrument eligibility/denominator response; not yet admitted"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/market/trades",
+        "params": "instId of one already verified eligible non-BTC/ETH instrument, limit<=100",
+        "role": "latest events only; unit/aggressor still not qualified"
+      }
+    ],
+    "cold_logical_GET_count": 2,
+    "warm_if_exact_valid_metadata_cache_GET_count": 1,
+    "measured_physical_HTTP": null,
+    "SDK_hidden_cost_or_redirects": null,
+    "measured_latency": null,
+    "measured_payload_bytes": null,
+    "whole_account_day_cost": null,
+    "trade_history_completeness": null,
+    "notes": "Latest100 is bounded count, not a complete time interval. No N-market fanout or cadence approved."
+  },
+  "conditional_safety_shape": {
+    "not_admitted": true,
+    "body_limit_bytes": 2000000,
+    "max_requests_for_one_cold_check": 2,
+    "searches": 0,
+    "retries": 0,
+    "fanout": 0,
+    "no_private_routes_or_keys": true,
+    "fail_on_unknown_identity_units_or_side": true,
+    "no_directional_dollars_or_liquidation_zones": true,
+    "retain_native_clock_and_receive_clock_separately": true,
+    "stop_on_403_429_or_limit_uncertainty": true,
+    "both_rate_windows_apply": true,
+    "shared_account_usage_unknown": true
+  },
+  "future_gate": "Only after materially new direct semantic evidence and ROOT usefulness decision: fresh authority/own lease plus separately positive exact native/provider/budget admission. This document grants none.",
+  "preservation": "No refund/rearm of old grants; no extra caps/reserves/registry votes. ROOT remains sole runtime/budget/TG owner."
+}

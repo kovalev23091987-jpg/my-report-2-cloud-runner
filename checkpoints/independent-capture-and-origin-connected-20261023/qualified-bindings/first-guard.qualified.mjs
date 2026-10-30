@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
+import {readMirrorContext,assertMirrorOwner} from '../runner/github-four-mirror-cas.mjs';
+const P='checkpoints/independent-capture-and-origin-connected-20261023',s=JSON.parse(fs.readFileSync(P+'/qualification-scope.json')),stage=process.argv[2],sha=b=>createHash('sha256').update(b).digest('hex');
+if(!['before','after'].includes(stage)||process.env.GITHUB_REPOSITORY!=='kovalev23091987-jpg/my-report-2-cloud-runner'||process.env.GITHUB_REF!=='refs/heads/work/independent-capture-and-origin-20261023')throw Error('EXACT_NEW_CONNECTED_SCOPE');
+for(const[p,h]of Object.entries(s.files))if(sha(fs.readFileSync(p))!==h)throw Error('NEW_CONNECTED_SOURCE_DRIFT:'+p);
+if(stage==='before'&&Date.now()>s.owned_lease.expires_ts-300000)throw Error('NEW_CONNECTED_COMPLETION_HEADROOM_REQUIRED');
+const c=makeGithubControl({repository:process.env.GITHUB_REPOSITORY,token:process.env.GITHUB_TOKEN,maximum_calls:1}),ctx=await readMirrorContext(c,{expected_main:s.expected_main,maximum_blob_reads:0}),checked=assertMirrorOwner(ctx,s.owner,Date.now(),s.scope_prefix);if(JSON.stringify(checked.lease)!==JSON.stringify(s.owned_lease))throw Error('EXACT_NEW_CONNECTED_OWN_LEASE');
+fs.mkdirSync('audit-output/independent-capture-and-origin',{recursive:true});fs.writeFileSync('audit-output/independent-capture-and-origin/guard-'+stage+'.json',JSON.stringify({stage,status:'EXACT_NEW_CONNECTED_SCOPE',main:ctx.head,owner:s.owner,source_pins:s.files,GH_control:c.metrics,old_components_replayed:0,native_SQL:0,provider_HTTP:0,MAIN:0,Telegram:0},null,2)+'\n');

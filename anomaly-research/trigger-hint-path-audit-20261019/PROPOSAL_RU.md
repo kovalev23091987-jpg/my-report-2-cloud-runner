@@ -1,0 +1,51 @@
+# Fresh trigger hint → kick → исходный LIGHT/ENTRY
+
+Аудит кода main `0080851276223fdd6c7dfa111bbaf2efe3f5cb87`. Это один связанный proposal, без применения патчей, SQL, приложения, тестов или probes. Исторический collector392104 source head `ae5c476d04cb73e134e74f5fb07b4b02d3a43241`: семь ключевых файлов пути byteexact текущему коду. Принятые шесть polls/семь проверок PR518 не повторялись. Actual причина NIL229 остаётся UNKNOWN.
+
+## Реальная цепочка и отказы
+
+1. `enqueueRecheck` создаёт PENDING с NULL last_result. Это ещё не hint. Для OBSERVE actionability возвращает create_recheck=true; reconciler требует enqueue с exact readback до binding. На refresh без новой dispatch reconciler не запускается для нового снимка: отдельного нового task-registration пути в просмотренном producer нет.
+2. Первичный public collector при PRICE_RECHECK_ENABLED собирает обычные HTX факты и выбирает до двух PENDING задач, уже привязанных к SENT OBSERVE/WAIT. Требуются совпадение contract/direction/wave/run/snapshot/канонического fingerprint, текущий lifecycle того же event и точное l.observation_ts=p.observed_ts. Локатор частного canonical требует разрешённого read-through и собственного существующего PRIVATE_PRICE admission. Отказы/unknown/неподтверждённый ACK не создают пригодный hint.
+3. LIGHT проверяет исходную цену и отмену, не закрытие свечи и не ENTRY. Исходный TTL неизменен. PRICE/USDT, поддержанный оператор и числовой cancel обязательны. Точная HTX price/source/observed должны быть свежими в180секунд; отмена имеет приоритет перед price reached. Только TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED остаётся PENDING и создаёт hint. WAITING_FOR_PRICE/NOT_CHECKED, EXPIRED/CANCELLED в trigger-ready index не входят. Текущий статус важнее сохранённого first_trigger_receipt: старый first-trigger — диагностика, не новая ценовая власть.
+4. GitHub backup сначала проверяет совпадение guarded main-code. PRIMARY_CLOSED завершает fallback без повторного collector/LIGHT; CLOSED общей строки сам по себе не доказывает результат LIGHT. Затем enabled kick poll использует существующие288/day и3durable kick slots. SELECT только trigger-ready PENDING/due/not-expired/not-already-kicked, ORDERexpires,due LIMIT2. После LIMIT freshTriggerHint проверяет schema/scope/status, три180секундных clock относительно created_ts, exact task/pub/run/snapshot, fingerprint и положительный message_id. Отправленный ранее OBSERVE здесь требуется, а не исключается.
+5. Kick — лишь workflow wake-up. GitHub204 не гарантирует старт или admission до TTL. Full runner снова проверяет owner/lease/cadence/day reserve и exact SENT/lifecycle/canonical/исходный plan. По каждому task возможен один durable kick/admission; повторная неудача не возвращает slot. Затем task-specific claim снова требует fresh reached receipt, и новый полный анализ проверяет исходное закрытие свечи, отмену, текущую цену и все действующие ENTRY gates. Ни LIGHT, ни kick не авторизуют ENTRY.
+
+## F1: lifecycle clock может отрезать живую исходную задачу
+
+Точный статический counterexample: исходные t=PENDING, due<=now<expires, d=SENT OBSERVE, b/p привязаны к исходному T. Та же волна получает новый qualified OBSERVE, producer сохраняет l.observation_ts=T+Δ, но новая dispatch не создана. Старые t/p/b неизменны. LIGHT JOIN l.observation_ts=p.observed_ts исключает задачу до проверки цены. Такой же JOIN к b.observed_ts есть в full admission. Это объясняет возможный путь NO_FRESH_TRIGGER_HINT, но не доказывает, что он произошёл с NIL.
+
+Есть более узкая граница даже первой регистрации: canonical OBSERVE с p.observed_ts=T и допустимая same-run telemetry final/shadow с observed_ts=T−100. `deriveLifecycleContext` берёт ctx clock из telemetry, хотя уже имеет exact canonical_observation_publication. Задача, зарегистрированная по p/T, затем не проходит точное равенство lifecycle/T−100.
+
+`producer-clock-anchor.proposed.patch` исправляет только эту первую границу: для уже qualified canonical OBSERVE использовать clock той же publication. Он не меняет её raw source clocks, исходный task TTL, торговые условия, запросы или лимиты. Он не исправляет автоматически семантику позднего refresh. Патч только текстовый; не применён и не проверен исполнением.
+
+### Как безопасно различить refresh и замену плана
+
+Нельзя просто убрать clock/binding JOIN или сохранять старый anchor на любом повторном OBSERVE. Новая идея могла изменить направление, trigger/cancel/expiry либо быть отменена риском.
+
+Для разрешения same-plan refresh нужна пара точных immutable original SENT canonical + нового qualified canonical, с exact original task/binding. Сравнивать contract/direction/wave/rules, все машинные поля trigger (metric/operator/value/unit/timeframe/cancel_condition/next_recheck_ts/expires_ts и дополнительные поля), entry/invalidation/targets. Исходные due/expiry не исключать из сравнения и не продлевать. Совпадение одной цены или человекочитаемой строки недостаточно. Текущие removal/hard-veto/supersession должны быть закрыты отдельно.
+
+- Полное доказанное совпадение: можно предложить сохранять lifecycle anchor исходной отправленной publication, обновляя только техническое updated_ts. LIGHT/full JOIN остаются строгими. Writer readback должен проверять выбранный original anchor, не новый telemetry clock.
+- Изменённый plan: не возобновлять старую задачу под новым trigger, не считать её price-cancelled и не ставить новый TTL. Сохранить строгий отказ и явно показать changed/superseded plan. Новая задача допустима только по уже принятому пути новой фактически публикуемой идеи; автоматический rollover здесь не предложен.
+- Нет original canonical/неоднозначная пара: ORIGINAL_PLAN_COMPARISON_NOT_CLOSED, старый guard остаётся. Не выдавать сравнение за выполненное.
+
+В текущем `prepareLifecycleTransition` previous reply содержит лишь status/reason/observation_ts/valid_until_ts/updated_ts. Полного original plan там нет; current-run canonical списка тоже недостаточно. Следовательно безопасное общее восстановление refresh без дополнительного входа сейчас не доказано. Можно использовать original context, если он уже был прочитан точным текущим recheck; иначе нужен отдельно квалифицированный lookup original SENT anchor/task/canonical с существующими exact keys и ограничением неоднозначности. Его индекс, physical rows, private read-through и native admission OPEN. Дополнительный SELECT/схема в этом пакете не запускаются.
+
+## F2: два устаревших reached rows скрывают третий свежий
+
+Точный статический вход при T: A и B PENDING/trigger-ready, due<=T, expires=T+60000/T+61000, ещё не kick-consumed; checked/source/observed=T−181000. C также PENDING и exact-valid, expires=T+90000, три clock=T−1000. Все task/pub/run/snapshot признаки валидны. SQL берёт A/B поexpires LIMIT2; freshTriggerHint отвергает обоих. C не прочитан, итог NO_FRESH_TRIGGER_HINT. На следующем poll детерминированная выборка может повториться до изменения строк/TTL. Тот же класс LIMIT-before-validator есть в full admission.
+
+Чистый JS progress только внутри уже выбранных двух строк невозможен: без изменения query или persistent marker следующий SELECT не знает, что эти строки уже отвергнуты. Перезаписать stale receipt в WAITING_FOR_PRICE было бы выдуманным рыночным фактом; сжечь kick slot без реального wake-up или увеличить LIMIT/caps также нельзя.
+
+Самый узкий текстовый вариант для показанного stale-clock случая — переместить существующие clock/source predicates в WHERE до LIMIT, оставив LIMIT2 и JS full validator. Два insertion-shape приведены в `fresh-clock-selection.proposed.sql.txt`. Число запросов не увеличивается, но physical scan/JSON evaluation может вырасти: прежний native cost не доказан. Нужны отдельные индекс/EXPLAIN/нативный bounded readback и общий admission с ручным и next-full59000R920W reserve. Ничего из этого сейчас не запускалось. Произвольные fresh, но испорченные identity/publication строки этим узким вариантом не квалифицируются; общая fairness не объявлена готовой.
+
+## Новый AKE231: регистрация и отсутствие её проекции
+
+Минимум новых originals39225792595/head0911097a проверен по двум предоставленным ZIP digest. AKE SHORT OBSERVE имеет машинный PRICE/USDT trigger<=0.0278725, timeframe5m, due1792400276580, expiry1792401776580, cancel price>0.0313672. Это не синтаксический отказ из-за человеческого текста. Info показывает NONE→OBSERVE/PENDING dispatch; reconciliation показывает BOUND_ACTIONABLE; exact same-run network ACK и SENT message231 подтверждены.
+
+На byteexact checked-in producer это controlflow expectation успешного enqueue/readback перед bind: assessActionability(OBSERVE)→create_recheck=true; enqueueRecheck false остановил бы reconciliation с RECHECK_TASK_NOT_PERSISTED. Но отдельный registration reply/task header в artifact не сохранён. task_at_delivery читается только при native LIQ present; null не означает NOT_EXISTS. Состояние native задачи после отправки/её LIGHT/ENTRY остаются UNKNOWN. Compact canonical не содержит full metadata, поэтому он также не заменяет original canonical для любой дополнительной metadata-policy проверки. Регистрация в этой версии реализована finalizePublication→enqueueRecheck→bind; отдельного символа registerOriginalIdeaRecheck в этом runtime нет.
+
+Наиболее узкий диагностический proposal: добавить к уже существующему enqueue readback/BOUND_ACTIONABLE output ограниченный registration receipt (exact task/pub/run/snapshot/direction/wave/due/expiry/state/прочитанные часы). Не выполнять новый SELECT. Отмечать его временем регистрации, а не task_at_delivery. В claimTriggerKick вывести максимум два already-read candidate/refusal clocks и число выбранных строк, различая EMPTY_INDEX_REPLY/STALE_SELECTED_CANDIDATE/ALREADY_CONSUMED_OR_NOT_SELECTED; не выдавать их за глобальное отсутствие hint. Центральный future existing-row projection дополняет, но не восстанавливает пропавшую историю.
+
+## Граница приёмки
+
+Actual NIL cause, текущий AKE task row и цены не установлены. Фактического исправления runtime этим proposal нет. Native cost/admission вариантов refresh и нового WHERE OPEN; source/provider/manual резервы не выдуманы. 105/122, девять пауз, стратегия/веса/70/формы, source clocks, MAIN/LIQ и лимиты прежние. Предложение передаётся координатору; shared edits/SQL/app/tests/probes/Telegram0. Старые polls и принятые suites не повторялись.

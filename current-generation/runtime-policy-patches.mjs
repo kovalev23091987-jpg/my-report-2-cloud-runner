@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -84,3 +85,31 @@ export function applyRuntimePolicyPatches(runtime){
 }
 
 export default{applyRuntimePolicyPatches};
+
+// One hash-bound private-sidecar edit. Full private source is never exported.
+const REALIZED_EMPTY_ADDITION = "    const emptyUsage = usageDelta(before, after);\n    if (emptyUsage && (\n      emptyUsage.rows_read > V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_read ||\n      emptyUsage.rows_written > V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_written ||\n      emptyUsage.unknown_ops > 0\n    )) {\n      return {\n        ...base,\n        status: 'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',\n        events_loaded: normalized.length,\n        contracts_selected: 0,\n        persisted: 0,\n        usage_delta: emptyUsage,\n      };\n    }\n";
+const realizedHash = value => createHash('sha256').update(value).digest('hex');
+const realizedBeforeHash = 'a56b7b9f2908648c19bfc4ff30f1d2f22bc202365eef1a1a7c858a20360e648a';
+function realizedEmptyForward(source){
+ if(Buffer.byteLength(source)!==6995||realizedHash(source)!==realizedBeforeHash||/\bemptyUsage\b/.test(source))throw Error('REALIZED_EMPTY_GUARD_ORIGINAL_CHANGED');
+ const lines=source.split('\n'),locate=h=>lines.flatMap((line,index)=>realizedHash(line)===h?[index]:[]),empty=locate('87b8bdfd550ed6fc354c02389cec010beb27933a09f6b5b4b3de131eaf03a2ad'),guard=locate('101e7285580ee15a8cf48f64bce554815123c54efe0f5e4446f973166ae58c8e');
+ if(empty.length!==1||guard.length!==1||empty[0]>=guard[0]||realizedHash(REALIZED_EMPTY_ADDITION)!=='df8fdf4bc4b31f93468d082e616b92455d58b3bfe6e50d65c559d5197ad783e0')throw Error('REALIZED_EMPTY_GUARD_BINDING_CHANGED');
+ const compact=v=>v.replace(/\s/g,''),oldPredicate=lines[guard[0]].match(/if\((.+)\)return /)?.[1],start=REALIZED_EMPTY_ADDITION.indexOf('if ('),end=REALIZED_EMPTY_ADDITION.indexOf(') {',start);
+ if(!oldPredicate||start<0||end<=start||compact(REALIZED_EMPTY_ADDITION.slice(start+4,end))!==compact(oldPredicate).replace(/\bdelta\b/g,'emptyUsage'))throw Error('REALIZED_EMPTY_GUARD_PREDICATES_CHANGED');
+ const old=lines[empty[0]];if(old.split(';return ').length!==2||old.split('usageDelta(before,after)').length!==2)throw Error('REALIZED_EMPTY_GUARD_GRAMMAR_CHANGED');
+ const cut=old.indexOf(';return ')+1;lines[empty[0]]=old.slice(0,cut)+'\n'+REALIZED_EMPTY_ADDITION.trimEnd()+'\n'+old.slice(cut).replace('usageDelta(before,after)','emptyUsage');
+ if(realizedHash(lines[empty[0]])!=='1af31db34d4202707df25d09d33b71ecad3ff981822d9d6ccae115f9eeb4b68d')throw Error('REALIZED_EMPTY_GUARD_BLOCK_CHANGED');
+ const after=lines.join('\n');if(Buffer.byteLength(after)!==7497)throw Error('REALIZED_EMPTY_GUARD_BYTES_CHANGED');return after;
+}
+function realizedEmptyOriginal(source){
+ const token='\n'+REALIZED_EMPTY_ADDITION.trimEnd()+'\n',at=source.indexOf(token);if(Buffer.byteLength(source)!==7497||at<0||source.indexOf(token,at+token.length)>=0)throw Error('REALIZED_EMPTY_GUARD_AFTER_NOT_BOUND');
+ const rest=source.slice(at+token.length),end=rest.indexOf('\n'),suffix=end<0?rest:rest.slice(0,end),expression=REALIZED_EMPTY_ADDITION.match(/const emptyUsage = ([^;]+);/)?.[1]?.replace(/\s/g,'');
+ if(!expression||suffix.split('emptyUsage').length!==2)throw Error('REALIZED_EMPTY_GUARD_AFTER_GRAMMAR');
+ const before=source.slice(0,at)+suffix.replace('emptyUsage',expression)+(end<0?'':rest.slice(end));
+ if(realizedHash(before)!==realizedBeforeHash||realizedEmptyForward(before)!==source)throw Error('REALIZED_EMPTY_GUARD_AFTER_NOT_EXACT');return before;
+}
+export function applyRealizedEmptyBudgetGuard(runtime,{verifyOnly=false}={}){
+ const file=path.join(runtime,'src/v3-realized-liquidation-sidecar.mjs'),bytes=fs.readFileSync(file),source=bytes.toString('utf8');if(!Buffer.from(source).equals(bytes))throw Error('REALIZED_EMPTY_GUARD_UTF8_CHANGED');
+ if(realizedHash(source)===realizedBeforeHash){if(verifyOnly)throw Error('REALIZED_EMPTY_GUARD_NOT_APPLIED');const after=realizedEmptyForward(source);fs.writeFileSync(file,after);return{status:'APPLIED',before_sha256:realizedBeforeHash,after_sha256:realizedHash(after),after_bytes:7497,private_source_exported:false};}
+ realizedEmptyOriginal(source);return{status:'ALREADY_APPLIED_EXACT',before_sha256:realizedBeforeHash,after_sha256:realizedHash(source),after_bytes:7497,private_source_exported:false};
+}

@@ -1,0 +1,184 @@
+{
+  "schema": "INDEPENDENT_CAPTURE_INGRESS_TARGET_BINDINGS_V1",
+  "working_base": "1e57112e612b94cf4903d9907b889cea3bd9eb86",
+  "author_execution": "UNEXECUTED",
+  "targets": {
+    "current-generation/files/src/anomaly-native-ingress.mjs": {
+      "before_bytes": 9072,
+      "before_sha256": "5dfeddeb3693c3561ed374d6fc0c59889e1e5a5fff6a99c610c47fdaecf51172",
+      "after_bytes": 19401,
+      "after_sha256": "c587121bf94225f8bc76799efe40f437bec4b56a5ab7ab97a10b727fdd3e7b82"
+    },
+    "current-generation/files/src/worker.js": {
+      "before_bytes": 633555,
+      "before_sha256": "5d97133c892d81d35b384edaa2e6c601fdabba5090e08add6415e8df5f452d45",
+      "after_bytes": 634229,
+      "after_sha256": "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4"
+    }
+  },
+  "worker_exact_recipe": {
+    "old_import": "import {prepareCapturedAnomalyCardWatch} from './anomaly-native-ingress.mjs';\n",
+    "new_import": "import {prepareCapturedAnomalyCardWatch,runIndependentCapturedAnomalyIngress} from './anomaly-native-ingress.mjs';\n",
+    "insertion_anchor": "      env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT={\n",
+    "insert_before": "      // Independent approved-roster slice AFTER existing bounded Deep/DUE work.\n      // Default OFF; IO owner must protect report/final-delivery reserve; native SQL keeps its owner callback.\n      try { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT=await runIndependentCapturedAnomalyIngress({env,run_id:String(runId),fetch_json:fetchJson,classify_contract:classifyHtxInstrumentScope}); }\n      catch { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT={status:'INDEPENDENT_CAPTURE_CALLER_NOT_CLOSED',native_admission_qualified:false,SENT_claimed:false}; }\n\n"
+  },
+  "worker_functions": {
+    "fetchJson": {
+      "bytes": 2424,
+      "sha256": "37d38563dcaad733b78f38a0c59ddbb43f7d9c8bf81b1100135ce78812b94ccf",
+      "start_marker": "async function fetchJson(",
+      "stop": "NEXT_TOPLEVEL_FUNCTION"
+    },
+    "classifyHtxInstrumentScope": {
+      "bytes": 5110,
+      "sha256": "013245b2f6ca1c618f7639155cfa6c79b3629ea39128f170828225fcc43afefb",
+      "start_marker": "function classifyHtxInstrumentScope(",
+      "stop": "NEXT_TOPLEVEL_FUNCTION"
+    }
+  },
+  "public_closure": {
+    "current-generation/files/src/htx-trade-json.mjs": {
+      "source": "current-generation/files/src/htx-trade-json.mjs",
+      "bytes": 2904,
+      "sha256": "4a63e588c691bc193d7152b39abf5478283947463bd3f09c04ec749e88f0df3d"
+    },
+    "current-generation/files/src/htx-volume-profile.mjs": {
+      "source": "current-generation/files/src/htx-volume-profile.mjs",
+      "bytes": 12460,
+      "sha256": "3ca75fc7200120d372c690d44f92773a9acd9692d4ef4521b49cfd6d8f1a11cd"
+    },
+    "current-generation/files/src/htx-contract-key.mjs": {
+      "source": "current-generation/files/src/htx-contract-key.mjs",
+      "bytes": 269,
+      "sha256": "970f4e69e0bbece58bffe67df5f49d9f933248700fadf85649d3f1fa6c7ce426"
+    },
+    "current-generation/files/src/htx-technical-structure.mjs": {
+      "source": "current-generation/files/src/htx-technical-structure.mjs",
+      "bytes": 33974,
+      "sha256": "6613c9db75709f76ae3487fdc9d8bc9fab6af053bb8a56f5bef45ab2d49d6337"
+    },
+    "current-generation/files/src/bitget-four-hour-flow.mjs": {
+      "source": "current-generation/files/src/bitget-four-hour-flow.mjs",
+      "bytes": 8022,
+      "sha256": "4cbab98e1c61a8cbf9f7133ad178e4801c630380feaa20ae6c6b99e7baab34c0"
+    },
+    "current-generation/files/src/gate-public-taker-reference.mjs": {
+      "source": "current-generation/files/src/gate-public-taker-reference.mjs",
+      "bytes": 1123,
+      "sha256": "dbac8ba2b1201f45a1079c61a7de7fa15c3dbe9fdf9b614797bb724bd6918e4f"
+    },
+    "current-generation/files/src/gate-four-hour-flow.mjs": {
+      "source": "current-generation/files/src/gate-four-hour-flow.mjs",
+      "bytes": 6644,
+      "sha256": "e2df657d01aa682e0adc195ce19f9e62af85bbf4fbd91b7d5b5bb8eec2c74152"
+    },
+    "current-generation/files/src/poloniex-native-four-hour-flow.mjs": {
+      "source": "current-generation/files/src/poloniex-native-four-hour-flow.mjs",
+      "bytes": 6958,
+      "sha256": "aaa81352c6c6f1a1acb93f2344a6af22cf038b7cc78c3b5373fa5064e409ed57"
+    },
+    "current-generation/files/src/binance-native-four-hour-flow.mjs": {
+      "source": "current-generation/files/src/binance-native-four-hour-flow.mjs",
+      "bytes": 8185,
+      "sha256": "625e0ce46ef10edfea81eca69b087abaa8e503501559ff4fae63b8a77f0dd950"
+    },
+    "current-generation/files/src/evidence-source-store.mjs": {
+      "source": "current-generation/files/src/evidence-source-store.mjs",
+      "bytes": 17488,
+      "sha256": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38"
+    },
+    "current-generation/files/src/evidence-source-adapters.mjs": {
+      "source": "current-generation/files/src/evidence-source-adapters.mjs",
+      "bytes": 10600,
+      "sha256": "d8b740fd0b61989a80ddafdb29e2b31cb2311b45625ee428397fcc1f26cbad54"
+    },
+    "current-generation/files/src/kraken-n10-memory-context.mjs": {
+      "source": "current-generation/files/src/kraken-n10-memory-context.mjs",
+      "bytes": 6347,
+      "sha256": "4efa0726c263b626f618166941678082cc86190dd59ab724e35b63e6bde04b69"
+    },
+    "current-generation/files/src/kraken-public-taker-reference.mjs": {
+      "source": "current-generation/files/src/kraken-public-taker-reference.mjs",
+      "bytes": 2116,
+      "sha256": "38c4b5af18c5965bb7b799aaf0104593c0c70540b7ff516539c5b84556128875"
+    },
+    "current-generation/files/src/kraken-four-hour-flow.mjs": {
+      "source": "current-generation/files/src/kraken-four-hour-flow.mjs",
+      "bytes": 9353,
+      "sha256": "043e742e2e560ccc0fa6aaf4e91a99e92000ba088de405116f59f64d42acf5fb"
+    },
+    "current-generation/files/src/kraken-n10-price-path.mjs": {
+      "source": "current-generation/files/src/kraken-n10-price-path.mjs",
+      "bytes": 9218,
+      "sha256": "840934a2d0d32953184d44a87198389748ac096f5f8c14bd84e7ca2e4a4a1c49"
+    },
+    "current-generation/files/src/approved-htx-analysis-scope.mjs": {
+      "source": "current-generation/files/src/approved-htx-analysis-scope.mjs",
+      "bytes": 34471,
+      "sha256": "6bf0d645afdbbe3226c7f6aac92c341d0c0cc0dff96f5a95e922c8b87029ca6c"
+    },
+    "current-generation/files/src/bitfinex-n10-memory-context.mjs": {
+      "source": "current-generation/files/src/bitfinex-n10-memory-context.mjs",
+      "bytes": 8230,
+      "sha256": "0f6d365d1d6ec0d9f7b057189e003dd55db6f28aa25545596ed3e2b6e4bdf9e9"
+    },
+    "current-generation/files/src/bitfinex-native-four-hour-flow.mjs": {
+      "source": "current-generation/files/src/bitfinex-native-four-hour-flow.mjs",
+      "bytes": 7754,
+      "sha256": "68eac3f0c3b07ab26986776d0000939e8d4ff1d32aecdd88b3709ec1921f1234"
+    },
+    "current-generation/files/src/bitfinex-n10-price-path.mjs": {
+      "source": "current-generation/files/src/bitfinex-n10-price-path.mjs",
+      "bytes": 5913,
+      "sha256": "a18d8033edb2193ac422043512505f570382a9b8329cd7913c8e275b4601d319"
+    },
+    "current-generation/files/src/htx-signed-tape.mjs": {
+      "source": "current-generation/files/src/htx-signed-tape.mjs",
+      "bytes": 31689,
+      "sha256": "1b9767db0c2d32cc99da161d7d74b5d2463aba975bb20e154fa45a99e6c2c086"
+    },
+    "current-generation/files/src/anomaly-native-ingress.mjs": {
+      "source": "current-generation/files/src/anomaly-native-ingress.mjs",
+      "bytes": 9072,
+      "sha256": "5dfeddeb3693c3561ed374d6fc0c59889e1e5a5fff6a99c610c47fdaecf51172"
+    },
+    "current-generation/files/src/anomaly-record-observer.mjs": {
+      "source": "anomaly-research/observer/observer.mjs",
+      "bytes": 24988,
+      "sha256": "3284152626d52bc51079819726dac44e1e9f28643a8bfb240e5606ab7762e739"
+    },
+    "current-generation/files/src/anomaly-native-domain.mjs": {
+      "source": "current-generation/files/src/anomaly-native-domain.mjs",
+      "bytes": 24309,
+      "sha256": "5a366465cf546a08c022c04f070a125fb41cd4cc7601b0ce82254badd30bd4c6"
+    }
+  },
+  "runtime_alias": {
+    "target": "current-generation/files/src/anomaly-record-observer.mjs",
+    "public_source": "anomaly-research/observer/observer.mjs",
+    "accepted_overlay": "current-generation/apply-runtime-overlay.mjs",
+    "reason": "Existing exact public copy mapping; not private extraction/full618assembly.",
+    "overlay_bytes": 12721,
+    "overlay_sha256": "82f051ebda92e33d698a82c7e85b8204b7733090798e9e922c984063b8af9e1b",
+    "exact_existing_statement": "fs.copyFileSync(path.join(here,'../anomaly-research/observer/observer.mjs'),path.join(runtime,'src/anomaly-record-observer.mjs'));"
+  },
+  "context_evidence_pins": {
+    "cloudflare/public-collector/injected-worker-tail.js": {
+      "bytes": 37593,
+      "sha256": "f2f1e89753cba90aa5c89531d9b49ec2567e407dbf75a7ead02a28b3064fe863"
+    },
+    "current-generation/files/runner-main.mjs": {
+      "bytes": 202183,
+      "sha256": "ecc6cab8956fbcb8f9485a2f8c48e693cb2149b57985b485685c3d9e8699d20d"
+    },
+    "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": {
+      "bytes": 28581,
+      "sha256": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+    },
+    ".github/workflows/report2.yml": {
+      "bytes": 33581,
+      "sha256": "027c098d4054fa9183b35b2abaae70ec21e9c8bd4ad48bc78b09aa6a60efc24b"
+    }
+  },
+  "ROOT_binding_basis": "same final ROOT candidate bytes; original15payloads untouched; beforeFIRST all7groups unchanged"
+}

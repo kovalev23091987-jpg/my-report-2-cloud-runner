@@ -1,0 +1,40 @@
+{
+  "schema": "PENDING_JOURNAL_STATIC_BOUND_MODEL_V1",
+  "classification": "ARITHMETIC_NOT_MEASURED_NATIVE_COST",
+  "max_records": 16,
+  "max_distinct_logical_keys": 2,
+  "max_entry_serialized_bytes": 1048576,
+  "max_file_bytes": 16842752,
+  "max_sequence_claims": 96,
+  "claim_max_bytes": 1024,
+  "metadata_checkpoint_max_bytes": 2048,
+  "prepared_text_max_bytes": 131072,
+  "write_reply_max_bytes": 65536,
+  "readback_reply_max_bytes": 196608,
+  "result_metadata_max_bytes": 16384,
+  "max_local_replacements_per_successful_operation": 6,
+  "max_local_replacements_per_16_operations": 96,
+  "conservative_replacement_payload_bytes_bound_96_times_file_bound": 1616904192,
+  "conservative_actual_file_read_bytes_bound_each_replacement_3_times_file_bound": 4850712576,
+  "claim_files_bytes_upper_bound": 98304,
+  "extra_native_SQL_HTTP_provider": 0,
+  "not_free": [
+    "local disk bytes and repeated serialization",
+    "synchronous persistence latency",
+    "fsync availability/behavior",
+    "CPU/heap parsing and encoding full journal",
+    "independent checkpoint transport and protected carrier retention"
+  ],
+  "must_measure_before_enable": [
+    "actual prepared/write/readback bytes incl p95/max",
+    "actual local writes/readback/fsync latency and timeout behavior",
+    "CPU/heap and worst two-event burst after journal growth",
+    "complete private-file and step-claim persistence on actual execution platform",
+    "independent expected-SHA/identity recovery carrier and early preflight installation",
+    "parent/native usage and old unknown reconciliation; no automatic replay",
+    "actual installed schema/card/watch/outcome retention and remaining shared budget"
+  ],
+  "native_rows_budget_or_storage_free_capacity_claimed": false,
+  "ordinary_report_LIQ_manual_source_caps_reserves_unchanged": true,
+  "overflow": "Known SDK reply is returned unchanged in memory; marked persistence failure blocks next SQL; no full-reply durability claim."
+}

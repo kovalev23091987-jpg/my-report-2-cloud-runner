@@ -1,0 +1,49 @@
+{
+  "schema": "AE_NOVELTY_EXACT_SOURCE_INDEX_V1",
+  "scope": [
+    "pump-report/handoffs/sources",
+    "checkpoints",
+    "audit-fixes/source-optimization-20260930"
+  ],
+  "max_file_size": "1M",
+  "not_global_archive_census": true,
+  "literal_checks": {
+    "DIA_LITERAL_URL": {
+      "matching_files": 0,
+      "paths": [],
+      "pattern": "https?://([^ /]*\\.)?diadata\\.org|diadata-org/diadata"
+    },
+    "GMX_HTTP_V2_DELTA": {
+      "matching_files": 3,
+      "paths": [
+        "checkpoints/ADDITIONAL_LIQUIDATION_SOURCE_CLOCK_REVIEW_20261007.json",
+        "checkpoints/owner-btw-retained-chain-manual-20261022/source-operation-receipt.json",
+        "checkpoints/GENERAL_SOURCE_CLOCK_DIAGNOSIS_20261006.json"
+      ],
+      "pattern": "gmxapi\\.io|gmxapi\\.ai|fetchPositionsInfo|positionValueInUsd"
+    },
+    "ENDLESS_LITERAL_URL": {
+      "matching_files": 0,
+      "paths": [],
+      "pattern": "endless\\.financial"
+    }
+  },
+  "retained_primary_research": {
+    "path": "checkpoints/ADDITIONAL_NATIVE_LIQ_PRIMARY_RESEARCH_20261014.json",
+    "sha256": "024bd037c013626cd92d7cee151ace891eb771b92612da0fcaea348debc4b967"
+  },
+  "ROOT_trusted_retained_classifications": [
+    "Lighter",
+    "Drift",
+    "GMX",
+    "Pacifica",
+    "CoinBoss",
+    "MarginPad",
+    "Vike",
+    "0xArchive",
+    "Buildix",
+    "ByKaranteli",
+    "CoinLobster"
+  ],
+  "generic_token_name_is_not_source_API_proof": true
+}

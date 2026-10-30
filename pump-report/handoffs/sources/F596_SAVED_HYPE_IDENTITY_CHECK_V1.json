@@ -1,0 +1,268 @@
+{
+  "schema": "F596_SAVED_HYPE_IDENTITY_CHECK_V1",
+  "method": "Targeted read of retained classification rows and hash-verified original metadata; no new BingX/provider request.",
+  "saved_evidence": [
+    {
+      "path": "pump-report/handoffs/sources/F552_PROPOSED_NATIVE_BINDINGS_550_V1.json",
+      "sha256": "a1d1d8b96f6cf7106ba4224e1fbf4fe52059f4448cc4667e0332976b692eb66c",
+      "bytes": 1792804,
+      "hits": [
+        {
+          "path": "root.proposals[251]",
+          "object": {
+            "proposal_id": "F552:467fa398322f9128b8e1b084197ca65c942e0042e5e8fd21fedb5ae59e3ec992",
+            "native_symbol": "HYPE-USDT",
+            "status": "PROPOSED_SAVED_NATIVE_BINDING",
+            "reason_codes": [],
+            "tuple": {
+              "instrument_id": "BINGX:USDT_M:100877:HYPE-USDT",
+              "asset_id": "BINGX_UNDERLYING:HYPE",
+              "venue": "BINGX",
+              "native_symbol": "HYPE-USDT",
+              "market_type": "PERPETUAL",
+              "base": "HYPE",
+              "quote": "USDT",
+              "settle": "USDT",
+              "margin": "USDT"
+            },
+            "proposed_instrument": {
+              "instrument_id": "BINGX:USDT_M:100877:HYPE-USDT",
+              "asset_id": "BINGX_UNDERLYING:HYPE",
+              "venue": "BINGX",
+              "native_symbol": "HYPE-USDT",
+              "market_type": "PERPETUAL",
+              "base": "HYPE",
+              "quote": "USDT",
+              "settle": "USDT",
+              "margin": "USDT",
+              "classification_status": "PROPOSED_ECONOMIC_SCOPE",
+              "identity_evidence_ref": null,
+              "price_tick": null,
+              "quantity_step": null,
+              "contract_multiplier": null,
+              "canonical_cross_venue_identity_qualified": false
+            },
+            "native_contract_id": "100877",
+            "native_status_at_capture": 1,
+            "current_membership": "NOT_CHECKED_HISTORICAL_CAPTURE",
+            "display_name": "HYPE",
+            "display_name_used_as_identity": false,
+            "proof": {
+              "native_contract_id": "100877",
+              "selected_economic_basis": "Practical economic scope inference from complete saved native crypto-like product group, unique same-venue exact identity/display, explicit NC TradFi separation and reviewed exceptions; not a documented universal raw coinType enum.",
+              "metadata_coin_id": 2338,
+              "metadata_coinName": "HYPE",
+              "contractId_coinId_same_namespace": false,
+              "coinId_numeric_equality_required": false,
+              "catalog_file_sha256": "7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5",
+              "economic_scope_file_sha256": "540111a3d30a4a76064b1124a8d904864a4c52f051642f75e83cbc3ca0559057",
+              "selected_symbols_file_sha256": "5e5610a579142fd19d2448b4d1834fe75498b8b4263ea41435ebd71b52b31920",
+              "catalog_original_received_ts": 1792931870932,
+              "catalog_endpoint": "/openApi/swap/v2/quote/contracts",
+              "contract_semantics_evidence_ref": "BINGX_OFFICIAL_CATALOG_DOCSV3_SHA256:9d9da7824d7fd091187e9b5dbed8e79d0fb6d2ab00b4efb7b2762eedc5272b2f",
+              "economic_evidence_kind": "OWNER_ACCEPTED_PRACTICAL_ECONOMIC_SCOPE_WITH_EXPLICIT_INFERENCE_NOT_UNIVERSAL_ENUM",
+              "owner_relative_basis_ref": "checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json"
+            },
+            "review_required": "ROOT explicit per-tuple identity classification decision before VERIFIED_CRYPTO/resolver activation; this proposal is not that decision",
+            "price_plan": {
+              "native_quote": "USDT",
+              "native_price_base": "HYPE",
+              "normalize_numeric_prefix": false,
+              "live_price_requires": "Exact native identity + actual response symbol/positiveprice/original source clock/freshness",
+              "runtime_price_qualification_token_created": false
+            },
+            "candle_plan": {
+              "factory": "createNativeRelativeCandleQualification",
+              "interval_ms": 60000,
+              "scope": "EXACT_NATIVE_INSTRUMENT_ROUTE_FIELD_INTERVAL_ONLY",
+              "time_basis": "OWNER_ACCEPTED_CCXT_CONSUMER_OPEN_TIME_NOT_VENDOR_GUARANTEE",
+              "volume_unit": "UNKNOWN_NATIVE_REPORTED_QUANTITY",
+              "absolute_BASE_qualified": false,
+              "absolute_USDT_qualified": false,
+              "materialize_only_after_reviewed_instrument": true
+            },
+            "execution_units": {
+              "base_quantity": null,
+              "quantity_step": null,
+              "contract_multiplier": null,
+              "price_tick": null,
+              "orderbook_qualified": false,
+              "native_size_used_as_multiplier": false,
+              "numeric_prefix_used_as_multiplier": false
+            },
+            "full_CORE_qualified": false,
+            "provider_SQL_runtime_admission": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "pump-report/handoffs/sources/T_METADATA_934_SNAPSHOT_JOIN_V1.json",
+      "sha256": "53810d432f0d156b5fa6be63277d0b46c894be44e17b23ddcd564c06f4b3dcde",
+      "bytes": 1359507,
+      "hits": [
+        {
+          "path": "root.rows[250]",
+          "object": {
+            "contract_id": "100877",
+            "symbol": "HYPE-USDT",
+            "native_asset": "HYPE",
+            "base": "HYPE",
+            "quote": "USDT",
+            "settle": "USDT",
+            "asset_id": null,
+            "classification": "UNKNOWN_UNDERLYING",
+            "identity_evidence_ref": null,
+            "owner_delivery_excluded": false,
+            "delivery_eligible_verified": false,
+            "membership_capture_ts": 1792931870932,
+            "current_membership_verified": null,
+            "metadata_name_match": {
+              "coinId_raw": 2338,
+              "coinName_exact": "HYPE",
+              "coinDisplayName_exact": "HYPE",
+              "coinType_raw": 0,
+              "coinType_present_in_native_reply": true,
+              "coinIconUrl_present": true,
+              "match_kind": "EXACT_CASE_SENSITIVE_NATIVE_ASSET_COINNAME_UNIQUE_CANDIDATE_ONLY",
+              "canonical_contract_bridge_proven": false,
+              "coinType_semantic_label": null,
+              "is_positive_crypto_evidence": false
+            },
+            "new_identity_promotion": false,
+            "execution_scale_to_underlying": null,
+            "execution_scale_reason": "NOT_ESTABLISHED_FROM_METADATA_OR_DIGITS_IN_SYMBOL",
+            "native_name_starts_with_digits": false,
+            "new_market_units_qualified": false,
+            "new_core_qualification_copied": false,
+            "market_coverage_from_prior_frozen_audit": [
+              "I",
+              "I",
+              "I",
+              "I",
+              "I",
+              "I"
+            ],
+            "current_market_coverage_verified_by_this_join": false
+          }
+        }
+      ]
+    },
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_F552_PER_TUPLE_NATIVE_REVIEW.json",
+      "sha256": "44be40c249c04f1f0fceca4ad8a344e054595f5c0a05b1c6b5905b66984fc4e1",
+      "bytes": 627077,
+      "hits": [
+        {
+          "path": "root.decisions[251]",
+          "object": {
+            "proposal_id": "F552:467fa398322f9128b8e1b084197ca65c942e0042e5e8fd21fedb5ae59e3ec992",
+            "tuple": {
+              "instrument_id": "BINGX:USDT_M:100877:HYPE-USDT",
+              "asset_id": "BINGX_UNDERLYING:HYPE",
+              "venue": "BINGX",
+              "native_symbol": "HYPE-USDT",
+              "market_type": "PERPETUAL",
+              "base": "HYPE",
+              "quote": "USDT",
+              "settle": "USDT",
+              "margin": "USDT"
+            },
+            "native_contract_id": "100877",
+            "decision": "ROOT_REVIEWED_NATIVE_SCOPE_PRICE_RELATIVE_ONLY",
+            "classification_evidence_kind": "OWNER_ACCEPTED_ECONOMIC_SCOPE_INFERENCE_WITH_EXACT_SAME_VENUE_NATIVE_TUPLE",
+            "classification_basis": "Practical economic scope inference from complete saved native crypto-like product group, unique same-venue exact identity/display, explicit NC TradFi separation and reviewed exceptions; not a documented universal raw coinType enum.",
+            "catalog_file_sha256": "7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5",
+            "economic_scope_file_sha256": "540111a3d30a4a76064b1124a8d904864a4c52f051642f75e83cbc3ca0559057",
+            "current_membership_proven": false,
+            "full_CORE_qualified": false,
+            "new_execution_units_qualified": false,
+            "decision_sha256": "a8955b01e9618d8a3af16f440a6b4d490dd672c699efa24e6ce425035cbb27fa"
+          }
+        }
+      ]
+    },
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_CRYPTO_SCOPE_SELECTION_934_V1.json",
+      "sha256": "c5286f9c3fc173c03d20da3f5d4a229f5b1693d385b865b190b7baa522567d1f",
+      "bytes": 653158,
+      "hits": [
+        {
+          "path": "root.rows[250]",
+          "object": {
+            "contract_id": "100877",
+            "symbol": "HYPE-USDT",
+            "native_asset": "HYPE",
+            "display_name": "HYPE",
+            "quote": "USDT",
+            "settle": "USDT",
+            "metadata_coin_id": 2338,
+            "metadata_coin_type_raw": 0,
+            "selected_for_scope": true,
+            "scope_reason": "INCLUDE_CRYPTO_SCOPE_INFERENCE",
+            "classification_basis": "Native contract asset matched exactly and uniquely to same-venue coinName; native TradFi namespace/display context and explicit gold/BTC/ETH exceptions. Positive crypto scope outside those exceptions is an inference, not a documented universal coinType enum.",
+            "data_coverage_qualified_by_this_selection": false
+          }
+        }
+      ]
+    }
+  ],
+  "original_metadata": {
+    "path": "/private/tmp/pump-corrected-metadata-actual.json",
+    "sha256": "66c3afe4e3f2d967050fdfbb34fb09741b4612780f1ba264cf504410dc0a3cf9",
+    "bytes": 812308,
+    "HYPE_matches": [
+      {
+        "path": "root.body.response.data.data.result[3165]",
+        "row": {
+          "coinId": 2338,
+          "coinName": "HYPE",
+          "coinDisplayName": "HYPE",
+          "coinType": 0,
+          "coinIconUrl": "https://static-app.bb-os.com/icon/HYPE.png"
+        }
+      }
+    ]
+  },
+  "binding_under_review": {
+    "instrument_id": "BINGX:USDT_M:100877:HYPE-USDT",
+    "asset_id": "BINGX_UNDERLYING:HYPE",
+    "native_contract_id": "100877",
+    "metadata_coin_id": 2338,
+    "namespace_equality_assumed": false
+  },
+  "provider_native_0xHYPE": {
+    "name": "HYPE",
+    "szDecimals": 2,
+    "maxLeverage": 10,
+    "instrumentType": "perp",
+    "isActive": true
+  },
+  "coinversa_retained": {
+    "canonical": "HYPE",
+    "synonyms": [
+      "HYPE"
+    ],
+    "crossMarket": true,
+    "venueCount": 2,
+    "venues": [
+      "HYPE",
+      "hyna:HYPE"
+    ],
+    "original_sha256": "384898ee564b8d2d570f3d4920635973ba62b331365649692e944718293973bf",
+    "proof_kind": "provider exposure taxonomy; no independent BingX project bridge"
+  },
+  "finding": {
+    "same_venue_scope": "OWNER_ACCEPTED_ECONOMIC_SCOPE_INFERENCE_WITH_EXACT_SAME_VENUE_NATIVE_TUPLE",
+    "project_full_name": false,
+    "project_site": false,
+    "network": false,
+    "token_contract": false,
+    "global_asset_identifier": false,
+    "icon_is_project_proof": false,
+    "canonical_BingX_to_0xHYPE": "UNKNOWN",
+    "canonical_BingX_to_CoinversaHYPE": "UNKNOWN",
+    "new_identity_promotions": 0
+  },
+  "missing_predicate": "Primary evidence binding the exact BingX entity to a canonical underlying project/native asset and corresponding provider entity. Ticker, internal IDs, display name, icon, economic classification, and venue aliases alone do not establish that bridge."
+}

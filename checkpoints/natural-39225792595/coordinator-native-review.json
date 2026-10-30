@@ -1,0 +1,168 @@
+{
+  "schema": "NATURAL39225792595_EXACT_SAVED_ACK_REVIEW_V1",
+  "cloud_run": 39225792595,
+  "head": "0911097a469b78a2d11e745141544fd0cf7a06a4",
+  "source_run_id": "1792399931640-1792399941482",
+  "artifact_originals": [
+    {
+      "id": 12174151140,
+      "name": "report2-run-result",
+      "digest": "sha256:c7205900032a215f28c55a6d498143fa600dd07a5f462b21e1df585d52b002eb",
+      "size_in_bytes": 67465
+    },
+    {
+      "id": 12174116199,
+      "name": "report2-telegram-info-proof",
+      "digest": "sha256:1fe4c32c86dcfc26508631fe2effe034fe9d7e3da272b36f7f5dc53ca894a678",
+      "size_in_bytes": 1042
+    }
+  ],
+  "original_member_sha256": {
+    "report2-run-result.json": "2c8f56ec209671cae2ef947ccc7f8b52f32f08a024840820ce0a6820b9825f6a",
+    "same-run-delivery-proof.json": "7bfd54f13b753f44a222871c41a1592d4b311aa0a42d3799dd0fecbcf455be0f",
+    "automatic-delivery-audit.json": "9e837a045fa385c3b531967a0c9f54d5400f15fa6f71cf58098b74d40cd4a44b",
+    "known-d1-day-guard.json": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605",
+    "report2-completion-accounting.json": "a55a337519104402064e588a8492108f6709b378a10abb43ca18bdb46a99eb38",
+    "private-canonical-archive-receipt.json": "959bf033b253148a42937a23df6a0892caff99200983785f4bc76d0b05c4f7de",
+    "telegram-info-proof.json": "4e8120ab8bf5ccebb961c3c516cd67f4475674977470b129749c18374b3303d6"
+  },
+  "scan": {
+    "scope105": true,
+    "numeric99": true,
+    "official_status3": 6,
+    "errors": 0
+  },
+  "both_persisted_and_private_verified": true,
+  "candidates": [
+    {
+      "contract": "TIA-USDT",
+      "direction": null,
+      "publication_id": "PUB:5c1c5306efca2aeba536845a4cac16a9a2269439",
+      "snapshot_id": "S392:TIA-USDT:1792400017704",
+      "canonical_state": "REJECTED",
+      "actionability_reason": null
+    },
+    {
+      "contract": "AKE-USDT",
+      "direction": "SHORT",
+      "publication_id": "PUB:d9e2c0c421012b8492be231581bc8e44ca090c2e",
+      "snapshot_id": "S392:AKE-USDT:1792399976580",
+      "canonical_state": "OBSERVE",
+      "actionability_reason": "EARLY_ACTIONABLE_OBSERVE_TARGET_PENDING"
+    }
+  ],
+  "accepted_same_run_delivery": {
+    "publication_id": "PUB:d9e2c0c421012b8492be231581bc8e44ca090c2e",
+    "contract": "AKE-USDT",
+    "direction": "SHORT",
+    "wave_id": "EDW:AKE-USDT:1792399941678:G7",
+    "lifecycle_event": "OBSERVE",
+    "run_id": "1792399931640-1792399941482",
+    "snapshot_id": "S392:AKE-USDT:1792399976580",
+    "observed_ts": 1792399976580,
+    "analytical_fingerprint": "ea2ce54c52555a70073bd6c089fe49a414fb444df07f7860fd86d7264d73940c",
+    "presentation_hash": "2e2aeb9aa3e5addc1842aeb969679b4c438360243e320b83aba16f0080498d43",
+    "same_run_binding_verified": true,
+    "exact_SENT": true,
+    "telegram_message_id": "231",
+    "dispatch_finalized": true,
+    "task_at_delivery": null,
+    "task_at_delivery_verified": false,
+    "task_state_after_delivery_known": false,
+    "actual_ENTRY": false,
+    "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED"
+  },
+  "task_at_delivery": "NULL_PROJECTION_NOT_NATIVE_NOT_EXISTS",
+  "actual_ENTRY": false,
+  "task_later_history": "UNKNOWN",
+  "canonical_field_projection_is_not_full_native_canonical": true,
+  "delivery_other_states": [
+    {
+      "key": "ZEC-USDT|LONG|EDW:ZEC-USDT:1791710630650:G8|OBSERVE|v3-telegram-shadow-r6",
+      "status": "FAILED_RETRYABLE",
+      "reason": "NOT_CLOSED",
+      "sent": false
+    }
+  ],
+  "original_terminal": {
+    "status": "NO_ELIGIBLE_ORIGINAL_TERMINAL",
+    "queued": false
+  },
+  "budget": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792399931640-1792399941482",
+    "recorded_ts": 1792400033636,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 12,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 96,
+      "reported_remaining_slots": 68,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 501,
+        "rows_read": 41550,
+        "rows_written": 443,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 12450,
+        "rows_written": 397
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-19",
+      "reported_unknown_ops": 0,
+      "reserved_rows_read": 900300,
+      "reserved_rows_written": 16136,
+      "reconciliation": null
+    },
+    "native_liquidation_service": {
+      "scope": "EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB",
+      "reserved_http": 4,
+      "gross_reserved_http": null,
+      "claimed_http": null,
+      "actual_http": 4,
+      "max_http_per_run": 4
+    },
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "native_diagnostics_new_PR521_fields": "ABSENT_BEFORE_MERGE",
+  "sourceHTTP_nativeSQL_MAIN_Telegram_added_by_this_review": 0,
+  "project_complete": false
+}

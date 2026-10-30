@@ -1,0 +1,360 @@
+{
+  "schema": "REPORT2_MEXC_PHEMEX_EXACT_FACT_PREFLIGHT_V1",
+  "working_base": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+  "state": "DOC_CONTRACT_GAPS_NOT_EXECUTION_READY",
+  "prior_evidence": {
+    "asset_and_window_proof": {
+      "PR": 459,
+      "head": "f58b7e749c060e225ecd2075e716cb129d8d16d2",
+      "file": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/plan.json",
+      "sha256": "9a77266791645bd1245f44c5ad60398914e9739b287bc793844a5d2c687b3f83",
+      "replayed": false,
+      "scope": "Reuse accepted project identity and historical two-window distinction only; no new venue binding."
+    },
+    "documentation": {
+      "PR": 456,
+      "head": "14f9a82ccfb70b25c5ff28bb5c774299d165beef",
+      "file": "checkpoints/source-worker-global-source-docs-20261018/documentation-receipts.json"
+    },
+    "accepted_tests_and_censuses_repeated": false
+  },
+  "assets": [
+    {
+      "contract": "TIA-USDT",
+      "project_identity": "celestia:native:mainnet",
+      "first_priority": 1,
+      "all_new_venue_listings_and_identity_unqualified": true
+    },
+    {
+      "contract": "APR-USDT",
+      "project_identity": "ethereum:0x5a9610919f5e81183823a2be4bd1beb2b4da2a20",
+      "first_priority": 2,
+      "conditional": true,
+      "all_new_venue_listings_and_identity_unqualified": true
+    }
+  ],
+  "providers": [
+    {
+      "provider": "MEXC",
+      "upstream": "MEXC_OFFICIAL",
+      "symbol_candidates": {
+        "TIA": "TIA_USDT",
+        "APR": "APR_USDT"
+      },
+      "status": "CANDIDATES_ONLY",
+      "docs": [
+        "mexcMarketOverview",
+        "mexcIntegration",
+        "mexcContractInfo",
+        "mexcFuturesKline",
+        "mexcRecentTrades",
+        "mexcTicker",
+        "mexcSpotKline"
+      ],
+      "base": "https://api.mexc.com",
+      "market": {
+        "path": "/api/v1/contract/detail/country",
+        "method": "GET",
+        "params": {
+          "symbol": "EXACT_SINGLE_SYMBOL"
+        },
+        "attempts_per_asset": 1,
+        "comma_batch_not_documented": true,
+        "fields": [
+          "symbol",
+          "baseCoin",
+          "baseCoinName",
+          "quoteCoin",
+          "settleCoin",
+          "futureType",
+          "state",
+          "contractSize",
+          "priceScale",
+          "priceUnit",
+          "volScale",
+          "volUnit",
+          "baseCoinId",
+          "conceptPlate"
+        ],
+        "accept": "Exact original project asset, futureType1 perpetual, quote/settleUSDT, state0 and actual active crypto instrument. baseCoinId is a venue ID, not a chain contract."
+      },
+      "identity": {
+        "route": null,
+        "access": null,
+        "attempt_upper_bound": null,
+        "status": "EXACT_CHAIN_OR_NATIVE_BINDING_ROUTE_NOT_QUALIFIED",
+        "no_data_before_exact_binding": true
+      },
+      "native_bars": {
+        "path": "/api/v1/contract/kline/{symbol}",
+        "query": {
+          "interval": "Min15",
+          "start": "FLOOR_NATIVE_BASELINE_START_MS_DIV1000",
+          "end": "FLOOR_E15_MS_DIV1000"
+        },
+        "query_time_unit": "UNIX_SECONDS_EXPLICIT",
+        "maximum_points": 2000,
+        "limit_parameter_documented": false,
+        "required_closed_rows": 21,
+        "intervals": [
+          "Min1",
+          "Min5",
+          "Min15",
+          "Min30",
+          "Min60",
+          "Hour4",
+          "Hour8",
+          "Day1",
+          "Week1",
+          "Month1"
+        ],
+        "native_3m": false,
+        "response": "Parallel time/open/close/high/low/vol arrays; sample also amount and realOHLC. Never zip unequal lengths or switch ordinary OHLC to realOHLC without semantic evidence.",
+        "volume_unit": "vol described only as Volume in kline schema; amount appears in example but not table. Neither is a qualified TIA/APR base/quote volume yet.",
+        "endpoint_weight": null
+      },
+      "minute": {
+        "same_path": true,
+        "interval": "Min1",
+        "bounded_start_end_seconds": true,
+        "maximum_target_minutes_both_windows": 29,
+        "forming_and_edge_rows_rejected": true
+      },
+      "trades": {
+        "path": "/api/v1/contract/deals/{symbol}",
+        "limit": 100,
+        "fields": [
+          "p",
+          "v",
+          "T",
+          "O",
+          "M",
+          "t"
+        ],
+        "individual_trade_ID_documented": false,
+        "side": "T1buy/2sell described as trade side; exact taker/aggressor interpretation not qualified by those words alone.",
+        "clock": "t has trade time name but no explicit unit in read endpoint schema; example is not a clock contract.",
+        "optional": true,
+        "full4h_CVD_or_exact_raw_trade_count": false
+      },
+      "optional_OI": {
+        "path": "/api/v1/contract/ticker",
+        "fields": [
+          "holdVol",
+          "timestamp"
+        ],
+        "holdVol_unit": "contracts explicitly per ticker doc; convert only with this exact venue's actual contractSize and validated linear units.",
+        "untested": true
+      },
+      "rate": {
+        "metadata_and_ticker_documented": "Earlier discovery cited10requests/2s, but current retained endpoint bodies do not state that route-specific limit. Do not treat it as current endpoint admission or a universal kline/deals allowance.",
+        "kline_weight": null,
+        "kline_generic_rate": null,
+        "trade_generic_rate": null,
+        "daily_monthly_project_budget": null
+      },
+      "spot": "Optional, separate admission. /api/v3/klines uses milliseconds and max500; never copy futures seconds or infer independent quota/upstream.",
+      "negative_decision": "Do not choose ahead of CoinEx/TIA while exact identity route and kline volume/rate contract are unresolved."
+    },
+    {
+      "provider": "PHEMEX",
+      "upstream": "PHEMEX_OFFICIAL",
+      "symbol_candidates": {
+        "TIA": "TIAUSDT",
+        "APR": "APRUSDT"
+      },
+      "status": "CANDIDATES_ONLY",
+      "docs": [
+        "phemexDocs"
+      ],
+      "base": "https://api.phemex.com",
+      "market": {
+        "path": "/public/products",
+        "method": "GET",
+        "data_node": "perpProductsV2",
+        "attempts_shared": 1,
+        "selection": "Only exact requested two crypto USDT perpetual candidates. USD inverse/products[] and USDC are separate instruments.",
+        "expected_fields": "Read actual product schema; do not fabricate chain/address or contractSize fields absent from the read document."
+      },
+      "identity": {
+        "route": null,
+        "access": null,
+        "attempt_upper_bound": null,
+        "status": "EXACT_CHAIN_OR_NATIVE_BINDING_ROUTE_NOT_QUALIFIED",
+        "no_data_before_exact_binding": true
+      },
+      "native_bars": {
+        "path": "/exchange/public/md/v2/kline/last",
+        "query": {
+          "symbol": "EXACT_VERIFIED_USDT_PERP",
+          "resolution": 900,
+          "limit": 50
+        },
+        "allowed_limits": [
+          5,
+          10,
+          50,
+          100,
+          500,
+          1000
+        ],
+        "required_closed_rows": 21,
+        "forming_rule": "Documentation excludes kline still under generation; independently verify original end/grid before retention.",
+        "response_order": [
+          "timestamp",
+          "interval",
+          "last_close",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume",
+          "turnover"
+        ],
+        "no_binance_array_indices": true,
+        "native_3m": false,
+        "unit_status": "USD-M real Rp/Rq trading fields differ from inverse scaled Ep/Ev. This kline row has generic fields, so exact price/volume/turnover units and timestamp unit still require binding evidence.",
+        "endpoint_weight": null
+      },
+      "minute": {
+        "same_path": true,
+        "resolution": 60,
+        "limit": 50,
+        "maximum_target_minutes_both_windows": 29,
+        "never_request_undocumented_24_or_40": true
+      },
+      "legacy_history": {
+        "path": "/exchange/public/md/v2/kline/list",
+        "from_to_unit": "SECONDS_EXPLICIT_ALIGNED_RESOLUTION",
+        "range": "[from,to)",
+        "points_strictly_less_than": 2000,
+        "provider_recommended": false,
+        "enabled_first_packet": false,
+        "no_automatic_pagination": true
+      },
+      "trades": {
+        "path": "/md/v2/trade",
+        "fields": [
+          "trades_p.timestamp",
+          "trades_p.Side",
+          "trades_p.PriceRp",
+          "trades_p.SizeRq",
+          "sequence"
+        ],
+        "clock": "Trade timestamp explicitly nanoseconds; preserve raw integer before JSON Number, use exact integer conversion and retain ns remainder.",
+        "individual_trade_ID_documented": false,
+        "sequence_is": "Whole message sequence, never a fabricated per-fill ID.",
+        "size": "Real trade size is documented, but exact underlying base/contract mapping is not presumed for unbound asset.",
+        "page_limit_documented": null,
+        "optional": true,
+        "full4h_CVD_or_exact_raw_trade_count": false
+      },
+      "optional_OI": {
+        "path": "/md/v3/ticker/24hr",
+        "fields": [
+          "openInterestRv",
+          "timestamp"
+        ],
+        "unit_status": "Retain raw Rv and source timestamp; do not relabel as contracts/base/USDT without exact schema binding.",
+        "untested": true
+      },
+      "access": {
+        "market_no_key_proof": "Not resolved: generic API section requires signatures while public product/market routes are named public. Old Python subset dated2020 is not proof of current USD-M route access.",
+        "keys_or_accounts_admitted": false
+      },
+      "rate": {
+        "IP_requests_per_5minutes": 5000,
+        "ordinary_Others_weight_capacity_per_minute": 100,
+        "legacy_kline_path": "/exchange/public/md/kline",
+        "legacy_kline_weight": 10,
+        "new_v2_last_or_list_weight": null,
+        "VIP_contract_capacity_5000_per_minute_not_applicable": true,
+        "scope": "Shared IP/group/account; do not assume new v2 weight1 or10 from the legacy row."
+      },
+      "spot": "Preferred NONBLOCKING, separate schema/identity/admission, same venue upstream.",
+      "negative_decision": "Do not execute a purported5HTTP keyless packet until actual public access, exact identity, new kline weight and unit contract are qualified."
+    }
+  ],
+  "clock_and_grain": {
+    "E1": "Trusted admitted planning cutoff at closed minute; not provider publication.",
+    "E15": "Native closed15m boundary separate from sliding15m.",
+    "windows": [
+      "[E1-15m,E1) sliding",
+      "[E15-15m,E15) native event",
+      "20prior native15m plus1event"
+    ],
+    "historical_originals_not_first_known": true,
+    "received_ts_never_replaces_source_ts": true,
+    "UTC_week_offset_not_assumed": true,
+    "no_score_direction_entry_effect": true
+  },
+  "requested_native_minutes": [
+    15,
+    30,
+    60,
+    240,
+    1440,
+    10080
+  ],
+  "baseline_rows": 20,
+  "event_rows": 1,
+  "cost_contract": {
+    "minimal_N10_one_provider_one_asset_conditional_HTTP": {
+      "metadata": 1,
+      "identity_if_one_admitted_route_exists": 1,
+      "native15m": 1,
+      "minute": 1
+    },
+    "conditional_minimal_HTTP": 4,
+    "identity_cost_actually_bounded": false,
+    "complete_first_packet_HTTP_upper_bound": null,
+    "optional_trade_HTTP": 1,
+    "optional_OI_HTTP": 1,
+    "all_six_native_plus_minute_requests": 7,
+    "both_providers_six_native_plus_minute_requests": 14,
+    "SQL_upper_bound": null,
+    "R_upper_bound": null,
+    "W_upper_bound": null,
+    "retry": 0,
+    "pagination": 0,
+    "execution_allowed": false,
+    "source_provider_IP_account_common_manual_headroom_required": true,
+    "original_unknown_and_spent_reserves_preserved": true
+  },
+  "consumers": {
+    "N10": "Potential exact independent OHLC/native baseline and separate sliding path after actual binding and consumer qualification; no current fact acquired.",
+    "N12": "At most optional descriptive raw-side sample after clock/side/size proof; no IDs/full-window claim from these read trade schemas.",
+    "N05": "Exact raw4h CVD/count not closed by either bounded first trade route.",
+    "N15": "MEXC conceptPlate is producer metadata, not independent peer return cohort or sector strength.",
+    "LIQ": "OI/turnover/quotes are not future liquidation positions or an HTX execution level.",
+    "ANOMALY": "Only immutable typed facts proposed to third worker. No event/watch/statistics/outbox or production imports here."
+  },
+  "limits": {
+    "ordinary_N05_N12_HTTP": 5,
+    "supplement_HTTP": 18,
+    "whole_HTTP": 164,
+    "account_R": 3500000,
+    "account_W": 70000,
+    "manual_reserve": 24,
+    "next_full_R": 59000,
+    "next_full_W": 920,
+    "changed": false
+  },
+  "effects": {
+    "provider_market_HTTP": 0,
+    "native_SQL": 0,
+    "tests_of_accepted_runtime": 0,
+    "runtime_shared_changed": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_new_venue_fact": 0
+  },
+  "remaining": [
+    "Exact native/chain project binding for each new venue and asset, without a ticker/name-only match.",
+    "Actual availability/response/units/clocks/body bounds and applicable route/IP/common/day/month/manual admission.",
+    "MEXC generic kline/trade rate and trade clock/taker semantics; kline volume/amount scale.",
+    "Phemex current unsigned market access, exact new kline weight and row units/timestamp; no current access inferred from2020SDK.",
+    "Chosen reservation/journal/cache/write/readback SQL/R/W bounds before any first acquisition."
+  ]
+}

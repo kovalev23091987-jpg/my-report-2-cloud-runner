@@ -2,6 +2,7 @@ import {collectNativeEvmFinalizedContext,exactNativeEvmNetwork} from './native-e
 import {collectXrplNativePayments} from './xrpl-native-payments.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,evidenceSourceAttemptHeadroom,readEvidenceSourceCache,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
+import {validateEvidenceV2} from './evidence-v2.mjs';
 export const FINALIZED_CHAIN_EVENTS_VERSION='finalized-chain-events-v5-native-sol-transfer-20261005';
 export const AAVE_POOL='0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2';
 export const AAVE_TOPIC='0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286';
@@ -22,6 +23,29 @@ function retainSharedHeader(db,key,chain,head,received_ts){
  rows.set(key,{chain,head,block,received_ts});while(rows.size>8)rows.delete(rows.keys().next().value);
 }
 export const SOLANA_SYSTEM_PROGRAM='11111111111111111111111111111111';
+// A cache lookup identifies a candidate, not the asset or knowledge clock of
+// its facts. Preserve valid siblings and bounded empty checks without a new
+// source attempt; an invalid active result uses the existing admitted route.
+function scopedCachedEvents(cached,{contract,chain,token,mode,native=false,now}){
+ if(cached?.version!==FINALIZED_CHAIN_EVENTS_VERSION||cached.status!=='CLOSED'||!Array.isArray(cached.evidence)||cached.evidence.length>200||!Number.isSafeInteger(now)||!Number.isSafeInteger(cached.cache_observed_ts)||!Number.isSafeInteger(cached.cache_expires_ts)||cached.cache_observed_ts>now||cached.cache_expires_ts<=now||cached.cache_expires_ts>cached.cache_observed_ts+TTL||cached.contract!==undefined&&cached.contract!==contract)return null;
+ const wantedMode=native?'NATIVE_TRANSFER':mode,summary=cached.summary;
+ if(summary?.mode!==wantedMode||chain!=='solana'&&summary.chain!==chain)return null;
+ const evidence=cached.evidence.filter(row=>{
+  if(row?.provider_id!==SOURCE||row.htx_contract!==contract||row.chain!==chain||!validateEvidenceV2(row,{decision_ts:now}).usable||![row.source_ts,row.observed_ts,row.first_known_ts,row.expires_at].every(Number.isSafeInteger)||row.source_ts>row.observed_ts||row.observed_ts>row.first_known_ts||row.first_known_ts>now||row.expires_at>row.observed_ts+TTL||row.directional_strength!==null||row.risk_strength!==null||row.event_is_not_market_direction!==true)return false;
+  if(chain==='solana'){
+   if(row.upstream_id!=='SOLANA_MAINNET_RPC'||!BASE58_SIG.test(row.tx_hash)||!/^\d+$/.test(String(row.block_ref))||now-row.source_ts>TTL)return false;
+   return native?row.asset_id==='solana:native:mainnet'&&row.native_asset_id==='solana:mainnet'&&row.block_id==='N04'&&row.metric_family==='NATIVE_TRANSFER'&&row.producer==='SOLANA_FINALIZED_NATIVE_SYSTEM_TRANSFER':row.asset_id===`solana:${token}`&&row.token_address===token&&row.producer==='SOLANA_FINALIZED_TOKEN_BALANCE_DIFF'&&['TOKEN_TRANSFER','TOKEN_BALANCE_INCREASE','TOKEN_BALANCE_DECREASE'].includes(row.metric_family);
+  }
+  if(!EVM_CHAIN_IDS[chain]||row.upstream_id!=='PUBLICNODE_RPC'||row.asset_id!==`${chain}:${token}`||clean(row.token_address)!==token||!WORD.test(row.tx_hash)||!WORD.test(row.block_hash)||!HEX.test(row.block_ref)||!/^\d+$/.test(String(row.log_index)))return false;
+  return mode==='AAVE_CREDIT'?row.block_id==='N04'&&row.metric_family==='DEFI_CREDIT_LIQUIDATION'&&row.producer==='AAVE_V3_FINALIZED_EVENTS'&&[clean(row.collateral_asset),clean(row.debt_asset)].includes(token):row.producer==='FINALIZED_ERC20_EVENTS'&&['TOKEN_TRANSFER','MINT_TRANSFER','BURN_TRANSFER'].includes(row.metric_family);
+ });
+ if(!evidence.length){
+  if(cached.evidence.length||summary.confirmed_timed_events!==0)return null;
+  const empty=chain==='solana'?native?summary.scope==='LAST_20_FINALIZED_SYSTEM_PROGRAM_SIGNATURES_UP_TO_THREE_TRANSACTIONS'&&Array.isArray(summary.sampled_signatures)&&summary.sampled_signatures.length<=3&&summary.sampled_signatures.every(s=>BASE58_SIG.test(s)):summary.scope==='LAST_20_FINALIZED_SIGNATURES_ONE_TRANSACTION'&&Number.isSafeInteger(summary.matching_signatures)&&summary.matching_signatures>=0&&summary.matching_signatures<=20&&(summary.sampled_signature===null||BASE58_SIG.test(summary.sampled_signature)):['LAST_256_FINALIZED_BLOCKS_ONE_TIMED_EVENT_BLOCK','LAST_16_FINALIZED_BLOCKS_ONE_TIMED_EVENT_BLOCK'].includes(summary.scope)&&summary.empty_sample===true&&summary.matching_logs===0&&HEX.test(summary.finalized_block)&&HEX.test(summary.window_start_block);
+  if(!empty)return null;
+ }
+ return{...cached,contract,evidence,summary:evidence.length===cached.evidence.length?summary:{...summary,confirmed_timed_events:evidence.length},cache_status:'VALIDATED_ORIGINAL_CLOCK_CACHE',...(evidence.length!==cached.evidence.length?{cache_rejected_evidence_rows:cached.evidence.length-evidence.length}:{})};
+}
 export function decodeFinalizedChainEvent({log,mode,asset,block,observed_ts,contract,chain='ethereum'}={}){
  if(!['TOKEN_TRANSFER','AAVE_CREDIT'].includes(mode)||!ADDR.test(asset)||log?.removed!==false||!WORD.test(log?.transactionHash)||!WORD.test(log?.blockHash)||!HEX.test(log?.logIndex)||!block||clean(block.hash)!==clean(log.blockHash)||clean(block.number)!==clean(log.blockNumber)||!HEX.test(block.timestamp))return null;
  const source_ts=Number(BigInt(block.timestamp))*1000;if(!Number.isSafeInteger(source_ts)||source_ts>observed_ts)return null;
@@ -55,7 +79,7 @@ export function decodeFinalizedSolanaTransaction({transaction,mint,signature,obs
 }
 
 async function collectSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,mint,now,clock,strict_fresh_manual=false}){
- const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:solana:TOKEN_TRANSFER:${mint}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
+ const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:solana:TOKEN_TRANSFER:${mint}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now,include_cache_clock:true}),hit=!strict_fresh_manual&&scopedCachedEvents(cached,{contract,chain:'solana',token:mint,mode:'TOKEN_TRANSFER',now});if(hit)return hit;
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  const headroom=await evidenceSourceAttemptHeadroom(db,{source:SOURCE,attempts:2,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};if(!headroom.allowed)return{status:headroom.status,evidence:[],network_calls:0,admission:headroom};
  const reservation_id=`EV2:CHAIN_EVENTS:${contract}:TOKEN_TRANSFER:${run_id}:${mint}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:2});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
@@ -83,7 +107,7 @@ export function decodeFinalizedNativeSolanaTransaction({transaction,signature,ob
 }
 
 async function collectNativeSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,now,clock,strict_fresh_manual=false}){
- const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:solana:NATIVE_TRANSFER`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
+ const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:solana:NATIVE_TRANSFER`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now,include_cache_clock:true}),hit=!strict_fresh_manual&&scopedCachedEvents(cached,{contract,chain:'solana',native:true,now});if(hit)return hit;
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  const headroom=await evidenceSourceAttemptHeadroom(db,{source:SOURCE,attempts:4,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};if(!headroom.allowed)return{status:headroom.status,evidence:[],network_calls:0,admission:headroom};
  const reservation_id=`EV2:CHAIN_EVENTS:${contract}:NATIVE_TRANSFER:${run_id}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:4});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
@@ -102,7 +126,7 @@ export async function collectFinalizedChainEvents({db,fetch_impl=globalThis.fetc
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  const chain=clean(asset_identity?.chain),rawToken=String(asset_identity?.contract_or_mint??'').trim(),token=chain==='solana'?rawToken:clean(rawToken),mode=event_mode==='AAVE_CREDIT'?'AAVE_CREDIT':'TOKEN_TRANSFER';if(!/^[^-\s]{1,32}-USDT$/.test(contract))return{status:'EXACT_CHAIN_IDENTITY_REQUIRED',evidence:[],network_calls:0};
  if(mode==='TOKEN_TRANSFER'&&exactNativeEvmNetwork({contract,asset_identity})?.production_enabled===true)return collectNativeEvmFinalizedContext({db,fetch_impl,request_admit,contract,run_id,asset_identity,now,clock,strict_fresh_manual});
- await installEvidenceSourceStore(db);if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:${chain}:${mode}:${token}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
+ await installEvidenceSourceStore(db);if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:${chain}:${mode}:${token}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now,include_cache_clock:true}),hit=!strict_fresh_manual&&scopedCachedEvents(cached,{contract,chain,token,mode,native:chain==='solana'&&asset_identity?.asset_kind==='NATIVE',now});if(hit)return hit;
  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0,internal_only:true};
  if(chain==='xrp'&&contract==='XRP-USDT'&&asset_identity?.asset_kind==='NATIVE'&&asset_identity.native_asset_id==='xrp:mainnet'&&asset_identity.contract_or_mint===null&&mode==='TOKEN_TRANSFER')return collectXrplNativePayments({db,fetch_impl,request_admit,contract,run_id,asset_identity,now,clock,strict_fresh_manual});
  if(chain==='solana'&&asset_identity?.asset_kind==='NATIVE'&&asset_identity?.native_asset_id==='solana:mainnet'&&asset_identity?.contract_or_mint===null&&mode==='TOKEN_TRANSFER')return collectNativeSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,now,clock,strict_fresh_manual});

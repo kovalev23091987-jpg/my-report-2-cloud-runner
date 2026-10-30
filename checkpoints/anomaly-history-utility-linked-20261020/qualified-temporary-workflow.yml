@@ -1,0 +1,550 @@
+name: LIQ assembled spot and 105 admission offline
+on:
+  workflow_dispatch:
+    inputs:
+      weekly_proposal:
+        type: boolean
+        default: false
+      weekly_expected_main:
+        type: string
+      weekly_source_run:
+        type: string
+      retained106_offline_fixture:
+        description: Verify all consumers against exact retained106 files in the CI workspace only
+        type: boolean
+        default: false
+  push:
+    branches: [main, fix/source-role-proof-witness-20261018, fix/active-source-budget-read-20261018, fix/maintenance-cadence-receipts-20261018, fix/htx-reference-fact-preservation-20261018, fix/expired-bound-delivery-20261018, fix/n12-component-origin-20261018, fix/private-price-native-witness-20261018, fix/original-entry-followup-20261018, fix/gate-reuse-backpack-and-anomaly-contract-20261018, fix/successful-completion-statistics-proof-20261018, work/n15-numeric-facts-and-source-budget-delta-20261018, fix/native-suspended-scope-and-compact-length-20261018, fix/exact-htx-availability-diagnosis-20261018, work/source-fact-integrity-integration-20261018, fix/partial-cron-native-diagnostics-20261018, fix/paid-report-recovery-20261018, work/report2-sources-n05-venue-preservation-20261018, work/report2-sources-bitfinex-bounded-reuse-20261018, work/report2-sources-n10-useful-path-queue-20261018, work/report2-sources-n10-path-facts-20261018, fix/n04-exact-cached-chain-facts-20261018, work/report2-sources-liq-exact-binding-20261018, work/report2-sources-n15-cache-scope-20261018, fix/current-verified-day-refusal-20261018, work/report2-sources-n12-cache-scope-20261018, fix/n11-exact-rendered-source-binding-20261018, fix/n04-cache-fact-preservation-20261018, fix/n12-cache-fact-preservation-20261018, fix/sector-cache-fact-preservation-20261017, fix/active-source-fallback-preservation-20261016, feat/retention-sql-bridge-provenance-20261016, feat/offline-proof-caller-admission-20261016, fix/installed-sql-bridge-counters-20261016, fix/exact-sql-bridge-provenance-20261016, feat/installed-bridge-provenance-20261016, feat/offline-primary-proof-readback-20261016, fix/native-cost-utc-reconciliation-20261016, fix/whole-day-storage-envelopes-20261016, fix/current-native-reader-proof-20261016, fix/installed-reader-counter-repair-20261016, fix/disjoint-native-day-accounting-20261016, fix/grouped-private-archive-copy-20261016, fix/storage-failure-rollover-20261016, fix/hourly-native-tail-20261016, fix/native-tail-process-finish-20261016, fix/bounded-native-tail-20261016, fix/native-cost-clock-and-inspection-20261016, fix/storage-birth-and-day-accounting-20261016, fix/shared-canonical-update-20261016, fix/retained-write-failure-guard-20261016, fix/storage-row-admission-20261016, fix/retention-window-resume-20261016, feat/utc16-native-retention-qualification-20261015, fix/scoped-canonical-retention-20261015, fix/free-archive-binding-resume-20261015, fix/free-archive-source-map-20261015, fix/free-archive-worker-rollout-20261015, fix/free-storage-pool-routing-20261015, fix/free-storage-rolling-20261015, fix/manual-native-history-qualification-20261015, fix/bounded-canonical-native-selection-20261015, feat/one-off-storage-cleanup-slot4-20261015, fix/canonical-reference-schema-20261015, feat/bounded-storage-emergency-proposal-20261015, feat/vike-evidence-and-budget-audit-20261015, feat/permitted-liq-research-20261015, feat/private-archive-prefetch-20261015, fix/active105-unicode-liq-20261015, codex/active-source-finalist-and-quota-20261014, codex/active-source-typed-private-price-20261014, codex/active-source-after338-20261014, codex/active-source-role-and-history-20261014, codex/active-source-next-gaps-20261014, codex/active-source-transport-and-retention-20261014, codex/native-sector-source-coverage-20261014, codex/native-sector-denominations-20261014, codex/tron-sector-source-coverage-20261014, codex/sector-exact-target-fallback-20261014, codex/active-source-preflight-20261014, codex/source-health-priority-20261014, codex/public-venue-health-priority-20261014, codex/weekly-htx-source-sync-20261014, codex/weekly-htx-connected-proposal-20261014, codex/weekly-retained-catalog-qualification-20261014, codex/lossless-full-evidence-recovery-20261014, codex/protected-canonical-compaction-20261015, codex/weekly106-retained-fixture-20261015, codex/coordinated-weekly-rollout-20261015]
+    paths:
+      - runner/exact-entry-followup.mjs
+      - runner/exact-entry-followup.test.mjs
+      - tools/read-exact-entry-followup-20261018.mjs
+      - .github/workflows/exact-entry-followup-20261018.yml
+      - current-generation/tests/coinpaprika-numeric-fact-binding.test.mjs
+      - current-generation/tests/coingecko-raw-numbers.test.mjs
+      - checkpoints/n15-numeric-facts-integration-20261018/**
+      - current-generation/tests/suspended-htx-scope.test.mjs
+      - current-generation/tests/compact-native-overflow.test.mjs
+      - current-generation/tests/approved-universe-scope.runtime.mjs
+      - checkpoints/native-scope-and-compact-repair-20261018/**
+      - runner/exact-recovery-diagnosis.mjs
+      - runner/exact-recovery-diagnosis.test.mjs
+      - tools/diagnose-exact-recovery-20261018.mjs
+      - .github/workflows/exact-recovery-diagnosis-20261018.yml
+      - current-generation/tests/n10-raw-component-binding.test.mjs
+      - current-generation/tests/n10-full-cache-inputs.mjs
+      - current-generation/tests/coingecko-cache-binding.test.mjs
+      - current-generation/tests/n15-consumer-isolation.test.mjs
+      - current-generation/tests/htx-n12-retained-facts.test.mjs
+      - current-generation/tests/turnover-cache-binding.test.mjs
+      - current-generation/tests/turnover-consumer-proposal.test.mjs
+      - current-generation/tests/gate-turnover-fact-preservation.test.mjs
+      - current-generation/tests/gate-n12-reuse.test.mjs
+      - current-generation/tests/gate-n12-sample.test.mjs
+      - current-generation/tests/gate-n12-consumer-proposal.test.mjs
+      - current-generation/tests/gate-n12-saved-inputs.mjs
+      - current-generation/tests/liq-provider-clock-schema.test.mjs
+      - current-generation/tests/orderly-clock-schema.test.mjs
+      - runner/verified-native-day-reconciliation.mjs
+      - runner/native-day-reconciliation-tokens.mjs
+      - runner/verified-native-day-reconciliation.test.mjs
+      - checkpoints/LATEST_VERIFIED_D1_AGGREGATE_RECONCILIATION.json
+      - checkpoints/paid-report-recovery-20261018/**
+      - current-generation/tests/n05-venue-fact-preservation.test.mjs
+      - current-generation/tests/backpack-admission-reason.test.mjs
+      - current-generation/files/src/binance-native-flow-collector.mjs
+      - current-generation/files/src/kraken-flow-collector.mjs
+      - current-generation/files/src/poloniex-native-flow-collector.mjs
+      - current-generation/files/src/backpack-flow-collector.mjs
+      - current-generation/files/src/bitfinex-native-flow-collector.mjs
+      - current-generation/files/src/bitfinex-n12-bounded-trade-sample.mjs
+      - current-generation/tests/bitfinex-bounded-reuse.test.mjs
+      - current-generation/tests/current-verified-day-refusal.test.mjs
+      - checkpoints/LATEST_VERIFIED_UNKNOWN_D1_DAY_REFUSAL.json
+      - current-generation/files/src/execution-report-context.mjs
+      - current-generation/tests/n11-rendered-source-binding.test.mjs
+      - tools/audit-n11-rendered-source-binding-20261018.mjs
+      - tools/audit-active105-typed-source-coverage-20261014.py
+      - current-generation/files/src/finalized-chain-events.mjs
+      - current-generation/files/src/native-evm-finalized-context.mjs
+      - current-generation/files/src/xrpl-native-payments.mjs
+      - current-generation/tests/n04-cache-preservation.test.mjs
+      - current-generation/tests/n04-cache-scope.test.mjs
+      - current-generation/files/src/htx-technical-structure.mjs
+      - current-generation/tests/n10-path-window-clock.test.mjs
+      - current-generation/tests/n10-useful-path-queue.test.mjs
+      - current-generation/tests/active-market-coverage-expansion.test.mjs
+      - current-generation/files/src/n12-native-public-trade-collector.mjs
+      - current-generation/files/src/gate-futures-trade-collector.mjs
+      - current-generation/files/src/bitget-flow-collector.mjs
+      - current-generation/tests/n12-cache-preservation.test.mjs
+      - current-generation/tests/n12-cache-scope.test.mjs
+      - current-generation/files/src/n12-cached-trade-scope.mjs
+      - current-generation/files/src/provider-minute-ledger.mjs
+      - current-generation/files/src/provider-reference-cache.mjs
+      - current-generation/files/src/coinpaprika-sector-evidence.mjs
+      - current-generation/tests/sector-cache-preservation.test.mjs
+      - current-generation/tests/coinpaprika-cache-scope.test.mjs
+      - .github/workflows/liq-assembled-offline-20261012.yml
+      - current-generation/files/src/coingecko-sector-evidence.mjs
+      - current-generation/tests/native-sector-provider-binding.test.mjs
+      - current-generation/tests/shared-sector-batch.test.mjs
+      - tools/validate-native-sector-batch-20261014.mjs
+      - current-generation/files/runner-main.mjs
+      - current-generation/files/src/liquidation-futures-coverage.mjs
+      - current-generation/tests/liquidation-futures-coverage.test.mjs
+      - current-generation/files/src/pump-liquidation-zones.mjs
+      - current-generation/files/src/coinboss-liquidation-levels.mjs
+      - current-generation/files/src/orderly-public-liquidation-positions.mjs
+      - current-generation/files/src/liquidation-forecast-memory.mjs
+      - current-generation/files/src/canonical-runtime-adapter.mjs
+      - current-generation/files/src/n12-market-trades.mjs
+      - current-generation/files/src/htx-asset-identity.mjs
+      - current-generation/files/src/observation-source-role-audit.mjs
+      - current-generation/tests/source-role-proof-witness.test.mjs
+      - checkpoints/source-role-proof-witness-20261018/original-audit.fixture.mjs
+      - current-generation/files/src/run-budget-context.mjs
+      - current-generation/tests/run-budget-context.test.mjs
+      - checkpoints/source-budget-context-20261018/**
+      - current-generation/files/src/maintenance-cadence-receipt.mjs
+      - current-generation/tests/maintenance-cadence-receipt.test.mjs
+      - checkpoints/maintenance-cadence-receipts-20261018/**
+      - current-generation/tests/htx-identity-cache-preservation.test.mjs
+      - current-generation/tests/fixtures/htx-identity-cache-baseline-sql.json
+      - current-generation/files/src/canonical-publication.mjs
+      - current-generation/files/src/bound-telegram-delivery-sidecar.mjs
+      - current-generation/tests/expired-bound-delivery.test.mjs
+      - current-generation/files/src/block-result-context.mjs
+      - current-generation/files/src/liquidation-spot-reference.mjs
+      - current-generation/files/src/manual-report-formatter.mjs
+      - current-generation/tests/shared-spot-futures-market-context.test.mjs
+      - current-generation/tests/n12-market-trades.test.mjs
+      - current-generation/tests/liquidation-spot-reference.test.mjs
+      - current-generation/files/src/worker.js
+      - current-generation/tests/coinboss-liquidation-levels.test.mjs
+      - current-generation/files/src/swolecharts-liquidation-levels.mjs
+      - current-generation/tests/liq-provider-asset-binding.test.mjs
+      - current-generation/tests/fixtures/output-contract/MANIFEST.json
+      - current-generation/tests/orderly-public-liquidation-positions.test.mjs
+      - current-generation/tests/liquidation-forecast-memory.test.mjs
+      - current-generation/tests/liquidation-zone-policy.test.mjs
+      - current-generation/files/src/approved-htx-analysis-scope.mjs
+      - checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz
+      - cloudflare/free-history/worker-entry.mjs
+      - cloudflare/free-history/native-usage-receipt.mjs
+      - cloudflare/free-history/native-usage-receipt.test.mjs
+      - cloudflare/free-history/fixtures/worker-entry-before-native-20261016.mjs
+      - tools/repair-current-hourly-native-observer.mjs
+      - tools/repair-current-hourly-native-observer.test.mjs
+      - tools/read-current-native-cost-observations.mjs
+      - runner/native-query-cost-journal.mjs
+      - runner/native-query-cost-journal.test.mjs
+      - runner/native-query-cost-reconciliation.mjs
+      - runner/native-query-cost-reconciliation.test.mjs
+      - runner/sql-bridge-counter-repair.mjs
+      - runner/sql-bridge-counter-repair.test.mjs
+      - tools/repair-current-sql-bridge-counters-20261016.mjs
+      - tools/qualify-installed-sql-bridge-counter-repair-20261016.mjs
+      - runner/installed-bridge-module-inspection.mjs
+      - runner/installed-bridge-module-inspection.test.mjs
+      - tools/inspect-installed-bridge-module-20261016.mjs
+      - .github/workflows/current-bridge-module-inspection-20261016.yml
+      - runner/primary-proof-read-shapes-candidate.mjs
+      - runner/primary-proof-read-shapes-candidate.test.mjs
+      - runner/primary-proof-admission-candidate.mjs
+      - runner/primary-proof-admission-candidate.test.mjs
+      - tools/qualify-proof-read-shapes-admission-20261016.mjs
+      - runner/primary-proof-readback-candidate.mjs
+      - runner/primary-proof-readback-candidate.test.mjs
+      - tools/qualify-primary-proof-readback-candidate-20261016.mjs
+      - runner/primary-proof-storage-candidate.mjs
+      - runner/primary-proof-storage-candidate.test.mjs
+      - tools/qualify-primary-proof-storage-candidate-20261016.mjs
+      - runner/disjoint-native-day-accounting.mjs
+      - runner/disjoint-native-day-accounting.test.mjs
+      - tools/audit-native-day-costs-20261016.mjs
+      - runner/native-cost-observations.mjs
+      - runner/native-cost-observations.test.mjs
+      - runner/bounded-native-tail.mjs
+      - runner/bounded-native-tail.test.mjs
+      - runner/native-tail-process.test.mjs
+      - tools/analyze-retained-storage-flow-20261016.mjs
+      - .github/workflows/current-hourly-native-observer-repair.yml
+      - cloudflare/free-history/hourly-archive.mjs
+      - runner/cloudflare-version-bound-readback.mjs
+      - runner/cloudflare-version-bound-readback.test.mjs
+      - runner/htx-coordinated-rollout.mjs
+      - runner/htx-coordinated-rollout.test.mjs
+      - tools/weekly-htx-coordinated-rollout.mjs
+      - tools/repair-current-public-collector.mjs
+      - .github/workflows/current-public-collector-repair.yml
+      - .github/workflows/weekly-htx-coordinated-rollout.yml
+      - runner/htx-weekly-universe-plan.mjs
+      - runner/htx-weekly-scope-package.mjs
+      - runner/github-bounded-phase-lease.mjs
+      - runner/htx-weekly-proposal-check.mjs
+      - runner/htx-weekly-proposal-check.test.mjs
+      - runner/htx-weekly-finalize.mjs
+      - runner/htx-weekly-finalize.test.mjs
+      - tools/verify-weekly-htx-proposal.mjs
+      - tools/weekly-htx-universe-refresh.mjs
+      - .github/workflows/htx-weekly-source-universe.yml
+      - cloudflare/free-history/history-read.mjs
+      - current-generation/files/src/canonical-display.mjs
+      - current-generation/files/src/liquidation-source-chain.mjs
+      - current-generation/files/src/liquidation-extension/combined-runner-service.mjs
+      - current-generation/tests/liquidation-structural-route-priority.test.mjs
+      - current-generation/tests/generation-guard.test.mjs
+      - runner/private-archive-pool.mjs
+      - runner/private-archive-batch.mjs
+      - runner/private-archive-pool.test.mjs
+      - runner/free-archive-rollout.mjs
+      - runner/free-archive-rollout.test.mjs
+      - tools/rollout-free-archive-readers-20261015.mjs
+      - tools/rollout-free-archive-readers-20261015.test.mjs
+      - .github/workflows/free-archive-reader-rollout-20261015.yml
+      - cloudflare/free-history/wrangler-liq.json
+      - runner/free-archive-bindings.mjs
+      - runner/free-archive-bindings.test.mjs
+      - runner/free-archive-schema.mjs
+      - runner/free-archive-schema.test.mjs
+      - runner/free-storage-throughput.mjs
+      - runner/free-storage-throughput.test.mjs
+      - runner/free-storage-provision.mjs
+      - runner/free-storage-provision.test.mjs
+      - tools/provision-free-storage-20261015.mjs
+      - runner/free-storage-capacity.mjs
+      - runner/free-storage-capacity.test.mjs
+      - runner/free-storage-inventory.mjs
+      - tools/free-storage-inventory-20261015.mjs
+      - runner/canonical-cold-archive.mjs
+      - runner/canonical-cold-archive.test.mjs
+      - runner/private-archive-d1-api.mjs
+      - runner/private-canonical-prefetch.mjs
+      - runner/private-canonical-prefetch.test.mjs
+      - runner/canonical-native-qualification.mjs
+      - runner/canonical-native-qualification.test.mjs
+      - .github/workflows/deploy-liq-forecast-history-20261013.yml
+      - runner/retention-bridge-provenance.mjs
+      - runner/retention-bridge-provenance.test.mjs
+      - runner/retention-self-qualification.mjs
+      - runner/retention-self-qualification.test.mjs
+      - .github/workflows/retained-history-native-qualification-20261016.yml
+      - runner/canonical-retention-cursor.mjs
+      - runner/canonical-retention-cursor.test.mjs
+      - runner/bounded-canonical-selection.mjs
+      - runner/d1-budget-overrun-debt.test.mjs
+      - runner/d1-preaction-budget-guard.mjs
+      - current-generation/files/src/v3-adaptive-budget.mjs
+      - runner/protected-canonical-compaction.mjs
+      - runner/protected-canonical-compaction.test.mjs
+      - tools/recover-lossless-retained-history-20261014.mjs
+      - .github/workflows/retained-history-maintenance.yml
+      - runner/private-archive-d1-api.test.mjs
+      - runner/report2-d1-adapter.mjs
+      - current-generation/files/src/private-canonical-history.mjs
+      - runner/private-canonical-history.test.mjs
+      - current-generation/files/src/scheduled-evidence-budget.mjs
+      - current-generation/tests/scheduled-evidence-budget.test.mjs
+      - current-generation/tests/telegram-potential-candidate-wiring.test.mjs
+      - current-generation/files/src/candidate-evidence-v2-runtime.mjs
+      - current-generation/apply-runtime-overlay.mjs
+      - current-generation/validate.mjs
+      - current-generation/files/src/public-venue-source-priority.mjs
+      - current-generation/files/src/n15-initial-source-preference.mjs
+      - current-generation/tests/active-source-fallback-preservation.test.mjs
+      - current-generation/tests/public-venue-health-priority.test.mjs
+      - current-generation/tests/source-health-priority.test.mjs
+      - current-generation/files/src/supplemental-candidate-context.mjs
+      - current-generation/tests/native-identity-source-handoff.test.mjs
+      - current-generation/tests/native-transport-fallback.runtime.mjs
+      - current-generation/files/src/liquidation-source-acquisition-audit.mjs
+      - current-generation/files/src/blockscout-index-evidence.mjs
+      - current-generation/tests/blockscout-index-evidence.test.mjs
+      - current-generation/tests/evidence-route-block.test.mjs
+      - cloudflare/free-history/003_canonical_cold_archive.sql
+      - cloudflare/free-history/liquidation-forecast-archive.mjs
+      - cloudflare/free-history/liquidation-forecast-archive.test.mjs
+      - cloudflare/free-history/private-forecast-consumer.mjs
+      - cloudflare/free-history/private-forecast-consumer.test.mjs
+      - cloudflare/free-history/native-measured-d1.mjs
+      - cloudflare/free-history/liquidation-archive-worker-entry.mjs
+      - cloudflare/free-history/wrangler-liq.json
+      - current-generation/files/src/liquidation-extension/selected-native-reserve-policy.mjs
+      - current-generation/files/src/liquidation-extension/selected-native-batch.mjs
+      - current-generation/files/src/liquidation-extension/gtrade-runtime-collector.mjs
+      - current-generation/tests/native-useful-acquisition-budget.test.mjs
+      - current-generation/files/src/liquidation-extension/dydx-native-market-catalog.mjs
+      - current-generation/files/src/liquidation-extension/dydx-runtime-collector.mjs
+      - current-generation/files/src/candidate-source-routing.mjs
+      - current-generation/files/src/liquidation-source-http-plan.mjs
+      - current-generation/tests/dydx-native-market-catalog.test.mjs
+      - current-generation/tests/selected-finalist-source-priority.test.mjs
+      - current-generation/tests/gtrade-position-routing.runtime.mjs
+      - current-generation/tests/native-source-batch.runtime.mjs
+      - current-generation/files/src/liquidation-source-weighting.mjs
+      - current-generation/files/src/liquidation-extension/combined-runner-service.mjs
+      - current-generation/tests/native-exact-asset-role-priority.test.mjs
+      - current-generation/tests/liquidation-source-weighting.test.mjs
+      - tools/liquidation-new-source-admission-20261015.mjs
+      - tools/liquidation-new-source-admission-20261015.test.mjs
+      - tools/permitted-new-liquidation-source-plan-20261015.mjs
+      - tools/permitted-new-liquidation-source-plan-20261015.test.mjs
+      - tools/qualify-new-liquidation-source-20261015.mjs
+      - .github/workflows/liquidation-new-source-qualification-20261015.yml
+      - current-generation/files/src/failed-d1-run-accounting.mjs
+      - current-generation/tests/failed-d1-run-accounting.test.mjs
+      - tools/retained-write-failure-guard.mjs
+      - tools/known-d1-day-guard.mjs
+      - current-generation/tests/retained-write-failure-guard.test.mjs
+      - tools/production-artifact-outcome.mjs
+      - current-generation/tests/collector-only-artifact-outcome.test.mjs
+      - .github/workflows/automatic-delivery-artifact-audit.yml
+      - runner/migrations/native-role-priority-index-20261014.sql
+      - cloudflare/public-collector/private-price-consumer.mjs
+      - cloudflare/public-collector/prior-snapshot-read.mjs
+      - cloudflare/public-collector/prior-snapshot-read.test.mjs
+      - cloudflare/public-collector/native-cost-observer.mjs
+      - cloudflare/public-collector/native-cost-observer.test.mjs
+      - cloudflare/public-collector/private-price-bundle.mjs
+      - cloudflare/public-collector/private-price-consumer.test.mjs
+      - cloudflare/public-collector/funding-period-coverage.test.mjs
+      - cloudflare/public-collector/injected-worker-tail.js
+      - cloudflare/public-collector/github-backup.mjs
+      - cloudflare/public-collector/patch-worker.mjs
+      - cloudflare/public-collector/verify-deployment.mjs
+      - cloudflare/public-collector/continuous-backup-worker.mjs
+      - .github/workflows/report2-public-collector-backup.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    if: ${{ github.ref != 'refs/heads/work/anomaly-history-utility-linked-20261020' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check current owner lease and fence
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            const exactCandidate=(context.ref==='refs/heads/codex/active-source-finalist-and-quota-20261014'&&main==='2338a42afc69c1f96275546c7b4a2b832410a511')||(context.ref==='refs/heads/codex/active-source-typed-private-price-20261014'&&main==='caa3ec4e9eb67a327ab662cbc0e5cf63b589b19a')||(context.ref==='refs/heads/codex/active-source-after338-20261014'&&main==='2190e9547045d821d69ed5211d6a9ccacb16ee0e');
+            const exactRoleCandidate=context.ref==='refs/heads/codex/active-source-role-and-history-20261014'&&main==='d0898d037b20f07f73c0304968bf07b54119dc41';
+            const exactNativeHandoffCandidate=context.ref==='refs/heads/codex/active-source-next-gaps-20261014'&&main==='ee6917f642fbcc1abdd9929a94d7064b37a3ee9a';
+            const exactTransportCandidate=context.ref==='refs/heads/codex/active-source-transport-and-retention-20261014'&&main==='d606c3efbde8ac16128b961881d8afd71079b874';
+            const exactNativeSectorCandidate=context.ref==='refs/heads/codex/native-sector-source-coverage-20261014'&&main==='bda7c8abe5b9e2b607552fbd764aff19b10a022f';
+            const exactNativeDenomCandidate=context.ref==='refs/heads/codex/native-sector-denominations-20261014'&&main==='fae8db8911331e4aa1e3333ebfca2670f0cf8ff2';
+            const exactTronSectorCandidate=context.ref==='refs/heads/codex/tron-sector-source-coverage-20261014'&&main==='32271ab798121efe2e4baa5707bd9f3abc4ecaf1';
+            const exactTargetFallbackCandidate=context.ref==='refs/heads/codex/sector-exact-target-fallback-20261014'&&main==='da7f8ae66ca0183cf55a9681f3036a827b8d5140';
+            const exactActivePreflightCandidate=context.ref==='refs/heads/codex/active-source-preflight-20261014'&&main==='deec69207cf2a0638780084fc068bddc5545b16e';
+            const exactSourceHealthCandidate=context.ref==='refs/heads/codex/source-health-priority-20261014'&&main==='52c7520c7bf0faa22318fee2337ca7066843c309';
+            const exactPublicHealthCandidate=context.ref==='refs/heads/codex/public-venue-health-priority-20261014'&&main==='ccb82d056aaa2ac47799d20f4253b945d1936b25';
+            const exactWeeklyPreparation=context.ref==='refs/heads/codex/weekly-htx-source-sync-20261014'&&main==='a120a6e175531bd869e4437a6d053748746973f4';
+            const exactWeeklyConnectedPreparation=context.ref==='refs/heads/codex/weekly-htx-connected-proposal-20261014'&&main==='e9eb29146fe0990f461f278c49caa1ea4b4e4c3d';
+            const exactWeeklyRetainedQualification=context.ref==='refs/heads/codex/weekly-retained-catalog-qualification-20261014'&&main==='fdfc95db6c01d99b704bca451193eef38837924f';
+            const exactLosslessRecovery=context.ref==='refs/heads/codex/lossless-full-evidence-recovery-20261014'&&main==='fbeea8a86acf2e2cc02689fc5fc8917389effd6b';
+            const exactProtectedCanonical=context.ref==='refs/heads/codex/protected-canonical-compaction-20261015'&&main==='5446fe194b60a032cf6ed6c092a4457ffb4ea5f7';
+            const exactRetainedFixture=context.ref==='refs/heads/codex/weekly106-retained-fixture-20261015'&&main==='df94f00a09c84767c22b380f232feb4a0871f283';
+            const weeklyProposal=context.eventName==='workflow_dispatch'&&context.payload.inputs?.weekly_proposal==='true'&&/^refs\/heads\/maintenance\/htx-weekly-\d{4}-\d{2}-\d{2}-\d+$/.test(context.ref)&&main===context.payload.inputs.weekly_expected_main;
+            const coordinated=context.ref==='refs/heads/fix/source-role-proof-witness-20261018'||context.ref==='refs/heads/fix/active-source-budget-read-20261018'||context.ref==='refs/heads/fix/maintenance-cadence-receipts-20261018'||context.ref==='refs/heads/fix/htx-reference-fact-preservation-20261018'||context.ref==='refs/heads/fix/expired-bound-delivery-20261018'||context.ref==='refs/heads/fix/n12-component-origin-20261018'||context.ref==='refs/heads/fix/private-price-native-witness-20261018'||context.ref==='refs/heads/fix/original-entry-followup-20261018'||context.ref==='refs/heads/fix/gate-reuse-backpack-and-anomaly-contract-20261018'||context.ref==='refs/heads/fix/successful-completion-statistics-proof-20261018'||context.ref==='refs/heads/work/n15-numeric-facts-and-source-budget-delta-20261018'||context.ref==='refs/heads/fix/native-suspended-scope-and-compact-length-20261018'||context.ref==='refs/heads/fix/exact-htx-availability-diagnosis-20261018'||context.ref==='refs/heads/work/source-fact-integrity-integration-20261018'||context.ref==='refs/heads/fix/partial-cron-native-diagnostics-20261018'||context.ref==='refs/heads/fix/paid-report-recovery-20261018'||context.ref==='refs/heads/work/report2-sources-n05-venue-preservation-20261018'||context.ref==='refs/heads/work/report2-sources-n10-useful-path-queue-20261018'||context.ref==='refs/heads/work/report2-sources-bitfinex-bounded-reuse-20261018'||context.ref==='refs/heads/work/report2-sources-n10-path-facts-20261018'||context.ref==='refs/heads/fix/n04-exact-cached-chain-facts-20261018'||context.ref==='refs/heads/work/report2-sources-liq-exact-binding-20261018'||context.ref==='refs/heads/work/report2-sources-n15-cache-scope-20261018'||context.ref==='refs/heads/fix/current-verified-day-refusal-20261018'||context.ref==='refs/heads/work/report2-sources-n12-cache-scope-20261018'||context.ref==='refs/heads/fix/n11-exact-rendered-source-binding-20261018'||context.ref==='refs/heads/fix/n04-cache-fact-preservation-20261018'||context.ref==='refs/heads/fix/n12-cache-fact-preservation-20261018'||context.ref==='refs/heads/fix/sector-cache-fact-preservation-20261017'||context.ref==='refs/heads/fix/active-source-fallback-preservation-20261016'||context.ref==='refs/heads/feat/retention-sql-bridge-provenance-20261016'||context.ref==='refs/heads/feat/offline-proof-caller-admission-20261016'||context.ref==='refs/heads/fix/installed-sql-bridge-counters-20261016'||context.ref==='refs/heads/fix/exact-sql-bridge-provenance-20261016'||context.ref==='refs/heads/feat/installed-bridge-provenance-20261016'||context.ref==='refs/heads/feat/offline-primary-proof-readback-20261016'||context.ref==='refs/heads/fix/native-cost-utc-reconciliation-20261016'||context.ref==='refs/heads/fix/whole-day-storage-envelopes-20261016'||context.ref==='refs/heads/fix/current-native-reader-proof-20261016'||context.ref==='refs/heads/fix/installed-reader-counter-repair-20261016'||context.ref==='refs/heads/fix/disjoint-native-day-accounting-20261016'||context.ref==='refs/heads/fix/grouped-private-archive-copy-20261016'||context.ref==='refs/heads/fix/storage-failure-rollover-20261016'||context.ref==='refs/heads/fix/hourly-native-tail-20261016'||context.ref==='refs/heads/fix/native-tail-process-finish-20261016'||context.ref==='refs/heads/fix/bounded-native-tail-20261016'||context.ref==='refs/heads/fix/native-cost-clock-and-inspection-20261016'||context.ref==='refs/heads/fix/storage-birth-and-day-accounting-20261016'||context.ref==='refs/heads/fix/shared-canonical-update-20261016'||context.ref==='refs/heads/fix/retained-write-failure-guard-20261016'||context.ref==='refs/heads/fix/storage-row-admission-20261016'||context.ref==='refs/heads/fix/retention-window-resume-20261016'||context.ref==='refs/heads/feat/utc16-native-retention-qualification-20261015'||context.ref==='refs/heads/fix/scoped-canonical-retention-20261015'||context.ref==='refs/heads/fix/free-archive-binding-resume-20261015'||context.ref==='refs/heads/fix/free-archive-source-map-20261015'||context.ref==='refs/heads/fix/free-archive-worker-rollout-20261015'||context.ref==='refs/heads/fix/free-storage-pool-routing-20261015'||context.ref==='refs/heads/fix/free-storage-rolling-20261015'||context.ref==='refs/heads/fix/manual-native-history-qualification-20261015'||context.ref==='refs/heads/fix/bounded-canonical-native-selection-20261015'||context.ref==='refs/heads/feat/one-off-storage-cleanup-slot4-20261015'||context.ref==='refs/heads/fix/canonical-reference-schema-20261015'||context.ref==='refs/heads/feat/bounded-storage-emergency-proposal-20261015'||context.ref==='refs/heads/feat/vike-evidence-and-budget-audit-20261015'||context.ref==='refs/heads/feat/permitted-liq-research-20261015'||context.ref==='refs/heads/codex/coordinated-weekly-rollout-20261015'||context.ref==='refs/heads/fix/active105-unicode-liq-20261015'||context.ref==='refs/heads/feat/private-archive-prefetch-20261015';
+            if(coordinated){
+              const {pathToFileURL}=require('url');
+              const {verifyOfflineReviewAuthority}=await import(pathToFileURL(process.env.GITHUB_WORKSPACE+'/runner/offline-review-authority.mjs').href);
+              const control={call:async route=>(await github.request('GET /repos/{owner}/{repo}/'+route,{owner,repo})).data,read:async(path,ref)=>{const d=(await github.rest.repos.getContent({owner,repo,path,ref})).data;return{value:JSON.parse(Buffer.from(d.content,'base64').toString())};}};
+              await verifyOfflineReviewAuthority(control,{head:context.sha,base:main,branch:context.ref.slice('refs/heads/'.length)});
+            }
+            if(main!==context.sha&&!coordinated&&!weeklyProposal&&!exactRetainedFixture&&!exactProtectedCanonical&&!exactLosslessRecovery&&!exactWeeklyRetainedQualification&&!exactWeeklyConnectedPreparation&&!exactWeeklyPreparation&&!exactPublicHealthCandidate&&!exactSourceHealthCandidate&&!exactActivePreflightCandidate&&!exactTargetFallbackCandidate&&!exactTronSectorCandidate&&!exactNativeDenomCandidate&&!exactNativeSectorCandidate&&!exactCandidate&&!exactRoleCandidate&&!exactNativeHandoffCandidate&&!exactTransportCandidate)throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
+            const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            const liqOwner=/^CODEX:LIQ_(?:COVERAGE_BATCH|NATURAL_AUDIT|EXTERNAL_LEVELS_ONLY):/.test(phase.lease?.owner||'');
+            const allActiveOwner=/^CODEX:ACTIVE_SOURCE_DAY_BUDGET:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.active_working_state?.owned_lease===phase.lease.owner&&phase.owner_all_active_blocks_source_budget_and_fallback==='checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json';
+            const privateOwner=/^CODEX:PRIVATE_RESTORE_AND_ACTIVE_SOURCE_AUDIT:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner;
+            const coverageOwner=/^CODEX:ACTIVE_SOURCE_COVERAGE_AND_QUOTA:\d+$/.test(phase.lease?.owner||'')&&phase.current_task==='LIQ_MAXIMUM_USEFUL_COVERAGE_IN_PROGRESS'&&phase.latest_own_bounded_continuation_lease?.owner===phase.lease.owner&&phase.active_working_state?.owned_lease===phase.lease.owner;
+            const {active105OfflineReviewOwner,freeStorageOfflineReviewOwner}=await import(require('url').pathToFileURL(process.env.GITHUB_WORKSPACE+'/runner/offline-review-authority.mjs').href);
+            const active105Owner=active105OfflineReviewOwner(phase)||freeStorageOfflineReviewOwner(phase);
+            if(!(liqOwner||allActiveOwner||privateOwner||coverageOwner||active105Owner)||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Verify immutable weekly catalogs, exact data-only branch and all consumers
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.weekly_proposal == true }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          WEEKLY_EXPECTED_MAIN: ${{ inputs.weekly_expected_main }}
+          WEEKLY_SOURCE_RUN: ${{ inputs.weekly_source_run }}
+        run: node tools/verify-weekly-htx-proposal.mjs
+      - name: Install exact retained106 files for an offline consumer qualification
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.retained106_offline_fixture == true }}
+        env:
+          WEEKLY_PROPOSAL: ${{ inputs.weekly_proposal }}
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';import crypto from 'node:crypto';import assert from 'node:assert/strict';
+          if(process.env.WEEKLY_PROPOSAL==='true')throw Error('SEPARATE_RETAINED_FIXTURE_NOT_A_WEEKLY_PROPOSAL');
+          const folder='checkpoints/weekly106-preparation-20261015',p=JSON.parse(fs.readFileSync(folder+'/proof.json')),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+          const allowed=['checkpoints/htx-weekly-universe-2026-10-12.json.gz','current-generation/files/src/approved-htx-analysis-scope.mjs','cloudflare/free-history/hourly-archive.mjs','checkpoints/HTX_WEEKLY_SOURCE_QUEUE_2026-10-12.json'];
+          assert.equal(p.source_run,38612734728);assert.equal(p.prepared_files.length,4);assert.deepEqual(p.prepared_files.map(s=>s.target_path).sort(),allowed.sort());
+          const originals=p.prepared_files.map(s=>{assert.equal(s.saved_path,folder+'/files/'+s.target_path);const bytes=fs.readFileSync(s.saved_path);assert.equal(hash(bytes),s.sha256);return{s,bytes};});
+          for(const {s,bytes} of originals)fs.writeFileSync(s.target_path,bytes);
+          fs.mkdirSync('audit-output/liq-assembled',{recursive:true});fs.writeFileSync('audit-output/liq-assembled/retained106-offline-fixture.json',JSON.stringify({status:'EXACT_FOUR_RETAINED106_FILES_INSTALLED_ONLY_IN_CI',source_run:p.source_run,original_observed_ts:p.original_catalog_observed_ts,files:p.prepared_files,provider_HTTP:0,D1:0,production_scope_changed:false,deployment:false},null,2)+'\n');
+          JS
+      - name: Reuse immutable original gTrade source records
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            for(const [id,digest,dir] of [[11397777455,'8e632ffb4371498fe0ecdabbf9e7653c99c360a19163ec9c3ee03321552372f0','original-source'],[11485584554,'6dacb2912f344cf08f84ad8ad4337dc57cbed898275440f61fa4d30291246d32','gtrade-current-source']]){
+              const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==digest)throw Error('ORIGINAL_GTRADE_ARTIFACT_DIGEST');
+              fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(dir+'.zip',b);cp.execFileSync('unzip',['-q',dir+'.zip','-d',dir]);
+            }
+      - name: Assemble encrypted runtime and verify LIQ report path
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output/liq-assembled
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/liq-assembled/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          cmp current-generation/files/runner-main.mjs runtime/runner-main.mjs
+          cmp current-generation/files/src/liquidation-futures-coverage.mjs runtime/src/liquidation-futures-coverage.mjs
+          cmp current-generation/files/src/liquidation-spot-reference.mjs runtime/src/liquidation-spot-reference.mjs
+          cmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs
+          cmp current-generation/files/src/n12-market-trades.mjs runtime/src/n12-market-trades.mjs
+          cmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs
+          cmp current-generation/files/src/htx-technical-structure.mjs runtime/src/htx-technical-structure.mjs
+          cmp current-generation/files/src/manual-report-formatter.mjs runtime/src/manual-report-formatter.mjs
+          cmp current-generation/files/src/supplemental-candidate-context.mjs runtime/src/supplemental-candidate-context.mjs
+          cmp current-generation/files/src/candidate-evidence-v2-runtime.mjs runtime/src/candidate-evidence-v2-runtime.mjs
+          cmp current-generation/files/src/gate-n12-bounded-trade-sample.mjs runtime/src/gate-n12-bounded-trade-sample.mjs
+          cmp current-generation/files/src/canonical-display.mjs runtime/src/canonical-display.mjs
+          cmp current-generation/files/src/pump-liquidation-zones.mjs runtime/src/pump-liquidation-zones.mjs
+          cmp current-generation/files/src/htx-source-backed-liquidation-model.mjs runtime/src/htx-source-backed-liquidation-model.mjs
+          cmp current-generation/files/src/coinboss-liquidation-levels.mjs runtime/src/coinboss-liquidation-levels.mjs
+          cmp current-generation/files/src/swolecharts-liquidation-levels.mjs runtime/src/swolecharts-liquidation-levels.mjs
+          cmp current-generation/files/src/liquidation-source-http-plan.mjs runtime/src/liquidation-source-http-plan.mjs
+          cmp current-generation/files/src/orderly-public-liquidation-positions.mjs runtime/src/orderly-public-liquidation-positions.mjs
+          cmp current-generation/files/src/liquidation-forecast-memory.mjs runtime/src/liquidation-forecast-memory.mjs
+          cmp current-generation/files/src/liquidation-source-chain.mjs runtime/src/liquidation-source-chain.mjs
+          cmp current-generation/files/src/liquidation-extension/combined-runner-service.mjs runtime/src/liquidation-extension/combined-runner-service.mjs
+          cmp current-generation/files/src/liquidation-extension/gtrade-runtime-collector.mjs runtime/src/liquidation-extension/gtrade-runtime-collector.mjs
+          cmp current-generation/files/src/liquidation-source-acquisition-audit.mjs runtime/src/liquidation-source-acquisition-audit.mjs
+          cmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs
+          cmp current-generation/files/src/liquidation-extension/dydx-native-market-catalog.mjs runtime/src/liquidation-extension/dydx-native-market-catalog.mjs
+          cmp current-generation/files/src/coinpaprika-sector-evidence.mjs runtime/src/coinpaprika-sector-evidence.mjs
+          cmp current-generation/files/src/provider-reference-cache.mjs runtime/src/provider-reference-cache.mjs
+          cmp current-generation/files/src/provider-minute-ledger.mjs runtime/src/provider-minute-ledger.mjs
+          cmp current-generation/files/src/coingecko-sector-evidence.mjs runtime/src/coingecko-sector-evidence.mjs
+          node --check tools/qualify-new-liquidation-source-20261015.mjs
+          node --test tools/liquidation-new-source-admission-20261015.test.mjs tools/permitted-new-liquidation-source-plan-20261015.test.mjs > audit-output/liq-assembled/new-liq-research-admission.tap
+          node --check tools/validate-native-sector-batch-20261014.mjs
+          node tools/validate-native-sector-batch-20261014.mjs --plan > audit-output/liq-assembled/native-sector-validation-plan.json
+          REPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_SECTOR_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/coinpaprika-numeric-fact-binding.test.mjs current-generation/tests/coingecko-raw-numbers.test.mjs current-generation/tests/coingecko-cache-binding.test.mjs current-generation/tests/n15-consumer-isolation.test.mjs current-generation/tests/coinpaprika-cache-scope.test.mjs current-generation/tests/sector-cache-preservation.test.mjs current-generation/tests/native-sector-provider-binding.test.mjs current-generation/tests/tron-sector-source.test.mjs current-generation/tests/sector-exact-fallback.test.mjs current-generation/tests/native-sector-validation-admission.test.mjs current-generation/tests/shared-sector-batch.test.mjs current-generation/tests/coingecko-demo-access.test.mjs current-generation/tests/sector-context.test.mjs > audit-output/liq-assembled/native-sector-provider-binding.tap
+          cp audit-output/native-sector-denominations-retained-proof.json audit-output/liq-assembled/
+          cp audit-output/tron-sector-retained-four-proof.json audit-output/liq-assembled/
+          cp audit-output/sector-exact-target-controlled-proof.json audit-output/liq-assembled/
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node tools/audit-sector-effective105-retained-20261014.mjs > audit-output/liq-assembled/sector-effective105-retained.json
+          cmp current-generation/files/src/evidence-source-store.mjs runtime/src/evidence-source-store.mjs
+          cmp current-generation/files/src/htx-asset-identity.mjs runtime/src/htx-asset-identity.mjs
+          cmp current-generation/files/src/finalized-chain-events.mjs runtime/src/finalized-chain-events.mjs
+          cmp current-generation/files/src/native-evm-finalized-context.mjs runtime/src/native-evm-finalized-context.mjs
+          cmp current-generation/files/src/xrpl-native-payments.mjs runtime/src/xrpl-native-payments.mjs
+          cmp current-generation/files/src/execution-report-context.mjs runtime/src/execution-report-context.mjs
+          cmp current-generation/files/src/htx-large-trades-evidence.mjs runtime/src/htx-large-trades-evidence.mjs
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/source-role-proof-witness.test.mjs current-generation/tests/run-budget-context.test.mjs current-generation/tests/maintenance-cadence-receipt.test.mjs current-generation/tests/htx-identity-cache-preservation.test.mjs current-generation/tests/suspended-htx-scope.test.mjs current-generation/tests/compact-native-overflow.test.mjs current-generation/tests/approved-universe-scope.runtime.mjs current-generation/tests/n10-raw-component-binding.test.mjs current-generation/tests/htx-n12-retained-facts.test.mjs current-generation/tests/turnover-cache-binding.test.mjs current-generation/tests/turnover-consumer-proposal.test.mjs current-generation/tests/n10-useful-path-queue.test.mjs current-generation/tests/n10-path-window-clock.test.mjs current-generation/tests/n04-cache-scope.test.mjs current-generation/tests/n11-rendered-source-binding.test.mjs current-generation/tests/execution-report-context.test.mjs current-generation/tests/n04-cache-preservation.test.mjs current-generation/tests/active-source-headroom.test.mjs current-generation/tests/evidence-source-store.test.mjs current-generation/tests/htx-asset-identity.test.mjs current-generation/tests/coinpaprika-htx-identity.test.mjs current-generation/tests/native-evm-finalized-context.test.mjs current-generation/tests/finalized-chain-events.test.mjs current-generation/tests/htx-large-trades-evidence.test.mjs > audit-output/liq-assembled/active-source-headroom.tap
+          REPORT2_TEST_RUNTIME="$PWD/runtime" python3 tools/audit-active105-typed-source-coverage-20261014.py --output audit-output/liq-assembled/n11-rendered-source-coverage.json > audit-output/liq-assembled/n11-rendered-source-coverage-summary.json
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/source-health-priority.test.mjs current-generation/tests/evidence-route-block.test.mjs current-generation/tests/evidence-source-store.test.mjs > audit-output/liq-assembled/source-health-priority.tap
+          cp audit-output/source-health-priority-retained-proof.json audit-output/liq-assembled/
+          cmp current-generation/files/src/n12-native-public-trade-collector.mjs runtime/src/n12-native-public-trade-collector.mjs
+          cmp current-generation/files/src/n12-cached-trade-scope.mjs runtime/src/n12-cached-trade-scope.mjs
+          cmp current-generation/files/src/gate-futures-trade-collector.mjs runtime/src/gate-futures-trade-collector.mjs
+          cmp current-generation/files/src/bitget-flow-collector.mjs runtime/src/bitget-flow-collector.mjs
+          cmp current-generation/files/src/bitfinex-native-flow-collector.mjs runtime/src/bitfinex-native-flow-collector.mjs
+          cmp current-generation/files/src/bitfinex-n12-bounded-trade-sample.mjs runtime/src/bitfinex-n12-bounded-trade-sample.mjs
+          cmp current-generation/files/src/binance-native-flow-collector.mjs runtime/src/binance-native-flow-collector.mjs
+          cmp current-generation/files/src/kraken-flow-collector.mjs runtime/src/kraken-flow-collector.mjs
+          cmp current-generation/files/src/poloniex-native-flow-collector.mjs runtime/src/poloniex-native-flow-collector.mjs
+          cmp current-generation/files/src/backpack-flow-collector.mjs runtime/src/backpack-flow-collector.mjs
+          cmp current-generation/files/src/public-venue-source-priority.mjs runtime/src/public-venue-source-priority.mjs
+          cmp current-generation/files/src/n15-initial-source-preference.mjs runtime/src/n15-initial-source-preference.mjs
+          cmp current-generation/files/src/external-n05-flow-collector.mjs runtime/src/external-n05-flow-collector.mjs
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/gate-turnover-fact-preservation.test.mjs current-generation/tests/backpack-admission-reason.test.mjs current-generation/tests/gate-n12-reuse.test.mjs current-generation/tests/gate-n12-sample.test.mjs current-generation/tests/gate-n12-consumer-proposal.test.mjs current-generation/tests/n05-venue-fact-preservation.test.mjs current-generation/tests/bitfinex-bounded-reuse.test.mjs current-generation/tests/n12-cache-scope.test.mjs current-generation/tests/n12-cache-preservation.test.mjs current-generation/tests/active-source-fallback-preservation.test.mjs current-generation/tests/public-venue-health-priority.test.mjs current-generation/tests/public-venue-source-budget.test.mjs > audit-output/liq-assembled/public-venue-health-priority.tap
+          cp audit-output/public-venue-health-original-proof.json audit-output/liq-assembled/
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node tools/audit-active105-initial-source-priority-20261014.mjs > audit-output/liq-assembled/active105-initial-source-queues.json
+          REPORT2_WEEKLY_RETAINED_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/weekly-retained106-package.json" node --test runner/exact-entry-followup.test.mjs runner/sql-bridge-counter-repair.test.mjs runner/installed-bridge-module-inspection.test.mjs runner/cloudflare-version-bound-readback.test.mjs runner/htx-coordinated-rollout.test.mjs runner/htx-weekly-universe-plan.test.mjs runner/retained-weekly-106-package.test.mjs runner/offline-review-authority.test.mjs runner/github-bounded-phase-lease.test.mjs runner/htx-weekly-proposal-check.test.mjs runner/htx-weekly-finalize.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/weekly-htx-synchronized-plan.tap
+          REPORT2_SQL_BRIDGE_REPAIR_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/sql-bridge-counter-repair-qualification.json" node tools/qualify-installed-sql-bridge-counter-repair-20261016.mjs
+          cp audit-output/htx-weekly/proof.json audit-output/liq-assembled/weekly-disabled-controlled-proof.json
+          node current-generation/validate.mjs > audit-output/liq-assembled/validation.log 2>&1
+          REPORT2_TEST_RUNTIME="$PWD/runtime" REPORT2_UNIFIED_MODULE_ROOT="$PWD/runtime/src" node --test current-generation/tests/expired-bound-delivery.test.mjs current-generation/tests/n12-native-public-trades.test.mjs current-generation/tests/block-result-context.test.mjs current-generation/tests/block-decision-use-audit.test.mjs current-generation/tests/liq-provider-clock-schema.test.mjs current-generation/tests/orderly-clock-schema.test.mjs current-generation/tests/liq-provider-asset-binding.test.mjs current-generation/tests/shared-spot-futures-market-context.test.mjs current-generation/tests/n12-market-trades.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-spot-reference.test.mjs current-generation/tests/htx-source-backed-liquidation-model.test.mjs current-generation/tests/coinboss-liquidation-levels.test.mjs current-generation/tests/liquidation-source-http-plan.test.mjs current-generation/tests/orderly-public-liquidation-positions.test.mjs current-generation/tests/liquidation-forecast-memory.test.mjs current-generation/tests/liquidation-zone-policy.test.mjs current-generation/tests/liquidation-structural-route-priority.test.mjs cloudflare/free-history/history-read.test.mjs cloudflare/free-history/hourly-archive.test.mjs cloudflare/free-history/spot-archive.test.mjs > audit-output/liq-assembled/target.tap
+          REPORT2_HOURLY_NATIVE_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/hourly-native-usage-proof.json" node --test cloudflare/free-history/native-usage-receipt.test.mjs tools/repair-current-hourly-native-observer.test.mjs runner/native-cost-observations.test.mjs runner/bounded-native-tail.test.mjs runner/native-tail-process.test.mjs runner/disjoint-native-day-accounting.test.mjs > audit-output/liq-assembled/hourly-native-usage.tap
+          node tools/audit-native-day-costs-20261016.mjs
+          REPORT2_STORAGE_FLOW_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/retained-storage-flow.json" node tools/analyze-retained-storage-flow-20261016.mjs > audit-output/liq-assembled/storage-flow-summary.json
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/liq-assembled/binding.json
+          REPORT2_COMPACTION_PROOF_OUTPUT="$PWD/audit-output/liq-assembled/protected-canonical-cases.json" node --test runner/retention-bridge-provenance.test.mjs runner/primary-proof-read-shapes-candidate.test.mjs runner/primary-proof-admission-candidate.test.mjs runner/primary-proof-readback-candidate.test.mjs runner/native-query-cost-journal.test.mjs runner/primary-proof-storage-candidate.test.mjs runner/retention-self-qualification.test.mjs runner/canonical-retention-cursor.test.mjs runner/free-archive-rollout.test.mjs tools/rollout-free-archive-readers-20261015.test.mjs runner/private-archive-pool.test.mjs runner/free-archive-schema.test.mjs runner/free-archive-bindings.test.mjs runner/free-storage-throughput.test.mjs runner/free-storage-provision.test.mjs runner/free-storage-capacity.test.mjs runner/canonical-native-qualification.test.mjs runner/d1-budget-overrun-debt.test.mjs runner/lossless-full-evidence-recovery.test.mjs runner/protected-canonical-compaction.test.mjs runner/canonical-cold-archive.test.mjs runner/private-archive-d1-api.test.mjs runner/private-canonical-prefetch.test.mjs runner/canonical-cold-copy.test.mjs runner/private-canonical-history.test.mjs > audit-output/liq-assembled/cold-archive.tap
+          REPORT2_PROOF_READ_SHAPES_OUTPUT="$PWD/audit-output/liq-assembled/proof-read-shapes-admission-scope.json" node tools/qualify-proof-read-shapes-admission-20261016.mjs
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/native-query-cost-reconciliation.test.mjs runner/private-canonical-history.test.mjs current-generation/tests/d1-failed-attempt-accounting.test.mjs > audit-output/liq-assembled/private-reader-runtime.tap
+          node --test current-generation/tests/scheduled-evidence-budget.test.mjs > audit-output/liq-assembled/scheduled-evidence-budget.tap
+          node --test current-generation/tests/blockscout-index-evidence.test.mjs current-generation/tests/evidence-route-block.test.mjs > audit-output/liq-assembled/index-useful-only.tap
+          node --test cloudflare/free-history/private-forecast-consumer.test.mjs cloudflare/free-history/liquidation-forecast-archive.test.mjs > audit-output/liq-assembled/private-forecast-consumer.tap
+          node --test current-generation/tests/native-useful-acquisition-budget.test.mjs current-generation/tests/selected-native-reserve-policy.test.mjs current-generation/tests/liquidation-two-native-candidates.test.mjs current-generation/tests/gtrade-catalog-planning.test.mjs > audit-output/liq-assembled/native-useful-budget.tap
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/gtrade-position-routing.runtime.mjs current-generation/tests/native-source-batch.runtime.mjs > audit-output/liq-assembled/native-useful-runtime.tap
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/dydx-native-market-catalog.test.mjs current-generation/tests/dydx-runtime-collector.test.mjs current-generation/tests/selected-finalist-source-priority.test.mjs current-generation/tests/cache-only-native-caller.test.mjs > audit-output/liq-assembled/active-source-finalist-and-markets.tap
+          cmp runner/verified-native-day-reconciliation.mjs runtime/verified-native-day-reconciliation.mjs
+          cmp runner/native-day-reconciliation-tokens.mjs runtime/native-day-reconciliation-tokens.mjs
+          cmp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
+          cmp current-generation/files/runner-main.mjs runtime/runner-main.mjs
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test runner/exact-recovery-diagnosis.test.mjs current-generation/tests/partial-cron-failure-context.test.mjs runner/verified-native-day-reconciliation.test.mjs current-generation/tests/current-verified-day-refusal.test.mjs current-generation/tests/failed-d1-run-accounting.test.mjs current-generation/tests/retained-write-failure-guard.test.mjs current-generation/tests/known-d1-day-guard.test.mjs current-generation/tests/pre-analysis-failure-receipt.test.mjs > audit-output/liq-assembled/retained-write-failure-guard.tap
+          node --test cloudflare/public-collector/prior-snapshot-read.test.mjs cloudflare/public-collector/native-cost-observer.test.mjs cloudflare/public-collector/funding-period-coverage.test.mjs current-generation/tests/discovery-candidate-score.test.mjs current-generation/tests/funding-directional-policy.test.mjs cloudflare/public-collector/private-price-consumer.test.mjs cloudflare/public-collector/light-price-recheck.test.mjs cloudflare/public-collector/public-collector.test.mjs cloudflare/public-collector/github-backup.test.mjs cloudflare/public-collector/continuous-backup-worker.test.mjs cloudflare/public-collector/trigger-analysis-kick.test.mjs cloudflare/free-history/private-forecast-consumer.test.mjs > audit-output/liq-assembled/private-price-connected.tap
+          node --test current-generation/tests/native-exact-asset-role-priority.test.mjs current-generation/tests/liquidation-source-weighting.test.mjs current-generation/tests/collector-only-artifact-outcome.test.mjs current-generation/tests/production-artifact-outcome.test.mjs > audit-output/liq-assembled/exact-asset-role-and-collector-audit.tap
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/native-identity-source-handoff.test.mjs current-generation/tests/htx-asset-identity.test.mjs current-generation/tests/supplemental-candidate-context.test.mjs current-generation/tests/evidence-route-block.test.mjs current-generation/tests/verified-asset-route-identity.test.mjs > audit-output/liq-assembled/native-identity-source-handoff.tap
+          REPORT2_TEST_RUNTIME="$PWD/runtime" node --test current-generation/tests/native-transport-fallback.runtime.mjs > audit-output/liq-assembled/native-transport-fallback.tap
+          cp audit-output/qnt-lsk-native4-retained-proof.json audit-output/liq-assembled/
+      - name: Show failure locations
+        if: failure()
+        run: |
+          for file in audit-output/liq-assembled/*.log audit-output/liq-assembled/*.tap; do
+            if test -f "$file"; then echo "FAILED_LOG: $file"; tail -80 "$file"; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: liq-assembled-${{ github.run_id }}
+          path: audit-output/liq-assembled/
+          retention-days: 30
+
+  anomaly_history_utility_linked:
+    if: ${{ github.ref == 'refs/heads/work/anomaly-history-utility-linked-20261020' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact current own lease and frozen linked inputs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-anomaly-history-utility-linked-20261020.mjs before
+      - name: ONE new linked research common; old accepted suites excluded
+        run: |
+          mkdir -p audit-output/anomaly-history-utility-linked
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/anomaly-history-utility-linked.runtime.mjs > audit-output/anomaly-history-utility-linked/connected-tests.log 2>&1
+      - name: Exact current own lease and unchanged frozen inputs after common
+        if: ${{ always() }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/guard-anomaly-history-utility-linked-20261020.mjs after
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: anomaly-history-utility-linked-${{ github.run_id }}
+          path: audit-output/anomaly-history-utility-linked/
+          if-no-files-found: error
+          retention-days: 30

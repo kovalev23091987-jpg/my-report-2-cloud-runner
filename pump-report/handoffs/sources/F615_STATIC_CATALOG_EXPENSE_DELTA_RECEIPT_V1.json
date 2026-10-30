@@ -1,0 +1,419 @@
+{
+  "schema": "F615_STATIC_CATALOG_EXPENSE_DELTA_RECEIPT_V1",
+  "status": "STATIC_FORECAST_ONLY_ACTUAL_UNMEASURED",
+  "frozen_utc": "2026-10-26T19:23:33.692574+00:00",
+  "authority": {
+    "main": "70ff1019f931387586ff50e52ae2d27d4124e592",
+    "own_owner": "CODEX:SOURCES:01a171fd:1793042285000",
+    "own_acquire_commit": "6d251968cfe4916c8ee0042f6f017f69c511f2f0",
+    "own_acquire_FULL": {
+      "utc": "2026-10-26 19:18:56 UTC",
+      "exact_server_bytes": true,
+      "head_matches": true
+    },
+    "own_rebind_commit": "94949a739e270d02f41fa1f6f8859c19458355ad",
+    "own_rebind_FULL": {
+      "utc": "2026-10-26 19:21:18 UTC",
+      "exact_server_bytes": true,
+      "head_matches": true,
+      "original_expiry_unchanged": true
+    },
+    "own_original_expires_ts": 1793043185000,
+    "root_owner": "CODEX:PUMP_LIVE_INTEGRATION:1793041654943",
+    "root_expires_ts": 1793046454943,
+    "guard_git_blobs": {
+      "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+      "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "41af5ede6bd7178d08f58fcd6dd44bf45a20b9f5",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "30f69e0376a30d3fa61eef447f6e08f3fe042d7f",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "8ce7e0d5c373203ca8fa26a550427ca0b2a36b5e",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "7fab357171f6738b234c9b103382ce124d250579",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "435414ceff9e91907c6d5da2ababe64638cd9561",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+      "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+      "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+      "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "743bae2f69f22bc9450374060ae11c3b0601ca75",
+      "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "d6969c796ee0010c7f0699e35e850dc1bd25bd25",
+      "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
+      "pump-report/CONTRACT_RU.md": "7b741f1fc67d6c16cab4fb28e838ae4bba712e2a",
+      "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
+      "checkpoints/pump-report-20261025/OWNER_UNIFIED_LAUNCH_AND_SOURCES_AMENDMENTS.json": "7500f72e1610fbe5b5ecd2db764dc5b5850d95fb",
+      "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json": "96f5022f74e45eefc056628aaf0d95df13426894"
+    },
+    "authority_docs_FULL": 17,
+    "register_FULL_chars": 1040240,
+    "all4_equal": true
+  },
+  "target": {
+    "writer_sha256": "922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8",
+    "superseded_writer_sha256": "4def57bf0f81db8bfd34a577a7cec907313878663f988fb47a79f57811e61d9b",
+    "ROOT_reported_reader_sha256_not_reviewed": "643de7ce595018e1fd7a7f5f165048ff8500daef94071c71b616eba4240c92ed",
+    "ROOT_reported_BVv2_manifest_sha256": "0886c36004f2e89832725370eb77e73c918f5a1f22cdb62ac0e145bee5b9375b",
+    "SOURCE_index_sha256_per_frozenF614": "32257ea6d5f625d31cc8bd24d7ec99c29044d82f1b90945e4d90fb74754f29dd"
+  },
+  "delta_forecast": {
+    "basis": "Existing D1Store.query preflight forecasts, not billing measurement or physical-row count.",
+    "valid_snapshot": [
+      {
+        "interface": "set",
+        "statements": 1,
+        "sql_kind": "Single-key INSERT ON CONFLICT UPDATE",
+        "precheck_rows_read": 2,
+        "precheck_rows_written": 2
+      },
+      {
+        "interface": "get",
+        "statements": 1,
+        "sql_kind": "SELECT value_json exactPK LIMIT1",
+        "precheck_rows_read": 1,
+        "precheck_rows_written": 0
+      }
+    ],
+    "valid_total": {
+      "queries": 2,
+      "precheck_rows_read": 3,
+      "precheck_rows_written": 2,
+      "additional_provider_HTTP": 0,
+      "additional_qualification_calls": 0
+    },
+    "invalid_or_bound_SKIPPED": {
+      "store_calls": 0,
+      "SQL_statements": 0,
+      "precheck_rows_read": 0,
+      "precheck_rows_written": 0,
+      "provider_HTTP_added": 0
+    },
+    "actual_new_path_billing": "UNMEASURED",
+    "native_ACK_required": true,
+    "missing_ACK_is_unknown_not_zero": true,
+    "non_SKIP_failure_cannot_be_assumed_zero": true,
+    "readback_mismatch_can_follow_already_ACKed_cost": true
+  },
+  "existing_envelope": {
+    "per_FULL_run_rows_read": 5000,
+    "per_FULL_run_rows_written": 300,
+    "max_requests_per_run": 800,
+    "new_delta_charged_inside_same_existing_envelope": true,
+    "new_envelope_or_cap_increase": false,
+    "futureScheduledSQL": "runs*existing envelope once per scheduled invocation; no duplicate per-candidate/full reservation.",
+    "reservation_and_finalization_overhead": "Already belongs to existing run; not re-added as new catalogue delta.",
+    "headroom_condition": "Each query precheck includes protected finalization reserve; actual ACK counters are added, then ceiling checked again.",
+    "actual_remaining_headroom": "UNMEASURED",
+    "account_day_capacity": "UNKNOWN_NOT_PROVEN",
+    "fresh_native_admission_still_required": true,
+    "all_old_floors_reserves_unknowns_preserved": true
+  },
+  "retention": {
+    "state_key": "pump:catalog:last-observed:v1",
+    "writer_current_record_keys": 1,
+    "history_append_or_pruning": false,
+    "logical_catalog_rows_max": 2000,
+    "body_UTF8_bytes_max": 2097152,
+    "full_record_serialized_UTF8_bytes_max": 1900000,
+    "record_guard_before_SQL": true,
+    "logical_array_rows_not_D1_rows_or_billable_counter": true,
+    "UPSERT_revision_is_not_history": true,
+    "physical_storage_throughput_test": false,
+    "history200_cap_workaround": false,
+    "OWNER_storage_deferral_closed": false
+  },
+  "primary_limit_context": {
+    "URL": "https://developers.cloudflare.com/d1/platform/limits/",
+    "ROOT_verified_limit_bytes": 2000000,
+    "provenance": "Direct ROOT notice with relevant limit contents; F615 performed no HTTP/doc retrieval.",
+    "record_headroom_bytes": 100000,
+    "not_native_size_or_capacity_proof": true
+  },
+  "scope_controls": {
+    "code_modified": false,
+    "old_F560_reaudited": false,
+    "caps_state_profile_registry_units_modified": false,
+    "Node_tests_engine_HTTP_SQL_TG_build_deploy": 0,
+    "qualification_spent": 24,
+    "qualification_cap": 24,
+    "qualification_remaining": 0,
+    "native14_or_16_500_30_expansion_authorized": false,
+    "nine_pauses_two_OWNERdeferrals_preserved": true
+  },
+  "code_proof": [
+    {
+      "path": "pump-report/runtime/catalog-snapshot.mjs",
+      "bytes": 3119,
+      "sha256": "922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8",
+      "lines": [
+        {
+          "line": 3,
+          "text": "export const CATALOG_SNAPSHOT_KEY='pump:catalog:last-observed:v1';"
+        },
+        {
+          "line": 5,
+          "text": "export const CATALOG_SNAPSHOT_BOUNDS=Object.freeze({rows:2000,body_utf8_bytes:2097152,record_utf8_bytes:1900000});"
+        },
+        {
+          "line": 15,
+          "text": "    const skip=reason=>({status:'SKIPPED',reason,provider_HTTP:0,native_store_calls:0});"
+        },
+        {
+          "line": 19,
+          "text": "    if(!input.body.data.length||input.body.data.length>CATALOG_SNAPSHOT_BOUNDS.rows)return skip('CATALOG_ROW_BOUND');"
+        },
+        {
+          "line": 22,
+          "text": "    if(body_utf8_bytes>CATALOG_SNAPSHOT_BOUNDS.body_utf8_bytes)return skip('CATALOG_BYTE_BOUND');"
+        },
+        {
+          "line": 25,
+          "text": "    const record={schema:'PUMP_RETAINED_CATALOG_SNAPSHOT_V1',provider:'BINGX',family:'USDT_M',route:input.route,"
+        },
+        {
+          "line": 26,
+          "text": "      received_ts:input.received_ts,source_event_ts:null,saved_ts,receipt_id:input.receipt_id,"
+        },
+        {
+          "line": 27,
+          "text": "      implementation_sha256,evidence_class,serialization_basis:CATALOG_SNAPSHOT_SERIALIZATION,"
+        },
+        {
+          "line": 28,
+          "text": "      row_count:body.data.length,body_utf8_bytes,body_sha256,body};"
+        },
+        {
+          "line": 29,
+          "text": "    if(new TextEncoder().encode(JSON.stringify(record)).byteLength>CATALOG_SNAPSHOT_BOUNDS.record_utf8_bytes)return skip('CATALOG_RECORD_BYTE_BOUND');"
+        },
+        {
+          "line": 30,
+          "text": "    await store.set(CATALOG_SNAPSHOT_KEY,record);"
+        },
+        {
+          "line": 31,
+          "text": "    const saved=await store.get(CATALOG_SNAPSHOT_KEY);"
+        },
+        {
+          "line": 32,
+          "text": "    if(JSON.stringify(saved)!==JSON.stringify(record))throw Object.assign(Error('CATALOG_SNAPSHOT_READBACK_MISMATCH'),{code:'CATALOG_SNAPSHOT_READBACK_MISMATCH'});"
+        },
+        {
+          "line": 34,
+          "text": "      body_sha256,provider_HTTP:0,native_store_calls:2,identity_or_CORE_qualification:false};"
+        }
+      ]
+    },
+    {
+      "path": "pump-report/runtime/store.mjs",
+      "bytes": 10994,
+      "sha256": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf",
+      "lines": [
+        {
+          "line": 21,
+          "text": "    if(!db?.prepare||!admission?.evidence_ref||!Number.isSafeInteger(admission.expires_ts)||admission.expires_ts<=clock()||!Number.isSafeInteger(admission.max_rows_read)||!Number.isSafeInteger(admission.max_rows_written))throw new BudgetRefusal('NATIVE_SQL_ADMISSION_REQUIRED');"
+        },
+        {
+          "line": 22,
+          "text": "    this.db=db;this.admission=admission;this.clock=clock;this.cost=initial_usage?{...initial_usage}:{requests:0,rows_read:0,rows_written:0,unknown_ops:0};"
+        },
+        {
+          "line": 25,
+          "text": "    this.max_requests=admission.max_requests??800;"
+        },
+        {
+          "line": 26,
+          "text": "    if(!Number.isSafeInteger(this.max_requests)||this.max_requests<2||this.max_requests>800)throw new BudgetRefusal('BOUNDED_NATIVE_QUERY_COUNT_REQUIRED');"
+        },
+        {
+          "line": 27,
+          "text": "    this.finalization_reserve=finalization_reserve?{...finalization_reserve}:{rows_read:0,rows_written:0};"
+        },
+        {
+          "line": 31,
+          "text": "  check(extraRead=1,extraWrite=0,extraRequests=0){"
+        },
+        {
+          "line": 32,
+          "text": "    if(this.admission.expires_ts<=this.clock()||this.cost.unknown_ops>0)throw new BudgetRefusal('NATIVE_SQL_ADMISSION_EXPIRED_OR_UNKNOWN');"
+        },
+        {
+          "line": 33,
+          "text": "    if(this.cost.requests+extraRequests+(this.finalization_reserve.requests??0)>this.max_requests)throw new BudgetRefusal('NATIVE_SQL_QUERY_COUNT_PROTECTED');"
+        },
+        {
+          "line": 34,
+          "text": "    if(this.cost.rows_read+extraRead+this.finalization_reserve.rows_read>this.admission.max_rows_read||this.cost.rows_written+extraWrite+this.finalization_reserve.rows_written>this.admission.max_rows_written)throw new BudgetRefusal('NATIVE_SQL_RUN_ENVELOPE_EXHAUSTED');"
+        },
+        {
+          "line": 37,
+          "text": "  async query(sql,args=[],{read=1,write=0}={}){"
+        },
+        {
+          "line": 38,
+          "text": "    this.check(read,write,1);let result;"
+        },
+        {
+          "line": 39,
+          "text": "    try{result=await this.db.prepare(sql).bind(...args).all();}catch(error){this.cost.requests++;this.cost.unknown_ops++;throw error;}"
+        },
+        {
+          "line": 40,
+          "text": "    this.cost.requests++;"
+        },
+        {
+          "line": 41,
+          "text": "    if(result?.success===false||!['rows_read','rows_written'].every(k=>Number.isSafeInteger(result?.meta?.[k])&&result.meta[k]>=0)){this.cost.unknown_ops++;throw new BudgetRefusal('NATIVE_SQL_COST_ACK_UNKNOWN');}"
+        },
+        {
+          "line": 42,
+          "text": "    this.cost.rows_read+=result.meta.rows_read;this.cost.rows_written+=result.meta.rows_written;"
+        },
+        {
+          "line": 43,
+          "text": "    this.check(0,0);return result;"
+        },
+        {
+          "line": 48,
+          "text": "  async get(key){const r=await this.query('SELECT value_json FROM pump_report_state_v1 WHERE state_key=?1 LIMIT 1',[key]);return r.results?.[0]?JSON.parse(r.results[0].value_json):null;}"
+        },
+        {
+          "line": 58,
+          "text": "  async set(key,value){await this.query('INSERT INTO pump_report_state_v1(state_key,value_json,revision,updated_ts) VALUES(?1,?2,0,?3) ON CONFLICT(state_key) DO UPDATE SET value_json=excluded.value_json,revision=pump_report_state_v1.revision+1,updated_ts=excluded.updated_ts',[key,JSON.stringify(value),this.clock()],{read:2,write:2});return value;}"
+        }
+      ]
+    },
+    {
+      "path": "pump-report/runtime/native-budget.mjs",
+      "bytes": 8632,
+      "sha256": "df3e992b184be68caf286beacb19a0d7054eb31968fe1974ccd210d0182e53b0",
+      "lines": [
+        {
+          "line": 9,
+          "text": "export const NATIVE_POLICY = Object.freeze({version:'pump-native-v1',rows_read:5000,rows_written:300,manual_checks:3,bootstrap_or_external_floor:{rows_read:59000,rows_written:920},outcomes_protected:{rows_read:20000,rows_written:8000},delivery_protected:{rows_read:2000,rows_written:600},next_full:{rows_read:59000,rows_written:920},evidence_ref:PROVIDER_STAGE==='SAVED_STATISTICS_AUDIT_SINGLE'?'checkpoints/pump-report-20261025/ROOT_SAVED_STATISTICS_SINGLE_ADMISSION.json':PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'?'checkpoints/pump-report-20261025/F550_SOURCE_SINGLE_ADMISSION.json':'checkpoints/pump-report-20261025/SUMMARY_INDEX_SINGLE_ADMISSION.json'});"
+        },
+        {
+          "line": 20,
+          "text": "  const envelope=['LOOKUP','MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?LOOKUP_ENVELOPE:policy;"
+        },
+        {
+          "line": 21,
+          "text": "  const future=futureScheduledSQL(now,future_schedule,policy);"
+        },
+        {
+          "line": 22,
+          "text": "  const protectedR=policy.bootstrap_or_external_floor.rows_read+policy.outcomes_protected.rows_read+policy.delivery_protected.rows_read+policy.next_full.rows_read+future.rows_read;"
+        },
+        {
+          "line": 23,
+          "text": "  const protectedW=policy.bootstrap_or_external_floor.rows_written+policy.outcomes_protected.rows_written+policy.delivery_protected.rows_written+policy.next_full.rows_written+future.rows_written;"
+        },
+        {
+          "line": 47,
+          "text": "  let inserted;const usage={requests:0,rows_read:0,rows_written:0,unknown_ops:0};"
+        },
+        {
+          "line": 50,
+          "text": "  usage.requests++;if(!knownMeta(inserted))throw new BudgetRefusal('NATIVE_RESERVATION_COST_UNKNOWN');"
+        },
+        {
+          "line": 51,
+          "text": "  usage.rows_read+=inserted.meta.rows_read;usage.rows_written+=inserted.meta.rows_written;"
+        },
+        {
+          "line": 54,
+          "text": "  usage.requests++;if(!knownMeta(back))throw new BudgetRefusal('NATIVE_RESERVATION_READBACK_COST_UNKNOWN');"
+        },
+        {
+          "line": 55,
+          "text": "  usage.rows_read+=back.meta.rows_read;usage.rows_written+=back.meta.rows_written;"
+        },
+        {
+          "line": 57,
+          "text": "  const admission={evidence_ref:policy.evidence_ref+'#'+id,expires_ts:now+900000,max_rows_read:envelope.rows_read,max_rows_written:envelope.rows_written,max_requests:800};"
+        },
+        {
+          "line": 58,
+          "text": "  const store=new D1Store({db,admission,clock,initial_usage:usage,finalization_reserve:{rows_read:2,rows_written:1,requests:2}});"
+        },
+        {
+          "line": 64,
+          "text": "  if(cost.unknown_ops>0)throw new BudgetRefusal('UNKNOWN_NATIVE_RUN_REMAINS_RESERVED');"
+        },
+        {
+          "line": 66,
+          "text": "  // Include the final UPDATE and exact PK readback; retain original envelopes."
+        },
+        {
+          "line": 67,
+          "text": "  const read=cost.rows_read+2,write=cost.rows_written+1,requests=cost.requests+2;"
+        },
+        {
+          "line": 68,
+          "text": "  const r=await store.query(`UPDATE report2_runner_budget_ledger_shadow SET source_run_id=?2,measured_rows_read=?3,measured_rows_written=?4,measured_requests=?5,unknown_ops=0,state='FINALIZED',completed_ts=?6,reserve_rows_read=MAX(reserve_rows_read,?3),reserve_rows_written=MAX(reserve_rows_written,?4) WHERE reservation_id=?1 AND state='RESERVED'`,[reservation_id,run_id,read,write,requests,clock()],{read:1,write:1});"
+        },
+        {
+          "line": 70,
+          "text": "  const back=await store.query('SELECT source_run_id,state,measured_rows_read,measured_rows_written FROM report2_runner_budget_ledger_shadow WHERE reservation_id=?1 LIMIT 1',[reservation_id]);"
+        },
+        {
+          "line": 72,
+          "text": "  return {state:'FINALIZED',reservation_id,usage:store.usage(),accounted_upper_bound:{rows_read:read,rows_written:write},original_envelope_never_reduced:true};"
+        }
+      ]
+    },
+    {
+      "path": "pump-report/runtime/future-candidate-reserve.mjs",
+      "bytes": 2057,
+      "sha256": "d5be9e33fab978862dfdb82ac44fc3c70a353e43515eea7e3dc95f7d50ae3105",
+      "lines": [
+        {
+          "line": 18,
+          "text": "// Deep checks share these scheduled invocations. Do not add a second SQL"
+        },
+        {
+          "line": 19,
+          "text": "// envelope for a candidate already inside the same future invocation."
+        },
+        {
+          "line": 20,
+          "text": "export function futureScheduledSQL(now,plan,envelope){"
+        },
+        {
+          "line": 21,
+          "text": "  if(!plan)return {runs:0,rows_read:0,rows_written:0};"
+        },
+        {
+          "line": 22,
+          "text": "  if(!Number.isSafeInteger(envelope?.rows_read)||envelope.rows_read<1||!Number.isSafeInteger(envelope?.rows_written)||envelope.rows_written<1)throw Error('INVALID_FUTURE_SQL_ENVELOPE');"
+        },
+        {
+          "line": 23,
+          "text": "  const runs=futureDiscoveryHttp(now,plan,{until_ts:utcBudgetPeriodEnd(now,'DAY')})/plan.http_per_tick;"
+        },
+        {
+          "line": 24,
+          "text": "  return {runs,rows_read:runs*envelope.rows_read,rows_written:runs*envelope.rows_written};"
+        }
+      ]
+    }
+  ],
+  "static_receipt_checks": {
+    "checks": {
+      "exact_new_writer_hash": true,
+      "single_current_key": true,
+      "one_set_one_get": true,
+      "record_guard_before_set": true,
+      "static_set_forecast2R2W": true,
+      "get_uses_query_defaults1R0W": true,
+      "unknown_ACK_not_zero": true,
+      "unknown_run_stays_reserved": true,
+      "future_full_not_double_added": true,
+      "no_extra_FILES_beyond_receipt_note": true
+    },
+    "passed": 10,
+    "failed": 0,
+    "not_runtime_tests": true
+  },
+  "RU_note": {
+    "path": "pump-report/handoffs/sources/F615_STATIC_CATALOG_EXPENSE_DELTA_RU.md",
+    "bytes": 4285,
+    "sha256": "6a420fdb0b9162c69dbb6ef9dfabc8a726fd877b270e6248edb20c6f9a1ae88a"
+  },
+  "own_release": "Follows freeze; exact only-own CAS/FULL release reported separately."
+}

@@ -1,0 +1,156 @@
+{
+  "schema": "BS_ONE_CONNECTED_AUTO_CASE_FINITE_PLAN_V1",
+  "status": "PREPARED_NODE_NOT_ADMITTED",
+  "authority_main": "9192fa66e0f2d1c74f15d66121b6f70e58265ff1",
+  "own_lease_owner": "CODEX:OFFLINE_ANOMALIES:1793038121000",
+  "own_lease_full": {
+    "at": "2026-10-26 18:09:02 UTC",
+    "commit": "b141be5ad4db25f06622e848535c78577f05187e",
+    "exact_bytes_match": true,
+    "actual_ref_match": true
+  },
+  "purpose": "One new AUTO mode-path integration case with real engine/persistence/delivery recheck. Not repeat of standalone MANUAL replay, BN, BP, BQ; not native AUTO/SENT acceptance.",
+  "immutable71": {
+    "implementation_pin": "75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a",
+    "artifact_path": "pump-report/.private/native-20261026/pump-auto-candidate-diagnostics-prepared-artifact.json",
+    "artifact_sha256": "f84700dc6bb5a6446928be5edc8e6ab04a58106774729cd2e1f2b0866339f8bf",
+    "module_count": 71,
+    "execution_modules": "ROOT must supply/freeze exact immutable module path; verify transitive hashes before execution, never import mutable sharedruntime"
+  },
+  "input_availability": {
+    "status": "FULL_ORIGINAL_INPUT_PRESENT_WAIT_F610_EXTRACTION_SHA",
+    "private_container": "pump-report/.private/observations/owner-dood-sent241-readback-result.json",
+    "container_sha256": "16f7e35adc8584de9d6f834dc070f50e82eea8c27aeff2503a62f8d512506f47",
+    "json_path": "observation.private_evidence.original.input",
+    "original_run_id": "bdd7a2db-87bc-4a32-90d0-8f29705f1ae4",
+    "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+    "original_mode": "MANUAL",
+    "original_purpose": "PRODUCTION",
+    "analysis_ts": 1793008557222,
+    "previous_wave_present": true,
+    "original_ready": true,
+    "original_automatic_eligible": true,
+    "fields_immutable": [
+      "instrument",
+      "facts including all values/units/status/source and clocks",
+      "liquidations",
+      "previous_wave",
+      "analysis_ts"
+    ],
+    "no_new_extraction_by_analytics": true,
+    "F610_exact_input_sha": "PENDING_ROOT_SOURCE"
+  },
+  "separate_clocks": {
+    "engine_original_asof": 1793008557222,
+    "actual_manual_ack": 1793008561961,
+    "mandatory_min_expiry": 1793008571193,
+    "outer_snapshot_completed": 1793009234253,
+    "rule": "Never advance original facts to snapshot time. Snapshot candidatePriority arithmetic is separate from original-asof engine execution; no market operation at 13:07."
+  },
+  "discovery_boundary_gap": {
+    "status": "NEEDS_EXACT_F610_PRELIMINARY_FIELD_OR_EXPLICIT_ROOT_FIXTURE_PROJECTION",
+    "reason": "Saved input ticker_24h.value.change_pct is NULL; native getOverview separately returns reported_change_pct from raw ticker.priceChangePercent. That preliminary field is not retained in original.input. Verified growth_24h or later snapshot56.14 cannot silently replace it.",
+    "allowed_if_provided": "Use exact same-asof returned reported_change_pct with source provenance.",
+    "alternative_requires_explicit_root_choice": "Seed original previous_wave into pump:wave (required to recreate exact engine context), and project active-instruments membership from that same unexpired prior wave; record it as constructed fixture state, not observed native pointer or cold-start intake proof. Never seed the 13:07 queue into 12:55."
+  },
+  "stages": [
+    {
+      "stage": "A_SAVED_SNAPSHOT_PROJECTION_ONLY",
+      "clock": 1793009234253,
+      "actions": [
+        "Use exact F610 DOOD/KIMCHI queue projection at snapshot asof, unchanged candidatePriority function for two rows and original profile; preserve next_check_ts/freshness expiry.",
+        "Report due/eligible/source-evidence distinctions and score components; do not refresh expired price/core or call engine here.",
+        "Record exact 13:00 slot created1793008857831 vs DOOD next_due1793008857880 =49ms; manual analysis-to-remember658ms. Arithmetic supports a cadence hypothesis, not proof of whole-day cause or authorization to alter scheduling."
+      ],
+      "not_allowed": [
+        "No replay AUTO at snapshot with 12:55 facts",
+        "No claim actual priority winner was actually checked/delivered",
+        "No priority/threshold changes"
+      ]
+    },
+    {
+      "stage": "B_ONE_AUTO_EXECUTE_ORIGINAL_ASOF",
+      "clock": 1793008557222,
+      "actions": [
+        "One real createPumpRunner.execute({mode:AUTO,publish:true,run_id:explicit counterfactual BS ID}); no direct standalone analyzePump baseline and no MANUAL execute.",
+        "Real source-evidence admission with exact71 reviewed registry; source functions are labelled saved-fact boundary mocks, never stub READY/eligible result.",
+        "Use original previous_wave and F610 facts through actual discovery/queue/selection/checkInstrument/analyzePump; original liquidation/optional facts returned unchanged. Preserve original asof.",
+        "Use real MemoryStore and unified budget with explicitly synthetic bounded offline admission/state chosen by ROOT. Do not relabel 13:07 spent resource snapshot as available at12:55; no real ledger reset/refund.",
+        "Use real retained-capsule writer, createDelivery, revalidatePumpCard, immutable analysis/card save, hash checks, receipt readback and publication logic; only send transport is MOCK.",
+        "Empty prior delivery history is an explicit counterfactual to test AUTO capability before a manual duplicate; never claim it matches actual already-delivered history. If a real gate refuses, preserve first blocked step without forcing readiness."
+      ],
+      "evidence_class": "CONTROLLED_SAVED_FACT_REPLAY (never OBSERVED)",
+      "run_purpose": "Preserve original PRODUCTION only inside isolated MemoryStore; global fixture annotation and evidence_class prevent native/statistical acceptance",
+      "adaptations": [
+        "mode MANUAL -> AUTO",
+        "new finite test run_id rather than native UUID (original retained in provenance)",
+        "in-memory delivery history absent for capability branch",
+        "synthetic offline resource/admission state, exact caps unchanged",
+        "source boundary returns saved payloads; force_refresh does not imply real new source read"
+      ]
+    },
+    {
+      "stage": "C_ALREADY_SENT_MANUAL_EFFECT_NO_SECOND_ENGINE_RUN",
+      "clock": 1793008561961,
+      "actions": [
+        "Reuse resulting AUTO analysis; no MANUAL baseline or extra AUTO invocation.",
+        "In a separate isolated history branch, seed exact saved MANUAL SENT241 card unchanged plus a mechanically derived wave-pointer primary/card_by_hash projection. Pointer is a fixture derivation, not native readback.",
+        "At actual manual ACK clock (still before min mandatory expiry), call real enqueue/dispatch with unchanged AUTO analysis and update_kind; observe existing SENT/manual-wave suppression semantics and count transport attempts.",
+        "Distinguish an existing SENT241 returned by dispatch from a newly sent MOCK receipt; no false duplicate bug claim when same wave/unchanged plan is suppressed. No forced substantial-update flag."
+      ],
+      "not_allowed": [
+        "Do not seed later ACK as known at original analysis time",
+        "Do not overwrite real receipt/message241",
+        "Do not call history branch new actualSENT"
+      ]
+    }
+  ],
+  "execution_bound_pending_admission": {
+    "Node_invocations": 1,
+    "AUTO_execute": 1,
+    "MANUAL_execute": 0,
+    "real_engine_calls_upper_bound": 3,
+    "engine_reason": "runner initial+postoptional, delivery recheck; duplicate branch uses saved analysis and terminal skip",
+    "snapshot_priority_rows": 2,
+    "source_boundary_call_bounds": {
+      "getCatalog": 1,
+      "getOverview": 2,
+      "getDayGrowth": 1,
+      "getCore": 2,
+      "getOptional": 1,
+      "getLiquidations": 1
+    },
+    "MOCK_send_upper_bound": 1,
+    "real_sourceHTTP": 0,
+    "nativeSQL": 0,
+    "actualTelegram": 0,
+    "build": 0,
+    "deploy": 0,
+    "old_tests": 0
+  },
+  "oracles": [
+    "No mutation to F610 original facts/clock/value/body files or71 modules before/after.",
+    "Queue entry and selected candidate evidenced by actual runner path, not seeded READY analysis.",
+    "Persisted input differs from F610 only by explicitly permitted mode/run identity and staged assembly; intermediate first-pass optional assembly logged.",
+    "Final real analysis ready/automatic_eligible/plan/card inspected, or exact first refusal retained.",
+    "Saved card text/hash/analysis/source_input_key and MOCK receipt readback bound together; actual revalidatePumpCard invoked, no valid:true stub.",
+    "Manual-history branch sends no duplicate and preserves original SENT241 bytes.",
+    "No current natural AUTO/SENT/native budget acceptance claim."
+  ],
+  "required_before_Node": [
+    "ROOT exact F610 input/projection/receipt SHA and extraction path",
+    "ROOT frozen71 module path/hashes",
+    "ROOT decision on preliminary discovery field gap or explicitly permitted active-wave fixture projection",
+    "Concrete one-Node affected-case admission including real-engine/source-call bounds and synthetic MemoryStore budget/ledger branch scope",
+    "Freshmain guards+valid own lease exact FULL immediately before execution"
+  ],
+  "unchanged": [
+    "200/24/1 and all source/native caps",
+    "actual spends/unknowns/reserves",
+    "9 pauses",
+    "2 OWNER deferrals",
+    "strategy/priority/profile thresholds",
+    "business cron and delivery flags"
+  ],
+  "note": "This file is an immediate availability/finite-plan handoff; no executable test has been written or run."
+}

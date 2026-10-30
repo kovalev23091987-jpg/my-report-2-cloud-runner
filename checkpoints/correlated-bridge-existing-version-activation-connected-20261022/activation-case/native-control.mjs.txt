@@ -1,0 +1,81 @@
+// Actual transport/control factory for the new path. Same factory is exercised
+// with CONTROLLED HTTP by the one new callable. No production identity override.
+import {fullRawBasis} from '../runner/github-four-mirror-cas.mjs';
+export async function existingActivationDeadlineResponse(fetch_impl,url,options={},limit=262144){
+ const deadline=AbortSignal.timeout(2000),signal=options.signal?AbortSignal.any([options.signal,deadline]):deadline;
+ let reader=null,abortListener;
+ const aborted=new Promise((resolve,reject)=>{abortListener=()=>{if(reader)void reader.cancel().catch(()=>{});reject(Error('EXISTING_ACTIVATION_TRANSPORT_DEADLINE'));};signal.addEventListener('abort',abortListener,{once:true});});
+ try{
+  signal.throwIfAborted();
+  const response=await Promise.race([fetch_impl(url,{...options,signal}),aborted]);signal.throwIfAborted();
+  const declared=response.headers.get('content-length');if(declared!==null&&(!/^\d+$/.test(declared)||Number(declared)>limit))throw Error('EXISTING_ACTIVATION_REPLY_BOUND');
+  if(!response.body)throw Error('EXISTING_ACTIVATION_REPLY_BODY_REQUIRED');reader=response.body.getReader();let size=0;const parts=[];
+  for(;;){const r=await Promise.race([reader.read(),aborted]);signal.throwIfAborted();if(r.done)break;size+=r.value.byteLength;if(size>limit)throw Error('EXISTING_ACTIVATION_REPLY_BOUND');parts.push(Buffer.from(r.value));}
+  return new Response(Buffer.concat(parts,size),{status:response.status,statusText:response.statusText,headers:response.headers});
+ }catch(error){if(signal.aborted)throw Error('EXISTING_ACTIVATION_TRANSPORT_DEADLINE');throw error;}
+ finally{signal.removeEventListener('abort',abortListener);if(reader){void reader.cancel().catch(()=>{});try{reader.releaseLock();}catch{}}}
+}
+export function createExistingActivationNativeControl({repo_root,head,owner,github_token,cloudflare_token,fetch_impl=globalThis.fetch,clock=Date.now}={}){
+ const repo='kovalev23091987-jpg/my-report-2-cloud-runner',scopePrefix='OWNER_FIVE_ACTIVE_DIRECTIONS.CORRELATED_BRIDGE_EXISTING_VERSION_ACTIVATION_20261022.',prefix='checkpoints/correlated-bridge-existing-version-activation-connected-20261022',I=EXISTING_ACTIVATION_IDENTITIES;
+ if(typeof repo_root!=='string'||!/^[a-f0-9]{40}$/.test(head||'')||!/^CODEX:ACTIVE105_SOURCE_RELIABILITY:\d{13}$/.test(owner||'')||typeof github_token!=='string'||typeof cloudflare_token!=='string'||typeof fetch_impl!=='function'||typeof clock!=='function')throw Error('EXISTING_ACTIVATION_CONTROL_BINDING_REQUIRED');
+ const budget=createUnifiedHttpBudget(P.http);let github_HTTP=0,cloudflare_HTTP=0,forward_attempts=0,rollback_attempts=0,forward_ACK_deployment=null,internal_deadline_ts=null;
+ const reserve=kind=>{const used=kind==='github'?github_HTTP:cloudflare_HTTP;if(used>=40||budget.summary().remaining<=24)throw Error('EXISTING_ACTIVATION_CONTROL_HTTP_BOUND');const lane=kind==='cloudflare'&&budget.summary().used.background<56?'background':'hot';if(!budget.reserve({logical_request_id:'EXISTING_BRIDGE_ACTIVATION:'+kind+':'+used,lane,attempts:1}).allowed)throw Error('EXISTING_ACTIVATION_CONTROL_HTTP_BOUND');if(kind==='github')github_HTTP++;else cloudflare_HTTP++;};
+ const gh=makeGithubControl({repository:repo,token:github_token,initial_raw_basis:fullRawBasis(repo_root),clock,fetch_impl:(url,opt)=>{if(opt.method!=='GET'&&!(url==='https://api.github.com/graphql'&&opt.method==='POST'&&!String(opt.body).includes('mutation')))throw Error('EXISTING_ACTIVATION_GITHUB_READ_ONLY');reserve('github');return existingActivationDeadlineResponse(fetch_impl,url,{...opt,redirect:'error'});}});
+ function check(context,{minimum_CF=0,minimum_GH=0,min_headroom_ms=30000}={}){
+  const x=assertMirrorOwner(context,owner,clock(),scopePrefix);
+  if(context.head!==head||!x.lease.scope.includes('NO_RETRY_UNKNOWN_DEPLOY')||x.lease.expires_ts-clock()<min_headroom_ms||internal_deadline_ts!==null&&internal_deadline_ts-clock()<min_headroom_ms||40-cloudflare_HTTP<minimum_CF||40-github_HTTP<minimum_GH||budget.summary().remaining-24<minimum_CF+minimum_GH)throw Error('EXISTING_ACTIVATION_OWN_SCOPE_OR_HEADROOM_REQUIRED');return x;
+ }
+ async function freshGuard(options={}){const c=await readMirrorContext(gh,{expected_main:head,maximum_blob_reads:0,now:clock()});return check(c,options);}
+ // This local check is expressly NOT a new fresh snapshot. Every CF below gets
+ // its own freshGuard before reserve/transport. The final check is fresh too.
+ async function phaseGuard(options={}){if(internal_deadline_ts===null)throw Error('EXISTING_ACTIVATION_EXECUTION_START_REQUIRED');check(gh.mirror_context,options);if(options.final_fresh)await freshGuard({min_headroom_ms:options.min_headroom_ms});}
+ async function initialize({connected_run,execution_run}={}){
+  await freshGuard({min_headroom_ms:600000});
+  if(!/^\d+$/.test(String(connected_run||''))||!/^\d+$/.test(String(execution_run||'')))throw Error('EXISTING_ACTIVATION_COMMON_AND_EXECUTION_RUN_REQUIRED');
+  const q=JSON.parse(await fs.readFile(activationPath.join(repo_root,prefix,'qualification-receipt.json'),'utf8')),pins=JSON.parse(await fs.readFile(activationPath.join(repo_root,prefix,'qualification-scope.json'),'utf8'));
+  const [run,wf,automatic,execution]=await Promise.all([gh.call('actions/runs/'+connected_run),gh.call('actions/workflows/liq-assembled-offline-20261012.yml'),gh.call('actions/runs?head_sha='+head+'&per_page=30'),gh.call('actions/runs/'+execution_run)]);
+  if(q.run_id!==run.id||q.head!==run.head_sha||run.workflow_id!==wf.id||run.status!=='completed'||run.conclusion!=='success'||q.actual_SPEC_pass!==1||q.actual_SPEC_fail!==0||!automatic.workflow_runs?.some(x=>x.workflow_id===wf.id&&x.event==='push'&&x.head_sha===head&&x.status==='completed'&&x.conclusion==='success'))throw Error('EXISTING_ACTIVATION_CURRENT_COMMON_AND_AUTOMATIC_MAIN_REQUIRED');
+  const started=typeof execution?.run_started_at==='string'&&execution.run_started_at.length<=64?Date.parse(execution.run_started_at):NaN;
+  if(String(execution?.id)!==String(execution_run)||execution.head_sha!==head||execution.head_branch!=='main'||execution.path!=='.github/workflows/current-bridge-module-inspection-20261016.yml'||execution.event!=='workflow_dispatch'||execution.run_attempt!==1||execution.status!=='in_progress'||!Number.isSafeInteger(started)||started>clock()||clock()>=started+300000)throw Error('EXISTING_ACTIVATION_EXECUTION_START_REQUIRED');
+  internal_deadline_ts=started+300000;
+  for(const path of ['current-generation/files/runner-main.mjs','runner/report2-d1-adapter.mjs','runner/native-query-cost-journal.mjs','runner/sql-bridge-counter-repair.mjs','runner/cloudflare-version-bound-readback.mjs','runner/retention-bridge-provenance.mjs','tools/run-paid-sliding-history-20261018.mjs','tools/recover-lossless-retained-history-20261014.mjs','tools/rollout-correlated-sql-bridge-20261022.mjs','.github/workflows/current-bridge-module-inspection-20261016.yml'])if(rolloutDigest(await fs.readFile(activationPath.join(repo_root,path)))!==pins.files?.[path])throw Error('EXISTING_ACTIVATION_QUALIFIED_SOURCE_PIN_CHANGED');
+  return check(gh.mirror_context).lease;
+ }
+ async function cf(route,{method='GET',body,raw=false}={}){
+  if(internal_deadline_ts===null)throw Error('EXISTING_ACTIVATION_EXECUTION_START_REQUIRED');
+  const read=/^\/(?:deployments|settings|schedules|subdomain|versions\?per_page=1|versions\/[a-f0-9-]{36}|content\/v2)$/.test(route),post=route==='/deployments'&&body?.strategy==='percentage'&&body.versions?.length===1&&body.versions[0]?.percentage===100&&[I.new_version,I.old_version].includes(body.versions[0].version_id)&&Object.keys(body).every(k=>['strategy','versions','annotations'].includes(k))&&Object.keys(body.annotations??{}).every(k=>k==='workers/message');
+  if(!(method==='GET'&&read&&body===undefined||method==='POST'&&post))throw Error('EXISTING_ACTIVATION_CONTROL_ROUTE_DENIED');
+  const target=method==='POST'?body.versions[0].version_id:null;
+  if(target===I.new_version&&(forward_attempts!==0||rollback_attempts!==0)||target===I.old_version&&(!forward_ACK_deployment||rollback_attempts!==0))throw Error('EXISTING_ACTIVATION_NO_RETRY_OR_UNOWNED_ROLLBACK');
+  await freshGuard({minimum_CF:1});reserve('cloudflare');
+  if(target===I.new_version)forward_attempts++;if(target===I.old_version)rollback_attempts++;
+  const url=`https://api.cloudflare.com/client/v4/accounts/${P.account}/workers${route==='/subdomain'?'/subdomain':'/scripts/'+SQL_BRIDGE_SCRIPT+route}`;
+  const r=await existingActivationDeadlineResponse(fetch_impl,url,{method,headers:{authorization:'Bearer '+cloudflare_token,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),redirect:'error'},raw?6500000:262144);
+  if(!r.ok){await r.body?.cancel();throw Error('EXISTING_ACTIVATION_HTTP_NOT_CLOSED');}const bytes=await boundedControlBody(r,raw?6500000:262144);
+  if(raw)return new Response(bytes,{headers:{'content-type':r.headers.get('content-type')||'application/octet-stream'}});
+  let j;try{j=JSON.parse(bytes.toString('utf8'));}catch{throw Error('EXISTING_ACTIVATION_REPLY_JSON_NOT_CLOSED');}if(j.success!==true||j.result===undefined||j.result===null)throw Error('EXISTING_ACTIVATION_REPLY_ACK_REQUIRED');
+  if(target===I.new_version){try{const a=singleActiveVersion({deployments:[j.result]});if(a.version_id===I.new_version)forward_ACK_deployment=a.deployment_id;}catch{}}
+  return j.result;
+ }
+ return{initialize,cf,guard:phaseGuard,metrics:()=>({github_HTTP,cloudflare_HTTP,forward_attempts,rollback_attempts,whole_HTTP:budget.summary(),manual_HTTP_reserved:24,internal_run_started_plus_5min_deadline_ts:internal_deadline_ts,internal_deadline_NOT_platform_kill_guarantee:true,new_path_transport_deadline_ms:2000,local_phase_checks_are_not_fresh_snapshots:true,every_CF_attempt_has_separate_fresh_GH_guard:true})};
+}
+
+export async function runExistingCorrelatedBridgeActivation(){
+ const repo='kovalev23091987-jpg/my-report-2-cloud-runner',dir='audit-output/bridge-existing-version-activation',head=process.env.EXPECTED_MAIN,owner=process.env.BORROW_EXISTING_OWNER;
+ let control=null,activation=null,transport_intent=null,outerReason=null;
+ await fs.mkdir(dir,{recursive:true});
+ const save=async value=>{
+  if(value)activation=structuredClone(value);
+  const receipt={schema:'EXISTING_CORRELATED_BRIDGE_NATIVE_ACTIVATION_CONTROL_V1',head,owner,status:activation?.status??'EXISTING_ACTIVATION_NOT_STARTED',activation,transport_intent,reason:outerReason,...control?.metrics(),native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0,upload_attempts:0,settings_mutations:0,delete_attempts:0,logging_settings_changed:false,old_unknown_recovered:false,day_hold_removed:false,current_Telegram_restored:false,source_body_exported:false,secret_values_exported:false,local_intent_crash_durability_qualified:false,global_crash_durable_once_qualified:false};
+  const text=JSON.stringify(receipt,null,2)+'\n';if(Buffer.byteLength(text)>131072)throw Error('EXISTING_ACTIVATION_PROOF_BOUND');await fs.writeFile(dir+'/proof.tmp',text);await fs.rename(dir+'/proof.tmp',dir+'/proof.json');
+ };
+ try{
+  if(process.env.GITHUB_REPOSITORY!==repo||process.env.GITHUB_REF!=='refs/heads/main'||process.env.GITHUB_SHA!==head||process.env.GITHUB_EVENT_NAME!=='workflow_dispatch'||process.env.GITHUB_RUN_ATTEMPT!=='1'||process.env.EXECUTE_CORRELATED_EXISTING_ACTIVATION!=='true'||['EXECUTE_CORRELATED_COST_STAGE','EXECUTE_CORRELATED_COST_RELEASE','EXECUTE_SQL_BRIDGE_REPAIR','READ_ONLY_BRIDGE_INSPECTION'].some(k=>process.env[k]==='true')||!process.env.CLOUDFLARE_API_TOKEN||!process.env.GITHUB_TOKEN)throw Error('EXISTING_ACTIVATION_EXACT_CURRENT_MODE_REQUIRED');
+  control=createExistingActivationNativeControl({repo_root:process.cwd(),head,owner,github_token:process.env.GITHUB_TOKEN,cloudflare_token:process.env.CLOUDFLARE_API_TOKEN});
+  const lease=await control.initialize({connected_run:process.env.CONNECTED_RUN,execution_run:process.env.GITHUB_RUN_ID});
+  const adapter=createExistingCorrelatedActivationNativeAdapter({cf:control.cf,configured_bridge_url:process.env.REPORT2_D1_BRIDGE_URL,saveTransportIntent:async value=>{transport_intent=structuredClone(value);await save();}});
+  activation=await activateExistingCorrelatedBridge({plan:{head,owner,lease_expires_ts:lease.expires_ts,operation_id:globalThis.crypto.randomUUID()},repo_root:process.cwd(),adapter,guard:control.guard,save});
+  await save();if(activation.status!=='EXISTING_CORRELATED_VERSION_ACTIVATED_NATIVE_METADATA_VERIFIED')process.exitCode=1;
+ }catch(e){outerReason=/^EXISTING_ACTIVATION_[A-Z0-9_]+$/.test(e?.message||'')?e.message:'EXISTING_ACTIVATION_CONTROL_NOT_CLOSED';try{await save();}catch{}process.exitCode=1;}
+ console.log(JSON.stringify({status:activation?.status??'EXISTING_ACTIVATION_NOT_STARTED',head,...control?.metrics(),native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0,upload_attempts:0,settings_mutations:0}));return activation;
+}

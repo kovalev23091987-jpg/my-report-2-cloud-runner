@@ -1,0 +1,261 @@
+{
+  "schema": "LIVE_GET_SEQUENTIAL_LATENCY_STATIC_BOUNDARY_V1",
+  "base": "0c763eb4d03ba66bad1b98d26ab45376da87942e",
+  "frozen_572": "b6dab0b7c6703d2e0c9e3b1011f6e151a7c6b3e6",
+  "current_common_reader_unchanged": true,
+  "method": "CODE_DERIVED_CONTROLLED_TIMELINE_UNEXECUTED",
+  "timeline": [
+    {
+      "delta_ms": 0,
+      "event": "get live readTs=T0 sampled once",
+      "own_minute_units": 0
+    },
+    {
+      "delta_ms": 35000,
+      "event": "known-cost cache miss resolves under individual45s timeout",
+      "unknown_ops": 0
+    },
+    {
+      "delta_ms": 69000,
+      "event": "other caller reserves9 current CG units; no own unit existed before this event",
+      "other_units": 9
+    },
+    {
+      "delta_ms": 70000,
+      "event": "known-cost daily preflight resolves; subsequent old-time rolling SQL excludes all concurrent rows",
+      "unknown_ops": 0
+    },
+    {
+      "delta_ms": 70001,
+      "event": "atomic insert/readback total uses upper bound T0, sees own1<=9, created_ts=T0"
+    },
+    {
+      "delta_ms": 70002,
+      "event": "first actual transport dispatched without clock/deadline revalidation"
+    }
+  ],
+  "sql_bounds": {
+    "reader_preflight": "provider=?1 AND created_ts>?2 AND created_ts<=?3; lower=T0-60000, upper=T0",
+    "minute_insert": "provider=?1 AND created_ts>?6 AND created_ts<=?5; now=?5=T0",
+    "minute_total": "provider=?1 AND created_ts>?2 AND created_ts<=?3; upper=T0",
+    "daily": "day_utc derived from sampled T0, no current dispatch day comparison"
+  },
+  "not_fixed_by": [
+    "572 callsite live clock at get entry alone",
+    "known0unknown counters",
+    "whole HTTP quantity/duplicate guard",
+    "per-provider12s fetch timeout started after grants",
+    "single45s timeout per RemoteD1 operation",
+    "source fact observed/receipt clock after response"
+  ],
+  "rejected_shortcuts": [
+    "final resampling cannot rewrite an already persisted grant",
+    "any-positive-ms failclosed would disable normal remote SQL",
+    "one65s successful adapter call is not necessary and would conflict with45s setting",
+    "adding a rereader/SQLloop or wider hold without admission and caller contract is not authorized"
+  ],
+  "repair_contract_needed": [
+    "reservation-to-dispatch max delay with viable measured bound",
+    "consistent conservative visibility and holding interval across provider callers",
+    "no quota reset/refund or native unknown clearing",
+    "extra SQL/writes only within independently approved admission if required",
+    "unchanged source fact clocks/identity/normalizers/strategy/forms",
+    "new central affected case only after concrete correct repair"
+  ],
+  "code_bindings": [
+    {
+      "path": "current-generation/files/src/provider-reference-cache.mjs",
+      "sha256": "3ecbb81a55827069041a0175cfe9d61de0a92042338bab2d5df7dce4dc96748b",
+      "anchors": [
+        {
+          "anchor": "const readTs=clock()",
+          "lines": [
+            18
+          ]
+        },
+        {
+          "anchor": "const usage=await db.prepare",
+          "lines": [
+            48
+          ]
+        },
+        {
+          "anchor": "const rolling=await db.prepare",
+          "lines": [
+            55
+          ]
+        },
+        {
+          "anchor": "const whole=request_admit",
+          "lines": [
+            62
+          ]
+        },
+        {
+          "anchor": "const daily=await reserveEvidenceSourceAttempts",
+          "lines": [
+            64
+          ]
+        },
+        {
+          "anchor": "const minute=await reserveProviderMinuteUnits",
+          "lines": [
+            69
+          ]
+        },
+        {
+          "anchor": "calls++;",
+          "lines": [
+            74
+          ]
+        },
+        {
+          "anchor": "setTimeout(()=>c.abort(),12000)",
+          "lines": [
+            75
+          ]
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/provider-minute-ledger.mjs",
+      "sha256": "af60f7e3cc6187cef4583c4df4e3ecbc5ae8f96e3bffff9bd037a1b22049c045",
+      "anchors": [
+        {
+          "anchor": "export async function reserveProviderMinuteUnits",
+          "lines": [
+            24
+          ]
+        },
+        {
+          "anchor": "WHERE (SELECT COALESCE",
+          "lines": [
+            31
+          ]
+        },
+        {
+          "anchor": "const exact=await",
+          "lines": [
+            34
+          ]
+        },
+        {
+          "anchor": "const total=await",
+          "lines": [
+            36
+          ]
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/evidence-source-store.mjs",
+      "sha256": "177bcae74fd75ecd78b1c8f3762e1579e058fb6b2c982ebd85bb1a543621ca38",
+      "anchors": [
+        {
+          "anchor": "export function nativeSourceUsageUnclosed",
+          "lines": [
+            7
+          ]
+        },
+        {
+          "anchor": "export async function reserveEvidenceSourceAttempts",
+          "lines": [
+            44
+          ]
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/unified-budget.mjs",
+      "sha256": "664ba92581f413ae57f62a785403a0f90f29975f015b0484d2dc7dd00e29175f",
+      "anchors": [
+        {
+          "anchor": "export function createUnifiedHttpBudget",
+          "lines": [
+            27
+          ]
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "sha256": "e711bff692c4e42a684464dc3f4bf28a8c0b01f515af13642d856b1fb1a6237b",
+      "anchors": [
+        {
+          "anchor": "export async function collectEvidenceRouteBlock",
+          "lines": [
+            201
+          ]
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "sha256": "53cd3f8d5cf060a11fad8a343a546736b1db97d36eb1588b810ced2cc2602b85",
+      "anchors": [
+        {
+          "anchor": "installSourceProxyFetch()",
+          "lines": [
+            106,
+            135
+          ]
+        },
+        {
+          "anchor": "timeoutMs: 45_000",
+          "lines": [
+            143
+          ]
+        }
+      ]
+    },
+    {
+      "path": "runner/report2-d1-adapter.mjs",
+      "sha256": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614",
+      "anchors": [
+        {
+          "anchor": "async _request(payload)",
+          "lines": [
+            174
+          ]
+        },
+        {
+          "anchor": "const timeout = setTimeout",
+          "lines": [
+            189
+          ]
+        },
+        {
+          "anchor": "const response = await",
+          "lines": [
+            196
+          ]
+        },
+        {
+          "anchor": "const text = await response.text()",
+          "lines": [
+            208
+          ]
+        }
+      ]
+    }
+  ],
+  "executed": {
+    "runtime_imports": 0,
+    "Node": 0,
+    "syntax": 0,
+    "semantic_calls": 0,
+    "SQLite": 0,
+    "git_apply": 0,
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "MAIN": 0,
+    "manual": 0,
+    "Telegram": 0,
+    "deploy": 0
+  },
+  "production_patch": null,
+  "callable": null,
+  "native_occurrence_or_overrun_proven": false,
+  "native_costs": null,
+  "admission_authorized": false
+}

@@ -1,0 +1,124 @@
+{
+  "schema": "F601_TOOBIT_FUNDING_OI_QUALIFICATION_PROFILE_V1",
+  "status": "DOCUMENTARY_USEFULNESS_IDENTIFIED_GAPS_REMAIN",
+  "provider": "TOOBIT",
+  "base": "https://api.toobit.com",
+  "routes": [
+    {
+      "id": "CURRENT_FUNDING",
+      "method": "GET",
+      "path": "/api/v1/futures/fundingRate",
+      "symbol_required": false,
+      "response_shape": "array",
+      "bulk": "Omission permitted by parameter table; candidate one-response batch form. Exhaustive all-market coverage not expressly guaranteed.",
+      "fields": [
+        "symbol",
+        "rate",
+        "period",
+        "nextFundingTime",
+        "interest",
+        "fundingRateCap",
+        "fundingRateFloor"
+      ],
+      "period_schema": "funding settlement period",
+      "actual_period": "NOT_OBSERVED; sample8H not default",
+      "rate_numeric_scale": "UNKNOWN_FRACTION_VS_PERCENT",
+      "source_asof_clock": "NOT_SPECIFIED",
+      "clock_present_role": "nextFundingTime=next settlement, not quote asof",
+      "weight": "NOT_SPECIFIED_IN_REVIEWED_SECTION",
+      "source": "EN1366-1410"
+    },
+    {
+      "id": "HISTORICAL_FUNDING",
+      "method": "GET",
+      "path": "/api/v1/futures/historyFundingRate",
+      "symbol_required": true,
+      "bulk": "No documented no-symbol route here",
+      "fields": [
+        "id",
+        "symbol",
+        "settleTime",
+        "settleRate",
+        "period"
+      ],
+      "period_schema": "per-row settlement period",
+      "actual_period": "NOT_OBSERVED",
+      "rate_numeric_scale": "UNKNOWN",
+      "source_clock": "settleTime=original settlement time; not current quote",
+      "limit": {
+        "default": 20,
+        "min": 1,
+        "max": 1000
+      },
+      "weight": "NOT_SPECIFIED",
+      "source": "ZH1408-1442 (EN corroborates)"
+    },
+    {
+      "id": "OPEN_INTEREST",
+      "method": "GET",
+      "path": "/quote/v1/openInterest",
+      "symbol_required": true,
+      "bulk": "Only single-pair request documented; no batch invented",
+      "fields": [
+        "openInterestList[].symbol",
+        "openInterestList[].size"
+      ],
+      "unit": "underlying trading coin, not contract count or USD",
+      "unit_basis": "ZH1457 explicitly identifies the trading coin; EN1459 agrees",
+      "counting_convention": "UNKNOWN_SINGLE_VS_DOUBLE_SIDED",
+      "source_clock": "NOT_PRESENT_IN_REVIEWED_SCHEMA",
+      "weight": "NOT_SPECIFIED",
+      "conversion": "Do not multiply coin-denominated size by contractMultiplier.",
+      "source": "ZH1444-1475"
+    }
+  ],
+  "shared_quota": {
+    "model": "REQUEST_WEIGHT shared across methods, not independent funding/OI quotas",
+    "retained_published_limit": "3000weight/min",
+    "actual_F600_payload_closed_rateLimits": "3000weight/min, burst3000",
+    "endpoint_funding_history_OI_weights": "UNKNOWN; do not copy catalogue/trades/riskLimits/neighbor route weight1",
+    "anonymous_IP_APIkey_scope": "NOT_ESTABLISHED",
+    "remaining_day_month": "UNKNOWN_PRESERVED",
+    "counter_headers_in_catalogue_actual": "No X-Api-Limit headers returned in retained ROOT receipt"
+  },
+  "metadata": {
+    "evidence": "F601_COMPLETE_ROW_FIELDS_EVIDENCE_V1.json",
+    "rows": 696,
+    "real_fields_useful_as_prerequisites": [
+      "symbol",
+      "underlying",
+      "quoteAsset",
+      "marginToken",
+      "inverse",
+      "contractMultiplier",
+      "isRwa",
+      "indexToken"
+    ],
+    "funding_period_or_update_time_fields_found": 0,
+    "sample": "closed SUI row65 byte[676746,679146), sha a44aacc2947f941e14f8ca320019a039178e577330e5ad4d2e664c9652a2ea94",
+    "raw_multiplier": "0.1",
+    "effect": "Identifies a native format/size hint only; no funding scale/period or canonical identity derived. BaseAsset is a contract symbol, not a globally qualified asset ID.",
+    "times_not_used": [
+      "launchTime",
+      "allowedOpenTime",
+      "allowedCloseTime",
+      "closingStartTime",
+      "closingEndTime",
+      "catalogue serverTime"
+    ]
+  },
+  "usefulness": {
+    "potential": "Separate-venue funding and coin-denominated OI could add optional context after exact identity/unit/clock/cost qualification.",
+    "current_usable_facts": 0,
+    "price_feed_substitution": false,
+    "per_coin500_plan": false,
+    "new_runtime_routes": 0,
+    "canonical_CORE_maps_promoted": 0,
+    "unchanged_F600_counts": {
+      "raw452": 452,
+      "remainder_NOT_CHECKED": 98,
+      "canonical_UNKNOWN": 550
+    }
+  },
+  "remaining_service_attempts": 1
+}

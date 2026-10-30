@@ -1,0 +1,88 @@
+--- a/current-generation/tests/n10-reused-venue-price.test.mjs
++++ b/current-generation/tests/n10-reused-venue-price.test.mjs
+@@ -5,16 +5,12 @@
+ import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
+ import {finalizeCandidateBlockCoverage} from '../files/src/candidate-evidence-v2-runtime.mjs';
+ 
+-const samples=JSON.parse(readFileSync(new URL('./fixtures/n10-reused-original-15m-samples.json',import.meta.url)));
+-function fixture(sample){
+- const {venue,htx_window:h,component:c}=sample,first=sample.bars[0].split('|').map(Number),start=h.window_end_ts-240*60000;
+- const make=(ts,o,hi,lo,cl,activity,end)=>venue==='BINANCE'?[ts,String(o),String(hi),String(lo),String(cl),String(activity),end,'0',activity]:venue==='POLONIEX'?[String(lo),String(hi),String(o),String(cl),'0',String(activity),'0','0',activity,ts,String(cl),'MINUTE_1',ts,end]:[String(ts),String(o),String(hi),String(lo),String(cl),String(activity),'0','0'];
+- const raw=Array.from({length:225},(_,i)=>{const ts=start+i*60000;return make(ts,first[1],first[1],first[1],first[1],0,ts+59999);});
+- raw.push(...sample.bars.map(line=>make(...line.split('|').map(Number))));
+- const payload=venue==='BITGET'?{observed_ts:sample.cache_observed_ts,payloads:{candles:{code:'00000',data:raw}}}:{observed_ts:sample.cache_observed_ts,candles:raw};
+- return{contract:sample.contract,venue,component:c,htx_window:h,now:sample.now,cache:{observed_ts:sample.cache_observed_ts,expires_ts:sample.cache_expires_ts,payload}};
+-}
+-for(const sample of samples)test(`N10 reuses independently qualified ${sample.venue} original candles for ${sample.contract}`,()=>{
++import {activeSourceSamples,sampleParams} from './n10-full-cache-inputs.mjs';
++const samples=activeSourceSamples.filter(s=>s.venue!=='GATE').map(s=>{const p=sampleParams(s);return{...s,htx_window:p.htx_window,now:p.now,cache_observed_ts:p.cache.observed_ts,cache_expires_ts:p.cache.expires_ts};});
++// Full original caches for BTC/AAVE; Bitget uses an explicit controlled
++// retained-page event clock. No padded225bar cache is treated as complete.
++const fixture=sample=>sampleParams(sample);
++for(const sample of samples)test(`N10 reuses independently qualified ${sample.venue} complete cached candles for ${sample.contract}`,()=>{
+  const x=fixture(sample),rows=deriveN10ReusedVenuePathEvidence(x);
+  assert.equal(rows.length,1);const row=rows[0];
+  assert.equal(row.window_end,x.htx_window.window_end_ts);assert.equal(row.candle_count,15);assert.ok(row.active_minute_count>0);
+--- a/current-generation/tests/n10-path-window-clock.test.mjs
++++ b/current-generation/tests/n10-path-window-clock.test.mjs
+@@ -5,22 +5,19 @@
+ const moduleURL=name=>process.env.REPORT2_TEST_RUNTIME?pathToFileURL(`${process.env.REPORT2_TEST_RUNTIME}/src/${name}`):new URL(`../files/src/${name}`,import.meta.url);
+ const {deriveHtxRecentPathEvidence,deriveHtxSpotSameRunPathEvidence,verifyHtxSpotSameRunPathEvidence,deriveN10ReusedVenuePathEvidence,verifyN10ReusedVenuePathEvidence}=await import(moduleURL('htx-technical-structure.mjs'));
+ const {consumeBlockResultContext}=await import(moduleURL('block-result-context.mjs'));
+-const samples=JSON.parse(fs.readFileSync(new URL('./fixtures/n10-reused-original-15m-samples.json',import.meta.url)));
+-function fixture(sample){
+- const {venue,htx_window,component}=sample,first=sample.bars[0].split('|').map(Number),start=htx_window.window_end_ts-240*60000;
+- const make=(ts,o,hi,lo,cl,activity,end)=>venue==='BINANCE'?[ts,String(o),String(hi),String(lo),String(cl),String(activity),end,'0',activity]:venue==='POLONIEX'?[String(lo),String(hi),String(o),String(cl),'0',String(activity),'0','0',activity,ts,String(cl),'MINUTE_1',ts,end]:[String(ts),String(o),String(hi),String(lo),String(cl),String(activity),'0','0'];
+- const raw=Array.from({length:225},(_,i)=>{const ts=start+i*60000;return make(ts,first[1],first[1],first[1],first[1],0,ts+59999);});
+- raw.push(...sample.bars.map(line=>make(...line.split('|').map(Number))));
+- const payload=venue==='BITGET'?{observed_ts:sample.cache_observed_ts,payloads:{candles:{code:'00000',data:raw}}}:{observed_ts:sample.cache_observed_ts,candles:raw};
+- return{contract:sample.contract,venue,component,htx_window:structuredClone(htx_window),now:sample.now,cache:{observed_ts:sample.cache_observed_ts,expires_ts:sample.cache_expires_ts,payload}};
+-}
++import {activeSourceSamples,sampleParams} from './n10-full-cache-inputs.mjs';
++const samples=activeSourceSamples.filter(s=>s.venue!=='GATE').map(s=>{const p=sampleParams(s);return{...s,htx_window:p.htx_window,now:p.now,cache_observed_ts:p.cache.observed_ts,cache_expires_ts:p.cache.expires_ts};});
++// Full original caches for BTC/AAVE; Bitget uses an explicit controlled
++// retained-page event clock. No padded225bar cache is treated as complete.
++const fixture=sample=>sampleParams(sample);
++const flatBase=(quote,price)=>{const parse=v=>{const[a,b='']=String(v).split('.');return{n:BigInt(a+b),scale:b.length};},q=parse(quote),p=parse(price),unit=10n**18n,n=q.n*10n**BigInt(18+p.scale-q.scale)/p.n,part=String(n%unit).padStart(18,'0').replace(/0+$/,'');return String(n/unit)+(part?'.'+part:'');};
+ for(const sample of samples)for(const flat of ['HTX','VENUE','BOTH'])test(`${sample.venue} ${sample.contract}: controlled flat ${flat} path cannot establish a common direction`,()=>{
+  const p=fixture(sample);
+  if(flat!=='VENUE')p.htx_window.close=p.htx_window.open;
+  if(flat!=='HTX'){
+   const bars=p.venue==='BITGET'?p.cache.payload.payloads.candles.data:p.cache.payload.candles,price=p.htx_window.open;
+-  for(const row of bars.slice(-15)){
+-   if(p.venue==='POLONIEX'){row[0]=row[1]=row[2]=row[3]=String(price);}
++  for(const row of [...bars].sort((a,b)=>Number(a[p.venue==='POLONIEX'?12:0])-Number(b[p.venue==='POLONIEX'?12:0])).slice(-15)){
++   if(p.venue==='POLONIEX'){row[0]=row[1]=row[2]=row[3]=row[10]=String(price);row[5]=flatBase(row[4],price);row[7]=flatBase(row[6],price);}
+    else row[1]=row[2]=row[3]=row[4]=String(price);
+   }
+  }
+--- a/current-generation/tests/n10-useful-path-queue.test.mjs
++++ b/current-generation/tests/n10-useful-path-queue.test.mjs
+@@ -5,14 +5,10 @@
+ const moduleURL=name=>process.env.REPORT2_TEST_RUNTIME?pathToFileURL(`${process.env.REPORT2_TEST_RUNTIME}/src/${name}`):new URL(`../files/src/${name}`,import.meta.url);
+ const {loadN10ReusedVenuePaths}=await import(moduleURL('htx-technical-structure.mjs'));
+ const {consumeBlockResultContext}=await import(moduleURL('block-result-context.mjs'));
+-const sample=JSON.parse(fs.readFileSync(new URL('./fixtures/n10-reused-original-15m-samples.json',import.meta.url))).find(row=>row.venue==='BITGET');
+-const h=sample.htx_window,first=sample.bars[0].split('|').map(Number),start=h.window_end_ts-240*60000;
+-const make=(ts,o,hi,lo,cl,activity)=>[String(ts),String(o),String(hi),String(lo),String(cl),String(activity),'0','0'];
+-const raw=Array.from({length:225},(_,i)=>make(start+i*60000,first[1],first[1],first[1],first[1],0));
+-raw.push(...sample.bars.map(line=>make(...line.split('|').map(Number))));
+-const payload={observed_ts:sample.cache_observed_ts,payloads:{candles:{code:'00000',data:raw}}};
+-// Component queue changes are explicit controls. The final useful RLC
+-// component and its retained fifteen price bars/clocks are unchanged.
++import {activeSourceSamples,sampleParams} from './n10-full-cache-inputs.mjs';
++const input=sampleParams(activeSourceSamples.find(s=>s.venue==='BITGET')),sample={...input,cache_observed_ts:input.cache.observed_ts,cache_expires_ts:input.cache.expires_ts},h=input.htx_window,payload=input.cache.payload;
++// Full reconciled retained-page copy with an explicit controlled event clock.
++// This verifies the queue, not a new provider observation or coverage.
+ function fixture(components,options={}){
+  const reads=[];let unknown=options.unknown_before?1:0;
+  const db={usageSnapshot:()=>({unknown_ops:unknown}),prepare(sql){return{bind(...args){return{async first(){reads.push({sql,args});if(options.fail_read)throw Error('CONTROLLED_CACHE_READ');if(options.unknown_after)unknown=1;return{observed_ts:sample.cache_observed_ts,expires_ts:sample.cache_expires_ts,payload_json:JSON.stringify(payload)};}};}};}};
+@@ -25,7 +21,7 @@
+  'unusable USDC quote':c=>({...c,quote:'USDC'}),
+  'incomplete 239-minute window':c=>({...c,verified_minutes:239}),
+  'wrong four-hour start':c=>({...c,window_start_ts:c.window_start_ts+60000}),
+-}))test(`four ${name} components cannot spend the cache-read ceiling before the retained useful RLC spot path`,async()=>{
++}))test(`four ${name} components cannot spend the cache-read ceiling before the complete controlled Bitget spot path`,async()=>{
+  const x=fixture([...Array.from({length:4},()=>change(copy())),copy()]),r=await loadN10ReusedVenuePaths(x.params);
+  useful(r);assert.equal(x.reads.length,1);assert.equal(r.cache_reads,1);assert.equal(r.receipts.length,1);assert.equal(x.reads[0].args[1],`FLOW:${sample.contract}:SPOT:${h.window_end_ts}`);
+ });

@@ -1,0 +1,323 @@
+{
+  "schema": "REPORT2_MEXC_PHEMEX_OFFLINE_PREFLIGHT_RESULT_V1",
+  "spec_sha256": "a43c3b049f76cbb80f75debaa36e7eed941d413646606d1347beb2ec9f3fe091",
+  "documentation_receipts_sha256": "81f54fddd8d8a4215e92ba144f15a6385bfdea899e2bccda3e722d0c1624700f",
+  "prior_459_evidence_replayed": false,
+  "source_documents": [
+    {
+      "id": "mexcMarketOverview",
+      "url": "https://www.mexc.com/api-docs/futures/market-endpoints",
+      "body_sha256": "b2b7d16ffeeb48ad01b238d264e2b7bf4132b6d05d352e654b59056f0fc19f66",
+      "cached_at": "2026-10-18T09:14:55.946Z",
+      "source_status": "REUSED_FROZEN456_NOT_RESCRAPED"
+    },
+    {
+      "id": "mexcIntegration",
+      "url": "https://www.mexc.com/api-docs/futures/integration-guide",
+      "body_sha256": "78d5941d68ad59fea99802d0b2d751dcf0981b3778b240d39e4a1c532f48219e",
+      "cached_at": "2026-10-17T12:31:34.786Z",
+      "source_status": "REUSED_FROZEN456_NOT_RESCRAPED"
+    },
+    {
+      "id": "mexcContractInfo",
+      "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-contract-info",
+      "body_sha256": "8f0c62682a8eb9cf7e0d4c1fe08619c0dee69196a2b2db10160b50c281ac99f5",
+      "cached_at": "2026-10-17T12:35:32.695Z",
+      "source_status": "REUSED_FROZEN456_NOT_RESCRAPED"
+    },
+    {
+      "id": "mexcFuturesKline",
+      "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-candlestick-data",
+      "body_sha256": "974213bb31091a81dc76d6cc7d4f667ad31d057b3a660c581371e1bc5b391553",
+      "cached_at": "2026-10-17T05:39:04.911Z",
+      "source_status": "REUSED_FROZEN456_NOT_RESCRAPED"
+    },
+    {
+      "id": "mexcRecentTrades",
+      "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-recent-trades",
+      "body_sha256": "40255ef6be5e9d900a8ad989f722242ac78c6f1b5aa1aaa43dcad305a65d5121",
+      "cached_at": null,
+      "source_status": "REUSED_FROZEN456_NOT_RESCRAPED"
+    },
+    {
+      "id": "mexcTicker",
+      "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-ticker-contract-market-data",
+      "body_sha256": "7cec58991d277535756562a442894608d01f597008293865a58156f0ce061d5f",
+      "cached_at": "2026-10-17T12:36:16.136Z",
+      "source_status": "REUSED_FROZEN456_NOT_RESCRAPED"
+    },
+    {
+      "id": "mexcSpotKline",
+      "url": "https://www.mexc.com/api-docs/spot-v3/market-data-endpoints/klinecandlestick-data",
+      "body_sha256": "9a2533547b1bc9d5f7318fa49f707c88d66d51b08b62afe62ebacb9ff1e5dfd2",
+      "cached_at": "2026-10-17T20:14:18.113Z",
+      "source_status": "REUSED_FROZEN456_NOT_RESCRAPED"
+    },
+    {
+      "id": "phemexDocs",
+      "url": "https://phemex-docs.github.io/",
+      "body_sha256": "a26a5fc94f57021af52cb6aed816bdd1a66290747bf64c2b83baa73b9391c9cc",
+      "cached_at": "2026-10-18T02:39:25.437Z",
+      "source_status": "REUSED_FROZEN456_NOT_RESCRAPED"
+    }
+  ],
+  "providers": [
+    {
+      "provider": "MEXC",
+      "listing": null,
+      "exact_identity_closed": false,
+      "numeric_facts": 0,
+      "complete_first_HTTP_bound": null,
+      "native_SQL_R_W_bound": null,
+      "execution_ready": false
+    },
+    {
+      "provider": "PHEMEX",
+      "listing": null,
+      "exact_identity_closed": false,
+      "numeric_facts": 0,
+      "complete_first_HTTP_bound": null,
+      "native_SQL_R_W_bound": null,
+      "execution_ready": false
+    }
+  ],
+  "frameCosts": [
+    {
+      "native_frame_minutes": 15,
+      "required_closed_native_rows": 21,
+      "covered_minutes": 315,
+      "covered_days": 0.21875,
+      "native_request_count": 1,
+      "theoretical_MEXC_1m_requests_for_equal_horizon": 1,
+      "one_minute_backfill_enabled": false,
+      "actual_availability": false
+    },
+    {
+      "native_frame_minutes": 30,
+      "required_closed_native_rows": 21,
+      "covered_minutes": 630,
+      "covered_days": 0.4375,
+      "native_request_count": 1,
+      "theoretical_MEXC_1m_requests_for_equal_horizon": 1,
+      "one_minute_backfill_enabled": false,
+      "actual_availability": false
+    },
+    {
+      "native_frame_minutes": 60,
+      "required_closed_native_rows": 21,
+      "covered_minutes": 1260,
+      "covered_days": 0.875,
+      "native_request_count": 1,
+      "theoretical_MEXC_1m_requests_for_equal_horizon": 1,
+      "one_minute_backfill_enabled": false,
+      "actual_availability": false
+    },
+    {
+      "native_frame_minutes": 240,
+      "required_closed_native_rows": 21,
+      "covered_minutes": 5040,
+      "covered_days": 3.5,
+      "native_request_count": 1,
+      "theoretical_MEXC_1m_requests_for_equal_horizon": 3,
+      "one_minute_backfill_enabled": false,
+      "actual_availability": false
+    },
+    {
+      "native_frame_minutes": 1440,
+      "required_closed_native_rows": 21,
+      "covered_minutes": 30240,
+      "covered_days": 21,
+      "native_request_count": 1,
+      "theoretical_MEXC_1m_requests_for_equal_horizon": 16,
+      "one_minute_backfill_enabled": false,
+      "actual_availability": false
+    },
+    {
+      "native_frame_minutes": 10080,
+      "required_closed_native_rows": 21,
+      "covered_minutes": 211680,
+      "covered_days": 147,
+      "native_request_count": 1,
+      "theoretical_MEXC_1m_requests_for_equal_horizon": 106,
+      "one_minute_backfill_enabled": false,
+      "actual_availability": false
+    }
+  ],
+  "offsetCoverage": [
+    {
+      "offset_minutes": 0,
+      "unique_rows_two_15m_windows": 15,
+      "padded_with_existing_5min_deadline_and_two_edges": 22
+    },
+    {
+      "offset_minutes": 1,
+      "unique_rows_two_15m_windows": 16,
+      "padded_with_existing_5min_deadline_and_two_edges": 23
+    },
+    {
+      "offset_minutes": 2,
+      "unique_rows_two_15m_windows": 17,
+      "padded_with_existing_5min_deadline_and_two_edges": 24
+    },
+    {
+      "offset_minutes": 3,
+      "unique_rows_two_15m_windows": 18,
+      "padded_with_existing_5min_deadline_and_two_edges": 25
+    },
+    {
+      "offset_minutes": 4,
+      "unique_rows_two_15m_windows": 19,
+      "padded_with_existing_5min_deadline_and_two_edges": 26
+    },
+    {
+      "offset_minutes": 5,
+      "unique_rows_two_15m_windows": 20,
+      "padded_with_existing_5min_deadline_and_two_edges": 27
+    },
+    {
+      "offset_minutes": 6,
+      "unique_rows_two_15m_windows": 21,
+      "padded_with_existing_5min_deadline_and_two_edges": 28
+    },
+    {
+      "offset_minutes": 7,
+      "unique_rows_two_15m_windows": 22,
+      "padded_with_existing_5min_deadline_and_two_edges": 29
+    },
+    {
+      "offset_minutes": 8,
+      "unique_rows_two_15m_windows": 23,
+      "padded_with_existing_5min_deadline_and_two_edges": 30
+    },
+    {
+      "offset_minutes": 9,
+      "unique_rows_two_15m_windows": 24,
+      "padded_with_existing_5min_deadline_and_two_edges": 31
+    },
+    {
+      "offset_minutes": 10,
+      "unique_rows_two_15m_windows": 25,
+      "padded_with_existing_5min_deadline_and_two_edges": 32
+    },
+    {
+      "offset_minutes": 11,
+      "unique_rows_two_15m_windows": 26,
+      "padded_with_existing_5min_deadline_and_two_edges": 33
+    },
+    {
+      "offset_minutes": 12,
+      "unique_rows_two_15m_windows": 27,
+      "padded_with_existing_5min_deadline_and_two_edges": 34
+    },
+    {
+      "offset_minutes": 13,
+      "unique_rows_two_15m_windows": 28,
+      "padded_with_existing_5min_deadline_and_two_edges": 35
+    },
+    {
+      "offset_minutes": 14,
+      "unique_rows_two_15m_windows": 29,
+      "padded_with_existing_5min_deadline_and_two_edges": 36
+    }
+  ],
+  "scenarios": [
+    {
+      "D_new_fact_bundles": 2,
+      "R_justified_deep_rechecks": 4,
+      "metadata_M": null,
+      "identity_I": null,
+      "narrow_two_candle_requests_each_venue_HTTP_day": 24,
+      "narrow_two_venues_31day_HTTP": 744,
+      "both_six_native_plus_one_minute_each_HTTP_day": 84,
+      "both_six_native_plus_minute_31day_HTTP": 2604,
+      "optional_two_trade_requests_each_bundle_HTTP_day": 12,
+      "actual_daily_limits_qualified": false,
+      "native_cost": null
+    },
+    {
+      "D_new_fact_bundles": 10,
+      "R_justified_deep_rechecks": 20,
+      "metadata_M": null,
+      "identity_I": null,
+      "narrow_two_candle_requests_each_venue_HTTP_day": 120,
+      "narrow_two_venues_31day_HTTP": 3720,
+      "both_six_native_plus_one_minute_each_HTTP_day": 420,
+      "both_six_native_plus_minute_31day_HTTP": 13020,
+      "optional_two_trade_requests_each_bundle_HTTP_day": 60,
+      "actual_daily_limits_qualified": false,
+      "native_cost": null
+    },
+    {
+      "D_new_fact_bundles": 100,
+      "R_justified_deep_rechecks": 200,
+      "metadata_M": null,
+      "identity_I": null,
+      "narrow_two_candle_requests_each_venue_HTTP_day": 1200,
+      "narrow_two_venues_31day_HTTP": 37200,
+      "both_six_native_plus_one_minute_each_HTTP_day": 4200,
+      "both_six_native_plus_minute_31day_HTTP": 130200,
+      "optional_two_trade_requests_each_bundle_HTTP_day": 600,
+      "actual_daily_limits_qualified": false,
+      "native_cost": null
+    }
+  ],
+  "weightScenarios": [
+    {
+      "hypothetical_only": true,
+      "actual_weight_qualified": false,
+      "kline_weight_hypothesis": 1,
+      "narrow_candle_weight": 2,
+      "six_native_plus_minute_weight": 7,
+      "ordinary_Others_capacity_per_minute": 100,
+      "other_consumers_and_metadata_identity_not_included": true
+    },
+    {
+      "hypothetical_only": true,
+      "actual_weight_qualified": false,
+      "kline_weight_hypothesis": 10,
+      "narrow_candle_weight": 20,
+      "six_native_plus_minute_weight": 70,
+      "ordinary_Others_capacity_per_minute": 100,
+      "other_consumers_and_metadata_identity_not_included": true
+    }
+  ],
+  "conclusions": [
+    "CoinEx TIA remains the better documented first candidate from frozen459; this is no additional acquisition authorization.",
+    "MEXC futures time is seconds, spot milliseconds. Do not send a fictitious limit40 or Min3 to this futures endpoint.",
+    "Phemex last kline uses documented limit50 for both21native and up to29distinct1m targets, never24/40.",
+    "Phemex new-v2 route weight remains null; legacy weight10 is not a proven bound for this path.",
+    "Nanosecond Phemex trade timestamp must not pass through an unsafe Number or become a fillID.",
+    "Both bounded trade routes lack individual fillIDs in the read schemas; no exact4h raw CVD/count is qualified.",
+    "Day/month arithmetic excludes actual M/I, other consumers and native CPU/SQL. It is not a free remaining quota."
+  ],
+  "corrections_to_frozen456_proposed_to_coordinator": [
+    {
+      "card": "MEXC",
+      "field": "documented_capabilities.limits",
+      "reason": "Current frozen ContractInfo/Ticker bodies do not state10/2s; preserve older discovery only as unqualified legacy reference, not current endpoint grant."
+    },
+    {
+      "card": "MEXC",
+      "field": "potential_block_roles.N12",
+      "reason": "T is documented as trade side, not explicitly taker. Keep limited raw-side sample until aggressor semantics qualify."
+    }
+  ],
+  "effects": {
+    "provider_market_HTTP": 0,
+    "native_SQL": 0,
+    "tests_of_accepted_runtime": 0,
+    "runtime_shared_changed": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_new_venue_fact": 0
+  },
+  "execution_ready": false,
+  "remaining": [
+    "Exact native/chain project binding for each new venue and asset, without a ticker/name-only match.",
+    "Actual availability/response/units/clocks/body bounds and applicable route/IP/common/day/month/manual admission.",
+    "MEXC generic kline/trade rate and trade clock/taker semantics; kline volume/amount scale.",
+    "Phemex current unsigned market access, exact new kline weight and row units/timestamp; no current access inferred from2020SDK.",
+    "Chosen reservation/journal/cache/write/readback SQL/R/W bounds before any first acquisition."
+  ]
+}

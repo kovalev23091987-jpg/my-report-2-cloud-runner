@@ -1,0 +1,41 @@
+{
+  "frozen_heads": {
+    "461": "c309ee349a98fb210d3040518a343d85371e99c5",
+    "462": "7d22a3a2617aa34dd3c04f1221855ead6b3ee9c8",
+    "464": "cb824178431ccc0dfb630e8df29ccab3606b4d3e"
+  },
+  "allowed_paths_only": true,
+  "files": {
+    "anomaly-research/durability/THREE_REVIEW_RISKS_RU.md": "a99c5952abd13733a83f7231e8f4a74375a9560a3ba52b49b73b5198ad888038",
+    "anomaly-research/durability/identity-retention-grid.mjs": "437364fc0ecc4d02db54fac9fa1425df9b406d40774e7f7c95c4196fa1c1be24",
+    "anomaly-research/durability/identity-retention-grid.test.mjs": "aa95323ec9b87cde77fd9234c9cc92f7727731d84987ab65183406ce24c220bf",
+    "anomaly-research/durability/validation.txt": "32f9ff2d3dc86a0f1b78b074c950e60def9caca99cb01b47083c661242f21551",
+    "anomaly-research/outbox/ATOMIC_OUTBOX_CONTRACT_RU.md": "3d8dfb3a21b4be45a2d2c5f485fb9771ce3c5c15943f6aee5beaebd3ad85ca8c",
+    "anomaly-research/outbox/protocol.mjs": "733cd616311b6cbed6e51f2bc7d308886b6493df9e5134f7a2c007983411670b",
+    "anomaly-research/outbox/protocol.test.mjs": "3ac5fd43b5a6c91c23e85264b710885f0944fd1d388a3679042310a4496ee27f",
+    "anomaly-research/outbox/validation.txt": "dc7eefe7f251fed6a93d0e948371f62c7336ea2ab7963dbbbc17e8e07e684d92",
+    "anomaly-research/statistics/STATISTICS_AND_CAPACITY_RU.md": "e8e7aa3e96ea96018b9338a30ad85d9ad15753605af1ec0e9151819cca75d9eb",
+    "anomaly-research/statistics/capacity.mjs": "fda377dbf5daecd3b267cbcfcecb68f9e4113337e03afc0585ab12fa74f135f5",
+    "anomaly-research/statistics/capacity.test.mjs": "799118e543a5643c8e71ca0ff31b61cef950b86aecda754abd7c5acceaeab6a6",
+    "anomaly-research/statistics/measured-scenarios.json": "6d7aeb01c7c141a5116d0b2e7a5a21aca87b95bb6b236cbeb96c44f807602f2c",
+    "anomaly-research/statistics/outcomes.mjs": "da9ff05288c1e54927f89035117f18e5225682c10af7965e50d9742295981c72",
+    "anomaly-research/statistics/outcomes.test.mjs": "510dd3f6d0d23041ddd8f8b728d7d156686dbc4b5ca98cd839b2080f44609550",
+    "anomaly-research/statistics/replay-and-capacity.mjs": "d99b636690c32a09b4cce82a35992e531c03d2a8bddc8c39a008fb0fa7af6cc6",
+    "anomaly-research/statistics/validation.txt": "30cb8963de4f507483d146f9a51c3091fdd0ee405b7b73930861646fc1b76962",
+    "checkpoints/anomaly-worker-handoff-20261018.json": "c706ab8f5b6ae37df90345e11036fbba374f34900c853218e9a9e7237b50da38",
+    "checkpoints/anomaly-worker-outbox-20261018.json": "01569740a3fbb13aeade1db962c1dd107bf258c4ffa15b3ed86dd767eb431d26",
+    "checkpoints/anomaly-worker-review-risks-20261018.json": "3a56e03241d635519d2bf2bc760953a5c34e9233fff9a53b953a34223b295669",
+    "checkpoints/anomaly-worker-statistics-capacity-20261018.json": "09cdcd88b1ff82f19da539de7a6318e33ad400addeb78800b06fb4a5024dc1f5"
+  },
+  "coordinator_new_controls": {
+    "pass": 49,
+    "fail": 0,
+    "TAP_SHA256": "1b0780c94e9a710dd5124fc1c44dda60cdac9e7e0d68b47df6b13e4919b9ff38",
+    "scope": "23 outcome/capacity +11 identity/retention/grid +15 controlled outbox. No repeats of previously accepted observer26."
+  },
+  "source_review": "Read module source, policies, model assumptions and newtests. No productionimports/schema/sourceHTTP/nativeSQL/delivery. Mainweights/forms unchanged.",
+  "new_concrete_review_hold": "PR464 CLAIM can reuse an oldattemptnonce after KNOWN_NOT_ACCEPTED, allowing a delayed oldACK to satisfy laterattempt; assigned worker for frozen-code counterexample and separate fix. Do not activate or mark fully accepted while unresolved.",
+  "native_and_predictive_qualification": false,
+  "production_activation": false,
+  "actual_SENT": false
+}

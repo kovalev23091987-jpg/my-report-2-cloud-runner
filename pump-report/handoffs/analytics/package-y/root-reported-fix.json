@@ -1,0 +1,15 @@
+{
+  "schema": "ANALYTICS_Y_ROOT_REPORTED_FIX_V1",
+  "source": "Trusted inbound ROOT message after first Y freeze; no outbound messages sent",
+  "finding_id": "Y01",
+  "reviewed_old_outcome_journal_sha256": "ca877fd9900ff7372ba8449baa1e5b468f0968fef94b0ed3ecaf1df8672be781",
+  "old_adapter_sha256": "0a3ff9a0f5b3a768d090ad0ea908bfb9d1f6a793b24dee903bb83748e11876d7",
+  "ROOT_report": "ROOT independently identified the same catchUp mixed snapshot race and is minimally changing adapter.read to return excluded counts from that same snapshot; catchUp uses view.source_cursor/excluded without second aggregate read. ROOT adds only one new concurrent append between view and source boundary; old two accepted cases not replayed.",
+  "ROOT_fix_reviewed_or_executed_by_ANALYTICS": false,
+  "new_review_started": false,
+  "new_tests_or_imports": 0,
+  "fix_status": "ROOT_REPORTED_IMPLEMENTING_TARGETED_FIX_AND_NEW_RACE_CASE_NOT_INDEPENDENTLY_VERIFIED",
+  "first_Y_manifest_sha256": "4c2166b76e0ed0a74de547fbad20967d4e1dacf474b302ffdadf2f215f434cc2",
+  "first_Y_manifest_preserved": "review-manifest.before-root-fix-note.json",
+  "finding_history": "Y01 remains a valid static finding for the old reviewed SHA; no claim it still exists after ROOT edit."
+}

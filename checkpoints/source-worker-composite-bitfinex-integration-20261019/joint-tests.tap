@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: new proposed Bitfinex capture preserves exact baseline N05/N12/HTTP/SQL/cache bytes and adds memory USD only
+ok 1 - new proposed Bitfinex capture preserves exact baseline N05/N12/HTTP/SQL/cache bytes and adds memory USD only
+  ---
+  duration_ms: 56.510875
+  type: 'test'
+  ...
+# Subtest: new USD fact and original N12 reach unchanged manual/two Telegram layouts with neutral score and explicit dollars
+ok 2 - new USD fact and original N12 reach unchanged manual/two Telegram layouts with neutral score and explicit dollars
+  ---
+  duration_ms: 57.069417
+  type: 'test'
+  ...
+# Subtest: NIL saved represented origins acquire new metadata only; full raw NIL runtime is not reconstructed
+ok 3 - NIL saved represented origins acquire new metadata only; full raw NIL runtime is not reconstructed
+  ---
+  duration_ms: 0.5495
+  type: 'test'
+  ...
+# Subtest: existing SQL group query/args remain identical when new Bitfinex memory is added
+ok 4 - existing SQL group query/args remain identical when new Bitfinex memory is added
+  ---
+  duration_ms: 13.91125
+  type: 'test'
+  ...
+# Subtest: old cache HIT preserves originals, new N10 metadata and zero acquisition
+ok 5 - old cache HIT preserves originals, new N10 metadata and zero acquisition
+  ---
+  duration_ms: 18.024375
+  type: 'test'
+  ...
+# Subtest: new capsule survives optional native-cache failure; unknown=false causes no extra SQL
+ok 6 - new capsule survives optional native-cache failure; unknown=false causes no extra SQL
+  ---
+  duration_ms: 12.61
+  type: 'test'
+  ...
+# Subtest: new capsule survives optional native-cache failure; unknown=true causes no extra SQL
+ok 7 - new capsule survives optional native-cache failure; unknown=true causes no extra SQL
+  ---
+  duration_ms: 12.1595
+  type: 'test'
+  ...
+# Subtest: new shared path refuses missing HTX spot without source/SQL fallback
+ok 8 - new shared path refuses missing HTX spot without source/SQL fallback
+  ---
+  duration_ms: 13.101417
+  type: 'test'
+  ...
+# Subtest: new shared path refuses foreign HTX spot without source/SQL fallback
+ok 9 - new shared path refuses foreign HTX spot without source/SQL fallback
+  ---
+  duration_ms: 12.622166
+  type: 'test'
+  ...
+# Subtest: new shared path refuses incomplete HTX spot without source/SQL fallback
+ok 10 - new shared path refuses incomplete HTX spot without source/SQL fallback
+  ---
+  duration_ms: 12.354708
+  type: 'test'
+  ...
+# Subtest: new shared path refuses stale HTX spot without source/SQL fallback
+ok 11 - new shared path refuses stale HTX spot without source/SQL fallback
+  ---
+  duration_ms: 12.38625
+  type: 'test'
+  ...
+# Subtest: new shared path refuses shifted primary window without source/SQL fallback
+ok 12 - new shared path refuses shifted primary window without source/SQL fallback
+  ---
+  duration_ms: 12.459375
+  type: 'test'
+  ...
+# Subtest: serialized N05 projection has no capsule and cannot manufacture the new USD path
+ok 13 - serialized N05 projection has no capsule and cannot manufacture the new USD path
+  ---
+  duration_ms: 7.106458
+  type: 'test'
+  ...
+# Subtest: new compact neutral USD consumer rejects units, nested clocks and rehashed fractional activity
+ok 14 - new compact neutral USD consumer rejects units, nested clocks and rehashed fractional activity
+  ---
+  duration_ms: 13.439958
+  type: 'test'
+  ...
+# Subtest: new DTO byte ceiling prevents raw capsule from entering report evidence
+ok 15 - new DTO byte ceiling prevents raw capsule from entering report evidence
+  ---
+  duration_ms: 11.665833
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 356.467292

@@ -1,0 +1,221 @@
+{
+  "schema": "F610_ORIGINAL_INPUT_RECEIPT_V1",
+  "status": "EXACT_ORIGINAL_INPUT_PRESENT_EXTRACTED_PRIVATE_UNMODIFIED",
+  "source_readback_private_path": "pump-report/.private/observations/owner-dood-sent241-readback-result.json",
+  "source_readback_sha256": "16f7e35adc8584de9d6f834dc070f50e82eea8c27aeff2503a62f8d512506f47",
+  "exact_input_private_reference": {
+    "source_JSON_path": "$.observation.private_evidence.original.input",
+    "private_path": "pump-report/.private/handoffs/sources/F610/original-input-exact.json",
+    "bytes": 529640,
+    "sha256": "14e18a8cd4c880de9916bcc55d2fa2e71b4d544f2ddbd8fb4f1f5310218a6d16",
+    "canonical_SHA256": "06fcfe41c9f82980a3b5881e86dc1574cce3b6bfb4ed07c671e95694f31179b9",
+    "source_byte_start": 149588,
+    "source_byte_end_exclusive": 679228,
+    "canonical_rule": "Python json.loads then json.dumps ensure_ascii=False sort_keys=True separators comma/colon allow_nan=False; not engine fingerprint",
+    "value_type": "dict",
+    "top_keys": [
+      "schema_version",
+      "run_id",
+      "mode",
+      "run_purpose",
+      "analysis_ts",
+      "instrument",
+      "facts",
+      "liquidations",
+      "previous_wave"
+    ]
+  },
+  "clock": {
+    "capture_started_ts": 1793009230061,
+    "capture_completed_ts": 1793009234253,
+    "original_saved_ts": 1793008557254,
+    "original_input_analysis_ts": 1793008557222,
+    "original_mode": "MANUAL",
+    "original_run_purpose": "PRODUCTION",
+    "original_implementation_sha256": "af5e03781bf42ec58d9404c845b5995c97ab82c5226e7c60774b2539892f5824",
+    "capture_implementation_sha256": "af5e03781bf42ec58d9404c845b5995c97ab82c5226e7c60774b2539892f5824",
+    "input_top_fields": [
+      "schema_version",
+      "run_id",
+      "mode",
+      "run_purpose",
+      "analysis_ts",
+      "instrument",
+      "facts",
+      "liquidations",
+      "previous_wave"
+    ],
+    "private_evidence_keys": [
+      "manual",
+      "original",
+      "card",
+      "resources",
+      "executor",
+      "queue_rows"
+    ],
+    "input_present": true,
+    "capture_started_ts_MSK": "2026-10-26T13:07:10.061000+03:00",
+    "capture_completed_ts_MSK": "2026-10-26T13:07:14.253000+03:00",
+    "original_saved_ts_MSK": "2026-10-26T12:55:57.254000+03:00",
+    "original_input_analysis_ts_MSK": "2026-10-26T12:55:57.222000+03:00"
+  },
+  "instrument": {
+    "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+    "asset_id": "BINGX_UNDERLYING:DOOD",
+    "native_symbol": "DOOD-USDT",
+    "venue": "BINGX",
+    "market_type": "PERPETUAL",
+    "base": "DOOD",
+    "quote": "USDT",
+    "settle": "USDT",
+    "margin": "USDT"
+  },
+  "producer_common": {
+    "source": "BINGX_OFFICIAL_PUBLIC_API",
+    "primary_provider": "BINGX",
+    "venue": "BINGX",
+    "family": "USDT_M",
+    "market_type": "PERPETUAL"
+  },
+  "input_fields": [
+    "schema_version",
+    "run_id",
+    "mode",
+    "run_purpose",
+    "analysis_ts",
+    "instrument",
+    "facts",
+    "liquidations",
+    "previous_wave"
+  ],
+  "fact_metadata": [
+    {
+      "field": "price",
+      "unit": "USDT_PER_BASE",
+      "event_ts": 1793008550000,
+      "received_ts": 1793008552284,
+      "expires_ts": 1793008580000,
+      "status": "USABLE",
+      "reason": null,
+      "fresh_at_original_analysis_by_expiry": true,
+      "fact_id_sha256": "96068390328caf198bd1f046a40d7c5c219e0ade5915fe8308dcf3e5de033a28"
+    },
+    {
+      "field": "ticker_24h",
+      "unit": "USDT_ROLLING_24H",
+      "event_ts": 1793008550000,
+      "received_ts": 1793008552284,
+      "expires_ts": 1793008580000,
+      "status": "INCOMPLETE",
+      "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+      "fresh_at_original_analysis_by_expiry": true,
+      "fact_id_sha256": "d63c2e2d265d107f65e433f2c2baf1cc60f3ada31577870c1d633d37ce56073a"
+    },
+    {
+      "field": "candles",
+      "unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+      "event_ts": 1793008500000,
+      "received_ts": 1793008554218,
+      "expires_ts": 1793008590000,
+      "status": "USABLE",
+      "reason": null,
+      "fresh_at_original_analysis_by_expiry": true,
+      "fact_id_sha256": "62e63cbbea89891912f6de03a32267ffe86fc5f67d8e98fec02dc90b66de1143",
+      "window": {
+        "rows": 125,
+        "all_closed": true,
+        "first_open_ts": 1793001000000,
+        "last_close_ts": 1793008500000,
+        "interval_ms": 60000,
+        "native_quantity_unit": "UNKNOWN",
+        "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY"
+      }
+    },
+    {
+      "field": "orderbook",
+      "unit": "USDT_PRICE_BASE_QUANTITY",
+      "event_ts": 1793008556193,
+      "received_ts": 1793008556277,
+      "expires_ts": 1793008571193,
+      "status": "USABLE",
+      "reason": null,
+      "fresh_at_original_analysis_by_expiry": true,
+      "fact_id_sha256": "b025294a4d1966f0a233fe81ad76af366682eb581c0ec9b8f10fcc628c9bb550",
+      "shape": {
+        "bids": 278,
+        "asks": 436
+      }
+    },
+    {
+      "field": "growth_24h",
+      "unit": "USDT_CLOSED_ROLLING_24H",
+      "event_ts": 1793008500000,
+      "received_ts": 1793008553541,
+      "expires_ts": 1793008590000,
+      "status": "USABLE",
+      "reason": null,
+      "fresh_at_original_analysis_by_expiry": true,
+      "fact_id_sha256": "5dc5d0f2c1c0839ec716649db0701f594efe5c73733aae51955aa2f964967424",
+      "window": {
+        "start_ts": 1792922100000,
+        "end_ts": 1793008500000,
+        "window_ms": 86400000
+      }
+    },
+    {
+      "field": "trades",
+      "unit": "USDT_PRICE_QUOTE_NOTIONAL",
+      "event_ts": 1793008556937,
+      "received_ts": 1793008557061,
+      "expires_ts": 1793008586937,
+      "status": "USABLE",
+      "reason": null,
+      "fresh_at_original_analysis_by_expiry": true,
+      "fact_id_sha256": "abcd9b22ab79910a68f3169830abf51c557f31f49183594ff5bca7acd03a9847",
+      "window": {
+        "rows": 1000,
+        "first_event_ts": 1793008460739,
+        "last_event_ts": 1793008556937,
+        "full_target_window_coverage_not_asserted": true
+      }
+    },
+    {
+      "field": "open_interest",
+      "unit": null,
+      "event_ts": null,
+      "received_ts": 1793008557222,
+      "expires_ts": null,
+      "status": "NOT_CHECKED",
+      "reason": "OPEN_INTEREST_UNIT_UNQUALIFIED",
+      "fresh_at_original_analysis_by_expiry": false,
+      "fact_id_sha256": "145bcaa61f5b8e5051f4e98d157e530592c10f84bff8cabbb3fbd6abbd3e7580"
+    },
+    {
+      "field": "funding",
+      "unit": null,
+      "event_ts": null,
+      "received_ts": 1793008557222,
+      "expires_ts": null,
+      "status": "NOT_CHECKED",
+      "reason": "FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED",
+      "fresh_at_original_analysis_by_expiry": false,
+      "fact_id_sha256": "6d2522d7147273e9b20eae9340e6f447950ad7357fff0aa5b02c25b8c6b8a9b3"
+    }
+  ],
+  "previous_wave_preserved": true,
+  "liquidations_preserved_no_new_model": true,
+  "original_clock_used_only_for_historical_fixture": true,
+  "current_freshness_not_claimed": true,
+  "raw_candles_prices_trades_book_or_TGtext_exported": false,
+  "recipient_or_secret_exported": false,
+  "accepted_manual_proof_reused": {
+    "path": "checkpoints/pump-report-20261025/ROOT_DOOD_SENT241_SAME_ORIGINAL_ACTUAL.json",
+    "sha256": "ee6c0e4ca932fa50c98a5aa5b2397b71c48c7e15dd8c71c2356a14bb1853d3ae",
+    "status": "GENUINE_OWNER_MANUAL_READY_SENT_SAME_ORIGINAL_CONFIRMED",
+    "mode": "MANUAL",
+    "ready": true,
+    "automatic_eligible": true,
+    "new_SOURCE_coverage_claim": false,
+    "manual_not_AUTO_SENT_proof": true
+  }
+}

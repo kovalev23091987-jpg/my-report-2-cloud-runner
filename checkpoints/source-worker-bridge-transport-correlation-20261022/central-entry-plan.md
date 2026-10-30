@@ -1,0 +1,7 @@
+# One future first affected common
+
+1. Fresh main/AGENTS/status/resume/register/window3/phase/fence/generation/all4 and ROOTown current scopedCAS. Receive frozen SOURCE+THIRD heads/full GitHub readbacks/peers/worker releases. No accepted component replay.
+2. Apply ONLY proposed SDK and native journal text to actual emitter sources. No source shim replaces FULL ROOT retained85c/privatef842. THIRD append-only bridge patch helper is repository-only, not a third runtime mutation. Build old/new FULL618 ASSEMBLED ROOT pair/616other files exact; both callable runtime arguments are ROOT, never src. Bind final hashes beforeFIRST; frozen author originals unchanged.
+3. Invoke ONLY new runBridgeClientCorrelationConnected, THIRD new callable and ROOT new configuration component as one common. No old21/61133/read4/studies/cases imports/exports/manual repeats. Save EACH returned JSON before wrapper assert/next. Preserve partial failure groups; completed components never replay after late failure.
+4. All source fetch/UUID/service/counters are CONTROLLED. Server06603 fixture is not installation. No nativeSQL/provider/CF/MAIN/TG/deploy/unknown reset/refund/grant/capraise. Required automaticCI and any later separately scoped native control deployment belong to ROOT.
+5. Exact new common artifact gets ONE assigned readonly result-to-claims peer. ROOT alone makes centralPR/merge/checkpoint and releases its own lease. SOURCE publishes exact ownfiles/readback and releases ONLYown source lease before expiry.

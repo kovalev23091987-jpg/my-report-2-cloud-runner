@@ -1,0 +1,951 @@
+{
+  "schema": "EXACT_RECOVERY_OBSTACLE_DIAGNOSIS_V1",
+  "source_run": "39122290584",
+  "run_id": "1792321965799-1792321975225",
+  "started_ts": 1792323134976,
+  "sourceHTTP": 1,
+  "MAIN": 0,
+  "Telegram": 0,
+  "scope_changed": false,
+  "reservations_refunded": false,
+  "source_clocks_refreshed": false,
+  "canonical_rows": [
+    {
+      "publication_id": "PUB:b8e32fbc6dcd658c5f95e529d289047a484acf64",
+      "contract_code": "CT-USDT",
+      "run_id": "1792321965799-1792321975225",
+      "snapshot_id": "S392:CT-USDT:1792322035025",
+      "observed_ts": 1792322035025,
+      "analytical_fingerprint": "88f30d5f2cb1ffa9c946f1d47970fa5c28fd06b16aa4d39334b0a75334168118",
+      "canonical_json_sha256": "607a13f9ad7ebd30eabbe16447c78ed2c9ff47daf35069faa6d398674e1e4236",
+      "compact": {
+        "ok": false,
+        "status": "MESSAGE_TOO_LONG",
+        "message": null,
+        "length": 2341,
+        "max_length": 1600
+      }
+    },
+    {
+      "publication_id": "PUB:402cba697c2be255c7cb8d1cb6398e8b4ee18d26",
+      "contract_code": "BR-USDT",
+      "run_id": "1792321965799-1792321975225",
+      "snapshot_id": "S392:BR-USDT:1792322059116",
+      "observed_ts": 1792322059116,
+      "analytical_fingerprint": "3226970e42c01490f7b2e9e3b1f537b16e187af08cb5a29a5d27274ae6bf7d9a",
+      "canonical_json_sha256": "708f899670c093ff7ccdddb5ddda951c588d49a021c75908dbd88076b9e46a52",
+      "compact": {
+        "ok": true,
+        "status": "READY",
+        "message": "BR — ⛔️ НЕ ГОТОВО\nСнимок: 2026-10-18T11:14:19.116Z\nОбщая оценка: не проверено\nМонета интересна: не проверено\nГотовность ко входу: не проверено\n• Закрытые минутные свечи: 15 1м — ХТХ\nСводный вывод по споту и фьючерсам: котировка доступна только для фьючерсов; совместная выборка последних сделок не подтверждена; общий рыночный вывод по этим данным не установлен; одна биржа — ХТХ.\nИсточники: Гейт.\nДоп. контекст: Боковой объём HTX, 240м: POC 0.41000583; VA 0.40333233–0.419151 USDT; 0 балла; одна площадка — ХТХ; Поток сделок по доступным площадкам за четыре часа: HTX фьючерсы: покупки 19 975,73, продажи 48 130,52 USDT; перевес продаж 41,34%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены — ХТХ; Направление последних сделок HTX: выборка 19 сделок: покупки 76,15, продажи 1 004,54 USDT; ограниченная выборка, не суточный поток; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен — HTX / HTX.\nЛиквидации:\nЛиквидационные уровни выше: подходящие уровни не подтверждены.\nЛиквидационные уровни ниже: подходящие уровни не подтверждены.\nИзменилось: С 2026-10-17T11:12:58.257Z по 2026-10-18T11:13:58.641Z: состав свежих подтверждённых фактов изменился — добавлено 4, перестало быть текущими 15.",
+        "length": 1385,
+        "max_length": 1600,
+        "formatter": "telegram-compact-formatter-v5-surface-contract-20260925",
+        "analytical_fingerprint": "3226970e42c01490f7b2e9e3b1f537b16e187af08cb5a29a5d27274ae6bf7d9a"
+      }
+    }
+  ],
+  "status": "EXACT_CATALOG_AND_PERSISTED_PRESENTATIONS_READ",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-18",
+      "run_count": 4,
+      "reserved_rows_read": 163500,
+      "reserved_rows_written": 2536,
+      "measured_rows_read": 100440,
+      "measured_rows_written": 1084,
+      "unknown_ops": 15,
+      "unfinished_count": 0,
+      "native_cost_reconciliation": {
+        "schema": "BOUND_NATIVE_AGGREGATE_COST_RECONCILIATION_V1",
+        "day_utc": "2026-10-18",
+        "reservation_id": "R2RUN:1792281986592:65a2f7d46b6acfcc",
+        "source_run_id": "39081512792",
+        "manifest_sha256": "d26225b9364e03822354cf3b424dbf575e717693b1e69984ee965c0a6c79ab23",
+        "historical_unknown_operations": 15,
+        "aggregate_billable_rows_read": 30746,
+        "aggregate_billable_rows_written": 110,
+        "per_statement_counters_reconstructed": false,
+        "status": "AGGREGATE_BILLABLE_COST_CLOSED",
+        "historical_unknown_operations_preserved": 15,
+        "original_reservation_preserved": true,
+        "new_or_unmatched_unknown_authorized": false
+      }
+    },
+    "next_reservation": {
+      "rows_read": 63000,
+      "rows_written": 1080
+    },
+    "projected_reserved": {
+      "rows_read": 226500,
+      "rows_written": 3616
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "source_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "HTX_PUBLIC_RISK",
+    "day_utc": "2026-10-18",
+    "attempts": 1
+  },
+  "minute_admission": {
+    "allowed": true,
+    "status": "RESERVED_OR_IDENTICAL",
+    "provider": "HTX",
+    "minute_bucket": 1792323120000,
+    "reserved_units": 1,
+    "rolling_units": 1,
+    "cap": 6
+  },
+  "catalog": {
+    "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+    "http_status": 200,
+    "received_ts": 1792323140215,
+    "bytes": 191341,
+    "body_sha256": "e184d100b36d405a576f6dbb2b2ce24e9e446569c994f272b81750ffdb0ea828",
+    "source_ts": 1792323140029
+  },
+  "missing_catalog": [
+    {
+      "contract": "BTR-USDT",
+      "raw_rows": [
+        {
+          "symbol": "BTR",
+          "contract_code": "BTR-USDT",
+          "contract_size": 10,
+          "price_tick": 0.00001,
+          "delivery_date": "",
+          "delivery_time": "1792137600000",
+          "create_date": "20260827",
+          "contract_status": 3,
+          "adjust": [],
+          "price_estimated": [],
+          "settlement_date": "1792137600000",
+          "support_margin_mode": "all",
+          "open_type": 0,
+          "settlement_period": "4",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": [],
+          "enable_rpi": false,
+          "business_type": "swap",
+          "pair": "BTR-USDT",
+          "contract_type": "swap",
+          "trade_partition": "USDT"
+        }
+      ],
+      "reason": "NATIVE_CONTRACT_NOT_ACTIVE",
+      "classification": {
+        "classification": "CRYPTO_CONFIRMED",
+        "eligible_for_crypto_discovery": true,
+        "source": "HTX swap_contract_info labels/tradfi_labels",
+        "source_fields_present": {
+          "labels": true,
+          "tradfi_labels": true,
+          "business_type": true,
+          "contract_type": true,
+          "trade_partition": true
+        },
+        "evidence": {
+          "official_forex_source_url": null,
+          "official_crypto_token_source_url": null,
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": []
+        },
+        "reasons": [
+          "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+        ]
+      }
+    },
+    {
+      "contract": "DOS-USDT",
+      "raw_rows": [
+        {
+          "symbol": "DOS",
+          "contract_code": "DOS-USDT",
+          "contract_size": 10,
+          "price_tick": 0.0001,
+          "delivery_date": "",
+          "delivery_time": "1792137600000",
+          "create_date": "20260812",
+          "contract_status": 3,
+          "adjust": [],
+          "price_estimated": [],
+          "settlement_date": "1792137600000",
+          "support_margin_mode": "all",
+          "open_type": 0,
+          "settlement_period": "4",
+          "labels": [],
+          "tradfi_labels": [],
+          "enable_rpi": false,
+          "business_type": "swap",
+          "pair": "DOS-USDT",
+          "contract_type": "swap",
+          "trade_partition": "USDT"
+        }
+      ],
+      "reason": "NATIVE_CONTRACT_NOT_ACTIVE",
+      "classification": {
+        "classification": "CRYPTO_CONFIRMED",
+        "eligible_for_crypto_discovery": true,
+        "source": "HTX swap_contract_info labels/tradfi_labels",
+        "source_fields_present": {
+          "labels": true,
+          "tradfi_labels": true,
+          "business_type": true,
+          "contract_type": true,
+          "trade_partition": true
+        },
+        "evidence": {
+          "official_forex_source_url": null,
+          "official_crypto_token_source_url": null,
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [],
+          "tradfi_labels": []
+        },
+        "reasons": [
+          "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+        ]
+      }
+    },
+    {
+      "contract": "GPS-USDT",
+      "raw_rows": [
+        {
+          "symbol": "GPS",
+          "contract_code": "GPS-USDT",
+          "contract_size": 100,
+          "price_tick": 0.000001,
+          "delivery_date": "",
+          "delivery_time": "1792137600000",
+          "create_date": "20260818",
+          "contract_status": 3,
+          "adjust": [],
+          "price_estimated": [],
+          "settlement_date": "1792137600000",
+          "support_margin_mode": "all",
+          "open_type": 0,
+          "settlement_period": "4",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": [],
+          "enable_rpi": false,
+          "business_type": "swap",
+          "pair": "GPS-USDT",
+          "contract_type": "swap",
+          "trade_partition": "USDT"
+        }
+      ],
+      "reason": "NATIVE_CONTRACT_NOT_ACTIVE",
+      "classification": {
+        "classification": "CRYPTO_CONFIRMED",
+        "eligible_for_crypto_discovery": true,
+        "source": "HTX swap_contract_info labels/tradfi_labels",
+        "source_fields_present": {
+          "labels": true,
+          "tradfi_labels": true,
+          "business_type": true,
+          "contract_type": true,
+          "trade_partition": true
+        },
+        "evidence": {
+          "official_forex_source_url": null,
+          "official_crypto_token_source_url": null,
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": []
+        },
+        "reasons": [
+          "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+        ]
+      }
+    },
+    {
+      "contract": "PIPPIN-USDT",
+      "raw_rows": [
+        {
+          "symbol": "PIPPIN",
+          "contract_code": "PIPPIN-USDT",
+          "contract_size": 10,
+          "price_tick": 0.00001,
+          "delivery_date": "",
+          "delivery_time": "1792137600000",
+          "create_date": "20250124",
+          "contract_status": 3,
+          "adjust": [],
+          "price_estimated": [],
+          "settlement_date": "1792137600000",
+          "support_margin_mode": "all",
+          "open_type": 0,
+          "settlement_period": "4",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": [],
+          "enable_rpi": false,
+          "business_type": "swap",
+          "pair": "PIPPIN-USDT",
+          "contract_type": "swap",
+          "trade_partition": "USDT"
+        }
+      ],
+      "reason": "NATIVE_CONTRACT_NOT_ACTIVE",
+      "classification": {
+        "classification": "CRYPTO_CONFIRMED",
+        "eligible_for_crypto_discovery": true,
+        "source": "HTX swap_contract_info labels/tradfi_labels",
+        "source_fields_present": {
+          "labels": true,
+          "tradfi_labels": true,
+          "business_type": true,
+          "contract_type": true,
+          "trade_partition": true
+        },
+        "evidence": {
+          "official_forex_source_url": null,
+          "official_crypto_token_source_url": null,
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": []
+        },
+        "reasons": [
+          "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+        ]
+      }
+    },
+    {
+      "contract": "SKR-USDT",
+      "raw_rows": [
+        {
+          "symbol": "SKR",
+          "contract_code": "SKR-USDT",
+          "contract_size": 100,
+          "price_tick": 0.000001,
+          "delivery_date": "",
+          "delivery_time": "1792137600000",
+          "create_date": "20260831",
+          "contract_status": 3,
+          "adjust": [],
+          "price_estimated": [],
+          "settlement_date": "1792137600000",
+          "support_margin_mode": "all",
+          "open_type": 0,
+          "settlement_period": "4",
+          "labels": [],
+          "tradfi_labels": [],
+          "enable_rpi": false,
+          "business_type": "swap",
+          "pair": "SKR-USDT",
+          "contract_type": "swap",
+          "trade_partition": "USDT"
+        }
+      ],
+      "reason": "NATIVE_CONTRACT_NOT_ACTIVE",
+      "classification": {
+        "classification": "CRYPTO_CONFIRMED",
+        "eligible_for_crypto_discovery": true,
+        "source": "HTX swap_contract_info labels/tradfi_labels",
+        "source_fields_present": {
+          "labels": true,
+          "tradfi_labels": true,
+          "business_type": true,
+          "contract_type": true,
+          "trade_partition": true
+        },
+        "evidence": {
+          "official_forex_source_url": null,
+          "official_crypto_token_source_url": null,
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [],
+          "tradfi_labels": []
+        },
+        "reasons": [
+          "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+        ]
+      }
+    },
+    {
+      "contract": "UB-USDT",
+      "raw_rows": [
+        {
+          "symbol": "UB",
+          "contract_code": "UB-USDT",
+          "contract_size": 10,
+          "price_tick": 0.00001,
+          "delivery_date": "",
+          "delivery_time": "1792137600000",
+          "create_date": "20260503",
+          "contract_status": 3,
+          "adjust": [],
+          "price_estimated": [],
+          "settlement_date": "1792137600000",
+          "support_margin_mode": "all",
+          "open_type": 0,
+          "settlement_period": "4",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": [],
+          "enable_rpi": false,
+          "business_type": "swap",
+          "pair": "UB-USDT",
+          "contract_type": "swap",
+          "trade_partition": "USDT"
+        }
+      ],
+      "reason": "NATIVE_CONTRACT_NOT_ACTIVE",
+      "classification": {
+        "classification": "CRYPTO_CONFIRMED",
+        "eligible_for_crypto_discovery": true,
+        "source": "HTX swap_contract_info labels/tradfi_labels",
+        "source_fields_present": {
+          "labels": true,
+          "tradfi_labels": true,
+          "business_type": true,
+          "contract_type": true,
+          "trade_partition": true
+        },
+        "evidence": {
+          "official_forex_source_url": null,
+          "official_crypto_token_source_url": null,
+          "business_type": "swap",
+          "contract_type": "swap",
+          "trade_partition": "USDT",
+          "labels": [
+            "common"
+          ],
+          "tradfi_labels": []
+        },
+        "reasons": [
+          "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+        ]
+      }
+    }
+  ],
+  "usage_before_finalization": {
+    "requests": 15,
+    "rows_read": 18,
+    "rows_written": 12,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 3,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "finalization": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "EXACT_RECOVERY_DIAG:39122290584:39123622796",
+    "source_run_id": "39123622796",
+    "measured_rows_read": 18,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 13,
+    "measured_requests_accounted": 16,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 16,
+    "rows_read": 19,
+    "rows_written": 13,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 3,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "HTTP": {
+    "used": {
+      "hot": 0,
+      "background": 1,
+      "statistics": 0
+    },
+    "total": 1,
+    "limits": {
+      "whole_job": 164,
+      "hot": 96,
+      "background": 56,
+      "statistics": 12
+    },
+    "remaining": 163
+  },
+  "full_report_completed": false,
+  "delivery_proven": false,
+  "head": "ce7678630aa736b466cffaba83d5aabc04e6fa21",
+  "cloud_run": "39123622796",
+  "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792321120450",
+  "control_HTTP": 10,
+  "bridge_HTTP": 14,
+  "total_HTTP": 25,
+  "journal": {
+    "schema": "BOUNDED_NATIVE_QUERY_COST_JOURNAL_V1",
+    "binding": "D1_BRIDGE",
+    "attempted_statements": 16,
+    "recorded_statements": 16,
+    "max_recorded_statements": 512,
+    "overflow": false,
+    "receipts": [
+      {
+        "transport_sequence": 1,
+        "transport_started_ts": 1792323135167,
+        "transport_completed_ts": 1792323135557,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 1,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_runner_budget_ledger_shadow",
+        "sql_sha256": "1ae0eee0a427cb0aa5effa4dd849d65c96e84c33a81c3c24af2ddffb29223244",
+        "wire_sql_sha256": "e68ef6bf11c2137b3c8687902a80baeb87200da4ef6b16def0c80dd9cb7ba37a",
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 2,
+        "transport_started_ts": 1792323135808,
+        "transport_completed_ts": 1792323136030,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 2,
+        "binding": "D1_BRIDGE",
+        "operation": "run",
+        "target": "report2_runner_budget_ledger_shadow",
+        "sql_sha256": "c62ddafc9fa91239f99eccaa83454a72bcc7b9f7b26ddf536708d69be7d047a6",
+        "wire_sql_sha256": "62d808ce7031fa73910d8ae3ceae6505415d0304a53b464100c80217952280c5",
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 3,
+        "transport_started_ts": 1792323136030,
+        "transport_completed_ts": 1792323136236,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 3,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_runner_budget_ledger_shadow",
+        "sql_sha256": "0c343a966aacea6868a93f1094ad3bc5d821759082451bf624ebb7d3f7019f44",
+        "wire_sql_sha256": "0c343a966aacea6868a93f1094ad3bc5d821759082451bf624ebb7d3f7019f44",
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 4,
+        "transport_started_ts": 1792323136236,
+        "transport_completed_ts": 1792323136437,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 4,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_evidence_source_reservation",
+        "sql_sha256": "de6802104978571aa5756577fab3989838d8eb243de542357c507319d1bfd36f",
+        "wire_sql_sha256": "de6802104978571aa5756577fab3989838d8eb243de542357c507319d1bfd36f",
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 5,
+        "transport_started_ts": 1792323136437,
+        "transport_completed_ts": 1792323137138,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 5,
+        "binding": "D1_BRIDGE",
+        "operation": "all",
+        "target": "canonical_publication_shadow",
+        "sql_sha256": "53e52568116539e2d760a2a8f99c645416f3c53d76257aff4e8c4906079a0675",
+        "wire_sql_sha256": "53e52568116539e2d760a2a8f99c645416f3c53d76257aff4e8c4906079a0675",
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 6,
+        "transport_started_ts": 1792323137164,
+        "transport_completed_ts": 1792323137751,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 6,
+        "binding": "D1_BRIDGE",
+        "operation": "all",
+        "target": "canonical_publication_shadow",
+        "sql_sha256": "53e52568116539e2d760a2a8f99c645416f3c53d76257aff4e8c4906079a0675",
+        "wire_sql_sha256": "53e52568116539e2d760a2a8f99c645416f3c53d76257aff4e8c4906079a0675",
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 7,
+        "transport_started_ts": 1792323137763,
+        "transport_completed_ts": 1792323137946,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 7,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_evidence_source_daily",
+        "sql_sha256": "837338356de3f831ecc9291bc03fe3b055cf9239ceacbb47470aa99079d37269",
+        "wire_sql_sha256": "837338356de3f831ecc9291bc03fe3b055cf9239ceacbb47470aa99079d37269",
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 8,
+        "transport_started_ts": 1792323137946,
+        "transport_completed_ts": 1792323138170,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 8,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_provider_minute_ledger_v1",
+        "sql_sha256": "fab0519eb7d3151f2e5bf4ac07802c8fe7136243132710a9e48298df2a4177ca",
+        "wire_sql_sha256": "fab0519eb7d3151f2e5bf4ac07802c8fe7136243132710a9e48298df2a4177ca",
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 9,
+        "transport_started_ts": 1792323138393,
+        "transport_completed_ts": 1792323138622,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 9,
+        "binding": "D1_BRIDGE",
+        "operation": "batch",
+        "target": "report2_evidence_source_daily",
+        "sql_sha256": "fc6dbb8955b0b90ede0170281b63320434adb9e598776ab21218dc9771f8daa5",
+        "wire_sql_sha256": "fc6dbb8955b0b90ede0170281b63320434adb9e598776ab21218dc9771f8daa5",
+        "rows_read": 0,
+        "rows_written": 2,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 9,
+        "transport_started_ts": 1792323138393,
+        "transport_completed_ts": 1792323138622,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 10,
+        "binding": "D1_BRIDGE",
+        "operation": "batch",
+        "target": "report2_evidence_source_daily",
+        "sql_sha256": "ce9ed2a6a28adf12307949a1a695a9929ff220171bc396291099e18089b49037",
+        "wire_sql_sha256": "ce9ed2a6a28adf12307949a1a695a9929ff220171bc396291099e18089b49037",
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 9,
+        "transport_started_ts": 1792323138393,
+        "transport_completed_ts": 1792323138622,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 11,
+        "binding": "D1_BRIDGE",
+        "operation": "batch",
+        "target": "report2_evidence_source_reservation",
+        "sql_sha256": "ca88d8a291b0ace2d076ee779615591044f3bb79840c1bc5db39d57918fee253",
+        "wire_sql_sha256": "ca88d8a291b0ace2d076ee779615591044f3bb79840c1bc5db39d57918fee253",
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 10,
+        "transport_started_ts": 1792323138622,
+        "transport_completed_ts": 1792323138823,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 12,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_evidence_source_reservation",
+        "sql_sha256": "de6802104978571aa5756577fab3989838d8eb243de542357c507319d1bfd36f",
+        "wire_sql_sha256": "de6802104978571aa5756577fab3989838d8eb243de542357c507319d1bfd36f",
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 11,
+        "transport_started_ts": 1792323138824,
+        "transport_completed_ts": 1792323139039,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 13,
+        "binding": "D1_BRIDGE",
+        "operation": "run",
+        "target": "report2_provider_minute_ledger_v1",
+        "sql_sha256": "3d2aeae73f33af44289ec4bbd41159ff163c7e51b5d1a74df2b94622fe0fde9d",
+        "wire_sql_sha256": "1abf5cfc680e91a9e040ef6126900c4bf73cf7572d4352b6fdf5030c90f3d5d6",
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 12,
+        "transport_started_ts": 1792323139039,
+        "transport_completed_ts": 1792323139243,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 14,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_provider_minute_ledger_v1",
+        "sql_sha256": "6f63b0695d686fbf44b1eb9b2ceeefc4829992cde17b1db05242c8afccae0c48",
+        "wire_sql_sha256": "6f63b0695d686fbf44b1eb9b2ceeefc4829992cde17b1db05242c8afccae0c48",
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 13,
+        "transport_started_ts": 1792323139243,
+        "transport_completed_ts": 1792323139451,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 15,
+        "binding": "D1_BRIDGE",
+        "operation": "first",
+        "target": "report2_provider_minute_ledger_v1",
+        "sql_sha256": "fab0519eb7d3151f2e5bf4ac07802c8fe7136243132710a9e48298df2a4177ca",
+        "wire_sql_sha256": "fab0519eb7d3151f2e5bf4ac07802c8fe7136243132710a9e48298df2a4177ca",
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      },
+      {
+        "transport_sequence": 14,
+        "transport_started_ts": 1792323140442,
+        "transport_completed_ts": 1792323140653,
+        "transport_clock_closed": true,
+        "client_utc_day": "2026-10-18",
+        "sequence": 16,
+        "binding": "D1_BRIDGE",
+        "operation": "run",
+        "target": "report2_runner_budget_ledger_shadow",
+        "sql_sha256": "42cab5c34f9ad7502ca55f51fe6d6d01545031280f0a5c7c19b0e33b53d5df30",
+        "wire_sql_sha256": "e335cdd409aac956c862d89436446ad44791a3e1424d589c43910a163d59f619",
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown": false,
+        "http_status": 200,
+        "SQL_params_results_exported": false
+      }
+    ],
+    "additional_SQL": 0,
+    "contains_SQL_params_or_results": false,
+    "clock_basis": "CLIENT_TRANSPORT_INTERVAL_NOT_SERVER_EXECUTION_OR_SOURCE_CLOCK",
+    "wire_sql_hash_basis": "EXACT_CLIENT_SENT_SQL_UTF8_NOT_PROOF_OF_SERVER_REWRITE"
+  },
+  "journal_reconciliation": {
+    "schema": "NATIVE_CLIENT_QUERY_RECONCILIATION_V1",
+    "known_statement_subtotal": {
+      "requests": 16,
+      "rows_read": 19,
+      "rows_written": 13,
+      "unknown_ops": 0
+    },
+    "observed_client_UTC_days": {
+      "2026-10-18": {
+        "requests": 16,
+        "rows_read": 19,
+        "rows_written": 13,
+        "unknown_ops": 0
+      }
+    },
+    "unallocated_statements": [],
+    "issues": [],
+    "aggregate_usage_matches": true,
+    "statement_costs_closed": true,
+    "client_day_attribution_closed": true,
+    "clock_basis": "CLIENT_TRANSPORT_INTERVAL_NOT_SERVER_EXECUTION_OR_SOURCE_CLOCK",
+    "native_billing_day_verified": false,
+    "whole_day_closed": false,
+    "daily_total": null,
+    "daily_upper_bound": null,
+    "admission_authorized": false,
+    "reservations_changed": false,
+    "additional_SQL": 0
+  }
+}

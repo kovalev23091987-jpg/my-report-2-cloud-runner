@@ -1,0 +1,91 @@
+{
+  "schema": "BOUNDED_COLLECTOR_NATIVE_TAIL_V1",
+  "worker": "my-report-2-hub",
+  "before": {
+    "deployment_id": "eb32a577-ff7d-49a1-894f-e947f292f4a9",
+    "version_id": "590ccf5c-ba0b-4793-a9c5-67ff6247e28d"
+  },
+  "started_ts": 1792333169926,
+  "status": "REGULAR_COLLECTOR_NATIVE_TAIL_OBSERVED",
+  "filters": {
+    "filters": [
+      {
+        "query": "REPORT2_PUBLIC_COLLECTOR_NATIVE_D1"
+      },
+      {
+        "scriptVersion": "590ccf5c-ba0b-4793-a9c5-67ff6247e28d"
+      }
+    ]
+  },
+  "target": "COLLECTOR_CLOSED",
+  "frames": 1,
+  "wire_bytes": 4156,
+  "receipts": [
+    {
+      "worker": "my-report-2-hub",
+      "version": "590ccf5c-ba0b-4793-a9c5-67ff6247e28d",
+      "version_binding_basis": "EXPLICIT_TAIL_EVENT_VERSION",
+      "event_ts": 1792333204460,
+      "log_ts": 1792333216317,
+      "received_ts": 1792333216928,
+      "invocation_kind": "COLLECTOR_CLOSED",
+      "receipt_sha256": "28a2d8cadae32ce9ac559213b7e46c477294bda3a6b4def46fc0df1dc82e0778",
+      "original_native_message": "{\"schema\":\"PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1\",\"invocation_id\":\"b27dc40d-6097-4698-8dc1-fdc20c465cc9\",\"bucket\":1792333200000,\"started_ts\":1792333204536,\"completed_ts\":1792333216317,\"native_D1\":{\"requests\":21,\"rows_read\":241,\"rows_written\":37,\"unknown_ops\":0},\"private_price_source_D1\":{\"requests\":6,\"rows_read\":23,\"rows_written\":6,\"unknown_ops\":0},\"collector_excluding_private_price_source_D1\":{\"requests\":15,\"rows_read\":218,\"rows_written\":31,\"unknown_ops\":0},\"native_totals_closed\":true,\"private_price_finalization_reply_known\":true,\"additional_SQL\":0,\"daily_total\":false,\"native_cost_admission_changed\":false,\"scope\":\"DATA_DB_TOTAL_AND_DISJOINT_COLLECTOR_VS_PRIVATE_PRICE_SOURCE\"}",
+      "receipt": {
+        "schema": "PUBLIC_COLLECTOR_NATIVE_INVOCATION_USAGE_V1",
+        "invocation_id": "b27dc40d-6097-4698-8dc1-fdc20c465cc9",
+        "started_ts": 1792333204536,
+        "completed_ts": 1792333216317,
+        "native_D1": {
+          "requests": 21,
+          "rows_read": 241,
+          "rows_written": 37,
+          "unknown_ops": 0
+        },
+        "private_price_source_D1": {
+          "requests": 6,
+          "rows_read": 23,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "collector_excluding_private_price_source_D1": {
+          "requests": 15,
+          "rows_read": 218,
+          "rows_written": 31,
+          "unknown_ops": 0
+        },
+        "split_disjoint": true,
+        "unknown": false
+      },
+      "daily_total": false
+    }
+  ],
+  "conflicting_invocations": [],
+  "target_satisfied": true,
+  "tail_created": true,
+  "tail_deleted": true,
+  "websocket_connections": 1,
+  "settings_changed": false,
+  "sourceHTTP": 0,
+  "SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "Worker_invocations": 0,
+  "whole_day_closed": false,
+  "daily_total": null,
+  "tail_id": "d058885767c044059479abb53ea11743",
+  "expires_at": "2026-10-18T20:19:30Z",
+  "opened_ts": 1792333171205,
+  "stream_status": "REGULAR_CRON_NATIVE_RECEIPT_RECEIVED",
+  "after": {
+    "deployment_id": "eb32a577-ff7d-49a1-894f-e947f292f4a9",
+    "version_id": "590ccf5c-ba0b-4793-a9c5-67ff6247e28d"
+  },
+  "completed_ts": 1792333218406,
+  "head": "9eb5716fc053ef111ef2dfffd6ec2afc1a28f3bf",
+  "github_HTTP": 20,
+  "cloudflare_HTTP": 5,
+  "max_control_HTTP": 40,
+  "manual_HTTP_reserved": 24,
+  "secret_values_exported": false
+}

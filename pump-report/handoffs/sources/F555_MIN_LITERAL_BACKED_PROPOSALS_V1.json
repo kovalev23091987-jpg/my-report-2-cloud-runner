@@ -1,0 +1,61 @@
+{
+  "schema": "SOURCE_F555_MIN_LITERAL_BACKED_PROPOSALS_V1",
+  "status": "ROOT_REVIEW_AND_WHERE_NEEDED_OWNER_DECISION_REQUIRED_NOT_APPLIED",
+  "proof_index": "F555_FULL_BLOBS_AND_LITERAL_INDEX_V1.json",
+  "book_ordinary_APT": {
+    "active": false,
+    "native_instrument_id": "BINGX:USDT_M:100164:APT-USDT",
+    "type": "OPTIONAL_OWNER_ACCEPTED_CCXT_CONSUMER_POLICY_ONLY",
+    "candidate_fields": "STANDARD",
+    "candidate_unit_after_explicit_owner_acceptance": "BASE_ASSET",
+    "candidate_native_base": "APT",
+    "consumer_basis": "CCXT pinned market nativebase APT/linearcontractSize1 plus unchanged bids/asks amounts",
+    "literal_refs": [
+      "bingx.ts1073-1187",
+      "bingx.ts1640-1746",
+      "Exchange.ts6010-6021/5813-5820/6893-6902"
+    ],
+    "vendor_guarantee_claimed": false,
+    "unknown": "Vendor independently explicit generic amount unit and relation to Coin remain unproved",
+    "activation_requirements": [
+      "ROOT exact tuple review",
+      "Separate owner decision accepting this limited consumer convention for ordinaryAPT only",
+      "Actual admitted response with original T/receive and full F554 shape/freshness/boundedcapacity checks"
+    ],
+    "default_without_decision": "NO_NEW_ORDERBOOK_QUALIFICATION",
+    "owner_question_ref": "F555_OWNER_BOOK_SEMANTICS_QUESTION_RU.md"
+  },
+  "book_scaled_1000SHIB": {
+    "active": false,
+    "native_instrument_id": "BINGX:USDT_M:103036:1000SHIB-USDT",
+    "fields": null,
+    "unit": null,
+    "base_per_contract": null,
+    "status": "UNKNOWN_PRICE_BASE_QUANTITY_RELATION",
+    "reason": "CCXT preserves native1000SHIB labels/rawprices/rawamounts and assigns linear1; no vendor relation of generic/Coin/underlyingSHIB/basket is established",
+    "unblocked_by_ordinary_owner_acceptance": false
+  },
+  "trades_fillId": {
+    "active": false,
+    "scope": "Exact public /openApi/swap/v2/quote/trades USDT_M recent response, not WS/private/inverse historical routes",
+    "proposal": "ROOT may review explicit fillId as a supported-consumer ID field for observed current shape; current SOURCE remains id-only until review",
+    "literal_ref": "bingx.ts1609 plus Exchange.safeTrade5207-5231",
+    "raw_vendor_value_preserved": true,
+    "synthetic_id_or_quantity_derived_id": false,
+    "stable_vendor_uniqueness_guarantee_claimed": false,
+    "proposed_narrow_conflict_policy": [
+      "Validate native decimalstring ID without numericprecision loss",
+      "When id and fillId both supplied, reject unequal/invalidmixed values; do not hide conflicts with fallback",
+      "Do not automatically accept t/tradeId just because CCXT candidate array includes them",
+      "Keep duplicates/conflicting IDs and invalid rows for consumer checks before filtering",
+      "Do not use ts as time or qty as BASE",
+      "Keep direct documented quoteQty USDT amount and existing strict boolean isBuyerMaker semantics",
+      "Return bounded sample only;1000cap/request100 unchanged"
+    ],
+    "current_F553_actual_unchanged": "1000rowsINCOMPLETE/invalid_id1000 from frozen package; no re-normalization performed",
+    "post_review_validation": "At most one NEWfocused IDalias/conflict case, not old6 or F551 replay; no new marketfetch"
+  },
+  "old13_registry_untouched": true,
+  "shared_contract_strategy_thresholds_changed": false,
+  "new_provider_HTTP_SQL_TG_deploy": 0
+}

@@ -1,0 +1,275 @@
+{
+  "schema": "SOURCE_WORKER_N05_TURNOVER_ORIGINAL_BODY_BINDING_AND_CONSUMER_PROPOSAL_V1",
+  "recorded_utc": "2026-10-18T10:32:00.270568+00:00",
+  "parent_main": "21e7bb13dcc583157e9d4bfc9fb2703f1ae7f479",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "source_scope": "N05 prior30d collector/baseline source modules only. Bind cached candles to exact contract,venue,SPOT,USDT,official hourly URL,requested prior720hour grid,original receipt/raw and parsed hashes/observation/expiry. Carry compact descriptive baseline binding to existing N05 field via separate shared proposal.",
+  "new_source_cases": 66,
+  "new_shared_proposal_cases": 10,
+  "tests": {
+    "baseline66": {
+      "path": "checkpoints/source-worker-turnover-binding-20261018/baseline66.tap.gz",
+      "raw_sha256": "a4d50a63357f4f137f54a440b23e253d3eeeb355606d1390f41b71b96af56e6a",
+      "gzip_sha256": "1d9e04277a218a906e53ad269b616f807961a4474cdd6f1a49d517d59cded311",
+      "counts": {
+        "tests": 66,
+        "pass": 0,
+        "fail": 66
+      }
+    },
+    "source-related91": {
+      "path": "checkpoints/source-worker-turnover-binding-20261018/source-related91.tap.gz",
+      "raw_sha256": "8166e42729b6f49cb4fe1b114d1576ba88e38b26b074aaa19f7f71bc690239b0",
+      "gzip_sha256": "a0ed00c342d2b156943c0ff77b75005a93af45797b9a6ff969c671948a567e2a",
+      "counts": {
+        "tests": 91,
+        "pass": 91,
+        "fail": 0
+      }
+    },
+    "consumer-before10": {
+      "path": "checkpoints/source-worker-turnover-binding-20261018/consumer-before10.tap.gz",
+      "raw_sha256": "d105284c1931c2701831e6d01bc8b8fe3bc8d655ce5f73e1d0648bf71c2512ea",
+      "gzip_sha256": "cb5969a1586da362b2b527e2c046efe48b1356a18c16d93ada6df0210f14373b",
+      "counts": {
+        "tests": 10,
+        "pass": 9,
+        "fail": 1
+      }
+    },
+    "assembled-related169": {
+      "path": "checkpoints/source-worker-turnover-binding-20261018/assembled-related169.tap.gz",
+      "raw_sha256": "6c8d6df5de422825596d8da4aeebf01d5ade61e11faf2cc7482be57dbfbe39b5",
+      "gzip_sha256": "1a3712f21f6a57df0ee528fc231cac33e235f24fb022f9a121881ac94343da4e",
+      "counts": {
+        "tests": 169,
+        "pass": 169,
+        "fail": 0
+      }
+    }
+  },
+  "source_inputs": {
+    "checkpoints/n05-native-qualification-38052957545/native-summary.json": {
+      "file_sha256": "7361f30c49b902dce556a6bbb6df97ac920ae3df52cdc4c40fade4946a1e3d0a"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-ALL-CURRENCY-IDENTITY.json.gz": {
+      "file_sha256": "b74ef586f4951455382b336b1abe998df295ce54ff10643e503f9b0f157c9b8b",
+      "raw_sha256": "c66180ff0c9665e6e4b7b304031652a8bc1b5a4a7a202900dd3410cac7d8d50b",
+      "raw_bytes": 2128050,
+      "original_url": "https://api.gateio.ws/api/v4/spot/currencies",
+      "original_received_ts": 1791636178054,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-PEOPLE-CANDLES.json.gz": {
+      "file_sha256": "f3b4d1c99ff8db71feb541f5b5d77ea7a0279a1a516e375e2d9baeb527c917c4",
+      "raw_sha256": "d1ab0d86376dc71a5e36b21ecdc09795539c6ddeeaca041687485cd543bdc6d7",
+      "raw_bytes": 22174,
+      "original_url": "https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=PEOPLE_USDT&from=1791621720&to=1791636119&interval=1m",
+      "original_received_ts": 1791636239894,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-PEOPLE-PAGE-1.json.gz": {
+      "file_sha256": "2151c43f1aa4b3436adb26d6fea66b728031a52ed264a4d7931a33fbd4db7c30",
+      "raw_sha256": "d23048cd12557ed81683218f81be92d9e8240e33e25fbef79d3175740828dca5",
+      "raw_bytes": 12042,
+      "original_url": "https://api.gateio.ws/api/v4/spot/trades?currency_pair=PEOPLE_USDT&from=1791621720&to=1791636119&limit=1000&page=1",
+      "original_received_ts": 1791636240904,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-native-qualification-38052957545/BINANCE-SMALL-CATALOG.json.gz": {
+      "file_sha256": "542b4cea4fd801e96352ac0d93a0fb2e735da2ba250a9a19ccb6d1d7798a9923",
+      "raw_sha256": "d78a84616b9a9d4c313a60c818b7f141130ed495b3a21090d4327272821145fe",
+      "raw_bytes": 2495842,
+      "original_url": "https://data-api.binance.vision/api/v3/exchangeInfo?showPermissionSets=false&symbolStatus=TRADING&permissions=SPOT",
+      "original_received_ts": 1791636172404,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-large-qualification-38063816181/large-summary.json": {
+      "file_sha256": "d001784fef0a8967599490a0d2c4a1d6e027b445a057865045cf6dd39561d3c9"
+    },
+    "checkpoints/n05-large-qualification-38063816181/BINANCE-BTC-NATIVE-240.json.gz": {
+      "file_sha256": "30c3ff92960f8601d460771431faf9719c36f8f2def695bde291d252cc57862f",
+      "raw_sha256": "c1e6a5d983252bc374c45c3d7dd19d3bd5b0d3f66d106bb6d2a5206ad8a1762a",
+      "raw_bytes": 40240,
+      "original_url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1791631740000&endTime=1791646139999&limit=240",
+      "original_received_ts": 1791646209357,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-large-qualification-38063816181/GATE-PEOPLE-PRIOR30D-HOURS.json.gz": {
+      "file_sha256": "1c09971ec379b46f9dc267572f95c3c79e912adbf6256b1448481b02253ba6cd",
+      "raw_sha256": "62fc99d8d5f99f4b37bcb6068b9908fb7cd890ce7be4811385de5ab634fdac79",
+      "raw_bytes": 71048,
+      "original_url": "https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=PEOPLE_USDT&from=1789027200&to=1791619199&interval=1h",
+      "original_received_ts": 1791646204820,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-large-qualification-38063816181/BINANCE-BTC-PRIOR30D-HOURS.json.gz": {
+      "file_sha256": "6c6081d14b28f7b4c6d06be4372f5c34194ac7f3436af4e925a577b72ded317f",
+      "raw_sha256": "3b5ef86218ba86b66d4693b1c9f9e46b3ed6e4fe15d39ee089627699286c34ce",
+      "raw_bytes": 128554,
+      "original_url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1h&startTime=1789038000000&endTime=1791629999999&limit=720",
+      "original_received_ts": 1791646210336,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-large-qualification-38063816181/GATE-SUSHI-PRIOR30D-HOURS.json.gz": {
+      "file_sha256": "73bfa8489f65c4479d7c3b3c565752fa6f541193675c432cb74cb4ec2f153c1c",
+      "raw_sha256": "31ad3e1ce1cc50ac43bcb65c00ae1220e7c1de677f6e74bfcd158a45ba8ecc8a",
+      "raw_bytes": 64043,
+      "original_url": "https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=SUSHI_USDT&from=1789027200&to=1791619199&interval=1h",
+      "original_received_ts": 1791646203821,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-large-qualification-38063816181/BINANCE-ETH-PRIOR30D-HOURS.json.gz": {
+      "file_sha256": "f2f8270e160cb717ce65ef9c41e1cb1f870d224396f0dd6ce5b9d233b093619f",
+      "raw_sha256": "760f5c7ea7d1e88b7e093cff5a7a6e12b22fc58942a78e6807cfd81553d64e73",
+      "raw_bytes": 126978,
+      "original_url": "https://data-api.binance.vision/api/v3/klines?symbol=ETHUSDT&interval=1h&startTime=1789038000000&endTime=1791629999999&limit=720",
+      "original_received_ts": 1791646268187,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-actual-qualification-38049404414/catalog-summary.json": {
+      "file_sha256": "5245240408a64398f8e4ccd429d15b50c1f93f6dc8d9a02ea6ee70f777a7ef53"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/catalog-GATE-SPOT.json.gz": {
+      "file_sha256": "14541e76582798fcf3f0ea10aca92fb3677e04786e2ab9c2b2a7657e44fee110",
+      "raw_sha256": "4e625fb2d29f837f055ebcc8b914be7b69f97e4c597f2ad3dfa779bc418e6a8f",
+      "raw_bytes": 1127317,
+      "original_url": "https://api.gateio.ws/api/v4/spot/currency_pairs",
+      "original_received_ts": 1791632615100,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29",
+      "raw_bytes": 1041432,
+      "original_url": "https://api.huobi.pro/v2/reference/currencies",
+      "original_received_ts": 1791632635640,
+      "matched_saved_receipt_sha256": true
+    },
+    "checkpoints/btw-preserved-block-result-input-20261004.json": {
+      "file_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8",
+      "role": "Controlled canonical renderer shell, no source or entry qualification."
+    }
+  },
+  "implementation_files": {
+    "current-generation/files/src/flow-turnover-baseline.mjs": "46a1f9f3a5a4b91b30395ea0735bb399b4ed40de02d32f3fb7c56acfd4b3f255",
+    "current-generation/files/src/flow-turnover-collector.mjs": "f318e1c3f43b87ea211057317cf30e478e232f95a333e2e3b4eb06f316e393ec",
+    "current-generation/tests/turnover-cache-binding.test.mjs": "544a86b7acaa2d7a06f8ffb6cd5d26b1f268f1f3a8fa8163398c6876a26060d6"
+  },
+  "shared_proposals": {
+    "after-433-collector.proposed.patch": {
+      "path": "checkpoints/source-worker-turnover-binding-20261018/after-433-collector.proposed.patch",
+      "sha256": "1b171c4e02a92007d3c8e7646581688759f25cdd5897ad78f92f76b0d4968e88"
+    },
+    "shared-CI.proposed.patch": {
+      "path": "checkpoints/source-worker-turnover-binding-20261018/shared-CI.proposed.patch",
+      "sha256": "338ddafdadf2e3a2b6353b0d73755fb6b04cf2f0085c2fc556ac14569590dbb3"
+    },
+    "shared-consumer.proposed.patch": {
+      "path": "checkpoints/source-worker-turnover-binding-20261018/shared-consumer.proposed.patch",
+      "sha256": "75b9178466da29c38e1732d77a448c3f353c49a29da981839466f39a8dba592b"
+    },
+    "after-433-consumer-test.proposed.patch": {
+      "path": "checkpoints/source-worker-turnover-binding-20261018/after-433-consumer-test.proposed.patch",
+      "sha256": "f201142900f2e126b51a0b6fdc88cacba0979d19b77ed8e90b5ea0188bf02661"
+    }
+  },
+  "own_lease": {
+    "commit": "c4a427102e4a0038794de5bd6b0f4bd85d6b77f4",
+    "owner": "CODEX:SOURCES:01a14e11:1792318895496",
+    "expires_ts": 1792323695496,
+    "exact_readback": true
+  },
+  "concrete_counterexamples": [
+    "Version+grid allowed actual saved SUSHI720hours to become PEOPLE history, or actual ETH720hours to become BTC history, under wrong original request. Explicit controlled cache/receipt copies, not a claim of provider misdelivery.",
+    "Missing/foreign URL,failedHTTP,wrong body hash,changed parsed body,quote/market/window or cache/receipt clock drift did not force exact admitted replacement.",
+    "Invalid caller contract/market/quote/numeric amount could spend acquisition before normalization rejected the flow.",
+    "Collector-start time may precede obtained flow/history; use current entry clock for cache eligibility while preserving original received/knowledge/expiry clocks.",
+    "Old common consumer ignored even the original exact bounded descriptive median; new shared proposal uses existing AVAILABLE/JOINT N05 field only.",
+    "Shared adapter transport accounting metadata must not change compact numerical fact digest; final connected169 covers this wrapper path."
+  ],
+  "original_btc_useful_fact": {
+    "contract": "BTC-USDT",
+    "flow_window_start_ts": 1791631740000,
+    "flow_window_end_ts": 1791646140000,
+    "flow_observed_ts": 1791646209357,
+    "history_observed_ts": 1791646210336,
+    "first_known_ts": 1791646210336,
+    "expires_at": 1791666000000,
+    "median_four_hour_quote": 167776581.71426448,
+    "current_four_hour_quote": 99809737.99541071,
+    "ratio_to_median": 0.5948967190510165,
+    "history_binding": {
+      "schema": "N05_TURNOVER_HISTORY_BINDING_V1",
+      "contract": "BTC-USDT",
+      "venue": "BINANCE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "request_url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1h&startTime=1789038000000&endTime=1791629999999&limit=720",
+      "history_start_ts": 1789038000000,
+      "history_end_ts": 1791630000000,
+      "observed_ts": 1791646210336,
+      "expires_at": 1791666000000,
+      "body_sha256": "3b5ef86218ba86b66d4693b1c9f9e46b3ed6e4fe15d39ee089627699286c34ce",
+      "candles_sha256": "3b5ef86218ba86b66d4693b1c9f9e46b3ed6e4fe15d39ee089627699286c34ce",
+      "baseline_sha256": "cd482dca6ba8d167a82709d46bc17c50a2ada37694cfffb9cd97f5a420bdc8e1"
+    },
+    "source_scope": "ONE_VENUE_ONLY",
+    "score_contribution": 0,
+    "entry_authorized": false,
+    "current_coverage": false,
+    "telegram_delivery_proven": false
+  },
+  "gate_limit": {
+    "flow_end_ts": 1791636120000,
+    "flow_observed_ts": 1791636240904,
+    "history_observed_ts": 1791646204820,
+    "collector_baseline_internal": true,
+    "fresh_consumer_comparison": false,
+    "reason": "Saved history received about2hours after current flow; do not fabricate an aligned observation."
+  },
+  "legacy_cache_policy": [
+    "Original compact arrays can be matched to their saved raw wire SHA and exact URL, no migration HTTP.",
+    "New cache stores separate raw wire and canonical parsed digest; legitimate whitespace formatting does not force another HTTP.",
+    "Legacy noncompact/no-wire/no-digest cannot establish original body binding; use ordinary existing admitted route or defer, never spend without grant.",
+    "Invalid cached row is replaced after valid acquisition; valid new/legacy cache remains exactly1existingSQLread/0grant/0HTTP."
+  ],
+  "behavior_preserved": [
+    "Raw720closedhours→180nonoverlapping4h sample calculation,median/p95/current ratio unchanged. No individual trade/holder/outcome calibration.",
+    "Same venue remains one upstream; no new asset route, independent provider, aggregate quote sum, score, entry, weight, form, cap or pause.",
+    "Shared comparison appends text to existing N05 fact in manual and both Telegram forms; no extra field, bullet, network, SQL or source vote.",
+    "Malformed baseline hides comparison only, preserves qualified existing flow text; stale Gate cannot be revived."
+  ],
+  "integration": {
+    "PR433_frozen_head": "580ec10a5a4092f77a0836968df892742473508e",
+    "independent_branch_on_fresh_main": true,
+    "after433_collector_patch_preserves_optional_writes_unknown_backoff_reservations": true,
+    "after433_old_internal_only_test_assertion_change": "Only its final no-median assertion changes to expect the newly bound comparison; all other39 tests retained in exact local assembled169.",
+    "assembled169_composition": "66new source+10new proposal+39PR433+9largevenue+16fallback+5blockcontext+16jointflow+8N12markets; all imports resolved to temp proposed runtime via copied tests/symlinks.",
+    "common_files_modified_here": [],
+    "workflow_before_sha256": "47bd6390b01574052b06650d580df007c68791f0c5f2aed6aceaac4f4c23b461",
+    "workflow_proposed_sha256": "749fb8f847b0b551e770dc930d3bd31e5744aa2b7cdc6d5d93bf771be2d1a6e2",
+    "proposed_block_context_sha256": "dd21b951b58663baeb3963ac0c7aa75328f81a1d1935e29d48c0f1b433a1924c",
+    "proposed_combined_collector_sha256": "61a44a590e80235ce8d829c5054b3702a0573c6f72b284c35ea4d7a8fad19c72"
+  },
+  "limits": {
+    "source_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "normal_valid_path_extra_SQL_or_HTTP": 0,
+    "new_current_asset_or_provider_qualification": false,
+    "current105_full_or_SENT": false,
+    "caps_strategy_weights_forms_pauses_unknown_spent_reservations_unchanged": true
+  },
+  "acceptance_limits": [
+    "Offline saved-original and controlled-cache tests only; mocked fetch/localSQLite, no current acquisition or natural run.",
+    "Digests establish stored integrity/binding to trusted collector receipts, not independent authentication or re-fetched provider proof.",
+    "Only historical BTC rendered preview at its original clocks; Gate and unknown current105 remain honest gaps.",
+    "Source branch shared consumer is a proposal, not deployed use; after shared patch its test is created at current-generation/tests/turnover-consumer-proposal.test.mjs.",
+    "Coordinator must resolve current common workflow/assembly and integrate with frozen433; cloud branch/main/natural delivery pending."
+  ],
+  "exact_next_action": "Coordinator review independent source delta plus exact after433/consumer/test/CI proposals. Worker continue remaining N10/N12/N15/LIQ saved-fact gaps, then consolidate only new source packets and exact order/budget/manual reserve delta; no accepted census rerun or waiting."
+}

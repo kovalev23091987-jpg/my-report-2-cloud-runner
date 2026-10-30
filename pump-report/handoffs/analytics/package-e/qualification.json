@@ -1,0 +1,113 @@
+{
+  "schema": "PUMP_ANALYTICS_E_RUNTIME_ACCEPTANCE_V1",
+  "base_main": "108a5dbdfc670d9a48fbf953811f5aa1b7bc2864",
+  "code_head": null,
+  "runtime_mutated_by_ANALYTICS": false,
+  "status": "ROOT_RUNTIME_DEFECTS_REPRODUCED",
+  "unique_new_cases": 11,
+  "latest_per_case_pass": 9,
+  "latest_per_case_fail": 2,
+  "open_defects": [
+    "E09 UNKNOWN original absent",
+    "E10 terminal UNSENT FIRST_READY absent"
+  ],
+  "commands": [
+    "node --test --test-reporter=tap pump-report/tests/analytics/runtime-acceptance.test.mjs",
+    "node --test --test-reporter=tap --test-name-pattern='E05|E06|E10' pump-report/tests/analytics/runtime-acceptance.test.mjs"
+  ],
+  "source_test_changes_between_runs": "Only E05/E06 due-signal setup and E10 explicit EXPIRED assertion; final assertions remain strict. Latest subset 2PASS/1FAIL. Other passed cases not replayed.",
+  "accepted_A_B_C_D_replayed": false,
+  "dependencies_at_freeze": [
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "bytes": 15753,
+      "sha256": "a8e74a57df1aecb0360177a1c56c7b1896f5729b5ad0d829bfeb8f2619bb2b02"
+    },
+    {
+      "path": "pump-report/runtime/delivery.mjs",
+      "bytes": 7411,
+      "sha256": "d3e340097e5cd05044935d5d5759cfc2f527801a2f7b1fc32cfff11ea3f7a273"
+    },
+    {
+      "path": "pump-report/runtime/store.mjs",
+      "bytes": 4922,
+      "sha256": "1f4e7806e675dc980293e805ca3830b6e2cfb0d021cdcd934cf96b0b2a47e94e"
+    },
+    {
+      "path": "pump-report/runtime/budget.mjs",
+      "bytes": 11890,
+      "sha256": "f0ea4375a9ef83ae495446bc6b7614b9dacbff100406386b0bfd135fa5215856"
+    },
+    {
+      "path": "pump-report/runtime/manual-input.mjs",
+      "bytes": 1228,
+      "sha256": "1206c34098508afa8ca81ff4c036aa0c908d8b352d94f1de31b0d98eb964568d"
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 3567,
+      "sha256": "7abdc44914c754f5edc1fd1ddacdee0fe407109211581b2534b361faa144ec51"
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "bytes": 1715,
+      "sha256": "b9f6aa60ce56c8cfd1b2166fb6a86cdc289ffb36d624b73817acf1885d5604bb"
+    },
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "bytes": 12516,
+      "sha256": "6ccac1109cbde2b20f7aeb40467f4f51e1c61c629b0498d3a630fdc5823a7a2e"
+    },
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "bytes": 12804,
+      "sha256": "dd21f36bb7113063dc6e9465978033822a1af00c56db707571025e32ad17fac2"
+    },
+    {
+      "path": "pump-report/analytics/context.mjs",
+      "bytes": 6513,
+      "sha256": "704348a6c56bcdafe10d7335c89e4e092d92fadfe12bed856c9afb8bfc8285d6"
+    },
+    {
+      "path": "pump-report/analytics/outcome.mjs",
+      "bytes": 7245,
+      "sha256": "8be8aeba5bab96e66be6798078104d6b573a66e22b895789d14c6bf9a3759375"
+    },
+    {
+      "path": "pump-report/tests/analytics/fixtures.mjs",
+      "bytes": 2854,
+      "sha256": "b8f48cac69d813a3ba025cf364145b96db4d7449914f5ba119ad9bb89c898fed"
+    }
+  ],
+  "files": [
+    {
+      "path": "pump-report/tests/analytics/runtime-acceptance.test.mjs",
+      "bytes": 12487,
+      "sha256": "d8322c25be7e885d2aabac16fcaba35f32c4768d882892bce85602e3efc1159f"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e/ROOT_DEFECTS_RU.md",
+      "bytes": 5800,
+      "sha256": "f5ff3181fcf81fec7080c66c6153ede672340dc3676848400a9221b3419db1db"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e/authority.json",
+      "bytes": 3642,
+      "sha256": "3e3b30d273411194c6d964b877af1b5c807c37144ba8d2b9bd9e384340c2ac61"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e/strengthened-cases.tap",
+      "bytes": 1563,
+      "sha256": "ae42a4d5d05741a0669422d30e3329c456452982dd0c1f5323736543edce73d0"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e/test-results.tap",
+      "bytes": 4339,
+      "sha256": "ae1a7b191b175a53ddc581fed701ab9794ba28b1736c539a9b720551b0ec91c7"
+    }
+  ],
+  "artificial_sources_only": true,
+  "native_IO": 0,
+  "provider_or_SQL_or_Telegram_proof": false,
+  "ROOT_next_action": "Integrate original-anchor policy in runner/storage; rerun E09/E10 and changed dependencies only."
+}

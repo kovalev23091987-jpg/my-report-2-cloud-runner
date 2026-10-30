@@ -1,0 +1,49 @@
+--- a/current-generation/files/runner-main.mjs
++++ b/current-generation/files/runner-main.mjs
+@@ -1,3 +1,4 @@
++import {types as nodeUtilTypes} from "node:util";
+ import {readAnomalyOrigin,commitAnomalyBundle,readDueAnomalyBundles,ORIGIN_SQL,COMMIT_SQL,READBACK_SQL,DUE_SQL} from './src/anomaly-native-domain.mjs';
+ import {approvedHtxLimitedReportAdmitted,approvedHtxLimitedCronAdmitted} from './src/approved-htx-analysis-scope.mjs';
+ import {createFailedD1RunAccounting} from './src/failed-d1-run-accounting.mjs';
+@@ -775,6 +776,32 @@
+     if(parts.card.first_known_ts!==origin.first_known_ts||origin.receipt.first_known_ts!==origin.first_known_ts||origin.receipt.current_revision!==origin.revision||['card','plan','state'].some(n=>origin.receipt[n+'_sha256']!==origin[n+'_sha256']))throw Error('ANOMALY_RETAINED_ORIGIN_SCALAR');
+     return freeze({...origin,...parts,receipt:{...origin.receipt}});
+   };
++  // Snapshot callback-owned data while SQL/reentry denial is still active.
++  // Reject Proxy trap-free BEFORE reflection: traps could schedule later SQL.
++  const data_proto=Object.prototype,data_get_proto=Object.getPrototypeOf,data_keys=Reflect.ownKeys,
++    data_descriptor=Object.getOwnPropertyDescriptor,data_create=Object.create,data_freeze=Object.freeze,data_is_proxy=nodeUtilTypes.isProxy,data_is_array=Array.isArray;
++  const snapshot_prepared=value=>{
++    let nodes=0,string_bytes=0;const ancestors=new Set();
++    const string=s=>{string_bytes+=Buffer.byteLength(s,'utf8');if(string_bytes>2*131072+8192)throw Error('ANOMALY_PREPARED_DATA_BOUND');return s;};
++    const walk=(v,depth)=>{
++      if(++nodes>64||depth>4)throw Error('ANOMALY_PREPARED_DATA_BOUND');
++      if(v===null||typeof v==='boolean')return v;
++      if(typeof v==='string')return string(v);
++      if(typeof v==='number'&&Number.isFinite(v)&&!Object.is(v,-0))return v;
++      if(!v||typeof v!=='object'||data_is_proxy(v)||data_is_array(v)||ancestors.has(v))throw Error('ANOMALY_PREPARED_OWN_DATA_REQUIRED');
++      const proto=data_get_proto(v);if(proto!==data_proto&&proto!==null)throw Error('ANOMALY_PREPARED_OWN_DATA_REQUIRED');
++      const names=data_keys(v);if(names.length>32)throw Error('ANOMALY_PREPARED_DATA_BOUND');
++      ancestors.add(v);const copy=data_create(null);
++      for(const name of names){
++        if(typeof name!=='string')throw Error('ANOMALY_PREPARED_OWN_DATA_REQUIRED');string(name);
++        const d=data_descriptor(v,name);
++        if(!d||!Object.hasOwn(d,'value'))throw Error('ANOMALY_PREPARED_ACCESSOR_REFUSED');
++        copy[name]=walk(d.value,depth+1);
++      }
++      ancestors.delete(v);return data_freeze(copy);
++    };
++    return walk(value,0);
++  };
+   const validate_prepared=(prepared,id,origin)=>{
+     const r=prepared?.request;
+     if(!plain(r)||r.logical_event_id!==id||r.expected_revision!==(origin?.revision??0)||typeof prepared.text!=='string'||Buffer.byteLength(prepared.text,'utf8')>131072)throw Error('ANOMALY_EFFECTIVE_PREPARED_NOT_BOUND');
+@@ -808,7 +835,7 @@
+       origin=origin_for_callback(read.origin,id);
+       let prepared;
+       const preparation_usage=usage();
+-      reentrant=false;in_prepare=true;try{prepared=prepare(origin);}finally{in_prepare=false;}
++      reentrant=false;in_prepare=true;try{prepared=snapshot_prepared(prepare(origin));}finally{in_prepare=false;}
+       if(reentrant)throw Error('ANOMALY_REENTRANT_CALLBACK_REFUSED');
+       if(!same_usage(usage(),preparation_usage)||!parent_closed())throw Error('ANOMALY_PREPARE_CHANGED_PARENT_OR_USAGE');
+       if(prepared&&typeof prepared.then==='function')throw Error('ANOMALY_PREPARE_MUST_BE_SYNCHRONOUS');

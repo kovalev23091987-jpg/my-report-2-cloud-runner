@@ -1,0 +1,105 @@
+{
+  "schema": "F611_SOURCE_MOCK_CONTRACT_MATRIX_V1",
+  "reviewed_script_sha256": "80d0e36d81d6671d2fdaedc7bb803593036801e38a266494c0675a97f4a6a783",
+  "classification": "STATIC_CONSUMED_SHAPE_COMPATIBLE; NOT_FULL_SOURCE_BROKER_EQUIVALENCE",
+  "methods": [
+    {
+      "method": "getCatalog",
+      "BS_lines": [
+        116
+      ],
+      "real71_source_lines": [
+        229,
+        232
+      ],
+      "returned_shape": "instruments/unqualified/coverage",
+      "review": "Compatible with this runner's consumed shape; exactly one saved instrument, current registry assessor remains real code.",
+      "difference": "Mock coverage COMPLETE/expected1/checked1/scope; real source returns CHECKED plus native catalogue counts. No whole550/current membership proof.",
+      "expected_declared_calls": 1
+    },
+    {
+      "method": "getOverview",
+      "BS_lines": [
+        117,
+        118
+      ],
+      "real71_source_lines": [
+        236,
+        252,
+        253,
+        255,
+        263
+      ],
+      "returned_shape": "observations[{instrument,preliminary,reported_change_pct,facts:{price,ticker_24h}}]/coverage",
+      "review": "Clones exact original price/ticker fields and clocks; reported_change_pct=null is honest F610 missing scalar.",
+      "difference": "No broker/ticker request, cache, rows/identity parsing or current preliminary price discovery tested. Active-wave projection admits this known wave, not cold start.",
+      "expected_declared_calls": 2
+    },
+    {
+      "method": "getDayGrowth",
+      "BS_lines": [
+        119
+      ],
+      "real71_source_lines": [
+        281,
+        283,
+        285
+      ],
+      "returned_shape": "facts.growth_24h",
+      "review": "Exact original closed-window fact cloned; runner consumes day.facts.",
+      "difference": "Real return includes source coverage; mock omits it. Batch/window parser/provider completeness not exercised.",
+      "expected_declared_calls": 1
+    },
+    {
+      "method": "getCore",
+      "BS_lines": [
+        120,
+        121,
+        122
+      ],
+      "real71_source_lines": [
+        267,
+        272,
+        274,
+        278
+      ],
+      "returned_shape": "Deep: facts price/candles/orderbook; DELIVERY: only price/orderbook; coverage",
+      "review": "Original facts cloned unchanged. Delivery requires force_refresh=true/only_facts pair. Current71 revalidatePumpCard passes mode:card.mode, so args.mode=AUTO assertion is compatible.",
+      "worker_reference": {
+        "module": "runtime/worker.mjs",
+        "line": 37
+      },
+      "difference": "DELIVERY coverage is historical manual core metadata rather than recomputed selected2/force-refresh coverage. Current consumer uses fresh.facts only. Forced transport freshness/HTTP/pacing/latency not exercised.",
+      "expected_declared_calls": 2
+    },
+    {
+      "method": "getOptional",
+      "BS_lines": [
+        124
+      ],
+      "real71_source_lines": [
+        328,
+        335,
+        355,
+        366
+      ],
+      "returned_shape": "facts trades/open_interest/funding",
+      "review": "Exact original optional facts cloned: funding/OI remain NOT_CHECKED with null values and original reasons/clocks; no upgrade.",
+      "difference": "Current71 requested kinds emits unrequested OI as OPTIONAL_KIND_NOT_REQUESTED; mock preserves old OI unit-gap reason intentionally. Real coverage/deadline fields and current optional funding quote route not exercised.",
+      "expected_declared_calls": 1
+    },
+    {
+      "method": "getLiquidations",
+      "BS_lines": [
+        123
+      ],
+      "returned_shape": "Exact original liquidation result",
+      "review": "Preserves original empty zones/status/reason; no synthetic local model or qualified map.",
+      "difference": "No provider/model route, deadline, source-age, price-basis, actual coverage or map cost tested.",
+      "expected_declared_calls": 1
+    }
+  ],
+  "call_bound_basis": "BS lines156-157 assert method counts after case; these are mock invocations, not wire HTTP or credit accounting. SOURCE did not execute assertions.",
+  "source_window": "Await-source-window callback records/asserts BINGX/cost10 but performs no wait or broker operation.",
+  "getOutcomeHistory": "Mock throws if used; declared case must not perform outcome source I/O."
+}

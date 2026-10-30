@@ -1,0 +1,65 @@
+{
+  "schema": "SOURCE_DUE_CONSUMER_STATIC_PEER_V1",
+  "reviewer_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "result": "ACCEPTED_WITH_LIMITS",
+  "mode": "ONE_FULL_NEW_CONSUMER_CASE_PLUS_ONLY_F1_LINE_DELTA",
+  "reviewed_full_head": "8e645f05bf2ec80815ac2e41cab48be7a505cd3a",
+  "reviewed_only_fix_head": "ceacda5390c1e06ce7ce7dcf25163d0c8f3dda78",
+  "blockers": [],
+  "open_findings": [],
+  "mismatch": [],
+  "closed_finding": {
+    "id": "F1",
+    "scope": "CONTROLLED fetchImpl all result shape only",
+    "before": "out=sqlite.all(...)",
+    "after": "out={results:sqlite.all(...)}",
+    "source_delta_ACK": true
+  },
+  "consumer": {
+    "target": "current-generation/files/src/anomaly-native-due-watch.mjs",
+    "payload": "consumer.proposed.mjs",
+    "bytes": 14359,
+    "sha256": "224a90f1358c9b996bd78fdaecbd233f0be7b2e6fecf4a9fb56097d0270b9b74"
+  },
+  "case": {
+    "bytes": 17291,
+    "sha256": "2b9237e7ded1f51313ab7869ce4e225b5f10e60c46fecf7d4e593919e7454a05",
+    "groups": 9,
+    "nested_variants": 22,
+    "status": "AUTHOR_UNEXECUTED"
+  },
+  "TEXT_worker_2insertions_exact": true,
+  "TEXT_emitter_1filename_exact": true,
+  "unchanged_kernel_observer_tape_schema": true,
+  "reviewed": [
+    "Whole DUE status/parent/cost/all rows before any ORIGIN",
+    "Current verified ORIGIN/immutable original3parts and full16plan",
+    "Completed captured body/record/minute grid, end-time price, freshness and first-known bounds",
+    "Existing observe/draftNotice LONG SHORT, exact duplicate facts without new revision",
+    "Bounded revisions/outbox/state no-drop and inactive pending due",
+    "SOURCE unknown operation retained, remaining rows stop, no old component imports",
+    "README resource model/no free budget and input/head-starvation/long-horizon limits"
+  ],
+  "limits": [
+    "STATIC review is not semantic PASS",
+    "LocalSQLite seed schema/counters/parent/policy are CONTROLLED",
+    "Saved client restart and harness pending DTO are not production durable journal or native ACK",
+    "independent105/epoch/global first knowledge/outcome accuracy/CPU heap/native cost/fs durability/SENT unqualified",
+    "Actual consumer returns plain data; generic accessor/getter return-object purity is unqualified, no probe or runtime change."
+  ],
+  "reviewer_execution": {
+    "Node": 0,
+    "imports": 0,
+    "syntax": 0,
+    "tests": 0,
+    "SQL": 0,
+    "SQLite": 0,
+    "semantics": 0,
+    "gitapply": 0,
+    "provider": 0,
+    "native": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "old_components": 0
+  }
+}

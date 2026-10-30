@@ -1,0 +1,341 @@
+{
+  "schema": "ANOMALY_WORKER_N10_ORIGINAL_CLOCKS_READONLY_PEER_V1",
+  "created_at_utc": "2026-10-19T09:57:30.043858+00:00",
+  "verdict": "ONE_OPEN_STATIC_METADATA_FINDING_PRIMARY_15M_CLOCK_PATH_NO_CONCRETE_BLOCKER_FOUND",
+  "scope": {
+    "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "main_at_acquire": "def4a1a482cdbef781f673be7147d391e3526bac",
+    "own_lease_ref_sha": "8a206a5e4497fd5cebd41fffed02ce1978ccd535",
+    "owner": "CODEX:OFFLINE_ANOMALIES:1792403377471",
+    "exact_readback": true,
+    "new_app_or_tests": 0,
+    "worker8_cases_or559_checks_rerun": 0,
+    "provider_native_SQL_deploy_MAIN_Telegram": 0,
+    "shared_source_or_main_mutations": 0,
+    "source522_frozen_unchanged": true,
+    "entry523_frozen_unchanged": true,
+    "nativecleanup": "LAST_BY_OWNER"
+  },
+  "target": {
+    "PR": 522,
+    "frozen_head": "c2ee68155d137af7c1e061c43188c146a4fea453",
+    "patch_target": "05ce093e9e4428ffec5e15d5bc677044346a2f53",
+    "patch_sha256": "ae10a266683a06fd156b021833b1ca33acc26910fc5e395b3e5adda06b52332e",
+    "two_file_before_after": {
+      "current-generation/files/src/htx-technical-structure.mjs": {
+        "before_sha256": "4ce4a5fa55bfdb8a0c7f7f0ac8d184ace3d5d3620cd995cd83b9bb6712dd5dd5",
+        "after_sha256": "6613c9db75709f76ae3487fdc9d8bc9fab6af053bb8a56f5bef45ab2d49d6337"
+      },
+      "current-generation/files/src/block-result-context.mjs": {
+        "before_sha256": "90b3391a923a9798785673e3210de2da59989479ea9949852309a9c17d8ded12",
+        "after_sha256": "afeb69e1f374fe033232b3e4af4fe9a3681b880f7d4089e61c22513e111b1f86"
+      }
+    },
+    "textual_patch_reconstruction_only": true,
+    "module_execution": 0,
+    "selected_source_file_hashes": [
+      {
+        "path": "checkpoints/source-worker-original-clocks-20261019/README_RU.md",
+        "bytes": 8650,
+        "sha256": "47e7dbb29b29090a9fd92bf2c3644f950c80d272cb5148a96e006effb400127d"
+      },
+      {
+        "path": "checkpoints/source-worker-original-clocks-20261019/shared-original-clocks.proposed.patch",
+        "bytes": 13653,
+        "sha256": "ae10a266683a06fd156b021833b1ca33acc26910fc5e395b3e5adda06b52332e"
+      },
+      {
+        "path": "checkpoints/source-worker-original-clocks-20261019/proposal-file-hashes.json",
+        "bytes": 490,
+        "sha256": "ccb31f3162d0d7d4a47c50347fd889f6550bf28c58871e210cbc318282c1e942"
+      },
+      {
+        "path": "checkpoints/source-worker-original-clocks-20261019/new-clock-witness.json",
+        "bytes": 842,
+        "sha256": "b661a61e8338ca0d5f1c1b5dede17bbe854125fd3208f5a3a295fc4409348c43"
+      },
+      {
+        "path": "checkpoints/source-worker-original-clocks-20261019/original-clocks.test.mjs",
+        "bytes": 12519,
+        "sha256": "3788ec40b01a01409fe7e26f133fefd47c1db9ff3ad75ad0e860869c0266ff48"
+      },
+      {
+        "path": "checkpoints/source-worker-original-clocks-20261019/verification.json",
+        "bytes": 35910,
+        "sha256": "e3129cb53659e28ceb636840cc8ecd03ead869765738143be5b82c0888812b52"
+      },
+      {
+        "path": "checkpoints/source-worker-original-clocks-20261019/saved-gap-analysis.json",
+        "bytes": 29657,
+        "sha256": "2b2d48b14be416be9c7e97c998703e2f9d0b0442aa719caf17dede6ee97b0a38"
+      },
+      {
+        "path": "checkpoints/source-worker-original-clocks-20261019/manifest.json",
+        "bytes": 2916,
+        "sha256": "00cfc76d66bf8711b709692433590263bba37dab460c1124553be1a4093dd2e5"
+      }
+    ],
+    "dependency_source_hashes": {
+      "current-generation/files/src/worker.js": {
+        "bytes": 617350,
+        "sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5"
+      },
+      "current-generation/files/src/evidence-source-adapters.mjs": {
+        "bytes": 10600,
+        "sha256": "d8b740fd0b61989a80ddafdb29e2b31cb2311b45625ee428397fcc1f26cbad54"
+      },
+      "current-generation/files/src/evidence-v2.mjs": {
+        "bytes": 8157,
+        "sha256": "dd939e4825e032d71eb41f8bc530419b78263d341f2491486279ef4a4be712e7"
+      },
+      "current-generation/files/src/canonical-publication.mjs": {
+        "bytes": 48767,
+        "sha256": "658505469318149f4b796903e11e7a90c69b37f5f6fced55c7927cf1a79733d0"
+      }
+    }
+  },
+  "worker_availability_semantics": {
+    "file": "current-generation/files/src/worker.js",
+    "exact_lines": {
+      "batch": 16002,
+      "all_settled_complete": 16013,
+      "clock": 16015,
+      "fulfilled_wrapper": 16017,
+      "trajectory_assignment": 16055,
+      "decision_clock": 16866,
+      "primary_call": 17221
+    },
+    "components": [
+      {
+        "promise": "futuresSnapshot",
+        "index": 0,
+        "fulfilled_available_ts": "shared componentsAvailableTs"
+      },
+      {
+        "promise": "approved spotSnapshot or resolvednull",
+        "index": 1,
+        "fulfilled_available_ts": "shared bound; actual unsupported spot wrapper is NOT_APPLICABLE with no clock"
+      },
+      {
+        "promise": "futuresTrajectory",
+        "index": 2,
+        "fulfilled_available_ts": "shared componentsAvailableTs"
+      },
+      {
+        "promise": "htxStage0History",
+        "index": 3,
+        "fulfilled_available_ts": "shared componentsAvailableTs"
+      }
+    ],
+    "meaning": "Date.now after ALL4 promises settle; conservative factual availability of collected components, not per-provider first response byte",
+    "rejected_components": "REJECTED wrapper with data:null and no available_ts",
+    "provider_and_source_clocks_rewritten": false,
+    "later_decision_ts": "now=decisionTs aftercollection; first_known is earlier immutable wrapper bound when present",
+    "actual_native_availability_measured_here": false
+  },
+  "primary_path_static_review": {
+    "concrete_blockers_found": 0,
+    "scope": "new CLOSED_15M_PRICE_PATH_CONTEXT only; whole2fileprojection has findingF1",
+    "clock_matrix": [
+      {
+        "input": "safe integer source<=trajectory.available_ts<=decision, current source/window",
+        "outcome": "first_known=originalconservativeavailable; source andobserved unchanged"
+      },
+      {
+        "input": "trajectory.available_ts absent/undefined/null",
+        "outcome": "wrapper ??now uses conservativeassembly time; no originalHTTPavailabilityclaim"
+      },
+      {
+        "input": "directderive first_known_ts undefined",
+        "outcome": "default observed_ts"
+      },
+      {
+        "input": "directderive explicitnull",
+        "outcome": "Number.isSafeInteger false; no15m context"
+      },
+      {
+        "input": "present available before source /0 /negative",
+        "outcome": "15m context rejected; no replacement byassembly; independentlyvalidrange preserved"
+      },
+      {
+        "input": "present available after decision",
+        "outcome": "15m rejected, not repaired by laterconsumer"
+      },
+      {
+        "input": "present numericstring /fraction /NaN /Infinity",
+        "outcome": "15m rejected, no synthetic clock"
+      },
+      {
+        "input": "decision-source ordecision-windowend exceeds180000ms",
+        "outcome": "existingfreshness/window gates reject; originalexpiry notextended"
+      },
+      {
+        "input": "invalidstoredfirstKnown inprimary15m row",
+        "outcome": "consumerrederives withrowfirstKnown and rejects ordering/type/future invalid input"
+      }
+    ],
+    "expiry": "MIN(source_ts+180000,closed_window_end+180000); unchanged, independent of available or laterassembly",
+    "source_known_observed_order": "source_ts<=first_known_ts<=observed_ts; allsafeintegers onnewpath",
+    "fields_unchanged": [
+      "evidence_id",
+      "raw_hash",
+      "source_ts",
+      "observed_ts",
+      "expires_at",
+      "OHLC/window",
+      "coverage0",
+      "directionalnull",
+      "risknull",
+      "entryfalse"
+    ],
+    "score_user_text": "no formatting/scorecode changed bypatch; savedcontrolledtextchecks onlyread",
+    "trust_boundary": "producer wrapper and canonical evidence clocks; no independently authenticated acquisition/cacheACK from thispeer"
+  },
+  "consumer_and_compact_review": {
+    "new_projection": "original_clock copied from exactselectedN10 evidence after currentconsumer evaluation; manual/TG receipts copy thatrederived field",
+    "stored_supporting_original_clock_is_authority": false,
+    "reason": "confirmedBlockContextFacts recomputes availableCanonicalContextFacts and onlymatches stored IDs/root/label/value, notstoredclock",
+    "full_canonical_persistence": "canonical_json stores fullcanonical including metadata/evidence; compactrunartifact deliberately omitsfullmetadata",
+    "missing_clock_in_compact_proves_full_DB_loss": false,
+    "original_clock_not_delivery_proof": true,
+    "N12_composite_and_origins": "unchanged522scope, accepted519 notrerun",
+    "limitation": "new original_clock attaches ALLN10; legacyrange ordering issueF1 below remainsOPEN"
+  },
+  "finding": {
+    "id": "F1_ALL_N10_ORIGINAL_CLOCK_ATTACHMENT_LACKS_CLOCK_ORDER_GUARD",
+    "status": "OPEN_ON_FROZEN522",
+    "kind": "STATIC_CODE_COUNTEREXAMPLE_NOT_EXECUTED_NOT_NATIVE_CORRUPTION_CLAIM",
+    "affected": "new block-result-context original_clock attachment, includes legacy CLOSED_CANDLE_RANGE_CONTEXT",
+    "baseline_input": "otherwise exactvalid CT range row with allcurrentmetadata/window/range/hashpredicates closed",
+    "controlled_single_field_change": {
+      "source_ts": 1792397520111,
+      "observed_ts": 1792397520261,
+      "decision_ts": 1792397560589,
+      "first_known_ts": 1792397520110,
+      "expires_at": "source+180000, stillfuture"
+    },
+    "trace": [
+      "validateEvidenceV2 requiresfinite source/known/expiry, known<=decision andexpiry>=decision; no source<=known ordering",
+      "describe CLOSED_CANDLE_RANGE_CONTEXT verifies source/window/20candles/range but doesnot inspect first_known_ts",
+      "EvidenceV2 ID excludes first_known andraw_hash hashes value/extra, so thosechecks do notbind changedfirstKnown",
+      "new original_clock attaches the impossible known<source fromthe acceptedrow",
+      "confirmedmanual/TG technicalreceipts cancopy it whiletext/score unchanged"
+    ],
+    "native_affected_rows_proven": false,
+    "source_worker_and_coordinator_acknowledged": true,
+    "narrow_proposal": {
+      "file": "metadata-clock-guard.proposed.patch",
+      "base_block_result_after_522_sha256": "afeb69e1f374fe033232b3e4af4fe9a3681b880f7d4089e61c22513e111b1f86",
+      "patch_sha256": "94209a4c83be881e0f5641cb31c00675bdc34dd541c7dfb3b9a1c362626339f3",
+      "effect": "Attach NEWclockmetadata only ifall4safeinteger andsource<=known<=observed<=expires; invalidmetadata omitted, keep otherwisevalidrangefact/text/score",
+      "applied": false,
+      "tested": false,
+      "globalvalidator_or_fact_gate_changed": false
+    },
+    "resolution_required": "exactcorrecteddelta or explicitlylimitedprojection before calling5220blockers; frozen522notmodified"
+  },
+  "saved_data_review": {
+    "new_clock_witness_file": "checkpoints/source-worker-original-clocks-20261019/new-clock-witness.json",
+    "witness": {
+      "schema": "N10_ORIGINAL_CLOCK_COUNTEREXAMPLE_V1",
+      "input_kind": "SAVED_CT_OHLC_AND_CLOCKS_PLUS_CONTROLLED_AVAILABILITY_AND_RAW_ENVELOPE",
+      "source_run": 39220988644,
+      "source_ts": 1792397460000,
+      "decision_ts": 1792397560589,
+      "controlled_available_ts": 1792397525000,
+      "sourceHTTP": 0,
+      "nativeSQL": 0,
+      "MAIN": 0,
+      "Telegram_network": 0,
+      "before_first_known_ts": 1792397560589,
+      "after_first_known_ts": 1792397525000,
+      "assembly_substitution_ms": 35589,
+      "controlled_canonical_JSON_bytes": 38005,
+      "controlled_SQL_call_count": 2,
+      "native_readback": false,
+      "attempted_sourceHTTP": 0,
+      "rendered_metadata_UTF8_delta": 1032,
+      "manual_text_byte_delta": 0,
+      "telegram_text_byte_delta": 0,
+      "actual_projected_N10_receipts": 2,
+      "telegram_fixture": "CONTROLLED_OBSERVE_DISPLAY_ONLY_NOT_ADMISSION_OR_NATIVE_DELIVERY"
+    },
+    "interpretation": "CT OHLC/source/decision transcribedfromsavedcompact row; earlieravailable/raw20barenvelope CONTROLLED. 35589ms is acodecounterexample, NOTmeasurednativeacquisitionlag. Mock INSERT/SELECT notdurable/nativeACK.",
+    "saved_CT_compact_N10_clock_projections": [
+      {
+        "evidence_id": "EV2:4950c242227e5159f740b1586e00354b88259c77984adf3913f7e0c8a1e5f57e",
+        "physical_root_key": "htx-futures:CT-USDT|CT-USDT:60min:1792396800000",
+        "source_ts": 1792397520111,
+        "observed_ts": 1792397520261,
+        "first_known_ts_retained": false,
+        "expiry_retained": false,
+        "original_clock_retained": false,
+        "component_origins_retained": false
+      },
+      {
+        "evidence_id": "EV2:56c1763e52c56ef129a4a126df43fd8ca4a2cf25621d830412061b49b21c28df",
+        "physical_root_key": "htx-futures:CT-USDT|CT-USDT:15m:1792397460000",
+        "source_ts": 1792397460000,
+        "observed_ts": 1792397560589,
+        "first_known_ts_retained": false,
+        "expiry_retained": false,
+        "original_clock_retained": false,
+        "component_origins_retained": false
+      },
+      {
+        "evidence_id": "EV2:5d5261229200744f0ebb4b463124f97717b9be45b9de8a9aa055329309ee6726",
+        "physical_root_key": "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792397460000",
+        "source_ts": 1792397460000,
+        "observed_ts": 1792397560589,
+        "first_known_ts_retained": false,
+        "expiry_retained": false,
+        "original_clock_retained": false,
+        "component_origins_retained": false
+      }
+    ],
+    "twelve_missing_projection_receipts": "read savedanalysis statement only, nooldZIPfullpeer ornativebodyreconstruction",
+    "native_original_first_known_for_CT": "UNKNOWN_IN_COMPACT"
+  },
+  "saved_verification_read_only": {
+    "file": "checkpoints/source-worker-original-clocks-20261019/verification.json",
+    "unique_new_cases": 8,
+    "full_attempt": {
+      "PASS": 7,
+      "FAIL": 1
+    },
+    "only_failed_case_repair": {
+      "PASS": 1,
+      "FAIL": 0
+    },
+    "initial_entry_errors_before_semantic_cases": 2,
+    "source_reported_provenance_assertions": 559,
+    "peer_executed_any_of_them": false,
+    "complete_decrypted_runtime_claimed": false,
+    "fixture_text_byte_delta": {
+      "manual": 0,
+      "approvedTelegram": 0
+    },
+    "fixture_rendered_metadata_UTF8_delta": 1032
+  },
+  "limits_ru": [
+    "Только static code/saveddata peer; первичная15m ветка не имеет найденного контрпримера, но source522 целиком содержит OPEN metadatafinding.",
+    "Фактический commonbound all4Promise не равен earliest HTTPfirstbyte. Missing/null wrapperclock сохраняет консервативный assemblyfallback; первоначальная доступность старого compactinput UNKNOWN.",
+    "Первичный путь не расширяетexpiry/freshness/ENTRY и не меняетscore. Добавленныйметаданныйpayload имеет стоимость; nativewire/persistence multiplicity/RW/CPU/heap/day/manualreserve не измерены.",
+    "Новыеcorrectedsourceworker case/patch должныидтиотдельнымfreeze. Старые8/559 идругиепринятыеsuites здесь не запускались.",
+    "Current105/cacheACK/runtimeintegration/manual/TGdelivery/actualENTRY этимpeerнепринимаются."
+  ],
+  "verification": {
+    "status": "PASS",
+    "kind": "ONE_FINAL_FROZEN_CODE_AND_SAVED_WITNESS_INTEGRITY_ONLY",
+    "fresh_main": "ee91c48159d83c0c1ecd0b9b1dd631d2bee5b4e6",
+    "own_ref": "8a206a5e4497fd5cebd41fffed02ce1978ccd535",
+    "all_four_active_equal": true,
+    "source_head": "c2ee68155d137af7c1e061c43188c146a4fea453",
+    "patch_target": "05ce093e9e4428ffec5e15d5bc677044346a2f53",
+    "two_before_hashes_match_current_main": true,
+    "frozen_proposal_after_hash_binding": "exacttextreconstructionrecord",
+    "metadata_finding": "OPEN",
+    "tests_app_native_source_calls": 0,
+    "old8_or559_rerun": false
+  }
+}

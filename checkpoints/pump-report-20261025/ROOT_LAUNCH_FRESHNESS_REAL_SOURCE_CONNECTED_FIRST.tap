@@ -1,0 +1,28 @@
+✖ F563 sources, real broker, AF engine and saved-card delivery remain connected when a supplemental response arrives after its shared deadline (96.395375ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 179.104708
+
+✖ failing tests:
+
+test at pump-report/tests/runtime/launch-freshness-real-source-connected.test.mjs:12:1
+✖ F563 sources, real broker, AF engine and saved-card delivery remain connected when a supplemental response arrives after its shared deadline (96.395375ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(result.analysis.plan.conservative_min_gross_potential_pct>=10)
+  
+      at TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-bingx-migration-20261024/pump-report/tests/runtime/launch-freshness-real-source-connected.test.mjs:30:91)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

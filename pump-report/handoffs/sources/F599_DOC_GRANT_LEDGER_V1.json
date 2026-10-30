@@ -1,0 +1,61 @@
+{
+  "id": "ROOT_F599_TWO_NEW_FREE_PROVIDERS_2SEARCH4READ_20261026",
+  "search_max": 2,
+  "open_max": 4,
+  "search_spent": 2,
+  "open_spent": 4,
+  "state": "CLOSED_EXHAUSTED_NO_REARM",
+  "old_grants_rearmed": false,
+  "attempts": [
+    {
+      "kind": "targeted_search",
+      "provider": "TOOBIT",
+      "q": "Toobit official API futures funding rate open interest public rate limits",
+      "domains": [
+        "toobit-docs.github.io",
+        "toobit.com"
+      ],
+      "state": "SUCCESS_PRIMARY_API_FOUND"
+    },
+    {
+      "kind": "targeted_search",
+      "provider": "VEST",
+      "q": "Vest exchange official public API funding open interest rate limits",
+      "domains": [
+        "vest.exchange"
+      ],
+      "state": "SUCCESS_PRIMARY_API_FOUND"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "TOOBIT",
+      "url": "https://api-docs.toobit.com/api/usdt-m-market-data.html",
+      "state": "SUCCESS_RETURNED_PARTIAL_PAGE"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "TOOBIT",
+      "url": "https://api-docs.toobit.com/api/basic-information.html",
+      "state": "SUCCESS"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "VEST",
+      "url": "https://docs.vest.exchange/vest-api",
+      "state": "FAILED_403_SPENT_NO_RETRY"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "TOOBIT",
+      "url": "https://api-docs.toobit.com/agent/mcp-server.html",
+      "purpose": "Official keyless public-market automation capability; no tool installation/execution",
+      "state": "SUCCESS"
+    }
+  ],
+  "primary_read_successes": 3,
+  "failed_primary_reads": 1,
+  "partial_success_reads": 1,
+  "search_successes": 2,
+  "empty_searches": 0,
+  "new_source_qualification_calls": 0
+}

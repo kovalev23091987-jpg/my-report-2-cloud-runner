@@ -1,0 +1,68 @@
+{
+  "schema": "BZ50_V3_NARROW_PREFLIGHT_STATIC_V1",
+  "status": "PASS_STATIC_V3_READY_FOR_ROOT_SEPARATE_FACTUAL_ADMISSION_NOT_EXECUTED",
+  "authority_main": "4c5201d724cfc9801370d801316c0fbcb88ef75f",
+  "V3_script_sha256": "b2f65d2d339b844a69820a24651f6bef99e6de9069f9d35b3d8fb99a2f6399cb",
+  "V2_script_sha256": "744e53ad73ce9c02093a5763412f18acbbe88287d6043236a30581ed7a084272",
+  "preserved_receipts": {
+    "checkpoints/pump-report-20261025/ROOT_POSTLAUNCH_OUTCOME_AND_BUDGET_AFFECTED_CASE_V1.json": {
+      "sha256": "4de6613491dc1a6a9050994925dbb6c191dbaa1270d2c908cae2e8230eb99d9c",
+      "state": "FAILED_NO_AUTO_RETRY",
+      "Node": 1,
+      "build": 1,
+      "analyzePump": 0,
+      "evaluateOutcome": 1
+    },
+    "checkpoints/pump-report-20261025/ROOT_POSTLAUNCH_LATE_OUTCOME_REMAINING_CASE_V2.json": {
+      "sha256": "a7a8c1f296e28c3462b3dc3c6d55fded2f0bab79c4b3136d4fb5b407730fea06",
+      "state": "FAILED_NO_AUTO_RETRY",
+      "Node": 1,
+      "build": 0,
+      "analyzePump": 0,
+      "evaluateOutcome": 1
+    }
+  },
+  "accepted_completed_segments": {
+    "V1_diagnostics": 10,
+    "V1_real_mocked_runner_DEFERRED_saved_summary": 1,
+    "V1_projection_guards": 9,
+    "V2_before_old_guard_UNKNOWN_saved_view_RESULT": 1
+  },
+  "V1_fixture_diagnosis": "originalInput lacked run_id while analysis had run_id; readSavedOutcome ORIGINAL_BINDING_CONFLICT quarantine correct. V2 fills run_id, no product view guard relaxed.",
+  "V2_fixture_diagnosis": "Preseeded providers.BINGX lacked recent array, so new after budget path reached p.recent.filter and source failed before supplied mock fetch. Before old guard refused earlier. This is a fixture shape defect, not failed historical source qualification.",
+  "V3_fixture_changes_confirmed": [
+    "recent:[] added to two preseeded provider resource rows",
+    "Original input run_id remains corrected",
+    "Only AFTER loop; completed V2 before path not replayed",
+    "Existing snapshots/artifact authenticated and reused; build0",
+    "History status/reason saved before assertion",
+    "clock advances1001ms before daily reserve rejection so previous per-second pacing cannot mask it"
+  ],
+  "expected_V3_only": {
+    "Node": 1,
+    "build": 0,
+    "analyzePump": 0,
+    "evaluateOutcome": 3,
+    "late_history_comparisons": 1,
+    "closed_candidate_guards": 8,
+    "mock_source_fetches": 1,
+    "all_real_IO": 0
+  },
+  "semantic_checks": [
+    "Mature evening T0/P0/target/deadline retained into next business history URL, original journal and signal; active wave overwritten only as separate current pointer.",
+    "One real broker reservation on exact5 statistics context; second history call served same bounded cache, fresh stats cost1; CLOSED grant/holds and old unknowns stay equal.",
+    "Six wrong contexts + night + day reserve are explicit negative guards; no bypass for AUTO/MANUAL/Telegram/DELIVERY/wrongfamily/hot.",
+    "After-deadline bar excluded by existing kernel; full below-target period MISS, empty history UNKNOWN; no new T0 or extension.",
+    "Mock memory card987 is explicitly ARTIFICIAL, not native receipt proof."
+  ],
+  "product_hashes_unchanged": {
+    "pump-report/runtime/budget.mjs": "c2ffa92d691acb6bb7e517fa483b010b688960e91054313e53ab8007ab3838bd",
+    "pump-report/runtime/candidate-surplus.mjs": "6a4bc16a9cf93c89ef028c84110dabf2f25a031b07e51fe3285cceff04e92175",
+    "pump-report/runtime/runner.mjs": "081606a89849529f46baf017300380625656270bdab9f012f8995c9b33244c31",
+    "pump-report/runtime/candidate-diagnostics.mjs": "6c30380cda81324dd19a5b76538acfbb4b857afb0a8018851dd5fb3bb225f8cb"
+  },
+  "final_acceptance": "PENDING_PUBLIC_V3_RESULT; no Node/build/test rerun by ANALYTICS",
+  "helper_Node_import_engine_tests_build_nativeSQL_market_CF_TG": 0,
+  "private16_access": 0,
+  "product_ROOT_files_edited": 0
+}

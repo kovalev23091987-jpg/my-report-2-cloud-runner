@@ -1,0 +1,38 @@
+{
+  "schema": "AY_MINIMUM_CONNECTED_FALLBACK_PROPOSAL_V1",
+  "status": "UNAPPLIED_NOT_EXECUTED_NOT_A_NATIVE_OR_TEST_ADMISSION",
+  "trigger": "Only when existing resistance-above-current filter has no result, with upstream qualified activewave/liquidity/known pivots intact.",
+  "normal_branch": "Keep AX normal resistance-above-report branch and each-entry owner10-before-dedup/cap3 unchanged. Never try fallback to rescue a failed normal target by searching for a more profitable target.",
+  "fallback_anchor": "Highest already-confirmed HIGH belonging to this active wave, known by analysis time, with retained original fact_id/event_ts/known_ts. Choose by structure (prior wave top), not by desired profit. If no eligible known HIGH, return no plan.",
+  "entry_rules": "Same existing supported zones, same widths/tick/invalidation; upper-entry to lower-exit>=OWNER_MIN10 before dedup/cap3. No invented current quote, target, volume units or map. No qualified entries means no plan.",
+  "necessary_connected_changes": [
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "change": "Add fallback only after absent normal resistance; preserve high-anchor provenance and unchanged target-width/entry qualification; explanation says return to previous confirmed high after a FUTURE pullback."
+    },
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "change": "Renderer line60 currently hardcodes target above current price; add fallback-only wording for prior-high return and compact factual context of intervening known HIGHs. Preserve normal-branch text and all gates."
+    }
+  ],
+  "obstacle_rule": "Prior HIGHs between future entry and chosen old top remain visible context. They must not be described as absent or guaranteed to be crossed; do not call prior-top target the nearest obstacle above entry. DOOD geometry has7-8 such known intermediate highs.",
+  "consumers_static_trace": {
+    "contracts_ownerPublicationRefusal": "checks conservative entry-to-exit minimum10/basis, no target-above-reference requirement",
+    "runtime_worker_revalidate": "same analyzePump engine plus price-move and entry/exit-overlap checks; no independent above-reference target gate. All rechecks remain.",
+    "delivery": "ready/original window/owner/receipt guards remain; no separate target-side constraint found",
+    "scenario_outcome": "exit contact only after entry contact; early contact while price above future entry is not execution proof",
+    "statistical_event": "Keep +10percent FROM_REPORT_PRICE/4h and plan entry-to-exit potential separate perTZ332. No success/profit relabel.",
+    "maps": "Current map UP/DOWN is relative to report; below-reference return target must not be labeled upper-map confluence from absent data. Existing optional lack is nonblocking."
+  },
+  "one_future_affected_plan_proposal": {
+    "status": "PROPOSED_ONLY_NOT_AUTHORIZED_OR_EXECUTED_BY_AY",
+    "cases": 1,
+    "data": "Use frozen real DOOD known anchors from SHA280cd...; keep clocks/provenance/geometry. No original price fact is overwritten.",
+    "synthetic_condition": "Explicit ARTIFICIAL geometry parameter P greater than max known HIGH zone; this is not a market quote, a current DOOD analysis or an actual native refusal.",
+    "expected_baseline": "Current frozen constructPlan returns null under above-all-known-highs parameter.",
+    "expected_fallback": "Prior confirmed-wave-top target with same anchors, invalidation, width and eligible entries>=10; context exposes intermediate levels; no invented high or mandatory rebound.",
+    "checks": "Known-at timestamps/provenance unchanged; no eligible HIGH/entry means no plan; no full analyzePump, native, market or TG. Exact case/call counts require separate ROOT positive scope before execution.",
+    "normal_AX_case": "Previously accepted real12:28 AX case is not replayed in AY."
+  },
+  "strategy_thresholds_profile_funding_native_changed": false
+}

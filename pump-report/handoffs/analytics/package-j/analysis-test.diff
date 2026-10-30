@@ -1,0 +1,11 @@
+--- pump-report/handoffs/analytics/package-j/baseline/analysis.before.mjs	2026-10-25 17:33:18
++++ pump-report/tests/analytics/analysis.test.mjs	2026-10-25 17:33:40
+@@ -19,7 +19,7 @@
+ test('old inactive 50% daily gain cannot manufacture a current wave',()=>{
+   const x=input();for(const r of x.facts.candles.value){r.open=100;r.close=100;r.high=100;r.low=100;r.volume_base=0;}
+   x.facts.ticker_24h=fact('ticker_24h',{open:100,last:150},'USDT_ROLLING_24H');
+-  const a=analyzePump(x);assert.equal(a.ready,false);assert.ok(a.reasons.includes('CURRENT_ACTIVITY_NOT_CONFIRMED'));assert.equal(a.plan,null);
++  const a=analyzePump(x);assert.equal(a.ready,false);assert.ok(a.reasons.includes('VOLUME_BASELINE_ZERO_OR_UNKNOWN'));assert.equal(a.plan,null);
+ });
+ test('retained wave survives retreat below the original percentage with unchanged ID, baseline and expiry',()=>{
+   const x=input(),first=analyzePump(x);x.previous_wave=first.next_wave;x.facts.price.value=105;

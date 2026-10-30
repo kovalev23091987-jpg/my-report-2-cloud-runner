@@ -1,0 +1,54 @@
+{
+  "schema": "PARTIAL_CRON_EXACT_NATIVE_ACCOUNTING_REVIEW_V1",
+  "run": 39119616846,
+  "head": "56c1cd905a3ca0c2407358a0357d243af8b9ff9c",
+  "artifact": 12134096068,
+  "digest": "sha256:3198eebe7fd3fe241629743285d5fdf05df97babac49f9a3c9973a39e3bc78c8",
+  "usage_before": {
+    "requests": 630,
+    "rows_read": 33189,
+    "rows_written": 527,
+    "unknown_ops": 0
+  },
+  "usage_after": {
+    "requests": 631,
+    "rows_read": 33190,
+    "rows_written": 528,
+    "unknown_ops": 0
+  },
+  "receipt": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "R2RUN:1792319534403:65a2f7d46b6acfcc",
+    "source_run_id": "39119616846",
+    "measured_rows_read": 33189,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 528,
+    "measured_requests_accounted": 631,
+    "unknown_ops": 0
+  },
+  "static_guard_status": "NATIVE_ADMISSION_REQUIRED_AFTER_VERIFIED_AGGREGATE_RECONCILIATION",
+  "runtime_log_observation": {
+    "source_witness_and_budget_admission_allowed": true,
+    "original_historical_unknown15_preserved": true,
+    "raw_daily_reserved_rows_read": 54000,
+    "raw_daily_reserved_rows_written": 840,
+    "universe_expected": 105,
+    "scanned": 99,
+    "universe_missing_names_not_retained": true,
+    "cron_status": "PARTIAL",
+    "reason": "STAGE0_SCAN_FAILED",
+    "endpoint_errors_all_null": true,
+    "canonical_persistence_reported_closed_for": [
+      "QNT-USDT",
+      "BTW-USDT"
+    ],
+    "canonical_exact_rows_not_retained_in_this_artifact": true,
+    "both_full_evidence_inserts_reported_closed": true,
+    "both_telegram_formatter_status": "MESSAGE_TOO_LONG",
+    "SENT_message_id": null,
+    "console_numbers_and_identifiers_partly_masked_by_GitHub": true
+  },
+  "acceptance": "LIMITED CURRENT NATIVE ADMISSION AND CLOSED USAGE ONLY. Not complete105/full-report/delivery/expanded-volume/expiry/sustainable throughput acceptance. No known-failing full rerun permitted for this unchanged cause."
+}

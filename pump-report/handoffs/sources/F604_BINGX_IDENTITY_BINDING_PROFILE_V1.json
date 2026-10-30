@@ -1,0 +1,72 @@
+{
+  "schema": "F604_BINGX_CG_IDENTITY_ONLY_BINDING_PROFILE_V1",
+  "status": "DOCUMENTARY_ROUTE_CONFIRMED_ACTUAL_ROWS_NOT_CHECKED",
+  "exchange": {
+    "id": "bingx_futures",
+    "name": "BingX (Futures)",
+    "evidence": "Explicit vendor API ID field, F604 proof BINGX_EXACT_API_ID",
+    "slug_inference": false,
+    "family": "Mixed derivatives exchange; page exposes perpetual USDT and USDC.",
+    "whole_exchange_is_USDT_M": false
+  },
+  "route": {
+    "method": "GET",
+    "url": "https://api.coingecko.com/api/v3/derivatives/exchanges/bingx_futures",
+    "query": {
+      "include_tickers": "unexpired"
+    },
+    "purpose": "One vendor-attributed identity batch, no prices/metric scoring."
+  },
+  "expected_documented_identity_fields": {
+    "context": [
+      "Requested exact exchangeID",
+      "name",
+      "tickers array when requested"
+    ],
+    "per_ticker_required_string": [
+      "symbol",
+      "base",
+      "target",
+      "coin_id",
+      "target_coin_id",
+      "contract_type",
+      "trade_url"
+    ],
+    "not_in_schema": [
+      "BingX native contractId",
+      "BingX metadata coinId",
+      "marginToken",
+      "settleAsset",
+      "contractMultiplier"
+    ],
+    "no_guarantee": "Required schema does not prove populated values or presence for all550."
+  },
+  "bridge_rule": {
+    "vendor_layer": "Exact requested BingX derivative venue + returned pair/type/tradeURL + explicit coinIDs is direct provider attribution, not a symbol-only cross-venue match.",
+    "native_layer": "Propose internal bindings only for one unambiguous ROOT-accepted selected native tuple: exact vendor-native symbol or a previously primary-proven alias, PERPETUAL, quote/margin/settleUSDT. TargetUSDT alone does not prove margin family.",
+    "quote_checks": [
+      "target exactly USDT",
+      "target_coin_id exactly tether",
+      "contract_type exactly perpetual"
+    ],
+    "trade_url": "Preserve original, validate HTTPS and BingX host; do not fetch it or invent path aliases.",
+    "unknown_rule": "Missing/empty IDs, conflicting venue, aliases, duplicate pairs or unproven family remain UNKNOWN; no prefix stripping, syntheticcontractIDs or ASCII filter."
+  },
+  "output_scope": {
+    "identity_only": true,
+    "provider_globalID_mapping": "Documented",
+    "actual_vendor_rows": 0,
+    "new_BingX_canonical_bindings": 0,
+    "selected550_NOT_CHECKED": 550,
+    "UNSUPPORTED": 0,
+    "full_CORE_or_futuremaps": 0,
+    "OI_funding_price_facts_enabled": false,
+    "sourceclock_gap_does_not_block_identity_schema": true
+  },
+  "remaining_gaps": [
+    "Actual complete batch content/access",
+    "Per-row exact native tuple/alias/family relation",
+    "Current native membership separately",
+    "IP/shared whole-budget remaining and actual call receipt"
+  ]
+}

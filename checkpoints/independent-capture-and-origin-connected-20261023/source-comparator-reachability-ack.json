@@ -1,0 +1,75 @@
+{
+  "schema": "SOURCE_CONTEXT_ORIGIN_COMPARATOR_TARGETED_STATIC_ACK_V1",
+  "reviewed_original_head": "d46c801a9566ddbe1a5fa2040df4b5d4a0605739",
+  "status": "NO_REACHABLE_DESCRIPTIVE_ONLY_CONFLICT_FOR_CURRENT_NORMALIZED_JSON_CALL_CHAIN",
+  "counterexample_found": false,
+  "new_variant_justified": false,
+  "original_packet_changed": false,
+  "Node_import_tests_execution": 0,
+  "outbound_message_sent": false,
+  "scope": "Only the new two-field comparator risk in actual current relatedRows construction and validators; not a full peer, not arbitrary host objects/Proxy/getters",
+  "reasoning": [
+    {
+      "path": "contextComponentOrigins is unexported and has one call site",
+      "predicate": "Called only for N12 with [primary row,...relatedRows]. Other exported receipt audit paths rebuild through the same consumer; arbitrary caller arrays are not passed directly to this function."
+    },
+    {
+      "pair_kind": "Repeated Bitget rows in bitgetAligned or repeated OKX/KuCoin rows in nativeAligned",
+      "predicate": "validateBitgetN12BoundedTradeSample, validateN12NativePublicTrade and validateN12KucoinTokenTrade all require unit===USDT and origin_event_id===physical_root_key. For actual normalized JSON string fields, SAME oldcore physical_root_key implies SAME original event ID. Missing/different unit or event ID refuses before becoming relatedRows. New bounded projection is deterministic for the same string, including oversize→NULL."
+    },
+    {
+      "pair_kind": "Gate futures aligned row",
+      "predicate": "Only one gate selected by find; its validator also fixes USDT and event_id===physical_root_key. Gate spot/Kraken/Bitfinex standalone samples are not added to relatedRows lists; only their primary own origin is projected."
+    },
+    {
+      "pair_kind": "HTX primary and optional asynchronous HTX mate",
+      "predicate": "The mate is explicitly opposite provider HTX_LARGE_TRADES versus HTX_SPOT_TRADES and source timestamps differ by more than30s. provider_id/source_ts already differ in oldcore. Any same evidence_id collision is already an old comparator conflict, never descriptive-only."
+    },
+    {
+      "pair_kind": "HTX primary and shared N05 four-hour row",
+      "predicate": "n12FourHourCrossVenueContext returns at most one N05 row. Oldcore block_id/metric_family/provider differ from N12 primary; no descriptive-only samecore pair."
+    },
+    {
+      "pair_kind": "Native SPOT/FUTURES pair",
+      "predicate": "nativePair explicitly selects sample.market!==row.market; market and provider_id are in oldcore. Any same-ID collision was already conflicting."
+    },
+    {
+      "pair_kind": "Rows from different adapter families",
+      "predicate": "Required metric_family/provider/upstream/market fields distinguish their oldcore. Same evidence_id alone is insufficient; same-oldcore premise fails."
+    }
+  ],
+  "normalization_boundary": "Actual public producers emit primitive string unit/event_id and canonical persistence uses JSON. The validators are not claimed to reject every JavaScript boxed String/Proxy/direct non-JSON host object; those are not a reachable normalized/persisted producer row in this trace. No invented production incident or new defensive framework is proposed.",
+  "conclusion": "No current actual normalized relatedRows pair with SAME ID and SAME oldcore but different projected unit/event_id was established. Existing oldcore-conflicting duplicates remain conflicting. No comparator change or new UNEXECUTED variant is justified by this targeted question.",
+  "pins": {
+    "current-generation/files/src/block-result-context.mjs": {
+      "bytes": 95524,
+      "sha256": "a42c81452935e1858b732400e985d5250c3fbed67b3756df1a7467230c9c80bc"
+    },
+    "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": {
+      "bytes": 5811,
+      "sha256": "6e364bf5755e87adb5f592872d6b63fd4bac4d0b6179d5b5ebfc5eda48661461"
+    },
+    "current-generation/files/src/gate-futures-trade-sample.mjs": {
+      "bytes": 5759,
+      "sha256": "2779234fd5286be45f8bec69c4f6d5605db0815ce56ebb121f38f5b8a368574d"
+    },
+    "current-generation/files/src/n12-native-public-trade-sample.mjs": {
+      "bytes": 8730,
+      "sha256": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4"
+    },
+    "current-generation/files/src/n12-kucoin-token-trade-sample.mjs": {
+      "bytes": 8555,
+      "sha256": "a1150019d0d516cda87a0568e85da46c80dbc533e21ede1809d756b922bf0161"
+    },
+    "current-generation/files/src/evidence-v2.mjs": {
+      "bytes": 8157,
+      "sha256": "dd939e4825e032d71eb41f8bc530419b78263d341f2491486279ef4a4be712e7"
+    }
+  },
+  "limitations": [
+    "Static reasoning only, not executed proof",
+    "Future relatedRows constructors or relaxed validators require rechecking this invariant",
+    "Original RLC incident cause remains NULL"
+  ],
+  "local_readonly_result": "This JSON only; original d46c remains frozen, no new Git/lease mutation for this assigned readonly question."
+}

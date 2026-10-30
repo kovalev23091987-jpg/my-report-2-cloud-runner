@@ -1,0 +1,126 @@
+TAP version 13
+# Subtest: ALGO NEW N12 bounded5m context from exact retained native takers
+ok 1 - ALGO NEW N12 bounded5m context from exact retained native takers
+  ---
+  duration_ms: 8.686334
+  type: 'test'
+  ...
+# KRAKEN_N12_WITNESS {"contract":"ALGO-USDT","source_ts":1791718350734,"observed_ts":1791718413870,"first_known_ts":1791718413870,"valid_recent_rows":2,"buy_quote_turnover_usdt":0,"sell_quote_turnover_usdt":28.7134249465478,"unit":"USDT","evidence_id":"EV2:bfef8b61394ed7c6bd92ce3740bc5aa8e006115ff1d54ea9629ad3f0894bdc5d","raw_hash":"bf4b2bac71e1f76fcfc13b0b931fb9340f578a73ea056f591f72be07743bdac4","serialized_bytes":3012,"whole_window_coverage_proven":false,"score_contribution":0,"native_cache_ACK":"NOT_PROVEN","wire_body_sha256":"bb64dcff332afa98152e873e143c6542a2dba82a5fd6b4e088c9cb399b494008"}
+# Subtest: XMR NEW N12 bounded5m context from exact retained native takers
+ok 2 - XMR NEW N12 bounded5m context from exact retained native takers
+  ---
+  duration_ms: 6.9035
+  type: 'test'
+  ...
+# KRAKEN_N12_WITNESS {"contract":"XMR-USDT","source_ts":1791718338972,"observed_ts":1791718415754,"first_known_ts":1791718415754,"valid_recent_rows":27,"buy_quote_turnover_usdt":1151.7496766631,"sell_quote_turnover_usdt":8019.765823389699,"unit":"USDT","evidence_id":"EV2:f35ea82f2e728b6258a944aa60a5dceef913adedaf151875be3ac337b1aeb429","raw_hash":"911ef697fbe6a0d4a74cf8bb3ae89c1eaf2dfb90674d9e38968b426a489d4829","serialized_bytes":4677,"whole_window_coverage_proven":false,"score_contribution":0,"native_cache_ACK":"NOT_PROVEN","wire_body_sha256":"771b40d863ea281b778aa118a66a4b6e81def7f821ff678ef3f7215f72e47e81"}
+# Subtest: new Kraken N12 chain refuses missing mapped receipt
+ok 3 - new Kraken N12 chain refuses missing mapped receipt
+  ---
+  duration_ms: 3.373875
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses foreign receipt pair
+ok 4 - new Kraken N12 chain refuses foreign receipt pair
+  ---
+  duration_ms: 3.050708
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses wrong first pagination cursor
+ok 5 - new Kraken N12 chain refuses wrong first pagination cursor
+  ---
+  duration_ms: 3.01075
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses missing raw wire hash
+ok 6 - new Kraken N12 chain refuses missing raw wire hash
+  ---
+  duration_ms: 2.988833
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses wrong parsed page digest
+ok 7 - new Kraken N12 chain refuses wrong parsed page digest
+  ---
+  duration_ms: 2.938625
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses foreign cursor
+ok 8 - new Kraken N12 chain refuses foreign cursor
+  ---
+  duration_ms: 2.732625
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses future receipt clock
+ok 9 - new Kraken N12 chain refuses future receipt clock
+  ---
+  duration_ms: 2.952042
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses refreshing old cache clock
+ok 10 - new Kraken N12 chain refuses refreshing old cache clock
+  ---
+  duration_ms: 2.174084
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses foreign identity
+ok 11 - new Kraken N12 chain refuses foreign identity
+  ---
+  duration_ms: 2.01275
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses wrong quote
+ok 12 - new Kraken N12 chain refuses wrong quote
+  ---
+  duration_ms: 2.244125
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses missing raw native grid
+ok 13 - new Kraken N12 chain refuses missing raw native grid
+  ---
+  duration_ms: 1.9765
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses altered native OHLC
+ok 14 - new Kraken N12 chain refuses altered native OHLC
+  ---
+  duration_ms: 2.676375
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses duplicate raw trade
+ok 15 - new Kraken N12 chain refuses duplicate raw trade
+  ---
+  duration_ms: 2.322708
+  type: 'test'
+  ...
+# Subtest: new Kraken N12 chain refuses expired unrefreshed5m fact
+ok 16 - new Kraken N12 chain refuses expired unrefreshed5m fact
+  ---
+  duration_ms: 2.992042
+  type: 'test'
+  ...
+# Subtest: stored N12 fact rejects tampered source clock, selected trades, sum, proof, score and lineage
+ok 17 - stored N12 fact rejects tampered source clock, selected trades, sum, proof, score and lineage
+  ---
+  duration_ms: 6.013209
+  type: 'test'
+  ...
+# Subtest: last native in-progress minute is never appended to the bounded closed sample
+ok 18 - last native in-progress minute is never appended to the bounded closed sample
+  ---
+  duration_ms: 5.097208
+  type: 'test'
+  ...
+# Subtest: PAXG saved exact versioned identity exposes route reachability, without proving call or broad owner authorization
+ok 19 - PAXG saved exact versioned identity exposes route reachability, without proving call or broad owner authorization
+  ---
+  duration_ms: 0.472125
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 151.511334

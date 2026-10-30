@@ -1,5 +1,8 @@
+import {verifyBitfinexN10MemoryEvidence} from './bitfinex-n10-memory-context.mjs';
 import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
 import {validateGateFuturesTradeSample} from './gate-futures-trade-sample.mjs';
+import {validateBitfinexN12BoundedTradeSample} from './bitfinex-n12-bounded-trade-sample.mjs';
+import {validateGateN12BoundedTradeSample} from './gate-n12-bounded-trade-sample.mjs';
 import {validateBitgetN12BoundedTradeSample} from './bitget-n12-bounded-trade-sample.mjs';
 import {validateN12NativePublicTrade} from './n12-native-public-trade-sample.mjs';
 import {validateN12KucoinTokenTrade} from './n12-kucoin-token-trade-sample.mjs';
@@ -52,12 +55,17 @@ export function plainContextFact(f,c){
   if(pair){const same=Math.abs(row.taker_imbalance)>=.05&&Math.abs(pair.taker_imbalance)>=.05&&Math.sign(row.taker_imbalance)===Math.sign(pair.taker_imbalance),part=r=>`${r.market==='SPOT'?'спот':'фьючерсы'}: ${r.valid_recent_rows} сделок, покупки ${money(r.buy_quote_turnover_usdt)}, продажи ${money(r.sell_quote_turnover_usdt)} USDT`;return `Последние сделки ${row.venue==='OKX'?'OKX':'KuCoin'}: ${part(row)}; ${part(pair)}. Выборки неполные. ${same?'Направления двух рынков совпадают только в этих выборках.':'Общего направления по двум рынкам нет.'} Это одна биржа.`;}
   return `Последние сделки ${row.venue==='OKX'?'OKX':'KuCoin'} на ${row.market==='SPOT'?'споте':'фьючерсах'}: ${row.valid_recent_rows} сделок, покупки ${money(row.buy_quote_turnover_usdt)}, продажи ${money(row.sell_quote_turnover_usdt)} USDT. Выборка неполная, общее направление не подтверждено.`;
  }
+ if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitfinex'){
+  const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
+  return validateBitfinexN12BoundedTradeSample(row,c.observed_ts)?`Последние сделки Bitfinex на споте: ${row.valid_recent_rows} сделок, покупки ${money(row.buy_quote_turnover_usd)}, продажи ${money(row.sell_quote_turnover_usd)} USD. Выборка неполная, общее направление не подтверждено.`:`${f.label}: ${f.value} — ${f.source}.`;
+ }
  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitget'){
   const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
   return validateBitgetN12BoundedTradeSample(row,c.observed_ts)?`Последние сделки Bitget на ${row.market==='SPOT'?'споте':'фьючерсах'}: ${row.valid_recent_rows} сделок, покупки ${money(row.buy_quote_turnover_usdt)}, продажи ${money(row.sell_quote_turnover_usdt)} USDT. Выборка неполная, общее направление не подтверждено.`:`${f.label}: ${f.value} — ${f.source}.`;
  }
  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Gate'){
   const g=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);
+  if(validateGateN12BoundedTradeSample(g,c.observed_ts))return `Последние сделки Gate на споте: ${g.valid_recent_rows} сделок, покупки ${money(g.buy_quote_turnover_usdt)}, продажи ${money(g.sell_quote_turnover_usdt)} USDT. Это неполная выборка одной биржи, общее направление не подтверждено.`;
   return validateGateFuturesTradeSample(g,c.observed_ts)?`Последние сделки Gate на фьючерсах: ${g.valid_recent_rows} сделок, покупки ${money(g.buy_quote_turnover_usdt)}, продажи ${money(g.sell_quote_turnover_usdt)} USDT. Это неполная выборка одной биржи, общее направление не подтверждено.`:`${f.label}: ${f.value} — ${f.source}.`;
  }
  if(f?.block_id!=='N12'||f.label!=='Направление последних сделок HTX')return `${f.label}: ${f.value} — ${f.source}.`;
@@ -86,9 +94,11 @@ export function plainContextFact(f,c){
 // Telegram. Historical supply and other raw diagnostic context stay in the
 // canonical analysis and manual report; they cannot occupy a spare bullet.
 export function isApprovedTelegramContextFact(f,c){
+ if(f?.block_id==='N10'&&f.field==='CLOSED_15M_BITFINEX_USD_PRICE_CONTEXT'&&f.label==='Цена за 15 минут на Bitfinex'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return verifyBitfinexN10MemoryEvidence(row,c.observed_ts);}
  if(f?.block_id==='N12'&&['Направление последних сделок OKX','Направление последних сделок KuCoin'].includes(f.label)){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validN12PublicTrade(row,c.observed_ts);}
+ if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitfinex'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitfinexN12BoundedTradeSample(row,c.observed_ts);}
  if(f?.block_id==='N12'&&f.label==='Направление последних сделок Bitget'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateBitgetN12BoundedTradeSample(row,c.observed_ts);}
- if(f?.block_id==='N12'&&f.label==='Направление последних сделок Gate'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateGateFuturesTradeSample(row,c.observed_ts);}
+ if(f?.block_id==='N12'&&f.label==='Направление последних сделок Gate'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateGateFuturesTradeSample(row,c.observed_ts)||validateGateN12BoundedTradeSample(row,c.observed_ts);}
  if(f?.block_id==='N05'&&f.field==='AVAILABLE_VENUE_TAKER_FLOW_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateAvailableFlowEvidence(row,c.observed_ts);}
  if(f?.block_id==='N05'&&f.field==='JOINT_SPOT_FUTURES_AGREEMENT_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateJointFlowEvidence(row,c.observed_ts);}
  if(f?.block_id!=='N12'||f.label!=='Направление последних сделок HTX')return false;

@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: E01 real runner checks three ready candidates without a fixed-two ceiling
+ok 1 - E01 real runner checks three ready candidates without a fixed-two ceiling
+  ---
+  duration_ms: 91.660917
+  type: 'test'
+  ...
+# Subtest: E02 manual below every automatic threshold uses the real core and can publish a qualified plan
+ok 2 - E02 manual below every automatic threshold uses the real core and can publish a qualified plan
+  ---
+  duration_ms: 7.535417
+  type: 'test'
+  ...
+# Subtest: E03 retained wave survives a five-minute retreat below thresholds and preserves published original t0/P0
+ok 3 - E03 retained wave survives a five-minute retreat below thresholds and preserves published original t0/P0
+  ---
+  duration_ms: 11.287375
+  type: 'test'
+  ...
+# Subtest: E04 no-map budget absence remains nonblocking through core, stored text, dispatch and receipt
+ok 4 - E04 no-map budget absence remains nonblocking through core, stored text, dispatch and receipt
+  ---
+  duration_ms: 5.548417
+  type: 'test'
+  ...
+# Subtest: E05 AUTO and statistics make zero source calls outside the Moscow daytime window
+ok 5 - E05 AUTO and statistics make zero source calls outside the Moscow daytime window
+  ---
+  duration_ms: 1.476334
+  type: 'test'
+  ...
+# Subtest: E06 a manual night request may publish but cannot trigger automatic outcome collection
+ok 6 - E06 a manual night request may publish but cannot trigger automatic outcome collection
+  ---
+  duration_ms: 5.581042
+  type: 'test'
+  ...
+# Subtest: E07 possible-send UNKNOWN is durable and never retried by the same or a later run
+ok 7 - E07 possible-send UNKNOWN is durable and never retried by the same or a later run
+  ---
+  duration_ms: 5.396542
+  type: 'test'
+  ...
+# Subtest: E08 stale evening card is not sent at night and morning analysis recalculates a new wave
+ok 8 - E08 stale evening card is not sent at night and morning analysis recalculates a new wave
+  ---
+  duration_ms: 16.273667
+  type: 'test'
+  ...
+# Subtest: E09 REQUIREMENT possible-send UNKNOWN must register the immutable original for separate outcome tracking
+ok 9 - E09 REQUIREMENT possible-send UNKNOWN must register the immutable original for separate outcome tracking
+  ---
+  duration_ms: 7.007084
+  type: 'test'
+  ...
+# Subtest: E10 REQUIREMENT a terminal never-sent wave must register first READY as a separate UNSENT original
+ok 10 - E10 REQUIREMENT a terminal never-sent wave must register first READY as a separate UNSENT original
+  ---
+  duration_ms: 9.056666
+  type: 'test'
+  ...
+# Subtest: E11 SENT manual/auto and partial-map/no-map originals retain distinct modes and map states
+ok 11 - E11 SENT manual/auto and partial-map/no-map originals retain distinct modes and map states
+  ---
+  duration_ms: 13.081458
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 263.159709

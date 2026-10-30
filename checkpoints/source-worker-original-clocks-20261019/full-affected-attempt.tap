@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: new counterexample: final producer retains collector availability instead of assembly time
+ok 1 - new counterexample: final producer retains collector availability instead of assembly time
+  ---
+  duration_ms: 11.171375
+  type: 'test'
+  ...
+# Subtest: legacy missing acquisition clock remains conservative and byte-identical; invalid present clock does not fabricate availability
+ok 2 - legacy missing acquisition clock remains conservative and byte-identical; invalid present clock does not fabricate availability
+  ---
+  duration_ms: 0.858042
+  type: 'test'
+  ...
+# Subtest: explicit first-known ordering is enforced by direct producer and current descriptive consumer
+ok 3 - explicit first-known ordering is enforced by direct producer and current descriptive consumer
+  ---
+  duration_ms: 1.7855
+  type: 'test'
+  ...
+# Subtest: canonical builder and controlled exact JSON INSERT/readback preserve original N10 evidence clocks
+ok 4 - canonical builder and controlled exact JSON INSERT/readback preserve original N10 evidence clocks
+  ---
+  duration_ms: 36.507208
+  type: 'test'
+  ...
+# Subtest: source clock survives actual manual and approved Telegram context audits without changing either text or scores
+not ok 5 - source clock survives actual manual and approved Telegram context audits without changing either text or scores
+  ---
+  duration_ms: 13.110959
+  type: 'test'
+  location: '/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-sources-worker/checkpoints/source-worker-original-clocks-20261019/original-clocks.test.mjs:87:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-original-clocks-20261019/original-clocks.test.mjs:93:9)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: stored supporting clock cannot replace the revalidated canonical evidence clock
+ok 6 - stored supporting clock cannot replace the revalidated canonical evidence clock
+  ---
+  duration_ms: 3.256958
+  type: 'test'
+  ...
+# Subtest: a future or impossible original source clock is not repaired by a later canonical consumer
+ok 7 - a future or impossible original source clock is not repaired by a later canonical consumer
+  ---
+  duration_ms: 6.20775
+  type: 'test'
+  ...
+# Subtest: new source-clock audit covers the exact saved 12 receipts without reconstructing absent native bodies
+ok 8 - new source-clock audit covers the exact saved 12 receipts without reconstructing absent native bodies
+  ---
+  duration_ms: 0.738917
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 177.959167

@@ -1,0 +1,175 @@
+--- a/current-generation/files/src/provider-reference-cache.mjs
++++ b/current-generation/files/src/provider-reference-cache.mjs
+@@ -7,7 +7,7 @@
+ 
+ // Cache transport bodies, never candidate evidence. Callers revalidate exact
+ // identity/category membership and quote clocks for each requested market.
+-export function createProviderReferenceReader({db,source,run_id,request_admit,fetch_impl=globalThis.fetch,now=Date.now(),clock=()=>now,daily_cap,minute_provider=null,minute_cap=9}={}){
++export function createProviderReferenceReader({db,source,run_id,request_admit,fetch_impl=globalThis.fetch,now=Date.now(),clock=()=>now,daily_cap,minute_provider=null,minute_cap=9,budget_observe=null}={}){
+  const receipts=[];let calls=0,denied=null,backoff=null,sequence=0;
+  const stopForNativeUsage=()=>{if(!nativeSourceUsageUnclosed(db))return false;denied={allowed:false,status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',attempts:0};return true;};
+  async function get(route,url,{ttl_ms=0,max_bytes=2*1024*1024,shape=()=>true,bypass_cache=false,max_cache_bytes=max_bytes,same_run_batch=false}={}){
+@@ -40,16 +40,21 @@
+   // A known exhausted source must not consume the caller's shared envelope.
+   // Durable reservation below remains the authority when concurrent callers
+   // compete for the last unit; this read never releases or resets a quota.
+-  const day_utc=new Date(readTs).toISOString().slice(0,10);
++  const day_utc=new Date(readTs).toISOString().slice(0,10),budgetAttempt=sequence;
++  // Optional synchronous technical observer. It never receives URLs/bodies,
++  // never changes the return/cache payload, and never admits or refunds work.
++  const observeBudget=(phase,fields)=>{if(typeof budget_observe!=='function')return;try{budget_observe({source,run_id,route,reference_key:key,attempt_sequence:budgetAttempt,query_window_end_ts:readTs,day_utc,phase,native_usage_guard_passed:true,...fields});}catch{}};
+   if(stopForNativeUsage())return null;
+   const usage=await db.prepare('SELECT attempts FROM report2_evidence_source_daily WHERE source=?1 AND day_utc=?2').bind(source,day_utc).first();
+   if(stopForNativeUsage())return null;
++  observeBudget('DAY_PREFLIGHT_ROW',{row_presence:usage===null?'ABSENT':usage&&typeof usage==='object'?'RETURNED':'UNKNOWN',reported_used_units:usage?.attempts,configured_cap:daily_cap});
+   if(Number(usage?.attempts)>=daily_cap){denied={allowed:false,status:'DAILY_CAP_OR_DUPLICATE',source,day_utc,attempts:0};return null;}
+   if(minute_provider){
+    await installProviderMinuteLedger(db);
+    if(stopForNativeUsage())return null;
+    const rolling=await db.prepare('SELECT COALESCE(SUM(units),0) AS units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?2 AND created_ts<=?3').bind(String(minute_provider).toUpperCase(),readTs-60000,readTs).first();
+    if(stopForNativeUsage())return null;
++   observeBudget('MINUTE_PREFLIGHT_ROW',{row_presence:rolling===null?'ABSENT':rolling&&typeof rolling==='object'?'RETURNED':'UNKNOWN',provider:String(minute_provider).toUpperCase(),reported_used_units:rolling?.units,configured_cap:minute_cap});
+    if(!Number.isSafeInteger(Number(rolling?.units))||Number(rolling.units)>=minute_cap){denied={allowed:false,status:'PROVIDER_RATE_LIMIT_LOCAL',source,attempts:0};return null;}
+   }
+   const reservation_id=`EV2:${source}:${run_id}:${await digest(url)}:${sequence++}`;
+@@ -58,10 +63,12 @@
+   if(whole?.allowed!==true||whole?.duplicate===true){denied={...whole,allowed:false,status:whole?.duplicate===true?'ALREADY_RESERVED_NO_REDISPATCH':whole?.status||'ADMISSION_REQUIRED'};return null;}
+   const daily=await reserveEvidenceSourceAttempts(db,{source,reservation_id,attempts:1,daily_cap,now:readTs});
+   if(stopForNativeUsage())return null;
++  observeBudget('DAY_RESERVATION_REPLY',{returned_allowed:daily.allowed,returned_status:daily.status,reported_own_reserved_units:daily.attempts,configured_cap:daily_cap});
+   if(!daily.allowed){denied=daily;return null;}
+   if(minute_provider){
+    const minute=await reserveProviderMinuteUnits(db,{provider:minute_provider,reservation_id,units:1,now:readTs,cap:minute_cap});
+    if(stopForNativeUsage())return null;
++   observeBudget('MINUTE_RESERVATION_REPLY',{provider:minute.provider,returned_allowed:minute.allowed,returned_status:minute.status,reported_used_units:minute.rolling_units,reported_own_reserved_units:minute.reserved_units,configured_cap:minute.cap,minute_bucket:minute.minute_bucket});
+    if(!minute.allowed){denied={...minute,status:'PROVIDER_RATE_LIMIT_LOCAL'};return null;}
+   }
+   calls++;
+--- a/current-generation/files/src/coingecko-sector-evidence.mjs
++++ b/current-generation/files/src/coingecko-sector-evidence.mjs
+@@ -245,7 +245,7 @@
+     Math.max(...refs.map(x=>x.received_ts))!==s.original_observed_ts)return false;
+  return cached.summary&&Object.entries(cached.summary).every(([key,value])=>JSON.stringify(r[key])===JSON.stringify(value));
+ }
+-export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,coingecko_demo_api_key=null}={}){
++export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,coingecko_demo_api_key=null,provider_budget_observe=null}={}){
+  const access=coingeckoAccessPolicy(coingecko_demo_api_key,{strict_fresh_manual});
+  if(!access.allowed)return{status:access.status,evidence:[],network_calls:0};
+  let coin_id=clean(asset_metadata?.coingecko_id),category_id=clean(asset_metadata?.coingecko_category_id),category_name=clean(asset_metadata?.coingecko_category_name);const identity=asset_identity;
+@@ -262,7 +262,7 @@
+  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
+  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
+  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
+- const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl:coingeckoDemoTransport(fetch_impl,coingecko_demo_api_key),now,daily_cap:access.daily_cap,minute_provider:'COINGECKO',minute_cap:access.minute_cap});
++ const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl:coingeckoDemoTransport(fetch_impl,coingecko_demo_api_key),now,daily_cap:access.daily_cap,minute_provider:'COINGECKO',minute_cap:access.minute_cap,budget_observe:typeof provider_budget_observe==='function'?e=>provider_budget_observe({...e,contract,run_id}):null});
+  const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
+  const asset_platforms=native?.platform&&!native.provider_ref_primary_authority?await reader.get('NATIVE_PLATFORM_BINDING','https://api.coingecko.com/api/v3/asset_platforms',{ttl_ms:86400000,shape:Array.isArray}):null;
+  const get=(route,url,options)=>reader.get(route,url,options);
+--- a/current-generation/files/src/coinpaprika-sector-evidence.mjs
++++ b/current-generation/files/src/coinpaprika-sector-evidence.mjs
+@@ -63,7 +63,7 @@
+  if(!same(row.peer_median_change_24h_pct,median)||!same(row.relative_strength_pct_points,row.target_change_24h_pct-median)||!number(row.target_change_24h_pct)||!same(row.peer_coverage_fraction,coverage)||!same(row.coverage_fraction,clamp(coverage,.15,.75))||!same(row.directional_strength,clamp(row.relative_strength_pct_points/10,-1,1)))return false;
+  return row.source_ts===Math.min(row.target_source_ts,...row.peers.map(peer=>peer.source_ts));
+ }
+-export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false}={}){
++export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false,provider_budget_observe=null}={}){
+  const base=clean(contract).replace(/-USDT$/,''),existingChain=Boolean(PLATFORMS[asset_identity?.chain]&&asset_identity?.contract_or_mint);
+  let coin_id=clean(asset_metadata?.coinpaprika_id),tag_id=clean(asset_metadata?.sector_tag);const pinned=Boolean(tag_id),marketDiscovery=!existingChain||!coin_id;
+  if(!db?.prepare||!/^\S{1,32}-USDT$/u.test(contract)||(pinned&&!/^[a-z0-9-]{3,80}$/.test(tag_id)))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
+@@ -80,7 +80,7 @@
+  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
+  if(nativeSourceUsageUnclosed(db))return{status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',evidence:[],network_calls:0};
+  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
+- const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap});
++ const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,budget_observe:typeof provider_budget_observe==='function'?e=>provider_budget_observe({...e,contract,run_id}):null});
+  const request=async(route,url,ttl_ms=0)=>reader.get(route,url,{ttl_ms,max_bytes:6*1024*1024,max_cache_bytes:route==='FREE_AGGREGATED_QUOTES'?16384:['FUNCTIONAL_SECTOR_DIRECTORY','HTX_MARKET_CATALOG'].includes(route)?900000:6*1024*1024,same_run_batch:route==='FREE_AGGREGATED_QUOTES',bypass_cache:strict_fresh_manual&&['FREE_AGGREGATED_QUOTES','EXACT_ASSET_SUPPLY_TICKER'].includes(route),shape:v=>v&&typeof v==='object'});
+  const finish=async(result)=>{
+   const summary=reader.summary(),final={version:COINPAPRIKA_SECTOR_VERSION,...result,...(!summary.admission.allowed?{status:summary.admission.status}:{}),...(summary.provider_backoff?{status:summary.provider_backoff.status}:{}),...summary,internal_only:true,free_only:true,monthly_module_bound:SOURCE_POLICIES[SOURCE].monthly_module_bound,official_free_monthly_requests:20000};
+--- a/current-generation/files/src/run-budget-context.mjs
++++ b/current-generation/files/src/run-budget-context.mjs
+@@ -11,7 +11,7 @@
+  const valid=Number.isSafeInteger(sum)&&sum===total&&limits.whole_job!==null&&total<=limits.whole_job&&remaining===limits.whole_job-total&&Object.entries(used).every(([k,n])=>n!==null&&limits[k]!==null&&n<=limits[k]);
+  return {basis:'RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP',status:valid?'CONSISTENT_RESERVED_SLOT_SNAPSHOT':'SUMMARY_NOT_CLOSED',used,limits,total_reserved:total,reported_remaining_slots:remaining,consistent:valid,admissible_extra_HTTP:null,actual_HTTP:null};
+ }
+-export function buildRunBudgetContext({run_id,recorded_ts,http,reservation,usage,day_admission,native_liquidation}={}){
++export function buildRunBudgetContext({run_id,recorded_ts,http,reservation,usage,day_admission,native_liquidation,provider_receipts}={}){
+  const native=counters(usage),cap=object(reservation)?{rows_read:count(reservation.rows_read),rows_written:count(reservation.rows_written)}:null;
+  const nativeClosed=native&&Object.values(native).every(x=>x!==null)&&native.unknown_ops===0&&cap&&Object.values(cap).every(x=>x!==null);
+  const daily=object(day_admission?.daily),witness=object(daily?.native_cost_reconciliation);
+@@ -26,8 +26,45 @@
+   earlier_day_admission:object(day_admission)?{status:label(day_admission.status),allowed_at_original_cut:flag(day_admission.allowed),day_utc:label(daily?.day_utc),reported_unknown_ops:count(daily?.unknown_ops),reserved_rows_read:count(daily?.reserved_rows_read),reserved_rows_written:count(daily?.reserved_rows_written),
+    reconciliation:witness?{status:label(witness.status),manifest_sha256:label(witness.manifest_sha256),historical_unknown_operations_preserved:count(witness.historical_unknown_operations_preserved),new_or_unmatched_unknown_authorized:flag(witness.new_or_unmatched_unknown_authorized),serialized_copy_is_not_a_proof_token:true}:null}:null,
+   native_liquidation_service:object(native_liquidation)?{scope:'EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB',...Object.fromEntries(['reserved_http','gross_reserved_http','claimed_http','actual_http','max_http_per_run'].map(k=>[k,count(native_liquidation[k])]))}:null,
++  // Local source-ledger observations are separate from unknown provider-account
++  // balances. Their earlier query cuts never authorize a new action here.
++  technical_provider_receipt_observations:provider_receipts?.schema==='EXISTING_PROVIDER_LEDGER_OBSERVATIONS_V1'&&provider_receipts.run_id===run_id?provider_receipts:null,
+   provider_day_month_rolling60s_headroom:null,manual_provider_reserve_headroom:null,
+   independent_global_native_capacity:null,required_next_full_reservation_by_policy:{rows_read:59000,rows_written:920},observed_next_full_reservation:null,
+   admission_authorized:false,whole_day_closed:false,additional_SQL:0,additional_source_HTTP:0,
+  };
+ }
++
++
++// Invocation-local metadata only; serialized copies are not proof/admission tokens.
++export function createProviderBudgetReceiptCapture({clock=Date.now}={}){
++ const events=[];let invalid=0,overflow=0;
++ const sources=['COINGECKO_SECTOR','COINPAPRIKA_SECTOR'];
++ const phases=['DAY_PREFLIGHT_ROW','MINUTE_PREFLIGHT_ROW','DAY_RESERVATION_REPLY','MINUTE_RESERVATION_REPLY'];
++ const text=(s,n)=>typeof s==='string'&&s.length>0&&Buffer.byteLength(s,'utf8')<=n?s:null;
++ const nullableCount=n=>typeof n==='number'&&Number.isSafeInteger(n)&&n>=0?n:null;
++ const jsonBytes=x=>Buffer.byteLength(JSON.stringify(x),'utf8');
++ const observe=e=>{
++  // No private body/URL/credential/SQL text or unknown caller keys are copied.
++  if(!e||!sources.includes(e.source)||!phases.includes(e.phase)||!text(e.run_id,160)||!text(e.contract,80)||!/^\S{1,32}-USDT$/u.test(e.contract)||!text(e.route,64)||!/^[A-Z0-9_]+$/.test(e.route)||!text(e.reference_key,128)||!/^REFERENCE:provider-reference-cache-v1-20261004:[a-f0-9]{64}$/.test(e.reference_key)||!Number.isSafeInteger(e.attempt_sequence)||e.attempt_sequence<0||!Number.isSafeInteger(e.query_window_end_ts)||e.query_window_end_ts<=0||e.query_window_end_ts>8_640_000_000_000_000||e.day_utc!==new Date(e.query_window_end_ts).toISOString().slice(0,10)||e.native_usage_guard_passed!==true){invalid++;return;}
++  const captured_ts=clock();if(!Number.isSafeInteger(captured_ts)||captured_ts<e.query_window_end_ts){invalid++;return;}
++  const row={source:e.source,run_id:e.run_id,contract:e.contract,route:e.route,phase:e.phase,reference_key:e.reference_key,attempt_sequence:e.attempt_sequence,
++   query_window_end_ts:e.query_window_end_ts,day_utc:e.day_utc,captured_ts,
++   provider:['COINGECKO','COINPAPRIKA'].includes(e.provider)?e.provider:null,
++   row_presence:['ABSENT','RETURNED','UNKNOWN'].includes(e.row_presence)?e.row_presence:null,
++   reported_used_units:nullableCount(e.reported_used_units),configured_cap:nullableCount(e.configured_cap),reported_own_reserved_units:nullableCount(e.reported_own_reserved_units),minute_bucket:nullableCount(e.minute_bucket),
++   returned_allowed:typeof e.returned_allowed==='boolean'?e.returned_allowed:null,returned_status:typeof e.returned_status==='string'&&/^[A-Z0-9_]{1,80}$/.test(e.returned_status)?e.returned_status:null,native_usage_guard_passed:true};
++  if(events.length>=16||jsonBytes(row)>1024){overflow++;return;}events.push(row);
++ };
++ const summary=run_id=>{
++  const bound=text(run_id,160),matching=bound?events.filter(e=>e.run_id===bound):[],foreign=events.length-matching.length;
++  const base={schema:'EXISTING_PROVIDER_LEDGER_OBSERVATIONS_V1',run_id:bound,basis:'PROJECT_LOCAL_SOURCE_LEDGER_NOT_PROVIDER_ACCOUNT_BALANCE',status:overflow?'OVERFLOW':invalid||foreign?'PARTIAL_OR_INVALID':matching.length?'CAPTURED_EARLIER_QUERY_CUTS':'NO_CURRENT_CAPTURE',
++   events:matching,invalid_observations:invalid,overflow_observations:overflow,foreign_run_omitted:foreign,all_run_observations_complete:false,
++   query_cuts_are_distinct:true,reservation_replies_are_helper_returns_not_raw_SQL_body:true,
++   provider_account_balances:null,month_headroom:null,manual_held_reserve:null,native_unknown_ops_at_individual_query:null,
++   future_work_admitted:false,whole_day_closed:false,serialized_copy_is_not_a_proof_token:true,additional_SQL:0,additional_source_HTTP:0};
++  if(jsonBytes(base)>16384)return{...base,status:'OVERFLOW',events:[],overflow_observations:overflow+matching.length};
++  return JSON.parse(JSON.stringify(base));
++ };
++ return{observe,summary};
++}
+--- a/current-generation/files/runner-main.mjs
++++ b/current-generation/files/runner-main.mjs
+@@ -1,7 +1,7 @@
+ import {createFailedD1RunAccounting} from './src/failed-d1-run-accounting.mjs';
+ import {buildSameRunDeliveryProof} from './src/same-run-delivery-proof.mjs';
+ import {buildMaintenanceCadenceReceipt} from './src/maintenance-cadence-receipt.mjs';
+-import {buildRunBudgetContext} from './src/run-budget-context.mjs';
++import {buildRunBudgetContext,createProviderBudgetReceiptCapture} from './src/run-budget-context.mjs';
+ import {admitTriggeredRecheck,TRIGGERED_RECHECK_D1_RESERVATION,proveTriggeredRecheckD1Budget} from './src/triggered-entry-recheck.mjs';
+ import {enforcePeriodicOwnership,enforceDailyAnalysisAdmission,markPostAnalysisControlFailure} from './src/pre-analysis-failure-receipt.mjs';
+ import {buildLiquidationSourceAcquisitionAudit,bindLiquidationAcquisitionDiagnostics} from './src/liquidation-source-acquisition-audit.mjs';
+@@ -710,8 +710,9 @@
+     let volume;try{volume=await collectCrossVenueVolumeProfiles({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,contract:params.contract,run_id:params.run_id});}catch{volume={status:'NOT_CLOSED',reason:'PROFILE_COLLECTOR_UNAVAILABLE',sources:{},network_calls:null};}const result={...risk,volume_profiles:volume,volume_profile_network_calls:volume.network_calls};liquidationRiskByContract.set(params.contract,result);return result;};
+   env.REPORT2_SIGNED_TAPE_READ=params=>readSavedHtxSignedTape({db:env.DATA_DB,...params,db_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150})});
+   env.REPORT2_SIGNED_TAPE_PERSIST=params=>persistCapturedHtxSignedTape({db:env.DATA_DB,...params,publish_verified_24h:false,db_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written})});
++  const providerBudgetReceipts=createProviderBudgetReceiptCapture();
+   let currentBlockWeightPolicy=null,blockPolicyLoaded=false;
+-  env.REPORT2_EVIDENCE_V2_COLLECT=async params=>{const result=await collectCandidateEvidenceV2({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,source_health_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written}),blockscout_api_key:envText('BLOCKSCOUT_PRO_API_KEY',{required:false}),coingecko_demo_api_key:envText('REPORT2_COINGECKO_DEMO_API_KEY',{required:false}),...params,main_index_failure_backoff:expectedManualMode!=='LIQUIDATION_ONLY'});if(!blockPolicyLoaded){currentBlockWeightPolicy=await loadBlockWeightPolicy(env.DATA_DB,{now:Date.now(),admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150})});blockPolicyLoaded=true;}console.log('EVIDENCE_SOURCE_HEALTH_RECEIPT',JSON.stringify({contract:params.contract,run_id:params.run_id,source_health:result.source_health,shared_http_envelope:result.shared_http_envelope}));return {...result,block_weight_policy:currentBlockWeightPolicy};};
++  env.REPORT2_EVIDENCE_V2_COLLECT=async params=>{const result=await collectCandidateEvidenceV2({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,source_health_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written}),blockscout_api_key:envText('BLOCKSCOUT_PRO_API_KEY',{required:false}),coingecko_demo_api_key:envText('REPORT2_COINGECKO_DEMO_API_KEY',{required:false}),...params,provider_budget_observe:providerBudgetReceipts.observe,main_index_failure_backoff:expectedManualMode!=='LIQUIDATION_ONLY'});if(!blockPolicyLoaded){currentBlockWeightPolicy=await loadBlockWeightPolicy(env.DATA_DB,{now:Date.now(),admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150})});blockPolicyLoaded=true;}console.log('EVIDENCE_SOURCE_HEALTH_RECEIPT',JSON.stringify({contract:params.contract,run_id:params.run_id,source_health:result.source_health,shared_http_envelope:result.shared_http_envelope}));return {...result,block_weight_policy:currentBlockWeightPolicy};};
+   env.REPORT2_EVIDENCE_V2_FINALIZE=params=>finalizeCandidateBlockCoverage(params);
+   await installBykQuotaLedger(env.DATA_DB);
+   env.REPORT2_BYKARANTELI_RESERVE=makeBykReserve(env.DATA_DB,{source});
+@@ -1246,7 +1247,7 @@
+   if(!analyticsLeaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${analyticsLeaseFinish.status}`);
+   const completed = Date.now();
+   const d1AfterAnalyticsLeaseRelease=env.DATA_DB.usageSnapshot();
+-  const existingRunBudgetContext=buildRunBudgetContext({run_id:String(cron.run_id||''),recorded_ts:completed,http:unifiedHttpBudget.summary(),reservation:d1RunReservation,usage:d1AfterAnalyticsLeaseRelease,day_admission:d1DayAdmission,native_liquidation:canonicalRunOutput.liquidation_source_acquisition_audit?.shared_budget});
++  const existingRunBudgetContext=buildRunBudgetContext({run_id:String(cron.run_id||''),recorded_ts:completed,http:unifiedHttpBudget.summary(),reservation:d1RunReservation,usage:d1AfterAnalyticsLeaseRelease,day_admission:d1DayAdmission,native_liquidation:canonicalRunOutput.liquidation_source_acquisition_audit?.shared_budget,provider_receipts:providerBudgetReceipts.summary(String(cron.run_id||''))});
+   const finalRunResult={ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, post_v7_unified_enabled:postV7UnifiedEnabled, analytics_lease:analyticsLeaseFinish, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), canonical_run_output:{status:canonicalRunOutput.status,candidate_count:canonicalRunOutput.candidates.length,artifact:'report2-run-result.json'}, telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, r8_20_prospective_validation_gate:r820ProspectiveValidationGate, r8_20_prospective_validation_sidecar:r820ProspectiveValidationSidecar, existing_run_budget_context:existingRunBudgetContext, maintenance_cadence:lowPriorityMaintenanceReceipt, block_weight_statistics:blockWeightStatistics, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false };
+   if(envText('REPORT2_MEASUREMENT_ARTIFACT_ENABLED',{required:false})==='1')await fs.writeFile('report2-measurement.json',JSON.stringify({schema:'report2-measured-run-v1',generation,worker_sha256:sha,source,started_ts:started,completed_ts:completed,duration_ms:completed-started,cron_run_id:cron.run_id,universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),stage0_coverage_pct:Number(scan.stage0_coverage_pct),live_shortlist_count:Number(cron.live_shortlist_count||0),live_deep_check_count:Number(cron.v3_live_deep_check_count||0),pipeline_health_status:cron.v3_pipeline_health_status||null,telegram_network_enabled:v3TelegramNetworkEnabled,telegram_output_enabled:telegramOutput?.enabled===true,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage,unknown_ops:Number(d1Usage?.unknown_ops||0),secret_values_stored:false},null,2));
+   // Preserve exact existing completion counters/statistical status outside

@@ -1,0 +1,295 @@
+{
+  "schema": "ONE_NEW_EARLY_LOWER_BOUND_CONNECTED_WITNESS_V1",
+  "scenarios": [
+    {
+      "name": "fresh rows and stale tail",
+      "path": "LOWER_ONLY",
+      "old_early_returned": 24,
+      "new_early_returned": 2,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "new_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "statuses": [
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "only stale exact named rows",
+      "path": "LOWER_ONLY",
+      "old_early_returned": 2,
+      "new_early_returned": 0,
+      "old_consumed_count": 2,
+      "new_consumed_count": 0,
+      "old_consumed_sha256": "db00d81fb7ca943060f497974482c3873d0840011430b323ba9570d85a3895d0",
+      "new_consumed_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "statuses": [
+        "WAVE_NOT_CURRENT",
+        "WAVE_NOT_CURRENT"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "inclusive lower endpoint",
+      "path": "LOWER_ONLY",
+      "old_early_returned": 2,
+      "new_early_returned": 2,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "cd8e7257c0e13a533cb7e87af29864eb769d63156c506a1b5c244062429147ab",
+      "new_consumed_sha256": "cd8e7257c0e13a533cb7e87af29864eb769d63156c506a1b5c244062429147ab",
+      "statuses": [
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "future24 still mask named valid rows",
+      "path": "LOWER_ONLY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 0,
+      "new_consumed_count": 0,
+      "old_consumed_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "new_consumed_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "statuses": [
+        "WAVE_NOT_CURRENT",
+        "WAVE_NOT_CURRENT"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "future exact named row remains",
+      "path": "LOWER_ONLY",
+      "old_early_returned": 2,
+      "new_early_returned": 2,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "da3dba3394d9c1c3b33f36866e017654aeaa96d730330634a29bc691e396ab78",
+      "new_consumed_sha256": "da3dba3394d9c1c3b33f36866e017654aeaa96d730330634a29bc691e396ab78",
+      "statuses": [
+        "WAVE_NOT_CURRENT",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "future padded alias remains",
+      "path": "LOWER_ONLY",
+      "old_early_returned": 3,
+      "new_early_returned": 3,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "520887acb8cfead16bb18b36a045185bd7200f84ba0e7937fb2aee2f1136999b",
+      "new_consumed_sha256": "520887acb8cfead16bb18b36a045185bd7200f84ba0e7937fb2aee2f1136999b",
+      "statuses": [
+        "WAVE_NOT_CURRENT",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "fresh padded alias still raw-authority refusal",
+      "path": "LOWER_ONLY",
+      "old_early_returned": 3,
+      "new_early_returned": 3,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "3670c2d7481194c6332462912032714d57cbb042e3daf8d67b3adf9bc88f3c24",
+      "new_consumed_sha256": "3670c2d7481194c6332462912032714d57cbb042e3daf8d67b3adf9bc88f3c24",
+      "statuses": [
+        "CURRENT_RUN_CANONICAL_IDENTITY_MISMATCH",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "legacy wave null",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 24,
+      "new_consumed_count": 24,
+      "old_consumed_sha256": "37249b08384ae020503f2bfca371aa9691dbbaa077728bb1c1d6243640e4c817",
+      "new_consumed_sha256": "37249b08384ae020503f2bfca371aa9691dbbaa077728bb1c1d6243640e4c817",
+      "statuses": [
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "legacy wave \"\"",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 24,
+      "new_consumed_count": 24,
+      "old_consumed_sha256": "37249b08384ae020503f2bfca371aa9691dbbaa077728bb1c1d6243640e4c817",
+      "new_consumed_sha256": "37249b08384ae020503f2bfca371aa9691dbbaa077728bb1c1d6243640e4c817",
+      "statuses": [
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "legacy wave \" EDW:BTW-USDT:1792416900000:G1 \"",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "new_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "statuses": [
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "legacy wave 42",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 1,
+      "new_consumed_count": 1,
+      "old_consumed_sha256": "9b0b8c478fc19208a1317eea6c42da2545bccb4b2709b9386b3b277bd61231a3",
+      "new_consumed_sha256": "9b0b8c478fc19208a1317eea6c42da2545bccb4b2709b9386b3b277bd61231a3",
+      "statuses": [
+        "WAVE_NOT_CURRENT",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "duplicate handoff pair unchanged",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 3,
+      "new_consumed_count": 3,
+      "old_consumed_sha256": "a9ee9167f69fd6f0a5014394f10e777239598dc116869f58f9c65ba11a092705",
+      "new_consumed_sha256": "a9ee9167f69fd6f0a5014394f10e777239598dc116869f58f9c65ba11a092705",
+      "statuses": [
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "invalid closed handoff time",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 1,
+      "new_consumed_count": 1,
+      "old_consumed_sha256": "9b0b8c478fc19208a1317eea6c42da2545bccb4b2709b9386b3b277bd61231a3",
+      "new_consumed_sha256": "9b0b8c478fc19208a1317eea6c42da2545bccb4b2709b9386b3b277bd61231a3",
+      "statuses": [
+        "DEEP_TIME_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "foreign named wave remains missing",
+      "path": "LOWER_ONLY",
+      "old_early_returned": 24,
+      "new_early_returned": 2,
+      "old_consumed_count": 1,
+      "new_consumed_count": 1,
+      "old_consumed_sha256": "9b0b8c478fc19208a1317eea6c42da2545bccb4b2709b9386b3b277bd61231a3",
+      "new_consumed_sha256": "9b0b8c478fc19208a1317eea6c42da2545bccb4b2709b9386b3b277bd61231a3",
+      "statuses": [
+        "WAVE_NOT_CURRENT",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "string now keeps oldSQL",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "new_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "statuses": [
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "fractional now keeps oldSQL",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "new_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "statuses": [
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "missing now keeps oldSQL",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "new_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "statuses": [
+        "CANONICAL_DIRECTION_NOT_CLOSED",
+        "CANONICAL_DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 5
+    },
+    {
+      "name": "noncanonical caller keeps oldSQL",
+      "path": "EXACT_LEGACY",
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "old_consumed_count": 2,
+      "new_consumed_count": 2,
+      "old_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "new_consumed_sha256": "e1341cee7d313a5c60be22911a5d69bcff7132c68881d563a5bf8b4d0dc057ae",
+      "statuses": [
+        "DIRECTION_NOT_CLOSED",
+        "DIRECTION_NOT_CLOSED"
+      ],
+      "source_queries": 4
+    },
+    {
+      "name": "direct loader explicitundefined retains oldSQL",
+      "path": "EXACT_LEGACY",
+      "direct_loader": true,
+      "old_early_returned": 24,
+      "new_early_returned": 24,
+      "statuses": [],
+      "source_queries": 5
+    }
+  ],
+  "query_templates_only_one_changed": true,
+  "source_queries_per_path": 5,
+  "noncanonical_queries": 4,
+  "actual_localSQLite_saved_schema": true,
+  "retained_hot_precedence_and_archive_restore": true,
+  "controlled_archive_fetch_not_network": true,
+  "sourceHTTP_nativeSQL_MAIN_Telegram": 0,
+  "native_costs": null,
+  "native_saving": null,
+  "limits": "One NEW controlled localSQLite/source-loader/actual consumer selection case. No native index/plan/cost, delivery/persistence/ENTRY or complete publication qualification; original160 cap and canonical authority unchanged. Counterexample561 is a reference, not rerun/imported."
+}

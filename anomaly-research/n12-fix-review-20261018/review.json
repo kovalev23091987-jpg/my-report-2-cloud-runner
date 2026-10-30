@@ -1,0 +1,192 @@
+{
+  "schema": "EXACT_N12_FIX_READ_ONLY_REVIEW_V1",
+  "reviewed_frozen_head": "290e5224a10652a8ab3a489752c06cefdee4e18e",
+  "base": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+  "lease_ref": "1416b34cf1ce15c95b2a79034a348ba95b024f4f",
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792334774863",
+  "exact_lease_readback": true,
+  "review_result": "NO_BLOCKING_FINDINGS_IN_REVIEWED_DIFF",
+  "runtime_files": 3,
+  "new_test_bodies_reviewed": 6,
+  "own_runtime_test_runs": 0,
+  "reviewed_files": [
+    {
+      "path": "current-generation/files/src/block-result-context.mjs",
+      "sha256": "544554b028bd5659150f0bbc23cfcb4d8aad5599f745ed956367d03af43a546d",
+      "bytes": 91027,
+      "anchors": [
+        {
+          "line": 362,
+          "text": "const exactContextEvidence=(row,contract,now)=>!PAUSED_BLOCKS[row?.block_id]&&row?.htx_contract===contract&&validateEvidenceV2(row,{decision_ts:now}).usable&&number(row.observed_ts)!==null&&row.source_ts<=row.observed_ts&&row.observed_ts<=n"
+        },
+        {
+          "line": 365,
+          "text": "function contextComponentOrigins(rows){"
+        },
+        {
+          "line": 434,
+          "text": "  const origins=row.block_id==='N12'?contextComponentOrigins([row,...relatedRows]):null;"
+        },
+        {
+          "line": 479,
+          "text": " const printedTelegramFact=row=>{"
+        },
+        {
+          "line": 484,
+          "text": "  const represented=direct||fullFallback?all:all.filter(id=>id===row.evidence_id||plainContextFact({...row,evidence_ids:all.filter(other=>other!==id)},canonical)!==plain);"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/block-decision-use-audit.mjs",
+      "sha256": "9ae5511596818b2e60af715845ffe0cbfa73fc5ed0299ddd8c50e8304156d3dc",
+      "bytes": 14599,
+      "anchors": [
+        {
+          "line": 58,
+          "text": "  const matchesRendered=(receipt,row)=>row.evidence_id===receipt.evidence_id||array(row.immutable_evidence_ids).length&&array(row.immutable_evidence_ids).every(id=>array(receipt.evidence_ids).includes(id))||block==='N12'&&array(receipt.comp"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "sha256": "850edc9ac89a67b32bc721d93abaf01ab5c9b82067287c2c45b73359348631a0",
+      "bytes": 61644,
+      "anchors": [
+        {
+          "line": 160,
+          "text": " N12:{all:['HTX_LARGE_TRADES'],supplemental:['EXTERNAL_N05_FLOW']},"
+        },
+        {
+          "line": 287,
+          "text": "    const source=sources?.[name]||{},sourceRows=(Array.isArray(source.evidence)?source.evidence:[]).filter(row=>row?.block_id===block&&rows.some(fact=>fact.evidence_id===row.evidence_id&&fact.htx_contract===row.htx_contract&&(block!=='N12'|"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/tests/n12-market-trades.test.mjs",
+      "sha256": "472251ea1bb99dcba70ae15b8bf31171257ccaf020b237a0ebc6aad7d4d9f0be",
+      "bytes": 14683,
+      "anchors": [
+        {
+          "line": 86,
+          "text": "test('plain Telegram N12 receipts retain only components represented by that surface',async()=>{"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/tests/n12-native-public-trades.test.mjs",
+      "sha256": "dbba0fa02d8b6884f42974157215b3b6637a95355a99e9a865cdd7afe6ecde7d",
+      "bytes": 22278,
+      "anchors": [
+        {
+          "line": 72,
+          "text": "test('merged N12 component origins retain each native market root and own clocks on both report surfaces',()=>{"
+        },
+        {
+          "line": 85,
+          "text": "test('native paired N12 provenance excludes invalid or foreign related facts and never fabricates their windows',()=>{"
+        },
+        {
+          "line": 101,
+          "text": "test('N12 component accounting includes assessed printed external facts within the same shared HTTP envelope',async()=>{"
+        },
+        {
+          "line": 106,
+          "text": "test('N12 component rendering alone cannot invent an assessment or decision use',async()=>{"
+        },
+        {
+          "line": 110,
+          "text": "test('N12 component supplemental membership excludes unbound, foreign and other-block source rows',async()=>{"
+        }
+      ]
+    }
+  ],
+  "unchanged_guarded_files": [
+    {
+      "path": "current-generation/files/src/source-role-consumer.mjs",
+      "sha256": "81acb21b0eb4b10a3d12e02a564c5f712d31eff1857fef8dbf19e8cde8c1fb0f",
+      "base_and_scope_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/observation-source-role-gate.mjs",
+      "sha256": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
+      "base_and_scope_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/observation-source-role-audit.mjs",
+      "sha256": "e197a38c8866b3f8c3b59b688797cd9477240452c37353467f4cfbeeea529e29",
+      "base_and_scope_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/evidence-v2.mjs",
+      "sha256": "dd939e4825e032d71eb41f8bc530419b78263d341f2491486279ef4a4be712e7",
+      "base_and_scope_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/block-score-policy.mjs",
+      "sha256": "873d70a0404baf5df104ee34459246fd85d798163f3cadd7bd72bb7cba3441a1",
+      "base_and_scope_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/telegram-plain-facts.mjs",
+      "sha256": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+      "base_and_scope_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/manual-report-formatter.mjs",
+      "sha256": "891fdfeb75b6a0d93485c164ed967b67691df482e18c61f817d543f5fd8523b4",
+      "base_and_scope_byte_identical": true
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "sha256": "8113b3540a9d85fd6b05ab5e64013242a270831101229bbf95f6985c11991407",
+      "base_and_scope_byte_identical": true
+    }
+  ],
+  "coordinator_scope": {
+    "path": "checkpoints/n12-component-origins-repair-20261018/scope.json",
+    "sha256": "351269d64fd2a765d06919bfd1a38285518aeec9d7fe4d6d2033ffaf80b73bbd"
+  },
+  "read_saved_logs": [
+    {
+      "path": "checkpoints/n12-component-origins-repair-20261018/n12-before.tap.gz",
+      "sha256": "3f27ee02a34ee94265d7a861b11b73c4afcf1411b9275433d183875bc444af73",
+      "saved_report_counts": {
+        "tests": 2,
+        "pass": 0,
+        "fail": 2,
+        "skipped": 0
+      },
+      "executed_by_reviewer": false
+    },
+    {
+      "path": "checkpoints/n12-component-origins-repair-20261018/n12-target6.tap.gz",
+      "sha256": "58cae3bce2056baac3857652d4313cb0d42c9e81be84e4870feaf3aa70840177",
+      "saved_report_counts": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "skipped": 0
+      },
+      "executed_by_reviewer": false
+    },
+    {
+      "path": "checkpoints/n12-component-origins-repair-20261018/n12-common-target.tap.gz",
+      "sha256": "9bbeb983d2e562e730ed13b1b1514f0f4469a8eb83448e29cad89045d8fe14f6",
+      "saved_report_counts": {
+        "tests": 29,
+        "pass": 29,
+        "fail": 0,
+        "skipped": 0
+      },
+      "executed_by_reviewer": false
+    }
+  ],
+  "new_network_SQL_MAIN_Telegram": 0,
+  "production_shared_edits": false,
+  "actual_APR_NEAR_raw_reconstructed": false,
+  "connected_CI_acceptance": "NOT_ACCEPTED; coordinator investigating39137320601 script stop; saved local logs are not connected CI acceptance",
+  "native_capacity_or_delivery_accepted": false,
+  "further_work": "Separate concrete saved outcome/delayed-event missing-case audit; no new rules/scaffolding."
+}

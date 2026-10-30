@@ -1,0 +1,11 @@
+# New saved ordinary39261413199: BTW and ZEC
+
+No new saved qualified fact loss, incorrect binding or redundant provider HTTP counterexample was established. Exact original head59e8 predates556; this is not native V2 or late-return budget acceptance. Report705117B/99965d0900c70c06c18a583e63bc0c1ce66356a3f0d8a503a9715da3b341707a, businessrun1792416935259-1792416944638. Two original GitHub ZIPs and seven byte-exact JSON members retained.
+
+BTW is a new REJECTED/directionNULL snapshot, not old558 replay. New Poloniex4h plus12-active-minute N10 path, GateSPOT1626 trades and both sector contexts are rendered. HTX39future/251spot same-sign sells do not satisfy the full existing bounded-agreement policy; Gate buys remain separate. ScoreNULL is preserved under missing base score. CoinPaprika free quotes use existing same-run memory with0newHTTP.
+
+ZEC is SHORT/OBSERVE. N05 retains two full4h SPOT windows, Binance and Poloniex. Their end1792416960000 is60s later than HTX N10 end1792416900000, so existing exact-window filtering does not create a comparison. Raw240bars/activity for the prior15m are absent: no qualified lost-path witness or reason to relax the guard. N12 preserves two represented IDs and original maxknown13361ms later than outerHTXobserved; windows are not summed. N15 actual contribution-0.3206=-0.2993-0.0213 is retained despite manual per-row0.
+
+ZEC LIQ keeps2Hyperliquid account-sample native USDC levels,44OrderlyUSDC estimates, one consensus merge into45nodes, and8separateCoinBossUSD models. Native display prices and hybrid consensus price remain distinct; no FX/exactUSDT/HTXtarget. BTW has4SwoleUSD models only. No wholemarket/independent-vote inference. Detailed TG receipts remainempty/deliveryfalse/messageNULL; central root acceptance is not repeated.
+
+No production/shared patch, helper, framework, callable or tests. Node/apps/runtime/syntax/probes/providerHTTP/nativeSQL/MAIN/dispatch/TG/deploy0. Source raw candles/cacheACK/body gaps remain explicit. PRIMARYN04/N11/baseNULL peer, budget V2/132/182, ENTRY and physicalstorage are outside this package. Exact IDs/units/windows/clocks and original pointers are in receipt.json; provenance and acquisition files preserve immutable refs and hashes.

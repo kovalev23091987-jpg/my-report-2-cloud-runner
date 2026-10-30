@@ -1,0 +1,60 @@
+{
+  "schema": "F572_DENOMINATION_RESEARCH_DEDUP_V1",
+  "retained_sources": [
+    "F564 exact541 ordinary Coin units /9 packaged UNKNOWN",
+    "F5666attemptsSPENT no new denominations",
+    "F5708attemptsSPENT unrelated new API leads",
+    "F571 exact1 FX classification does not qualify packaged crypto units"
+  ],
+  "preserve_spent": {
+    "F566_document_attempts": 6,
+    "F566_remaining": 0,
+    "F570_document_attempts": 8,
+    "F570_remaining": 0,
+    "metadata2_SPENT": true,
+    "other_old_grants_not_rearmed": true
+  },
+  "excluded_old_URLs": [
+    {
+      "url": "https://bingx.com/en/perpetual/1000SHIB-USDT",
+      "reason": "F566 primary indexed HTML navigation only, not new denominator material"
+    },
+    {
+      "url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/BTC-USDT",
+      "reason": "F566 default navigation, unrelated instrument; not packaged proof"
+    },
+    {
+      "url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/1000SHIB-USDT",
+      "reason": "F566 inaccessible no retry"
+    },
+    {
+      "url": "https://bingx.com/en/perpetual/APT-USDT",
+      "reason": "Earlier official product error no retry"
+    },
+    {
+      "article_id": "22183116881561",
+      "reason": "Fee schedule translations were already unhelpful; another locale is same primary"
+    },
+    {
+      "url": "https://bingx.com/en/flash-news/post/shiba-inu-expands-to-solana-via-sunrise-shib-token-rises-in-hours",
+      "reason": "Spot/news not perpetual Coin/price denominator"
+    },
+    {
+      "url": "https://bingx.com/vi/how-to-buy/1000shib",
+      "reason": "How-to-buy not perpetual field semantics"
+    }
+  ],
+  "excluded_query_repeats": [
+    "site:bingx.com \"1000SHIB\" \"Amount\"",
+    "site:bingx.com \"1000SHIB\" \"1000PEPE\" unit",
+    "site:bingx.com \"1000SHIB\" contract -guaranteed -schedule -gebührenordnung"
+  ],
+  "repeat_rules": [
+    "No old failed URLs or same-content locale paths",
+    "Do not reopen generic underlying-asset guide or already-reviewed get-depth docs solely to restate Coin",
+    "Same official UI/SDK/REST/WS and translations are one BingX lineage, not independent unit votes or extra vendor quota",
+    "Firecrawl credit failures not retried",
+    "Listing notice or unit label counts only if it explicitly supplies exact packaged denomination, not just symbol/name"
+  ],
+  "new_material_test": "Previously unexamined primary asset/config/module/schema with a materially new exact field/denominator fact. A new URL alone is insufficient."
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "F592_INPUT_PROOFS_AND_COUNTS_V1",
+  "scope": "OFFLINE_TWO_EXACT_ROOT_ORIGINALS;publicinstrumentmetadataandaggregatedmodelreviewonly",
+  "catalogue_proof": {
+    "path": "pump-report/.private/observations/0xarchive-instruments-one-result.json",
+    "sha256": "a2ed31a0e660e4ce2f3b3a9e03e4c30b187ee9b6616b4aa6bfc181afa0664a67",
+    "bytes": 76982,
+    "attempted_ts": 1793015398328,
+    "received_ts": 1793015400299,
+    "request": {
+      "tool": "mcp__codex_apps__0xarchive2_get_instruments",
+      "args": {},
+      "max_attempts": 1
+    },
+    "isError": false
+  },
+  "model_proof": {
+    "path": "pump-report/.private/observations/0xarchive-hype-future-model-one-result.json",
+    "sha256": "8d286b57c00cea4a8bf326c91ed19067d0d3d0d27fcf3df3efd9e0c878b72442",
+    "bytes": 40234,
+    "attempted_ts": 1793015503414,
+    "received_ts": 1793015505055,
+    "request": {
+      "tool": "mcp__codex_apps__0xarchive2_get_liquidation_levels",
+      "args": {
+        "coin": "HYPE",
+        "range_pct": 50,
+        "buckets": 100
+      },
+      "max_attempts": 1
+    },
+    "isError": false
+  },
+  "catalogue_envelope": {
+    "count": 234,
+    "hasMore": false,
+    "meta": {
+      "count": 234,
+      "requestId": "d18188fb-3cfb-4458-ab2b-5a8026c7ab01"
+    }
+  },
+  "model_meta": {
+    "count": 100,
+    "requestId": "7c1786ab-1f90-42ba-95a6-95bcae629f3c"
+  },
+  "counts": {
+    "provider_rows": 234,
+    "provider_unique_names": 234,
+    "provider_active": 178,
+    "provider_inactive": 56,
+    "provider_perp": 234,
+    "provider_crypto_verified": 0,
+    "selected550": 550,
+    "rawticker_overlap": 176,
+    "raw_overlap_active": 162,
+    "raw_overlap_inactive": 14,
+    "raw_name_absent": 374,
+    "raw_name_ambiguous": 0,
+    "canonical_identity_UNKNOWN": 550,
+    "provider_native_HYPE_model_actual": 1,
+    "model_to_selected_link_qualified": 0,
+    "consumer_qualified_routes": 0,
+    "UNSUPPORTED": 0,
+    "provider_rows_with_raw_selected_candidate": 176,
+    "provider_rows_without_raw_selected_candidate": 58
+  },
+  "catalogue_completion": {
+    "actual_rows": 234,
+    "declared_count": 234,
+    "hasMore": false,
+    "nextCursor_present": false,
+    "unique_native_names": 234,
+    "claim": "Completeasreturnedbythismethodatcapture;notindependentfullvenue/fullcryptoorfuturemapcensus",
+    "source_timestamp": null,
+    "source_freshness": "UNKNOWN;received_ts is transport capture only"
+  },
+  "baseline550": {
+    "path": "pump-report/handoffs/sources/F589_COVERAGE_550_V1.csv",
+    "sha256": "49df3341e670d53e8f449a8267f42f567809348b1bbb4b6eda1a90399ff1a11f",
+    "rows": 550,
+    "crypto_classification": "ExistingBingXverifiedtargetonly",
+    "nativebase_mapping": "RetainedF583seed13+reviewed539 exactnative IDs,552 beforeBTCETHexclusion"
+  },
+  "join_rule": "Exactcase-sensitive nativeBingXbase==providername;no prefixstrip/multiplier/fuzzy/translation as identity",
+  "canonical_status": "UNKNOWN_ALL550;provider cryptoUNKNOWN_ALL234;perp!=verifiedcrypto",
+  "DOOD": "Oneinactiveperp row atcapturedprovider;notglobalUNSUPPORTED;mapnotcalled",
+  "HYPE": "Onenativeactiveperpmodelcontrol;BingXcanonicaljoinUNKNOWN;no qualifiedroute",
+  "private_transport_originals_exported": false,
+  "all_model_levels_exported": false,
+  "documentation_queries": 0,
+  "new_provider_calls_by_SOURCE": 0,
+  "local_original_reads_note": "Two authorized originals were hash-verified;local extraction repeated to retain exact native instrumentType/request clocks. No network replay.",
+  "currency_scope_clarification": "USDT_M restricts targetBingX550only. ExternalnativeUSD/USDC-marginedHyperliquidcontextisnotexcludedsolelybydenomination;retaincurrencyandrequirequalifiedconversionforexactBingXorders."
+}

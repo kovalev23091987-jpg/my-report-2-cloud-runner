@@ -1,0 +1,33 @@
+--- a/tools/run-paid-sliding-history-20261018.mjs
++++ b/tools/run-paid-sliding-history-20261018.mjs
+@@ -4,12 +4,13 @@
+ import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
+ import {finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
+ import {SLIDING_HISTORY_POLICY as P,slidingCapacityDecision,reserveCapacityExpiryBudget,expireOldDetails} from '../runner/sliding-history-capacity.mjs';
+-import {RETENTION_SQL_BRIDGE_PROOF,parseRetentionSQLBridgeProof,verifyRetentionSQLBridge,requireRetentionControlReserve} from '../runner/retention-bridge-provenance.mjs';
++import {RETENTION_SQL_BRIDGE_PROOF,CORRELATED_RETENTION_SQL_BRIDGE_PROOF,createRetentionSQLBridgeCompatibility,requireRetentionControlReserve} from '../runner/retention-bridge-provenance.mjs';
+ import {reconcileNativeQueryCosts} from '../runner/native-query-cost-reconciliation.mjs';
+ const repository='kovalev23091987-jpg/my-report-2-cloud-runner',PHASE='checkpoints/CLOUD_PHASE_STATE_20261004.json',FENCE='audit-fixes/source-optimization-20260930/execution-lock.json';
+ const dir='audit-output/paid-sliding-history';await fs.mkdir(dir,{recursive:true});
+ const out={schema:'PAID_SLIDING_HISTORY_RUN_V1',head:process.env.GITHUB_SHA,run:process.env.GITHUB_RUN_ID,sourceHTTP:0,MAIN:0,Telegram:0,paid_plan_modified:false,quotas_reset:false,history_details_expired:false};
+ let controlHTTP=0,bridgeHTTP=0,lease,db,reservation,expected=process.env.GITHUB_SHA;
++let bridgeCompatibility;
+ const cfToken=process.env.CLOUDFLARE_API_TOKEN;
+ const control=makeGithubControl({repository,token:process.env.GITHUB_TOKEN,fetch_impl:async(url,options)=>{if(++controlHTTP>40)throw Error('SLIDING_CONTROL_HTTP_CAP');return fetch(url,{...options,redirect:'error'});}});
+ async function cf(path){if(++controlHTTP>40)throw Error('SLIDING_CONTROL_HTTP_CAP');const token=path.startsWith('/d1/')?process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN:cfToken;const r=await fetch('https://api.cloudflare.com/client/v4/accounts/'+P.account_id+path,{headers:{authorization:'Bearer '+token},redirect:'error',signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('SLIDING_METADATA_HTTP_'+r.status);const j=await r.json();if(j.success!==true)throw Error('SLIDING_METADATA_ACK_REQUIRED');return j;}
+@@ -19,7 +20,14 @@
+  if(f.value.active||p.value.current_task!=='ALL_ACTIVE105_SOURCE_EFFICIENCY_IN_PROGRESS'||l?.owner!==lease?.lease.owner||l.expires_ts<=Date.now()||!l.scope?.startsWith('RETAINED_HISTORY.')||JSON.stringify(l)!==JSON.stringify(p.value.latest_own_bounded_continuation_lease)||p.value.active_working_state?.owned_lease!==l.owner)throw Error('SLIDING_EXACT_OWN_OWNER_REQUIRED');
+  return p;
+ }
+-async function observe(stage){const proof=parseRetentionSQLBridgeProof(await fs.readFile(RETENTION_SQL_BRIDGE_PROOF.path));return verifyRetentionSQLBridge({proof,configured_bridge_url:process.env.REPORT2_D1_BRIDGE_URL,stage,call:async(name,suffix)=>(await cf(suffix==='/subdomain'?'/workers/subdomain':'/workers/scripts/'+name+suffix)).result});}
++async function observe(stage){
++ if(!bridgeCompatibility){
++  if(stage!=='before_SQL')throw Error('RETENTION_COMPATIBILITY_BEFORE_REQUIRED');
++  const [old_release_bytes,staged_receipt_bytes]=await Promise.all([fs.readFile(RETENTION_SQL_BRIDGE_PROOF.path),fs.readFile(CORRELATED_RETENTION_SQL_BRIDGE_PROOF.path)]);
++  bridgeCompatibility=createRetentionSQLBridgeCompatibility({old_release_bytes,staged_receipt_bytes});
++ }
++ return bridgeCompatibility.observe({configured_bridge_url:process.env.REPORT2_D1_BRIDGE_URL,stage,call:async(name,suffix)=>(await cf(suffix==='/subdomain'?'/workers/subdomain':'/workers/scripts/'+name+suffix)).result});
++}
+ try{
+  if(process.env.GITHUB_REPOSITORY!==repository||!/^\d+$/.test(out.run||'')||!/^[a-f0-9]{40}$/.test(expected||''))throw Error('SLIDING_EXACT_REPOSITORY_RUN_REQUIRED');
+  const policy=JSON.parse(await fs.readFile('checkpoints/OWNER_PAID_SLIDING_HISTORY_20261018.json','utf8'));

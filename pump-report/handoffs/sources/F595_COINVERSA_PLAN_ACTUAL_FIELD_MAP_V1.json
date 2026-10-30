@@ -1,0 +1,89 @@
+{
+  "schema": "F595_COINVERSA_PLAN_ACTUAL_FIELD_MAP_V1",
+  "status": "EXISTING_CONNECTED_FREE_TARIFF_OBSERVED_NOT_BALANCE_PROOF",
+  "input_proof": {
+    "path": "pump-report/.private/observations/coinversa-existing-plan-one-result.json",
+    "sha256": "be651e7fd5637f6f2925f9421817d4974278a6af1ab90c9fcea34e6da8e5f53e",
+    "bytes": 912,
+    "format": "DIRECT_MCP_TOOL_RESULT",
+    "isError": false,
+    "structuredContent": null
+  },
+  "ROOT_public_proof": {
+    "path": "checkpoints/pump-report-20261025/ROOT_COINVERSA_EXISTING_FREE_PLAN_ACTUAL_ONE.json",
+    "sha256": "fd9274c7935eb2be995e028dab1aa363a73995e720cfd0f13e7b11351c925680",
+    "bytes": 1393
+  },
+  "method_identity": {
+    "tool": "mcp__codex_apps__coinversa_pulse_pulse_my_plan",
+    "args": {
+      "useToonFormat": false
+    },
+    "basis": "ROOTdirecttask+publicreceiptboundtoexactprivateSHA;privatefileisresultonlyandcontainsnorequesttrace"
+  },
+  "field_map": [
+    {
+      "actual_path": "root.content[0].text[JSON].tier",
+      "raw": "free",
+      "semantic": "CONNECTED_KEY_PLAN_TIER",
+      "status": "OBSERVED_AT_CAPTURE"
+    },
+    {
+      "actual_path": "root.content[0].text[JSON].requestsPerMin",
+      "raw": 30,
+      "semantic": "TARIFF_REQUESTS_PER_MINUTE_CAP_NOT_REMAINING"
+    },
+    {
+      "actual_path": "root.content[0].text[JSON].requestsPerDay",
+      "raw": 1000,
+      "semantic": "TARIFF_REQUESTS_PER_DAY_CAP_NOT_REMAINING"
+    },
+    {
+      "actual_path": "root.content[0].text[JSON].requestsPerMonth",
+      "raw": 0,
+      "semantic": "UNKNOWN_SENTINEL_MEANING",
+      "forbidden": [
+        "UNLIMITED",
+        "ZERO_ACCESS",
+        "ZERO_SPENT",
+        "FREE_EXTRA_HEADROOM"
+      ]
+    },
+    {
+      "actual_path": "root.content[0].text[JSON].tiers",
+      "semantic": "TARIFF_LADDER_NOT_ACCOUNT_USAGE",
+      "rows": 4,
+      "consistency": "Freeentryduplicatescurrent30/1000/0;otherplansnotcurrententitlement"
+    },
+    {
+      "actual_path": "root.content[0].text[JSON].$schema",
+      "semantic": "SCHEMA_IDENTIFIER_PRESENT_NOT_HOSTED_CLIENT_VERSION_OR_RETRY_TRACE",
+      "actual_value_exported": false
+    }
+  ],
+  "not_returned": {
+    "remaining_per_minute": "NOT_RETURNED",
+    "remaining_today": "NOT_RETURNED",
+    "remaining_month": "NOT_RETURNED",
+    "used": "NOT_RETURNED",
+    "reset_at": "NOT_RETURNED",
+    "reset_timezone": "NOT_RETURNED",
+    "window_boundary": "NOT_RETURNED",
+    "rolling_vs_fixed_window": "UNKNOWN",
+    "credits_units_or_balance": "NOT_RETURNED",
+    "provider_source_timestamp": "NOT_RETURNED",
+    "HTTP_rate_headers": "NOT_CAPTURED_IN_THIS_RESULT",
+    "requestId_server_version_retry_trace": "NOT_RETURNED"
+  },
+  "transport": {
+    "ROOT_received_ts": 1793019889000,
+    "receive_is_transport_only": true,
+    "outer_MCP_attempts": 1,
+    "physical_hosted_HTTP": "UNKNOWN_NONZERO_RETAINED",
+    "published_F594_stdio_retry_bound_not_transferred": true,
+    "regular_transport_qualified": false
+  },
+  "conclusion": "Atcapturetheexistingconnectedkeyhadfreeplanandplancallaccess. Thisdoesnotestablishcurrentremainingquota,reset,monthlysemantics,allFREEfeatures,current550coverageorrecurringheadroom.",
+  "no_new_account_key_signup_paid_trial": true,
+  "actual_calls_by_SOURCE": 0
+}

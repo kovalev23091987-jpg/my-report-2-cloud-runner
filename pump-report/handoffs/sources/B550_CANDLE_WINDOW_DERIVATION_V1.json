@@ -1,0 +1,45 @@
+{
+  "schema": "SOURCE_B550_CANDLE_WINDOW_DERIVATION_V1",
+  "status": "PROPOSAL_ONLY_ACTIVE_T3_SOURCE_BYTES_UNCHANGED",
+  "profile": {
+    "wave_search_ms": 3600000,
+    "impulse_window_ms": 300000,
+    "volume_baseline_ms": 3600000,
+    "candle_interval_ms": 60000,
+    "growth_windows_ms": [
+      300000,
+      900000,
+      3600000
+    ]
+  },
+  "current_requested_rows": 121,
+  "required_closed_minutes": 125,
+  "formula": "max(max(short growth windows), wave_search + impulse_window + volume_baseline) / interval = max(60,60+5+60)=125",
+  "relative_boundary_proof": {
+    "observation_end_ms": 0,
+    "oldest_candidate_end_ms": -3600000,
+    "impulse_start_ms": -3900000,
+    "baseline_start_ms": -7500000,
+    "required_baseline_rows": 60,
+    "rows_available_from121": 56,
+    "missing_rows": 4
+  },
+  "actual_open_bar_boundary": "Current endTime=end is inclusive-risk; if a newest-open row fills limit121, at most120 closed rows remain. Not re-proven natively here.",
+  "proposed_request": {
+    "startTime": "end - 125*60000",
+    "endTime": "end - 1",
+    "limit": 125,
+    "interval": "1m",
+    "end": "floor(now/60000)*60000"
+  },
+  "proof_scope": "Existing consumer searches candidate close >= end-wave_search and compares60 minutes before its5minute impulse. No strategy/window/threshold changed.",
+  "existing_day_loader_uses_closed_endTime_end_minus1": true,
+  "HTTP_before_after": [
+    1,
+    1
+  ],
+  "payload_closed_rows_delta": 4,
+  "native_SQL_rows_delta": null,
+  "patch_applied": false,
+  "reason_not_applied": "ROOT explicitly freezes T3 source bytes during connected snapshot; later separate affected patch."
+}

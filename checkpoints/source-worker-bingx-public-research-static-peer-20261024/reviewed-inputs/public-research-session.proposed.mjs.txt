@@ -1,0 +1,104 @@
+// PROPOSED one-off HUMAN-approved public research exception, never production admission.
+// No SQL, Cloudflare, private account endpoint, API key, order or Telegram operation.
+import fs from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import https from 'node:https';
+import {execFileSync} from 'node:child_process';
+import {pathToFileURL,fileURLToPath} from 'node:url';
+const hash=b=>createHash('sha256').update(b).digest('hex');
+const R='/private/tmp/report2-bingx-catalog-bootstrap-connected-20261024';
+const W='/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-bingx-migration-20261024';
+const self=await fs.readFile(fileURLToPath(import.meta.url));
+let providerAttempts=0, currentStage='PREIMPORT', currentControl=null;
+try {
+if(process.argv[2]!=='--execute-approved')throw Error('EXPLICIT_EXECUTION_AND_DIRECT_OWNER_EXCEPTION_REQUIRED');
+const run=JSON.parse(await fs.readFile(R+'/approved-execution-session.json','utf8'));
+if(run.code_sha256!==hash(self)||run.mode!=='HUMAN_APPROVED_PUBLIC_RESEARCH_EXCEPTION'||!run.approval_reply_sha256||!run.session_id)throw Error('EXACT_EXTERNAL_APPROVAL_AND_CODE_BINDING_REQUIRED');
+const helpers=[{"path":"runner/github-four-mirror-cas.mjs","bytes":11414,"sha256":"fbd4b30314790bd91fc4b617365af80ebb6672e5ff8a7e26a394a4db9712ff39"},{"path":"runner/github-bounded-phase-lease.mjs","bytes":7370,"sha256":"a04d1d0877cabd3dc92a2aa7e3033a21eecb9048f13810d0acd229ed2fb10ac7"}]; // Exact nonempty native import closure is covered by code_sha256.
+for(const p of helpers){const b=await fs.readFile(W+'/'+p.path);if(b.length!==p.bytes||hash(b)!==p.sha256)throw Error('EXACT_PREIMPORT_HELPER_BYTES_REQUIRED');}
+const {makeGithubControl}=await import(pathToFileURL(W+'/runner/github-bounded-phase-lease.mjs'));
+const {readMirrorContext,assertMirrorOwner,publishMirrorContext,MIRROR_PATHS}=await import(pathToFileURL(W+'/runner/github-four-mirror-cas.mjs'));
+const basis=JSON.parse(await fs.readFile(R+'/approved-execution-context.json','utf8'));
+const token=execFileSync('gh',['auth','token'],{encoding:'utf8',timeout:5000}).trim();
+const control=makeGithubControl({repository:'kovalev23091987-jpg/my-report-2-cloud-runner',token,initial_raw_basis:basis.raws,maximum_calls:40,fetch_impl:async(u,o)=>{
+ const url=new URL(u);if(url.origin!=='https://api.github.com')throw Error('EXACT_GITHUB_HOST_REQUIRED');
+ const args=['api','--method',o.method,url.pathname.slice(1)];if(o.body)args.push('--input','-');
+ const b=execFileSync('gh',args,{encoding:'utf8',input:o.body,timeout:12000,maxBuffer:12*1024*1024});return new Response(b,{status:200});
+}});
+currentControl=control; currentStage='PROTECTED_UNSPENT_ADMISSION';
+const out={schema:'ACTUAL_OWNER_APPROVED_BINGX_PUBLIC_RESEARCH_SESSION_V1',session_id:run.session_id,approval_reply_sha256:run.approval_reply_sha256,code_sha256:hash(self),started_ts:Date.now(),reserved_provider_attempts:7,actual_provider_client_HTTP_attempts:0,captures:[],native_SQL:0,Cloudflare:0,production_MAIN:0,manual_report:0,Telegram:0,orders:0,production_admission:false,actual_crypto_contract_count:null,current_SENT_message_id:null};
+const save=async()=>fs.writeFile(R+'/public-research-progress.json',JSON.stringify(out,null,2)+'\n');
+let context=await readMirrorContext(control,{expected_main:basis.head,maximum_blob_reads:0});
+const checked=assertMirrorOwner(context,run.owner,Date.now(),'OWNER_FIVE_ACTIVE_DIRECTIONS.');
+const scopeMarker='OWNER_APPROVED_BINGX_PUBLIC_RESEARCH:'+run.approval_reply_sha256+':'+run.code_sha256+':'+run.plan_sha256;
+if(!checked.lease.scope.includes(scopeMarker))throw Error('DIRECT_OWNER_EXCEPTION_SCOPE_NOT_BOUND');
+const admission=checked.active.BingX_public_research_session;
+if(admission?.state!=='APPROVED_NOT_STARTED'||admission.session_id!==run.session_id||admission.maximum_provider_attempts!==7||admission.approval_reply_sha256!==run.approval_reply_sha256||admission.code_sha256!==run.code_sha256||admission.plan_sha256!==run.plan_sha256)throw Error('PROTECTED_UNSPENT_EXACT_RESEARCH_ADMISSION_REQUIRED');
+const planBytes=await fs.readFile(W+'/checkpoints/bingx-catalog-bootstrap-connected-20261024/public-research-exception-request.json');
+if(hash(planBytes)!==run.plan_sha256)throw Error('EXACT_PROTECTED_REQUEST_PLAN_REQUIRED');
+const plan=JSON.parse(planBytes);
+if(plan.maximum_provider_client_HTTP_attempts!==7||plan.requests.length!==7||plan.maximum_native_SQL!==0||plan.maximum_Cloudflare_calls!==0)throw Error('EXACT_SEVEN_READONLY_REQUESTS_REQUIRED');
+const deadline=Math.min(out.started_ts+300000,checked.lease.expires_ts-30000);
+if(deadline-out.started_ts<210000||control.metrics.length+4+4+7+10>40)throw Error('FULL_SESSION_AND_CLEANUP_HEADROOM_REQUIRED');
+const live=()=>{if(Date.now()>=deadline)throw Error('SOURCE_SESSION_DEADLINE');assertMirrorOwner(context,run.owner,Date.now(),'OWNER_FIVE_ACTIVE_DIRECTIONS.');};
+await fs.writeFile(R+'/research-spend-intent.json',JSON.stringify({session_id:run.session_id,expected_head:context.head,maximum_provider_attempts:7,state:'IRREVOCABLE_SPEND_BEFORE_IO',approval_reply_sha256:run.approval_reply_sha256},null,2)+'\n');
+currentStage='SPEND_CAS_BEFORE_PROVIDER_IO';
+const spent=await publishMirrorContext(control,context,{active:{...checked.active,BingX_public_research_session:{...admission,state:'SPENT_NON_REFUNDABLE_BEFORE_IO',spent_ts:Date.now(),provider_attempts_held:7}},message:'Spend exact owner-approved BingX public research session before source IO',check_live:live});
+context=spent.context;
+out.spend_head=spent.head;out.known_spend_CAS_ACK=spent.positive_CAS_ACK_known;
+await save();
+if(spent.positive_CAS_ACK_known!==true)throw Error('UNKNOWN_SPEND_ACK_STOP_NO_SOURCE_NO_RETRY');
+for(let i=0;i<4;i++){
+ const wanted=control.last_mirror_attempt.prepared_blobs[i],b=await control.call('git/blobs/'+wanted.git_blob_oid);
+ if(b.sha!==wanted.git_blob_oid||b.encoding!=='base64'||Buffer.from(b.content,'base64').toString()!==context.raws[i])throw Error('ALL4_FULL_SPEND_READBACK_REQUIRED');
+}
+out.all4_FULL_spend_readback=true;await save();
+let serverTime=null,catalogue=null,previousStart=-Infinity;
+function once(url,maxBytes){
+ return new Promise(resolve=>{
+  const frame={method:'GET',url:String(url),started_ts:Date.now(),received_ts:null,http_status:null,body_complete:false,content_encoding:null,body_bytes:0};
+  const chunks=[];let done=false,timer;
+  const finish=reason=>{if(done)return;done=true;clearTimeout(timer);frame.received_ts=Date.now();frame.reason=reason??null;resolve({frame,body:Buffer.concat(chunks)});};
+  previousStart=performance.now();providerAttempts++;out.actual_provider_client_HTTP_attempts=providerAttempts;
+  const req=https.request(url,{method:'GET',agent:false,headers:{accept:'application/json','accept-encoding':'identity','user-agent':'My-Report-2/Owner-Approved-Public-Research'}},res=>{
+   if(done){res.destroy();return;}
+   frame.http_status=res.statusCode;frame.content_encoding=res.headers['content-encoding']??'identity';
+   clearTimeout(timer);timer=setTimeout(()=>{finish('BODY_TIMEOUT');res.destroy();req.destroy();},Math.max(1,Math.min(10000,deadline-Date.now())));
+   res.on('data',chunk=>{if(done)return;const remaining=maxBytes-frame.body_bytes;if(chunk.length>remaining){if(remaining>0){chunks.push(chunk.subarray(0,remaining));frame.body_bytes+=remaining;}finish('BODY_CAP_EXCEEDED');res.destroy();req.destroy();return;}chunks.push(chunk);frame.body_bytes+=chunk.length;});
+   res.on('end',()=>{if(done)return;frame.body_complete=true;finish();});res.on('aborted',()=>finish('BODY_ABORTED'));res.on('error',()=>finish('BODY_TRANSPORT_ERROR'));
+  });
+  req.on('error',()=>finish('REQUEST_TRANSPORT_ERROR'));
+  timer=setTimeout(()=>{finish('HEADERS_TIMEOUT');req.destroy();},Math.max(1,Math.min(10000,deadline-Date.now())));req.end();
+ });
+}
+try{
+ currentStage='PROVIDER_SESSION';
+ for(const spec of plan.requests){
+  live();
+  context=await readMirrorContext(control,{expected_main:context.head,maximum_blob_reads:0});live();
+  const cur=JSON.parse(context.raws[0]).active_working_state.BingX_public_research_session;
+  if(cur?.state!=='SPENT_NON_REFUNDABLE_BEFORE_IO'||cur.session_id!==run.session_id||out.actual_provider_client_HTTP_attempts>=7)throw Error('EXACT_SPENT_SESSION_REQUIRED');
+  if(spec.order>=3){const rows=catalogue?.data;if(!Array.isArray(rows)||rows.filter(x=>x?.symbol==='BTC-USDT'&&x.asset==='BTC'&&x.currency==='USDT'&&(x.status===1||x.status==='1')).length!==1)throw Error('EXACT_CURRENT_NATIVE_BITCOIN_CATALOGUE_RECORD_REQUIRED');}
+  const url=new URL('https://open-api.bingx.com'+spec.route);
+  if(url.origin!=='https://open-api.bingx.com'||url.username||url.password||url.hash||url.search)throw Error('EXACT_PUBLIC_ENDPOINT_REQUIRED');
+  for(const[k,v]of Object.entries(spec.params??{}))url.searchParams.set(k,String(v));
+  if(spec.order===4){if(!Number.isSafeInteger(serverTime)||serverTime<=0)throw Error('ACTUAL_SERVER_CLOCK_REQUIRED');const end=Math.floor(serverTime/60000)*60000;url.searchParams.set('startTime',String(end-6*60000));url.searchParams.set('endTime',String(end-1));out.requested_candle_window={start_ts:end-6*60000,end_exclusive_ts:end,native_time_semantics_qualified:false};}
+  const wait=Math.max(0,1100-(performance.now()-previousStart));if(wait)await new Promise(r=>setTimeout(r,wait));live();url.searchParams.set('timestamp',String(Date.now()));
+  const ordinal=spec.order;out.active_request={ordinal,url:String(url),attempt:1};await save();live();
+  const got=await once(url,spec.body_decoded_cap_bytes);got.frame.ordinal=ordinal;got.frame.body_sha256=hash(got.body);
+  out.captures.push(got.frame);out.active_request=null;got.frame.original_body_saved=false;
+  try {await fs.writeFile(R+'/bingx-public-original-'+ordinal+'.bin',got.body);got.frame.original_body_saved=true;}finally{await save();} // Actual frame/body saved BEFORE parsing/assertion/next request.
+  if(!got.frame.body_complete||got.frame.reason||got.frame.http_status!==200||!['identity',''].includes(String(got.frame.content_encoding).toLowerCase()))throw Error('PUBLIC_RESPONSE_NOT_COMPLETE_IDENTITY_HTTP200');
+  const j=JSON.parse(got.body.toString('utf8'));if(!j||j.code!==0)throw Error('NATIVE_SUCCESS_ENVELOPE_NOT_CLOSED');
+  if(ordinal===1){const t=j.data?.serverTime;if(!Number.isSafeInteger(t)||t<=0)throw Error('NATIVE_SERVER_TIME_SHAPE_UNQUALIFIED');serverTime=t;out.native_server_time=t;}
+  if(ordinal===2){if(!Array.isArray(j.data)||j.data.length>20000)throw Error('BOUNDED_NATIVE_CATALOGUE_ARRAY_REQUIRED');catalogue=j;out.catalogue_response_rows=j.data.length;out.crypto_classification_complete=false;}
+  await save();
+ }
+ out.status='PUBLIC_ORIGINALS_RETAINED_RESEARCH_ONLY';
+}catch(error){out.status='STOPPED_NO_RETRY_OR_REARM';out.reason=String(error?.message??error);}
+finally{out.completed_ts=Date.now();out.GitHub_control_API_calls=control.metrics.length;out.actual_native_SQL=0;out.actual_Cloudflare_calls=0;out.unused_reserved_attempts_not_refunded=true;out.not_proven=['full crypto catalogue classification','production primary integration','OI units/funding period/closed candle semantics','native strategy admission','Telegram SENT'];await save();console.log(JSON.stringify({status:out.status,actual_provider_client_HTTP_attempts:out.actual_provider_client_HTTP_attempts,catalogue_response_rows:out.catalogue_response_rows??null,actual_crypto_contract_count:null,SQL:0,Cloudflare:0,production:0,Telegram:0}));}
+
+} catch(error) {
+ const stop={schema:'BINGX_PUBLIC_RESEARCH_EARLY_STOP_V1',status:'STOPPED_NO_RETRY_OR_REARM',stage:currentStage,reason:String(error?.message??error),actual_provider_client_HTTP_attempts:providerAttempts,GitHub_control_API_calls:currentControl?.metrics?.length??0,SQL:0,Cloudflare:0,production:0,Telegram:0,completed_ts:Date.now()};
+ await fs.writeFile(R+'/public-research-early-stop.json',JSON.stringify(stop,null,2)+'\n');console.log(JSON.stringify(stop));process.exitCode=1;
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "BA_MINIMUM_ROOT_ONLY_QUEUE_PROPOSAL_V1",
+  "status": "UNAPPLIED_NOT_EXECUTED",
+  "only_ROOT_path": "pump-report/runtime/runner.mjs",
+  "minimal_change": "Reuse the exact existing near predicate in updateDiscovery and selectAutomatic; select due rows only if current row.active_wave===true OR current near evidence passes existing0.8 thresholds. Apply before ranking/admitCandidate.",
+  "no_new_state_or_IO": "Use existing reported_day_growth/preliminary_growth/active_wave; no new storage fields, queries, providers, HTTP or TTL. Existing latest discovery still updates all retained rows.",
+  "preserved": [
+    "Rows, first_seen, reasons/evidence history stay stored; inactive non-near rows are dormant, not deleted/permanently unsupported.",
+    "Reactivation happens through the same existing wide scan when near again.",
+    "Active pullback rows remain selected independent of percentages. Existing active flag is not new proof of live validity; engine still checks expiry/cancellation.",
+    "Same priority formula, age, thresholds, profile, manual path, place cadence/carry, future guards and nonrefund."
+  ],
+  "one_future_affected_case": {
+    "status": "PROPOSED_ONLY_NOT_EXECUTED_OR_ADMITTED",
+    "case_count": 1,
+    "type": "ARTIFICIAL queue state, no actual DOOD/KIMCHI price or growth relabel",
+    "setup": "Two current-discovery due canonical/source-eligible fixture rows exactly as static proof: ended old non-near score120 vs new near score20; one available place.",
+    "baseline_expected": "Ended row selected and one fake bounded candidate ticket attributed to it before stub CORE.",
+    "proposed_expected": "Ended row remains stored but is ineligible for this AUTO choice; new near row selected and ticket attributed to new row.",
+    "preserve_check": "Static OR active_wave remains for below-threshold pullback; manual path precedes selection, no extra case/suite in BA.",
+    "execution": "Any implementation/baseline/fixed runner invocation or helper test requires separate ROOT positive scope; BA executes none."
+  },
+  "new_threshold_priority_or_pause": false,
+  "ROOT_diff_generated_only_inside_analytics_handoff": true
+}

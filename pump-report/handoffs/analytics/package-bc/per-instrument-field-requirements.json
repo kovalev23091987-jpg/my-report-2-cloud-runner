@@ -1,0 +1,89 @@
+{
+  "schema": "BC_BULK_TO_PER_INSTRUMENT_FIELD_REQUIREMENTS_V1",
+  "configuration_unit": "One provider-route/semantic profile; native catalogue metadata is data, not percoin strategy knobs.",
+  "canonical_instrument": [
+    "instrument_id",
+    "asset_id",
+    "native_symbol",
+    "base",
+    "venue=BINGX",
+    "market_type=PERPETUAL",
+    "quote=USDT",
+    "settle=USDT",
+    "classification_status=VERIFIED_CRYPTO",
+    "identity_evidence_ref where required",
+    "nativeID/family/base/quote/settle catalogue binding retained in provenance",
+    "price_tick/quantity_step when qualified, unknown not guessed"
+  ],
+  "producer_row_binding_requirements": [
+    "Shared response identity/digest and row/native market key join exactly to canonical instrument. A ticker-only join is insufficient.",
+    "One response can yield many separate instrument facts; global200/lastUpdate does not assign freshness or coverage to every row.",
+    "assertInput rejects a declared foreign instrument_id. It cannot detect a wrong payload falsely relabeled with the expected ID; SOURCE qualification must prove native row binding.",
+    "Provider native venue/family/market identity must remain truthful. Do not turn other-venue OHLC/OI/funding into a BingX fact by renaming it.",
+    "Bulk trade-ID and position-ID dedup namespaces include upstream provider+market; wrappers share upstream lineage/cache/quota."
+  ],
+  "clock_requirements": [
+    "Real source event/asof/known timestamps per fact/row/window, received transport time separate; event<=received<=analysis and original expiry/TTL.",
+    "Cache hit reuses original event/received/expiry; no renewal from a fresh cache read.",
+    "A provider-wide timestamp applies to every row only with explicit documented semantics. Missing source clock stays unqualified.",
+    "Keep exact interval/window start/end, closure/grid/completeness and currency/unit period; funding next settlement is not rate-known time."
+  ],
+  "coverage_layers": {
+    "provider_catalogue": [
+      "listed native market",
+      "classification/identity join",
+      "semantics qualified",
+      "actual fresh successful fact",
+      "useful consumed block"
+    ],
+    "matrix_to_fact_envelope": {
+      "VERIFIED_ACTUAL": "USABLE only while actual value/semantics/clocks are valid; otherwise STALE or other exact typed status",
+      "NOT_CHECKED": "NOT_CHECKED",
+      "UNKNOWN": "Keep UNKNOWN in coverage matrix; consumer gets nonusable NOT_CHECKED with exact identity/unit/clock reason. ABSENT only when actual field absence is established. Never0 or verified.",
+      "UNSUPPORTED_EXPLICIT": "ABSENT with exact scoped evidence/reason, not asset exclusion",
+      "STALE": "STALE",
+      "ERROR": "ERROR",
+      "BUDGET_DEFERRED": "NOT_CHECKED with budget reason; map may use NOT_CHECKED_BUDGET"
+    },
+    "note": "Owner coverage-matrix vocabulary is not identical to FACT_STATUSES; normalizer maps it, not passing UNKNOWN/VERIFIED_ACTUAL verbatim to createFact."
+  },
+  "architecture_limits": [
+    "BC verifies consumer format and common engine, not new provider API capabilities, free entitlement, pagination completeness, cache deployment or550actual coverage.",
+    "Live frozen production policy admits BINGX/TELEGRAM; F588 preparation inactive. SOURCEF589/ROOT separately qualify and admit new provider bulk.",
+    "Current today bank/pricing/caps/spentunknowns and3manual/future/delivery/outcomes protection are unchanged.",
+    "BA queue proposal is separate; not an actual DOOD/KIMCHI refusal cause."
+  ],
+  "new_project_imports_tests_callbacks_native": 0,
+  "proposed_case_count": 0,
+  "reason_no_case": "No new analytical consumer-format defect established beyond existing documented producer-identity/semantics trust boundary and pending source proof.",
+  "qualified_fact_field_inventory": [
+    "fact_id",
+    "instrument_id",
+    "kind",
+    "value",
+    "unit",
+    "source",
+    "primary_provider lineage",
+    "venue",
+    "status",
+    "origin",
+    "event_ts",
+    "received_ts",
+    "expires_ts",
+    "coverage",
+    "reason",
+    "evidence_ref"
+  ],
+  "factory_and_usability_distinction": {
+    "createFact_minimum": [
+      "fact_id",
+      "instrument_id",
+      "kind",
+      "source",
+      "valid received_ts",
+      "status in FACT_STATUSES"
+    ],
+    "unknown_placeholders_allowed": "ABSENT/NOT_CHECKED may retain null value/unit/event/expiry; do not make them USABLE by filling defaults.",
+    "consumer_qualified_checks": "USABLE requires actual value and qualified kind-specific unit/origin/identity/clock/coverage. Many extra native-source proof fields are verified by producer, not independently rediscovered by pure analytics."
+  }
+}

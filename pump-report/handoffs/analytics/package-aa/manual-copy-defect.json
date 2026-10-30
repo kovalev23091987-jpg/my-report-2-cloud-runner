@@ -1,0 +1,11 @@
+{
+  "schema": "ANALYTICS_AA_ACTUAL_MANUAL_COPY_DEFECT_V1",
+  "proof": "Actual F550 original-receive replay: previous_wave=null, plan=null, stateCANCELLED and PLAN_INVALIDATED.",
+  "source_trace": "sanitized-trace.json",
+  "source_original_sha256": "0170bba73bc1fd2d56796d2c448258f6192a8c8fb612ab438d4f3d017de60e07",
+  "before_manual_module_sha256": "fdeaa3599d6d7096753ab9230ea0e760d73d678d9577c6d4fff98679d7d57892",
+  "defect": "Manual reason template claims a saved plan cancellation boundary although this first snapshot has no prior wave or independent plan. Numeric state calculation is not contradicted.",
+  "fix_scope": "Only PLAN_INVALIDATED nonready manual wording changes to observed wave-base boundary; same machine reason/state/facts/clocks and no plan.",
+  "new_focused_check_required": true,
+  "old_tests_replayed": false
+}

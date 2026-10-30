@@ -1,0 +1,10 @@
+--- a/current-generation/files/src/provider-minute-ledger.mjs
++++ b/current-generation/files/src/provider-minute-ledger.mjs
+@@ -29,6 +29,7 @@
+   await db.prepare(`INSERT INTO report2_provider_minute_ledger_v1(provider,minute_bucket,reservation_id,units,created_ts)
+     SELECT ?1,?2,?3,?4,?5
+     WHERE (SELECT COALESCE(SUM(units),0) FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?6 AND created_ts<=?5) + ?4 <= ?7
++    AND NOT EXISTS(SELECT 1 FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND created_ts>?5)
+     ON CONFLICT DO NOTHING`).bind(source,minute,id,count,ts,ts-60_000,limit).run();
+   if(nativeSourceUsageUnclosed(db))return{allowed:false,status:'ADMISSION_LEDGER_UNAVAILABLE_NATIVE_USAGE',provider:source,reserved_units:0};
+   const exact=await db.prepare(`SELECT units FROM report2_provider_minute_ledger_v1 WHERE provider=?1 AND reservation_id=?2 LIMIT 1`).bind(source,id).first();

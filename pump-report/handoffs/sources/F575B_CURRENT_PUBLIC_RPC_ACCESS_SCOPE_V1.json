@@ -1,0 +1,32 @@
+{
+  "schema": "F575B_CURRENT_PUBLIC_RPC_ACCESS_SCOPE_V1",
+  "primary_url": "https://solana.com/docs/references/clusters",
+  "observed_document_kind": "Primary public RPC documentation, not actual endpoint response",
+  "current_documented_mainnet_endpoint": "https://api.mainnet.solana.com",
+  "current_public_keyless_access": "Documented public endpoint; no account/key registration in the documented endpoint usage",
+  "trial": "No expiring trial gate documented for this public endpoint",
+  "eternal_pricing_guarantee_claimed": false,
+  "mainnet_devnet_separation": true,
+  "devnet_not_qualified_for_real_positions": true,
+  "documented_mainnet_limits": {
+    "requests_per10s_perIP": 100,
+    "single_RPC_per10s_perIP": 40,
+    "concurrent_connections_perIP": 40,
+    "new_connections_per10s_perIP": 40,
+    "data_transfer": "100 MB per30 seconds",
+    "data_transfer_aggregation": "Listed under mainnet limits; no extra unit/aggregation assumptions"
+  },
+  "doc_qualification": "Page says listed limits may change/not be most up-to-date; not an actual current grant or measurement.",
+  "operational_limits": "Public endpoint not intended for production apps; high-traffic sites/IPs can be blocked. No stable-capacity/SLA proof.",
+  "errors": {
+    "HTTP403": "Blocked IP/site",
+    "HTTP429": "Rate exceeded; Retry-After header documented"
+  },
+  "automatic_retry_authorized": false,
+  "quota_lineage": "Shared public Solana endpoint/IP quota across all SDK/account reads; not a quota per Adrena SDK method or position",
+  "payload_scope": "100MB/30s is not a proved per-response maximum; separate ROOT request/body bound still required.",
+  "Worker_reachability": "NOT_CHECKED",
+  "actual_RPC_test_count": 0,
+  "current_source_admission": "NONE for native transport",
+  "useful_next_liquidation_probe": "None via this examined SDK path because liquidation price is absent; public access does not replace the missing data field."
+}

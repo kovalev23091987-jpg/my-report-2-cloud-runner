@@ -1,0 +1,84 @@
+{
+  "schema": "ANOMALY_WORKER_EXISTING_SOURCE_EFFECTIVENESS_AUDIT_V1",
+  "base": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+  "lease": {
+    "lease_ref_sha": "6173325f380e79136645ba979e3bc2f02ca6307d",
+    "lease": {
+      "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
+      "status": "ACTIVE",
+      "owner": "CODEX:OFFLINE_ANOMALIES:1792332507854",
+      "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+      "acquired_ts": 1792332507854,
+      "expires_ts": 1792336107854,
+      "expected_main": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+      "scope": "OFFLINE only anomaly-research/** and checkpoints/anomaly-worker-*; coordinator-authorized read-only audit of existing source effectiveness attempt/fact/consumer/outcome writers, operational priority readers, weekly HTX and saved original calibration evidence; then concrete anomaly eventcount/retention/admission review only if new risk is found. No repeated accepted tests, provider/export/acquisition, production imports, SQL/schema, deploy, MAIN, Telegram, weights/strategy/caps or shared mutation. No abstract scaffolding.",
+      "guard_sha256": {
+        "AGENTS.md": "c7b3274e4c729572f392a3155c55f07d5c499365ff69d9fd80214fea61c30623",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "4fbd6afd7c0da6f00db13ad4fdf93b7c8584c95698288ede4c830651b6a6d1e7",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+        "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "13d60a47a4b128c167338b19e8cc83390a25bd367b50efa4a4e52b6c73e07528",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "6610b95f55e9011a518a72e27f08501f4cd3dfc93bce5a0a63e0ee0e110fff10"
+      }
+    },
+    "exact_readback": true
+  },
+  "files": [
+    {
+      "path": "anomaly-research/source-effectiveness-audit-20261018/FINDINGS_RU.md",
+      "sha256": "57f3eba6761df217a4232964ceece819c68c501f04ccc94c4f6dfd192f3e3dfd"
+    },
+    {
+      "path": "anomaly-research/source-effectiveness-audit-20261018/inputs.json",
+      "sha256": "e45b4df42bb28dc988542319a65a0712ba19d6a8b01ebb72de01f8055989677e"
+    },
+    {
+      "path": "anomaly-research/source-effectiveness-audit-20261018/later-native-projection-extract.json",
+      "sha256": "36e833d9cce6f6567c4a6f7fddc5a5e37cac2add11adc14ff471dd3d7194053c"
+    },
+    {
+      "path": "anomaly-research/source-effectiveness-audit-20261018/new-admission-counterexample.json",
+      "sha256": "207bccc7121fd9505931c147e6aa9570b11bfab2da215182f87cf5a7b98710cf"
+    },
+    {
+      "path": "anomaly-research/source-effectiveness-audit-20261018/saved-evidence-extract.json",
+      "sha256": "80e81157011f4e3620e8cb8540a77e988321f1653bfc6e5dd5ad63aa5f16ae5b"
+    }
+  ],
+  "new_evidence": {
+    "code_files": 19,
+    "repo_saved_evidence": 11,
+    "later_exact_received_natural_runs": [
+      39130879648,
+      39133840839
+    ],
+    "later_filehashes_matched_to_coordinator_review": 22,
+    "later_actual_candidate_projections": 4,
+    "provider_bodies_inferred_from_projections": false
+  },
+  "findings": [
+    "Exact operational journal writer/readback and last4/24h source ordering are wired; naturalBTWorder actuallychanged",
+    "ActualAPR/NEARN15consumeruse/2scorereceiptsproved in laternaturalprojection; futurepredictivegainnotproved",
+    "Healthdecisionusable meanseligibility/coverage, notactualconsumeruse; aggregate/pervenuesHTTPnonadditive",
+    "LIQoperationalhealth vsroleusable vsdisabledlegacypredictivemetricareseparate; existingweeklyblockpolicyguardedsamplerequirements unchanged",
+    "Readiness0of8/entrycaptured0 in exact laterreaders; cachedblockpolicycounts/factors notexposed",
+    "Weeklyactual6HTTP/211R13Wunknown0 hadconnectedfailure/noactivation;106MAGICstilldeferred",
+    "NewtargetedCONTROLLEDcounterexample:128BACKFILLEDfillactivepoolanddeferonlytimelyevent"
+  ],
+  "verification": {
+    "old_accepted33_audit_reexecuted": false,
+    "runtime_tests_executed": 0,
+    "new_targeted_counterexample_executed": 1,
+    "source_and_artifact_hashes_retained": true
+  },
+  "effects": {
+    "new_provider_HTTP": 0,
+    "production_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "runtime_or_shared_files_changed": 0,
+    "strategy_weights_limits_forms_pauses_changed": false
+  },
+  "next": "Separately verify coordinator-reported nonce-reuse/lateACK risk on frozenPR464 code, then concrete bounded anti-reuse fix and targeted controls only. Own lease scope must explicitly cover that fix before edits; no frozenheads changed."
+}

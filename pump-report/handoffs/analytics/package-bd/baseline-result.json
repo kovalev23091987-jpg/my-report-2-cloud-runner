@@ -1,0 +1,150 @@
+{
+  "schema": "BD_ARTIFICIAL_VARIANT_RECEIPT_V1",
+  "variant": "baseline",
+  "ARTIFICIAL_NOT_NATIVE_AUTO": true,
+  "run_status": "INCOMPLETE",
+  "issued_ticket": {
+    "ticket_id": "ARTIFICIAL_BD_baseline_TICKET1",
+    "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED",
+    "admission_seq": 7
+  },
+  "logical_places_issued": 1,
+  "admission_attempts": 2,
+  "checked_ids": [
+    "BINGX:USDT_M:ARTIFICIAL_BD_ENDED"
+  ],
+  "deferred": [
+    {
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW",
+      "status": "DEFERRED",
+      "source_coverage": {
+        "status": "NOT_CHECKED",
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "ARTIFICIAL_ONE_LOGICAL_PLACE_EXHAUSTED"
+      },
+      "delivery": null
+    }
+  ],
+  "errors": [
+    "SOURCE_BUDGET_DEFERRED"
+  ],
+  "fake_CORE_ids": [
+    "BINGX:USDT_M:ARTIFICIAL_BD_ENDED"
+  ],
+  "analysis_stub_ids": [
+    "BINGX:USDT_M:ARTIFICIAL_BD_ENDED"
+  ],
+  "events": [
+    {
+      "seq": 1,
+      "kind": "stub_catalog"
+    },
+    {
+      "seq": 2,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED"
+    },
+    {
+      "seq": 3,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+    },
+    {
+      "seq": 4,
+      "kind": "stub_discovery",
+      "instrument_ids": [
+        "BINGX:USDT_M:ARTIFICIAL_BD_ENDED",
+        "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+      ]
+    },
+    {
+      "seq": 5,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED"
+    },
+    {
+      "seq": 6,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED"
+    },
+    {
+      "seq": 7,
+      "kind": "fake_admitCandidate",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED",
+      "source_evidence_seq": 6,
+      "accepted": true,
+      "http_upper_bound": 12
+    },
+    {
+      "seq": 8,
+      "kind": "stub_candidate_overview",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED",
+      "ticket_id": "ARTIFICIAL_BD_baseline_TICKET1"
+    },
+    {
+      "seq": 9,
+      "kind": "stub_getCore",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED",
+      "ticket_id": "ARTIFICIAL_BD_baseline_TICKET1"
+    },
+    {
+      "seq": 10,
+      "kind": "analysis_stub_NOT_FULL_ENGINE",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED"
+    },
+    {
+      "seq": 11,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+    },
+    {
+      "seq": 12,
+      "kind": "assess_source_evidence",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW"
+    },
+    {
+      "seq": 13,
+      "kind": "fake_admitCandidate",
+      "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW",
+      "source_evidence_seq": 12,
+      "accepted": false,
+      "http_upper_bound": 12
+    }
+  ],
+  "old_row": {
+    "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_ENDED",
+    "first_seen": 1792994400000,
+    "last_seen": 1793005200000,
+    "last_checked_ts": 1793005200000,
+    "next_check_ts": 1793005500000,
+    "last_status": "REJECTED",
+    "reported_day_growth": 0,
+    "preliminary_growth": 0,
+    "active_wave": false,
+    "movement_event_ts": 1792987200000,
+    "entry_zones": [],
+    "entry_distance_pct": null,
+    "confirmed_core_count": 1,
+    "core_expires_ts": 1793005230000,
+    "fixture_history_marker": "KEEP_ARTIFICIAL_ENDED_RECORD",
+    "price_expires_ts": 1793005230000,
+    "priority_evidence_ts": 1793005200000,
+    "priority_is_not_signal_eligibility": true
+  },
+  "new_row": {
+    "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BD_NEW",
+    "first_seen": 1793005200000,
+    "last_seen": 1793005200000,
+    "preliminary_growth": 0,
+    "reported_day_growth": 20,
+    "active_wave": false,
+    "next_check_ts": 1793005200000,
+    "price_expires_ts": 1793005230000,
+    "entry_distance_pct": null,
+    "movement_event_ts": 1793005200000
+  },
+  "saved_run_exact": true,
+  "saved_run_sha256": "fc0dc5bf0b5182a29a0a4b215d9104b8e7943295d2c89b20351b5f71819cf3e7",
+  "executor_owner_null": true,
+  "native_HTTP_MCP_SQL_TG_LOOKUP": 0
+}

@@ -1,0 +1,19 @@
+# F588 — funding quote parser/interface с fail-closed unit profile
+
+Подготовлены3SOURCEфайла и1новый connectedtest поверх точных mainbytes 265f8fab095a87d82059aa499d1cc9e3f22cabbe; latestauthority d1c10f483ec4188f1001937151be5054e18c06f6. Runtime/registry/contracts/profile/analytics/budget/delivery не редактировались. MaincodeHEAD локально4b44..., отдельногоcodecommit нет; ROOT интегрирует только manifestbytes.
+
+Документальный unitgap не закрыт. Новый grant1search/3primaryreads SPENT; currentdocs.delta.exchange обслуживаетIndia и не дал exactnative funding_rate percentdeclaration; globalprobe завершился InternalError. Ни sample, ни screenshot−1%не использованыкакunitproof. Единственнаяостающаясяprerequisite — primaryunifiedfractionproof для unit_proof_parts.unified_fraction. Поэтому экспортируемый BINGX_FUNDING_QUOTE_PROFILE_V1 имеетstatusUNKNOWN/evidence_refnull иfundingHTTP0. Это подготовленный интерфейс, не активированныйfundingroute.
+
+Новый funding-qualification.mjs фиксирует BingXUSDT_M/premiumIndex/lastFundingRate и независимыеproofparts. parseFunding сохраняет rawdecimal; updateTime допускается только как CCXT-supported RATE_QUOTE_SNAPSHOT, с явным отсутствиемvendorguarantee. payment_event_ts всегдаnull. nextFundingTime —отдельноеscheduledfield, receivedtimeнеподставляется. fundingIntervalHours берётсяизтойжестроки, numericstringподдерживается; приотсутствииperiodnull, без8hdefault. Unknownunit не выдаёт RATE_FRACTION факт.
+
+getOptional принимает requested_kinds:['trades','funding'] — orderedunique максимум2. OIневызывается иunitемунеприсваивается. Безпараметра прежнийпорядок3альтернатив остаётсяподтемжеupper2. Истёкшиеdeadline, отказыbudget, retries иsharedbroker принадлежатпрежнемупути; лимиты10BINGX+1TG+1map/optional2 не увеличены.
+
+Одинраз запущен ровно1новыйконтролируемыйcase:1PASS/0FAIL,18.576042ms (process72.901958ms). Fakebroker2attempts(trades+premiumIndex),OI0;unknownprofile0attempts. Провереныquotetimeвместоscheduled/received,actual1hизстроки,rawdecimal,provenance,missingperiodиunitfailclosed. ПоложительнаяветкаиспользуетCONTROLLEDunitpremise; она не доказываетреальнуюединицу. Actual сохранён доassertions ифинализированPASS. Старыеsuites не повторялись; native/market/metadata/D1/HL/TG/deploy0.
+
+НастоящийSENT241originalпрочитанofflineодинраз безreplay: trades1000rowsUSABLEнаисходномвремени, funding/OI NOT_CHECKED. Rawнеэкспортирован; safehash/status/unit/clocks вынесеныотдельно. Не считатьвесьoptionalпутьнулевым и не переноситьэтуtradesприёмкунаfunding.
+
+ROOT exactimport/API ипримеробёрткиданы в F588_ROOT_INTEGRATION_HANDOFF_V1.json. Важнаяособенность: registry.instruments содержитseed13, а539включаяDOOD выдаютсячерезresolve; оборачиватьобапути и сохранятьresolveCatalogDecision/summary. ТекущийinactiveprofileможнопривязатькакявныйUNKNOWNбезfundingHTTP; завершённыйunitpartнельзякопироватьизтеста. Genericproviderinterface потенциальноохватывает550samefamily, но наличие/свежесть/периодкаждогофакта требуютреальногоответа. Сейчасgenericunitproofcoverage0, новыхnativefundingfacts0.
+
+Legacyqualificationтолькосrate_clock_field/evidence_ref большенеактивируетfunding; старыеsyntheticfixtures могутпотребоватьмиграцииподновыйprofileвROOTintegration. SOURCE_VERSION/contractversionсохранены, новыйmoduleнадовключитьвdependencyclosure. НикакихсоседнихWIP, runtimebindingилиserveradmission SOURCEнеприменял. Всеspent/unknowns/reserves/3manuals/9пауз/2OWNERdeferrals/oldpauseсохранены. FreezeпередownreleaseFULL.
+
+Finalauthority cc4022f8e2ea6240ef777005890debef7b69d35a: all4equal/ROOTownerunchanged/source+contracts+profile baselineunchanged. Следующаяприоритетнаязадачавладельца — futureliquidationsDOOD; вF588дополнительныхпробнет. Unitprofileостаётсяinactive, дальнейшаяfundingunitохота не запланированаавтоматически.

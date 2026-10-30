@@ -1,0 +1,35 @@
+{
+  "schema": "F609_CURRENT_FOUR_TOOL_METADATA_V1",
+  "observed_utc": "2026-10-26 17:54:06 UTC",
+  "source": "Provided current ALL_TOOLS name/description metadata only; no tool invoked",
+  "schema_representation": "Rendered TypeScript declaration in description, not original raw MCP inputSchema",
+  "tools": [
+    {
+      "name": "mcp__codex_apps__bykaranteli_get_coverage",
+      "description": "Call this when the user asks which exchanges sit behind a ByKaranteli number, whether a feed is complete or sampled, since when a venue is collected, or how fresh the data is. Returns the live coverage registry: liquidation feeds per venue with kind and last record, snapshot feeds per venue and market, funding arbitrage legs, positioning sources, whale tape, spot minutes and the Hyperliquid whale scan with freshness. snapshots[].country is the jurisdiction only when the venue states one; it is null for most venues, so do not read null as unknown risk. This tool is part of plugin `ByKaranteli`.\n\nTools for working with ByKaranteli.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__codex_apps__bykaranteli_get_coverage(args: { [key: string]: unknown; }): Promise<CallToolResult>; };\n```",
+      "description_UTF8_sha256": "1418d02d26bada3196a8e62b36296398a1390b4edcd629d97dd5b09a1b2398e2"
+    },
+    {
+      "name": "mcp__codex_apps__bykaranteli_get_liqmap",
+      "description": "Call this when the user asks where liquidation clusters or liquidity pools sit for a perpetual, where leveraged longs/shorts would get liquidated, or for a liquidation heatmap reading. Returns the LiqMap snapshot for one symbol: modeled liquidation levels by price, zone aggregates and real liquidation prints from six venues. Without an account key (or on the Free plan) the 24h view; with a Builder or higher key (BYKARANTELI_API_KEY) every timeframe from 1h to 30d. This tool is part of plugin `ByKaranteli`.\n\nTools for working with ByKaranteli.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__codex_apps__bykaranteli_get_liqmap(args: {\n  // Symbol like BTCUSDT (bare BTC accepted). Default BTCUSDT.\n  symbol?: string;\n  // Model window. Default 24h, the only one served without a Builder or higher key.\n  timeframe?: \"1h\" | \"4h\" | \"12h\" | \"24h\" | \"3d\" | \"1w\" | \"30d\";\n}): Promise<CallToolResult>; };\n```",
+      "description_UTF8_sha256": "1f38aa98f407e059d84b14359028977a5dde086c22f10e754d2ef9aeee4b2f20"
+    },
+    {
+      "name": "mcp__codex_apps__bykaranteli_market_data_2_get_coverage",
+      "description": "Call this when the user asks which exchanges sit behind a ByKaranteli number, whether a feed is complete or sampled, since when a venue is collected, or how fresh the data is. Returns the live coverage registry: liquidation feeds per venue with kind and last record, snapshot feeds per venue and market, funding arbitrage legs, positioning sources, whale tape, spot minutes and the Hyperliquid whale scan with freshness. snapshots[].country is the jurisdiction only when the venue states one; it is null for most venues, so do not read null as unknown risk. This tool is part of plugin `ByKaranteli Market Data 2`.\n\nTools for working with ByKaranteli Market Data 2.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__codex_apps__bykaranteli_market_data_2_get_coverage(args: { [key: string]: unknown; }): Promise<CallToolResult>; };\n```",
+      "description_UTF8_sha256": "13d69a617fd99189db41f993d4c021d6e70757d76badff7cd5be14527ad6a0f5"
+    },
+    {
+      "name": "mcp__codex_apps__bykaranteli_market_data_2_get_liqmap",
+      "description": "Call this when the user asks where liquidation clusters or liquidity pools sit for a perpetual, where leveraged longs/shorts would get liquidated, or for a liquidation heatmap reading. Returns the LiqMap snapshot for one symbol: modeled liquidation levels by price, zone aggregates and real liquidation prints from six venues. Without an account key (or on the Free plan) the 24h view; with a Builder or higher key (BYKARANTELI_API_KEY) every timeframe from 1h to 30d. This tool is part of plugin `ByKaranteli Market Data 2`.\n\nTools for working with ByKaranteli Market Data 2.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__codex_apps__bykaranteli_market_data_2_get_liqmap(args: {\n  // Symbol like BTCUSDT (bare BTC accepted). Default BTCUSDT.\n  symbol?: string;\n  // Model window. Default 24h, the only one served without a Builder or higher key.\n  timeframe?: \"1h\" | \"4h\" | \"12h\" | \"24h\" | \"3d\" | \"1w\" | \"30d\";\n}): Promise<CallToolResult>; };\n```",
+      "description_UTF8_sha256": "3981feb3d7dd4bcf4111d9957fc20dfe60e04012ad7e211212a990a5a2d0f10b"
+    }
+  ],
+  "scope_exact_names": [
+    "mcp__codex_apps__bykaranteli_get_coverage",
+    "mcp__codex_apps__bykaranteli_get_liqmap",
+    "mcp__codex_apps__bykaranteli_market_data_2_get_coverage",
+    "mcp__codex_apps__bykaranteli_market_data_2_get_liqmap"
+  ],
+  "metadata_not_working_data_or_auth_proof": true
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "SOURCE_ORIGIN_CAPTURE_GROUPED_DRAFT_ACTUAL_RESULT_CLAIMS_PEER_V1",
+  "status": "ACCEPTED_WITH_LIMITS",
+  "blockers": [],
+  "open_findings": [],
+  "mismatch": [],
+  "result": "COMPOSITION_FIRST9groups41variants_PLUS_LATE1group18variants_TOTAL10groups59variants; NOT one10/59 run or10NodeSPECtests.",
+  "first": {
+    "run": 39952134281,
+    "head": "84849f7e2ab77d7a222cb3dc64ea0853b9723e95",
+    "SPEC_pass": 0,
+    "SPEC_fail": 1,
+    "completed_components": {
+      "source_origin": [
+        1,
+        4
+      ],
+      "actual_caller_default_OFF": [
+        1,
+        3
+      ],
+      "independent_capture": [
+        7,
+        34
+      ]
+    },
+    "completed_total": [
+      9,
+      41
+    ],
+    "failure": "ROOT receipt reports only late controlled fixture missing card_hash/CARD_INTEGRITY; original FIRST failure preserved."
+  },
+  "late": {
+    "run": 39953197503,
+    "head": "edc3ada39aea38b392046154b625822d05a0897a",
+    "SPEC_pass": 1,
+    "SPEC_fail": 0,
+    "only_new_component": [
+      1,
+      18
+    ],
+    "old_expression_drafts": 2,
+    "grouped_drafts": 1,
+    "prior9_41_not_reexecuted": "Consistent in common receipt, late summary and only-late SPEC output; no replay performed by SOURCE."
+  },
+  "verification": {
+    "all7_assigned_files_full_bytes_lengths_SHA_computed": true,
+    "late_raw_frame_summary_SPEC_exact_expected_member_pins": true,
+    "all_returned_group_variant_arrays_match_counts_and_CONTROLLED_PASS": true,
+    "component_sums_exact": true,
+    "runtime6_stable": "ROOT qualified receipt plus late runtime_changed=false; SOURCE did not independently compare runtime6 files or guards.",
+    "fixture_only_fix": "ROOT-reported card.card_hash=hash(card); no repeated code/static review in this claims peer.",
+    "first_and_late_wholeZIP": "ROOT verified; SOURCE no ZIP read/download/wholeZIP rehash.",
+    "source_run_metadata_or_test_logs_queried": false
+  },
+  "files": {
+    "common-qualified-receipt.json": {
+      "bytes": 2327,
+      "sha256": "e9536c01d422cff23a4419e32bcda1e4609346727e4eba29f9bdc73246e0a7aa"
+    },
+    "FIRST-common/source-origin-return.json": {
+      "bytes": 1267,
+      "sha256": "9729aa04ca652b9b22e29d040986343bb199208658098a9c3f830e8ed3ae7b3d"
+    },
+    "FIRST-common/worker-default-off-return.json": {
+      "bytes": 429,
+      "sha256": "69394e666dea05535aba16800f815e8eb69f1acfa0d047581826f1c2d57bf746"
+    },
+    "FIRST-common/independent-capture-return.json": {
+      "bytes": 3723,
+      "sha256": "49f46583f27939e64779e950b37b3ec30b416700e17c4f238fe30bfe89fe8461"
+    },
+    "LATE-common/grouped-watch-draft-return.json": {
+      "bytes": 2871,
+      "sha256": "c1cdeff64cc0c01d47d204aca1acc7f63a63813083ce1c3e604756659b8fc58e"
+    },
+    "LATE-common/late-summary.json": {
+      "bytes": 308,
+      "sha256": "7f1358d5853a2d11e1b85e3e67860bf1ae569c5ad3e2f80dc0dbd80cc6d9aa8b"
+    },
+    "LATE-common/new-common.spec.txt": {
+      "bytes": 206,
+      "sha256": "b9177b18142e422068ce7f3435724f2ead9ae51f4e90942575cdab0ecb40e5ff"
+    }
+  },
+  "limits": [
+    "CONTROLLED component code acceptance only; defaultOFF actual caller snippet, extracted actual Worker functions/public closure and grouped private helper are narrower than full Worker/DUE/report/native execution.",
+    "618/614/866pins/runtime6/whole assembly and FIRST fixture cause are ROOT receipt claims outside independent byte comparison here. Raw frame hashes computed; FIRST frame expected member table was not in the assigned receipt.",
+    "Author UNEXECUTED labels remain author-history labels in actual returned JSON; frozen original packages were not retroedited.",
+    "No current105 coverage/cadence/native epoch/serverACK/durable cursor/actual admission/unknown clearing/SENT or crash/CPU/heap/latency proof."
+  ],
+  "native_SQL_provider_MAIN_Telegram_activation": 0,
+  "SOURCE_Node_import_syntax_tests_SQL_native_provider_Gitwrites_lease_download_replay": 0,
+  "delivery": "LOCAL_ONLY; blocked outbound messages not retried or bypassed"
+}

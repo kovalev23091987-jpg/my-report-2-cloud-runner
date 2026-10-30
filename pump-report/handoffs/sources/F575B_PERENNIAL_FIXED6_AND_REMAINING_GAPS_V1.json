@@ -1,0 +1,44 @@
+{
+  "schema": "F575B_PERENNIAL_FIXED6_AND_REMAINING_STATE_GAPS_V1",
+  "new_primary_path": "src/utils/big6Utils.ts",
+  "git_blob": "12a7895aeca55fdcdd707e66900e33fda871048e",
+  "sha256": "65fc7d26c142eed4e1de84dc5606eef14a7075666216a3380eb3f7dee0303e24",
+  "old_positionUtils_reused_locally": {
+    "git_blob": "6d08d16bda36e9f3b5798d981539ff8f3aac4791",
+    "web_rereads": 0,
+    "execution": false
+  },
+  "documentary_scale": {
+    "FIXED_DECIMALS": 6,
+    "BASE": "1000000",
+    "ONE": "1000000",
+    "mul": "(a*b)/BASE",
+    "div": "(a*BASE)/b",
+    "to18Decimals": "amount*10^12",
+    "native_raw_contract_scale_binding": "NOT_PROVED"
+  },
+  "missing_value_hazards": {
+    "BigOrZero": "undefined/null ->0",
+    "division_by_zero": "Returns0n",
+    "fromFloatString": "Empty or dot ->0n",
+    "toUnsafeFloat": "Converts decimal string to float; not exact large-integer carrier"
+  },
+  "effect": "Calculator fixed6 arithmetic is now explicit; it does not prove the marketSnapshots raw inputs, economic payoff, collateral quote, lifecycle ID or generation clock.",
+  "remaining_new_primary_files": [
+    {
+      "path": "src/lib/markets/chain.ts",
+      "git_blob": "4acbd8c2a3ba996ff10f73fed20d1b13bfff5054",
+      "status": "NOT_READ_CAP_EXHAUSTED"
+    },
+    {
+      "path": "src/lib/markets/index.ts",
+      "git_blob": "9526592a8c863648d0984b6967d1a7565e098dd4",
+      "status": "NOT_READ_CAP_EXHAUSTED"
+    }
+  ],
+  "native_RPC_snapshot_call": "NOT_DISPATCHABLE until acquisition/oracle/payload/call-count and exact admitted account/RPC scope are established",
+  "actual_units_clock_Worker_access": "NOT_CHECKED",
+  "all550": "NOT_CHECKED",
+  "new_zones": 0,
+  "new_model_code": false
+}

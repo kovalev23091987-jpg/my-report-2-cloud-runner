@@ -1,0 +1,143 @@
+--- a/pump-report/runtime/worker.mjs
++++ b/pump-report/runtime/worker.mjs
+@@ -9,7 +9,8 @@
+ import {manualResponseText} from './manual-response.mjs';
+ import {createUnifiedBudget,createRequestBroker} from './budget.mjs';
+ import {createDelivery,automaticWindowOpen,textHash} from './delivery.mjs';
+-import {reserveNativeRun,finalizeNativeRun} from './native-budget.mjs';
++import {reserveNativeRun,finalizeNativeRun,NATIVE_POLICY} from './native-budget.mjs';
++import {PRODUCTION_PLAN,productionPolicies,productionAdmission} from './production-policy.mjs';
+ import {createPumpRunner} from './runner.mjs';
+ import {createRetainedCapsuleWriter} from './retained-capsules.mjs';
+ import {IMPLEMENTATION_PIN} from './implementation-pin.mjs';
+@@ -41,18 +42,77 @@
+   return {valid:Boolean(checked.ready&&move<=profile.publication_recheck_max_price_move_pct&&entry&&exit),reason:'PLAN_OR_PRICE_CHANGED'};
+ }
+ 
+-async function services(env,{run_id,mode,clock=Date.now,fetch_impl=globalThis.fetch.bind(globalThis)}){
++const captureFailure=code=>Object.assign(Error(code),{code});
++const productionCaptureId=id=>typeof id==='string'&&Array.isArray(PRODUCTION_PLAN.capture_ids)&&PRODUCTION_PLAN.capture_ids.length===3&&new Set(PRODUCTION_PLAN.capture_ids).size===3&&PRODUCTION_PLAN.capture_ids.includes(id);
++function createPrivateCapture(env){
++  const secrets=Object.entries(env).filter(([k,v])=>/TOKEN|KEY|SECRET/i.test(k)&&typeof v==='string'&&v.length>5).map(([,v])=>v);
++  const state={complete:true,entries:0,bytes:0,redacted:false},responses=[];
++  const scrub=value=>{
++    if(typeof value==='string'){for(const secret of secrets)if(value.includes(secret)){state.redacted=true;state.complete=false;value=value.split(secret).join('[REDACTED]');}return value;}
++    if(Array.isArray(value))return value.map(scrub);
++    return value&&typeof value==='object'?Object.fromEntries(Object.entries(value).map(([k,v])=>[scrub(k),scrub(v)])):value;
++  };
++  return {state,responses,record(args,response,error=null){
++    const u=new URL(args.url),query=Object.fromEntries([...u.searchParams].filter(([k])=>['symbol','interval','limit','startTime','endTime'].includes(k)));
++    const entry=scrub({request:{provider:args.provider,family:args.family,purpose:args.purpose??'CORE',method:args.method??'GET',url:u.origin+u.pathname,query,headers_omitted:true},
++      response,error:error?replyCode(error):null,capture_basis:'BROKER_PARSED_JSON_NOT_WIRE_BYTES'});
++    const bytes=new TextEncoder().encode(JSON.stringify(entry)).byteLength;
++    if(state.entries>=24||state.bytes+bytes>8388608){state.complete=false;return;}
++    responses.push(entry);state.entries++;state.bytes+=bytes;
++  }};
++}
++async function readLaunchCapture(runtime,result,{run_id,request_id,publish_requested,delivery_enabled}){
++  const answer=result.request_id===request_id?(result.manual_result??result.result??result.manual?.find(r=>r.request_id===request_id)?.result):null;
++  const envelope={schema:'PUMP_LAUNCH_READINESS_ACTUAL_V1',capture_id:request_id,run_id,request_id,
++    implementation_sha256:IMPLEMENTATION_PIN.sha256,publication_allowed:false,analyses:[],actual_receipts:[],
++    raw_responses:runtime.privateCapture.responses,raw_capture:{...runtime.privateCapture.state},
++    status:'NO_COMPLETED_ANALYSIS_FOR_THIS_REQUEST'};
++  if(!answer?.analysis_key||!answer.analysis)return envelope;
++  const original=await runtime.store.get(answer.analysis_key);
++  if(!original?.input||JSON.stringify(original.analysis)!==JSON.stringify(answer.analysis)||
++    answer.analysis_key!=='pump:analysis:'+await textHash(JSON.stringify(original.analysis))||
++    original.implementation_sha256!==IMPLEMENTATION_PIN.sha256||original.evidence_class!=='OBSERVED'||
++    original.analysis.run_id!==run_id||original.input.run_id!==run_id||original.input.mode!==original.analysis.mode||
++    JSON.stringify(original.input.instrument)!==JSON.stringify(original.analysis.instrument)||original.input.analysis_ts!==original.analysis.analysis_ts||
++    !Number.isSafeInteger(original.saved_ts)||original.saved_ts<original.analysis.analysis_ts||original.saved_ts>Date.now()||
++    original.input.run_purpose!=='PRODUCTION'||original.analysis.run_purpose!=='PRODUCTION')throw captureFailure('LAUNCH_ORIGINAL_READBACK_MISMATCH');
++  envelope.analyses.push({analysis_key:answer.analysis_key,analysis:answer.analysis,original});
++  envelope.publication_allowed=Boolean(publish_requested&&delivery_enabled&&answer.analysis.ready&&!ownerPublicationRefusal(answer.analysis));
++  envelope.status='CAPTURED_ORIGINAL_NO_PUBLICATION';
++  const id=answer.delivery?.card_id;
++  if(!id)return envelope;
++  if(!/^PUMP:[a-f0-9]{64}$/.test(id))throw captureFailure('LAUNCH_CARD_ID_UNBOUND');
++  const card=await runtime.store.get('pump:card:'+id);
++  if(!card||card.card_id!==id||card.text_hash!==await textHash(card.text))throw captureFailure('LAUNCH_CARD_READBACK_MISMATCH');
++  const {source_input_key,...cardAnalysis}=card.analysis??{};
++  const same_original=source_input_key===answer.analysis_key&&card.text===original.analysis.card_text&&JSON.stringify(cardAnalysis)===JSON.stringify(original.analysis);
++  const receipt_bound=card.state==='SENT'&&/^[1-9][0-9]*$/.test(String(card.message_id??''))&&
++    card.receipt?.card_id===id&&String(card.receipt.message_id)===String(card.message_id)&&
++    card.receipt.text_hash===card.text_hash&&card.receipt.recipient===card.recipient&&Number.isSafeInteger(card.send_started_ts)&&
++    Number.isSafeInteger(card.receipt.confirmed_ts)&&card.receipt.confirmed_ts>=card.send_started_ts&&card.receipt.confirmed_ts<=Date.now();
++  if(answer.delivery?.state==='SENT'&&!receipt_bound)throw captureFailure('LAUNCH_SENT_RECEIPT_READBACK_MISMATCH');
++  envelope.actual_receipts.push({analysis_key:source_input_key,card,same_original,receipt_bound,delivery_result:answer.delivery});
++  envelope.status=same_original?'CAPTURED_SAME_ORIGINAL_CARD':'DIFFERENT_SAVED_ANALYSIS_CARD_NOT_CURRENT_SENT_PROOF';
++  return envelope;
++}
++
++async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fetch_impl=globalThis.fetch.bind(globalThis)}){
+   if(IMPLEMENTATION_PIN?.schema!=='PUMP_BUNDLED_IMPLEMENTATION_PIN_V1'||!/^[a-f0-9]{64}$/.test(IMPLEMENTATION_PIN.sha256??''))throw Object.assign(Error('PINNED_IMPLEMENTATION_ARTIFACT_REQUIRED'),{code:'PINNED_IMPLEMENTATION_ARTIFACT_REQUIRED'});
+-  const run_purpose=PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?'PRODUCTION':'ACCEPTANCE_TEST';
+-  const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,run_purpose,clock,future_schedule:PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?DISCOVERY_PLAN:null}),store=native.store;
++  const production=PROVIDER_STAGE==='PRODUCTION_QUALIFIED',run_purpose=production?'PRODUCTION':'ACCEPTANCE_TEST';
++  if(production&&!['AUTO','MANUAL','LOOKUP'].includes(mode)||launch_capture&&(!production||mode!=='MANUAL'||!productionCaptureId(run_id)))throw captureFailure('PRODUCTION_OPERATION_SCOPE_REQUIRED');
++  const policy=production?{...NATIVE_POLICY,evidence_ref:PRODUCTION_PLAN.evidence_ref}:NATIVE_POLICY;
++  const native=await reserveNativeRun({db:env.DATA_DB,run_id,mode,run_purpose,clock,policy,future_schedule:production?DISCOVERY_PLAN:null}),store=native.store;
+   try{
+   if(mode!=='LOOKUP')await store.install();
+   const feasibility=PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&mode==='CONTROL'&&run_id===SOURCE_FEASIBILITY_ID;
+-  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(feasibility?{allowed_providers:['BINGX'],max_http_attempts:3}:{}),...(PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?{discovery:DISCOVERY_PLAN}:{}),...(['SUMMARY_INDEX_ACCEPTANCE_ONLY','SAVED_STATISTICS_AUDIT_SINGLE'].includes(PROVIDER_STAGE)?{allowed_providers:[]}:mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});
+-  const baseBroker=createRequestBroker({budget,store,clock,fetch_impl,max_response_bytes:mode==='MAP_CHECK'?262144:2000000}),captured=[];let operationFailure=false;
++  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:production?productionPolicies(PROVIDER_POLICIES):PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:production?productionAdmission(native.admission,PROVIDER_POLICY_VERSION,{mode}):{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(feasibility?{allowed_providers:['BINGX'],max_http_attempts:3}:{}),...(PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?{discovery:DISCOVERY_PLAN}:{}),...(['SUMMARY_INDEX_ACCEPTANCE_ONLY','SAVED_STATISTICS_AUDIT_SINGLE'].includes(PROVIDER_STAGE)?{allowed_providers:[]}:mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});
++  const baseBroker=createRequestBroker({budget,store,clock,fetch_impl,max_response_bytes:mode==='MAP_CHECK'?262144:2000000}),captured=[],privateCapture=launch_capture?createPrivateCapture(env):null;let operationFailure=false;
+   const broker=feasibility?{...baseBroker,operationFailed:()=>operationFailure,request:async args=>{
+     try{const response=await baseBroker.request(args);captured.push({request:{url:args.url,method:'GET',started_ts:response.request_started_ts},response});if(response.semantic_status!=='SUCCESS')operationFailure=true;return response;}
+     catch(error){operationFailure=true;captured.push({request:{url:args.url,method:'GET'},error:error.code??'SOURCE_REQUEST_FAILED'});throw error;}
++  }}:privateCapture?{...baseBroker,request:async args=>{
++    try{const response=await baseBroker.request(args);privateCapture.record(args,response);return response;}
++    catch(error){privateCapture.record(args,null,error);throw error;}
+   }}:baseBroker;
+   const sources=createPumpSources({broker,identityRegistry:createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY),profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock});
+   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),revalidate:async card=>{
+@@ -72,7 +132,7 @@
+   }});
+   const retained_features=createRetainedCapsuleWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED'});
+   const runner=createPumpRunner({store,sources,analyzePump,evaluateOutcome,budget,delivery,profile:START_PROFILE,clock,evidence_class:'OBSERVED',run_purpose,retained_features,await_source_window:args=>broker.awaitProviderWindow(args)});
+-  return {native,store,budget,broker,sources,delivery,runner,captured};
++  return {native,store,budget,broker,sources,delivery,runner,captured,privateCapture};
+   }catch(error){error.pumpNative=native;throw error;}
+ }
+ 
+@@ -84,6 +144,12 @@
+       const key=String(env.PUMP_CONTROL_KEY??'');if(!key||request.headers.get('x-pump-control-key')!==key)return json({error:'UNAUTHORIZED'},401);
+       if(request.method!=='POST')return json({error:'POST_REQUIRED'},405);
+       let body;try{const raw=await request.text();if(raw.length>16384)throw Error();body=JSON.parse(raw||'{}');if(!body||typeof body!=='object'||Array.isArray(body))throw Error();}catch{return json({error:'INVALID_BODY'},400);}
++      const production=PROVIDER_STAGE==='PRODUCTION_QUALIFIED',captureField=Object.hasOwn(body,'capture_id');
++      const captureRequested=production&&url.pathname==='/pump/manual'&&captureField&&productionCaptureId(body.capture_id)&&body.request_id===body.capture_id;
++      if(captureField&&!captureRequested||production&&url.pathname==='/pump/manual'&&productionCaptureId(body.request_id)&&!captureRequested)return json({error:'EXACT_PRODUCTION_MANUAL_CAPTURE_REQUIRED'},400);
++      if(production&&(!['/pump/manual','/pump/run','/pump/manual-result','/pump/summary','/pump/statistics-audit'].includes(url.pathname)||['grant_id','probe_id','diagnostic_id','kind'].some(k=>Object.hasOwn(body,k))))return json({error:'QUALIFICATION_ROUTE_NOT_PRODUCTION'},400);
++      if(production&&url.pathname==='/pump/run'&&env.PUMP_REPORT_ENABLED!=='1')return json({error:'AUTOMATIC_REPORT_DISABLED'},503);
++      const launchCapture=captureRequested;
+       const probe=url.pathname==='/pump/source-probe';
+       const deliveryCheck=url.pathname==='/pump/delivery-check';
+       const mapProbe=url.pathname==='/pump/map-probe';
+@@ -118,13 +184,14 @@
+       if(PROVIDER_STAGE!=='QUALIFICATION_ONLY'&&probe)return json({error:'PREVIOUS_QUALIFICATION_GRANT_SPENT'},400);
+       const acceptedManual=PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&url.pathname==='/pump/manual'&&body.request_id===MANUAL_ACCEPTANCE_ID&&parseManualInput(body.symbol??body.text,{context_symbol:body.context_symbol??null}).symbol===MANUAL_ACCEPTANCE_SYMBOL;
+       if(PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&url.pathname==='/pump/manual'&&!acceptedManual)return json({error:'EXACT_MANUAL_ACCEPTANCE_REQUEST_REQUIRED'},400);
+-      if(Date.now()>=QUALIFICATION_EXPIRES_TS)return json({error:'PROVIDER_ADMISSION_EXPIRED'},503);
++      if(!production&&Date.now()>=QUALIFICATION_EXPIRES_TS)return json({error:'PROVIDER_ADMISSION_EXPIRED'},503);
+       if(!probe&&!lookup&&!deliveryCheck&&!mapProbe&&!dayProbe&&!integrationCheck&&!metadataProbe&&!feasibilityCheck&&!acceptedManual&&PROVIDER_STAGE!=='PRODUCTION_QUALIFIED')return json({error:'PROVIDER_QUALIFICATION_PENDING'},503);
+-      const mode=feasibilityCheck?'CONTROL':metadataProbe?'METADATA_CHECK':probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':mapProbe?'MAP_CHECK':dayProbe?'DAY_CHECK':lookup?'LOOKUP':url.pathname==='/pump/run'?'AUTO':'MANUAL',run_id=savedAuditSingle?SAVED_STATISTICS_AUDIT_ID:feasibilityCheck?SOURCE_FEASIBILITY_ID:summaryCheck?SUMMARY_INDEX_ACCEPTANCE_ID:metadataProbe?CORRECTED_METADATA_ID:deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:mapProbe?MAP_DIAGNOSTIC_ID:dayProbe?DAY_DIAGNOSTIC_ID:integrationCheck?J_DIAGNOSTIC_ID:acceptedManual?MANUAL_ACCEPTANCE_ID:crypto.randomUUID();
++      const mode=feasibilityCheck?'CONTROL':metadataProbe?'METADATA_CHECK':probe?'CONTROL':deliveryCheck?'DELIVERY_CHECK':mapProbe?'MAP_CHECK':dayProbe?'DAY_CHECK':lookup?'LOOKUP':url.pathname==='/pump/run'?'AUTO':'MANUAL';
++      const run_id=launchCapture?body.capture_id:savedAuditSingle?SAVED_STATISTICS_AUDIT_ID:feasibilityCheck?SOURCE_FEASIBILITY_ID:summaryCheck?SUMMARY_INDEX_ACCEPTANCE_ID:metadataProbe?CORRECTED_METADATA_ID:deliveryCheck?TELEGRAM_DIAGNOSTIC_ID:mapProbe?MAP_DIAGNOSTIC_ID:dayProbe?DAY_DIAGNOSTIC_ID:integrationCheck?J_DIAGNOSTIC_ID:acceptedManual?MANUAL_ACCEPTANCE_ID:crypto.randomUUID();
+       if(mode==='AUTO'&&!automaticWindowOpen(Date.now()))return json({status:'OUTSIDE_AUTOMATIC_WINDOW',run_id});
+       let runtime,result,finalizationStarted=false;
+       try{
+-        runtime=await services(env,{run_id,mode});
++        runtime=await services(env,{run_id,mode,launch_capture:launchCapture});
+         if(feasibilityCheck)result=await runSourceFeasibility({...runtime,run_id});
+         else if(metadataProbe){
+           const factory=createAnonymousDisplayInfoRequestFactory({clock:Date.now,uuid:()=>crypto.randomUUID(),sha256:createSubtleSha256(crypto.subtle),time_zone_hours:-new Date().getTimezoneOffset()/60});
+@@ -175,6 +242,7 @@
+         else result={error:'NOT_FOUND'};
+         if(url.pathname==='/pump/manual')result={...result,manual_response_text:manualResponseText(result)};
+         if(url.pathname==='/pump/manual-result')result={...result,manual_response_text:manualResponseText(result.result)};
++        if(launchCapture)result={...result,launch_capture:await readLaunchCapture(runtime,result,{run_id,request_id:body.request_id,publish_requested:body.publish!==false,delivery_enabled:env.PUMP_REPORT_DELIVERY_ENABLED==='1'})};
+         finalizationStarted=true;const finalized=await finalizeNativeRun(runtime.native);return json({...result,native_receipt:finalized});
+       }catch(error){
+         const native=runtime?.native??error.pumpNative;

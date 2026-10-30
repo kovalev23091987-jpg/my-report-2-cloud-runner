@@ -1,0 +1,29 @@
+{
+  "pump-report/runtime/runner.mjs": {
+    "fresh_main": "381e74e54ca867bc23b5065d2401bf702fe33d1d",
+    "fresh_main_git_blob": "5b41de77f67adca721555ecc3eaae61cf7041cb2",
+    "source_call_projection": [
+      "    const overview=await sources.getOverview({run_id,instruments:catalog.instruments,purpose:'DISCOVERY'});",
+      "    const overview=await sources.getOverview({run_id,instruments:[instrument]});",
+      "    const day=typeof sources.getDayGrowth==='function'?await sources.getDayGrowth({instrument,run_id,mode}):null;",
+      "    const core=await sources.getCore({instrument,run_id,mode,existing_facts:overviewFacts}),previous_wave=await store.get('pump:wave:'+instrumentKey(instrument));",
+      "      const optional=await sources.getOptional({instrument,run_id,mode,facts:core.facts});",
+      "      try{input.liquidations=await sources.getLiquidations({instrument,run_id,reference_price:analysis.reference_price,deadline_ts:clock()+profile.liquidation_deadline_ms});}",
+      "      if(typeof sources.getOutcomeHistory!=='function'){results.push({signal_id:signal.signal_id,status:'UNKNOWN',reason:'OUTCOME_HISTORY_ROUTE_NOT_CONNECTED'});continue;}",
+      "      const history=await sources.getOutcomeHistory({instrument:signal.instrument,run_id,start_ts:signal.t0,end_ts:signal.deadline_ts});",
+      "    const candidate=profile.core_http_upper_bound+(profile.optional_http_upper_bound??2)+(profile.map_http_upper_bound??1)+profile.delivery_http_reserve;",
+      "    if(store.admission&&typeof store.usage==='function'){const used=store.usage();return used.rows_read+profile.core_sql_upper_bound.rows_read+profile.delivery_sql_reserve.rows_read<=store.admission.max_rows_read&&used.rows_written+profile.core_sql_upper_bound.rows_written+profile.delivery_sql_reserve.rows_written<=store.admission.max_rows_written;}",
+      "      const sourceCatalog=await sources.getCatalog({run_id,purpose:mode==='AUTO'?'DISCOVERY':'CORE'}),catalog={...sourceCatalog,instruments:sourceCatalog.instruments.filter(i=>!ownerInstrumentExcluded(i))};result.catalog_coverage={...catalog.coverage,owner_delivery_excluded:sourceCatalog.instruments.filter(ownerInstrumentExcluded).map(i=>i.instrument_id),verified_crypto_count:sourceCatalog.instruments.length,delivery_eligible_verified_count:catalog.instruments.length};"
+    ]
+  },
+  "pump-report/runtime/worker.mjs": {
+    "fresh_main": "381e74e54ca867bc23b5065d2401bf702fe33d1d",
+    "fresh_main_git_blob": "36eccad76513ee9b834738dbe030edede89ca922",
+    "source_call_projection": [
+      "  const fresh=await sources.getCore({instrument:card.analysis.instrument,run_id:card.analysis.run_id,mode:card.mode,purpose:'DELIVERY',force_refresh:true,only_facts:['price','orderbook']});",
+      "  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?{discovery:DISCOVERY_PLAN}:{}),...(PROVIDER_STAGE==='SUMMARY_INDEX_ACCEPTANCE_ONLY'?{allowed_providers:[]}:mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});",
+      "          if(!instrument||typeof runtime.sources.getDayGrowth!=='function')throw Object.assign(Error('DAY_SOURCE_NOT_CONNECTED'),{code:'DAY_SOURCE_NOT_CONNECTED'});",
+      "          const day=await runtime.sources.getDayGrowth({instrument,run_id,mode:'MANUAL'});"
+    ]
+  }
+}

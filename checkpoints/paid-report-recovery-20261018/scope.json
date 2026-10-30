@@ -1,0 +1,141 @@
+{
+  "schema": "PAID_REPORT_RECOVERY_AGGREGATE_RECONCILIATION_SCOPE_V1",
+  "recorded_utc": "2026-10-18T10:21:31.521878+00:00",
+  "problem": "UTC18 full39081512792 failed under Free capacity and finalized15unmeasured native operations; paid expansion alone cannot safely erase these unknown ledger values. Same-day retained refusal prevents subsequent report preflight.",
+  "source": {
+    "run_id": 39081512792,
+    "head": "10d151da99aa8a357a28bd077a442a275f6a58b4",
+    "artifact_id": 12119555290,
+    "reservation_id": "R2RUN:1792281986592:65a2f7d46b6acfcc",
+    "usage_sha256": "e290d9ce1fbcab1f8382369d3b6b05cf98b68ee3e7027261185f44827e6f1f9c"
+  },
+  "independent_native_billing": {
+    "account": "70ee0af85191ea470e74c7383fdec772",
+    "database": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+    "interval": {
+      "from": "2026-10-18T00:06:20Z",
+      "to": "2026-10-18T00:07:20Z"
+    },
+    "two_observation_clocks": [
+      "2026-10-18T09:57:23.112Z",
+      "2026-10-18T10:07:31.850Z"
+    ],
+    "sample_interval_each_minute": 1,
+    "billed_rows_read": 30746,
+    "billed_rows_written": 110,
+    "read_write_queries": 240,
+    "all_attempts": 255,
+    "historical_unknown_receipts": 15,
+    "original_finalization_usage_after": {
+      "rows_read": 30746,
+      "rows_written": 110,
+      "requests": 255,
+      "unknown_ops": 15
+    },
+    "claim": "Only the complete historical aggregate billable row costs reconcile. Individual15counter replies remain unknown; sampled query insights are explicitly excluded."
+  },
+  "changes": [
+    "Offline pointer verifies exact immutable failed artifact/run/job interval, current generation/day/account/database, complete unsampled minute groups, stable repeated native billing response, all known row costs and measured query counts.",
+    "The retained static day refusal opens only to a new native admission, without issuing SQL or provider grants.",
+    "The ordinary indexed day SUM query also reads the exact source ledger witness in the same native query when a verified current-day proof exists; no extra normal-day SQL or provider HTTP.",
+    "Admission accepts the aggregate reconciliation only after the fresh original finalized ledger row and unchanged source/reservations/counters match, daily unknown remains exactly15 and current invocation has zero unknown replies.",
+    "Opaque in-process proof/receipt identities and exact current-day raw aggregate binding reject plain JSON, forged flags, changed/new unknown values and UTC rollover. Every original reserve/cap and within-run unknown stop remains.",
+    "Authoritative current-generation runtime overlay and both full/trigger admission callsites use the same helper; portable token module contains no Node imports for Workers consumers."
+  ],
+  "validation": {
+    "new_cases": 41,
+    "connected_local_cases": 98,
+    "pass": 98,
+    "fail": 0,
+    "connected_TAP_sha256": "a1be7a66c5e6b45c4ae29fe2eec7feceb88c7f320ae98f4f6474816ee229ef20",
+    "original_guard": "Two original-main outcomes reproduce retained static blocked and native UNMEASURED_FINALIZED_USAGE with unchanged15unknown; no fabricated baseline results for a previously absent module.",
+    "cloud_branch_main_pending": true,
+    "native_exact_source_row_pending": true,
+    "both_persisted_finalists_pending": true,
+    "same_run_Telegram_pending": true,
+    "cloud_initial_failure": {
+      "run": 39118953456,
+      "head": "e84ddb4e6b00c8159ee1d24ed47c89fee43673cb",
+      "artifact": 12133805733,
+      "digest": "sha256:1688ab2ac584049bf5d36c464194c86c6226c2b2a10cbb34f73e0ebb368068c9",
+      "cause": "Three existing extracted-runner tests omitted the new lexical reconciliation dependency. Actual full runner defines it before both preflights. Add explicit null dependency to existing no-proof harnesses without changing assertions.",
+      "targeted_harness_tests": 25,
+      "pass": 25,
+      "fail": 0
+    }
+  },
+  "preserved": {
+    "unknown_ops": 15,
+    "source_reserve_rows_read": 54000,
+    "source_reserve_rows_written": 840,
+    "original_ledger_updates": 0,
+    "reserve_refunds": 0,
+    "quota_increases": 0,
+    "provider_HTTP_by_audit": 0,
+    "native_SQL_by_audit": 0,
+    "Worker_or_MAIN_or_Telegram": 0,
+    "control_HTTP_CF": 10,
+    "paid_account_retention_GB": 5,
+    "expiry_start_GB": 4,
+    "expiry_target_GB": 3.5,
+    "minimum_hot_hours": 48,
+    "cursor": 710,
+    "all7directions_open": true,
+    "105_assets_122_contracts_9_pauses_strategy_forms_unchanged": true
+  },
+  "proof_files": {
+    "checkpoints/paid-report-recovery-20261018/UTC18-39081512792-reconciliation.json": {
+      "bytes": 2363,
+      "sha256": "d26225b9364e03822354cf3b424dbf575e717693b1e69984ee965c0a6c79ab23"
+    },
+    "checkpoints/paid-report-recovery-20261018/billing-observation1.json": {
+      "bytes": 1765,
+      "sha256": "50eba365fa9782fa6eddfbee1e9024979785bca2946b2f6714a0e59e9802bc93"
+    },
+    "checkpoints/paid-report-recovery-20261018/billing-observation2.json": {
+      "bytes": 1765,
+      "sha256": "70b93b90435b1b4aefc684008ab89a3b82621a4c8479eca70cd00680dede6690"
+    },
+    "checkpoints/paid-report-recovery-20261018/central-related.tap.gz": {
+      "bytes": 3493,
+      "sha256": "e959294616825a5e7b94ada96bbb32cfbeb0d06374862611b676c7d8c87c7863"
+    },
+    "checkpoints/paid-report-recovery-20261018/original-guard-baseline.json": {
+      "bytes": 823,
+      "sha256": "6bc50657ac15fffd39704fa1a80f9d0b8188693383ac011c8a66133ee63b1769"
+    },
+    "checkpoints/paid-report-recovery-20261018/primary-control.json": {
+      "bytes": 814,
+      "sha256": "f9e8fa808ee2200c54b590cacaeffedace4974b89af6ecb36ca9d8c8bddbe803"
+    },
+    "checkpoints/paid-report-recovery-20261018/sampled-query-diagnostic-not-reconciliation.json": {
+      "bytes": 767,
+      "sha256": "aad6c318915eec43200ff319245f1fb3f00fc799213282ef98bbce0d2d15c91a"
+    },
+    "checkpoints/paid-report-recovery-20261018/source-39081512792.zip": {
+      "bytes": 2700,
+      "sha256": "8cb6a27b766da9a21b965751f9cdcf099632d3a7851d75168b47901f057fac1a"
+    },
+    "checkpoints/paid-report-recovery-20261018/source-artifact-metadata.json": {
+      "bytes": 764,
+      "sha256": "ebf969f37347b833e0200452ad5be460bb277cfd5b48b3b41d6d8becc08cabc4"
+    },
+    "checkpoints/paid-report-recovery-20261018/source-failed-console.log.gz": {
+      "bytes": 28035,
+      "sha256": "8c6dde62d6bdcac3a1e98f84f29cbd98ce592a584c705effb75fdbaa9ce8dca9"
+    },
+    "checkpoints/paid-report-recovery-20261018/source-jobs-metadata.json": {
+      "bytes": 13317,
+      "sha256": "094a0abc31587baba64f5ddbf53b226bac3517437308eb3c91b6e643382cf321"
+    },
+    "checkpoints/paid-report-recovery-20261018/source-run-metadata.json": {
+      "bytes": 14942,
+      "sha256": "a7d854e0d6806046c1286217076e745e14106ce4e6367e2c4849c76e08805312"
+    },
+    "checkpoints/paid-report-recovery-20261018/cadence-harness.tap.gz": {
+      "bytes": 1327,
+      "sha256": "98d273d99f4346279afef07cc14d663842d9781e1ac64bb7a6a3eb4c389d9e1b"
+    }
+  },
+  "next": "Exact assembled branch/main cloud qualification, then actual bounded native admission. Do not force a known-failing MAIN or manufacture SENT; retain original unknown ledger values and every spent reservation."
+}

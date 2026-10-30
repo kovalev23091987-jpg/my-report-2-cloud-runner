@@ -1,0 +1,48 @@
+{
+  "schema": "SOURCE_F553_ACTUAL1000_EVIDENCE_V1",
+  "authority_main": "2b844e956c57e1ad5d07bced13f3fc57e2172b6c",
+  "actual_file_sha256": "0170bba73bc1fd2d56796d2c448258f6192a8c8fb612ab438d4f3d017de60e07",
+  "actual_file_bytes": 1186568,
+  "actual_route": "GET /openApi/swap/v2/quote/trades?limit=100&symbol=SOL-USDT",
+  "actual_receipt_id": "41da702e-03f3-49fd-a095-4808a88fe670",
+  "request_started_ts": 1792958218332,
+  "received_ts": 1792958218994,
+  "latency_ms": 662,
+  "fetch_response_body_bytes": 134705,
+  "wire_bytes": null,
+  "requested_limit": 100,
+  "successful_returned_rows": 1000,
+  "cause_of_limit_mismatch": "UNKNOWN",
+  "bounded_response_rows_max": 1000,
+  "no_truncation_before_conflict_detection": true,
+  "primary_reference": {
+    "path": "/private/tmp/report2-source-bingx-primary-adapter-20261024/official-ai-docs/skills/swap-market/api-reference.md",
+    "sha256": "fd667b1da678c2a74f6660fe4301562f0ef6b3cc8e736d9afe0694ac0709453a",
+    "commit": "7b1c40d29c248b18fcf418767c8e49760d1f6ef0",
+    "lines": [
+      79,
+      103
+    ],
+    "documented_max_limit": 1000,
+    "documented_trade_id_field": "id",
+    "documented_quote_quantity": "quoteQty",
+    "documented_event_clock": "time milliseconds"
+  },
+  "actual_field_schema": {
+    "fillId": "string",
+    "isBuyerMaker": "boolean",
+    "price": "string",
+    "qty": "string",
+    "quoteQty": "string",
+    "time": "integer",
+    "ts": "integer"
+  },
+  "fillId_mapping": "NOT_QUALIFIED_NO_STABLE_TRADE_ID_ALIAS",
+  "fillId_unique_observation_does_not_establish_stability": true,
+  "native_retained_docs_fillId_occurrences": 0,
+  "qty_base_or_multiplier": "UNKNOWN_NOT_READ",
+  "ts_alias_used": false,
+  "maker_evidence_ref": "T3_RECENT_TRADES_PRIMARY_PROOFS_V1.json",
+  "new_provider_HTTP_SQL_TG_deploy": 0,
+  "raw_or_prices_in_artifact": false
+}

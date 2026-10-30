@@ -1,0 +1,741 @@
+{
+  "schema": "ANOMALY_DUE_CALLBACK_AND_UTC22_PRODUCER_MERGE_V1",
+  "runtime_merge": {
+    "PR": 611,
+    "frozen_head": "2d33c96421fd7cb80546261ec38018151b1b0a82",
+    "squash": "53b50596dbed5d420459870694ad04f1b12c929e",
+    "base": "91c86477ef9b727bc2007a1ea991529278265516",
+    "changed_files_exact": {
+      ".github/workflows/report2.yml": "ce1aad0df51f7cba473dc53d362660abb3464de0860580767a76f7d9f3798ffb",
+      "anomaly-research/accessor-return-purity-peer-20261022/manifest.json": "fcb98f6f808e37908b7143786985f09b0e1e572958db04ca207809bc84f6afd6",
+      "anomaly-research/accessor-return-purity-peer-20261022/peer-receipt.json": "4f8fd1925055533f402038583449226a4e615824ed706598f261492ca216b6a0",
+      "anomaly-research/due-watch-consumer-20261022/PROTOCOL_RU.md": "cf42d6e7ee2ba4c368a9166a042c1164ebc283fe03e4f9edac8cc31da49ae4fa",
+      "anomaly-research/due-watch-consumer-20261022/README_RU.md": "0a24bf43998c908726e5b3d23d1afe5b448ee6cb6f06084a355617f0cd3c3599",
+      "anomaly-research/due-watch-consumer-20261022/connected.mjs": "2b9237e7ded1f51313ab7869ce4e225b5f10e60c46fecf7d4e593919e7454a05",
+      "anomaly-research/due-watch-consumer-20261022/consumer.proposed.mjs": "224a90f1358c9b996bd78fdaecbd233f0be7b2e6fecf4a9fb56097d0270b9b74",
+      "anomaly-research/due-watch-consumer-20261022/linked-source.json": "9d3fe154fb751a25cc2b5dc20056b9eac627ec2872ef51430455c8d3040401ac",
+      "anomaly-research/due-watch-consumer-20261022/manifest.json": "68ba3ab9cfe467fcb89379225fb85bca457478cdec45bd223bdad20338fc9a0b",
+      "anomaly-research/due-watch-consumer-20261022/provenance.json": "e4577451ff2e0ecf2ec548a61e073114152a456a9360828c82deca0520463f9d",
+      "anomaly-research/due-watch-consumer-20261022/runtime-emit.proposed.patch": "b279e98870970e792b69e0daace1b058dbc46a537101b058875f51052e810b6b",
+      "anomaly-research/due-watch-consumer-20261022/source-peer.json": "fef01cd57af6205c5fe171ab89291b7fc4337087db655974fa625bab04287341",
+      "anomaly-research/due-watch-consumer-20261022/target-pins.json": "14705bd093cb15c72541e84e5f5a9dfae677bec98b8f96487995646eeb5552b2",
+      "anomaly-research/due-watch-consumer-20261022/worker.proposed.patch": "f64d75c2ff48933342294400a9576ea9e9f3028eae9b10ea687d4d61c43f1be5",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/README_RU.md": "2a2c03ba60712644b8af63443abb226aba3ee1b7c9aaa5ea1af3b64e0205d5d7",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/central-first-binding-receipt.json": "0595349e9b3c543d73cee56f219e7fe06fad167ecb32954eb764e0be8430758d",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/central-targets.json": "e0378ff79cbfbbe9868fbed4fb9a1ad206c8bfa355ed820d85aa731254d5450c",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/connected-common.qualified.mjs": "bc31de83ae4c9e05be394ab20a298a310495abbb191d09535da47b94fe2d277a",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/connected-sanitized-receipt.json": "0c6d46dfb50cca0d44d631f6097802216d0a5ec789eaada03750796272f1e6c7",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/qualification-plan.json": "6356797e011a5b27a8800b0c63d68fb1ded8cd3b300384b504d74606f4ba93a9",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/qualification-scope.json": "fb56a8c049e8cafc04afbfdd4746ea8da81063ca2606a4d7f368b043455faf69",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/received-getter.json": "66034b3a7c17f8d7930dce6d230c11e4b592d3dc27daebe6d28002f0ae4e3c24",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/runner-before-getter.mjs": "2bacab5bc4cd7dbdf6a8906455ff35be82e387195859ae3936dc22a9336ae737",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/source-bound/connected.mjs": "e3d7290ac17415aa7d67ebaa008c3f7737f64daf329491a640497a771d507670",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/source-bound/dependencies.json": "397da30eb285fa6203b2a5df8ce0ae86534ebec409d7550e6ad76bf85239843e",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/source-bound/manifest.json": "bf6e4c79c719e1552a23c3fae6faf0e23d158705dc0668de5db066af7c83450a",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/source-bound/runner-due-capability.proposed.txt": "ee765843cad5e6174c4eff6e63251ab06b267cb11d4bd3a4e687b2618e9bb5b5",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/source-bound/target-bindings.json": "a18d908c86791d39f0675feb19db082729fab1d13e2e45127a8cefd05e26887f",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/temporary-guard.qualified.mjs": "3bf00779b9e98755bdd39faf030498e1498be17a17320797f0d586ad06802003",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/temporary-workflow.qualified.yml": "735fac3cf216aea25961710e208924af1203a6034f9627992168bed58788909a",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/third-bound/connected.mjs": "26df37de6ba6e1bc64bc1a434641ce30f48975c12d44737ac91b0afcf3bcc7b5",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/third-bound/linked-source.json": "9bacc54d4b835c93c720f5c77041a3e9808a22aea91e9225fef947de3990cdbf",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/third-bound/manifest.json": "91455568356fc74680f8bb6d136061a588110ef1b2d879e709fb936e04e62a43",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/third-bound/target-pins.json": "14705bd093cb15c72541e84e5f5a9dfae677bec98b8f96487995646eeb5552b2",
+      "checkpoints/anomaly-due-and-recovery-connected-20261022/utc22-producer-recovery-boundary.json": "218691d1ce373c9c187053d0d65a172c0e995d8b49ff092d1423e363679738ed",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/PROTOCOL_RU.md": "1f2eef88e5976d17d2bbf0319c768c643cee19d0a827454d8ec25ec303ed1fa9",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/README_RU.md": "86e1468ee2da92557f11b1726475eb2de898d47a27c8b752773426becb8003dd",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/central-entry-plan.md": "c5189396df51a93345be94837d7041cbc3dec6de0a178a8a0e1b1d0d46b4e6a3",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/connected.mjs": "3bcfaecaddd9a0b348b6466cfbdaaa6c108fa49cc42b0680d56a740b749830e8",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/dependencies.json": "3b24b086400950d4a736c4ea173dac8a401de6591b639161490fac226e841f8d",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/manifest.json": "39510387e623d0746418a2f0df6871a481ba9e2791d3f0b1ddea1ea482fa8bf0",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/peer-receipt.json": "4f8fd1925055533f402038583449226a4e615824ed706598f261492ca216b6a0",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/provenance.json": "8b3381512bec4bf7ac1841bda2239e2340fffa55bba9b00538c0cf6c134aa11e",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/runner-callback-capability.proposed.txt": "ee765843cad5e6174c4eff6e63251ab06b267cb11d4bd3a4e687b2618e9bb5b5",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/runner-callback-purity.proposed.patch": "9d64a2a33d539f948173677cc7698624687a1827758e3ef5e37cf6b927a5aa84",
+      "checkpoints/source-worker-anomaly-callback-purity-20261022/target-bindings.json": "548b812242a1d320840358fad70b19af9f3a3e62c05d589e711da963fc77aae6",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/PROTOCOL_RU.md": "1859ec67c579d82f31d1780085892fa96c28d03d0e4773f2cac0e88bbf150169",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/README_RU.md": "1ce0299b62b4dcf95a7a83fec57750de32132807783ee3802976267813a3ad74",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/central-entry-plan.md": "168c0480f3b88b3a18e770984d96d308225aae27de43517db944f99f3e10f195",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/connected.mjs": "f4660be58eecebebfe0aef74372d9519e5955e632fec8881c614d6738c7b53e1",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/dependencies.json": "397da30eb285fa6203b2a5df8ce0ae86534ebec409d7550e6ad76bf85239843e",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/manifest.json": "51ba1586761ba0d550f71991535f71d2049b37a05c808bffd139ac4d466ff3f6",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/peer-receipt.json": "4b10ebdc300f29f07013173be8615e589bbc98ed7c049df4a4ab1862eea8e2ef",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/provenance.json": "e9dc218d91bffe8e961ff605a8ca199ef5eb8799eb7b6646de51c57427a201d0",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/runner-due-capability.proposed.txt": "87e86c66caf89e7c842bbc73dae85ac2894e64f69e67dfb2b98863ed4de0473c",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/runner-due.proposed.patch": "2d3f57697101418108112f350e8209adfdd25b24c82a0fa59baa08642d9a3305",
+      "checkpoints/source-worker-anomaly-due-parent-20261022/target-bindings.json": "30aca178c99890d11e2091f0cb9912bc216cecfe9fff957a01bfee4298b247e8",
+      "current-generation/apply-runtime-overlay.mjs": "82f051ebda92e33d698a82c7e85b8204b7733090798e9e922c984063b8af9e1b",
+      "current-generation/files/runner-main.mjs": "5833692779132840b2f6985a16da513b2128c3070acd5f575e3211e2e9866ff2",
+      "current-generation/files/src/anomaly-native-due-watch.mjs": "224a90f1358c9b996bd78fdaecbd233f0be7b2e6fecf4a9fb56097d0270b9b74",
+      "current-generation/files/src/worker.js": "5d97133c892d81d35b384edaa2e6c601fdabba5090e08add6415e8df5f452d45",
+      "current-generation/tests/generation-guard.test.mjs": "41371294c88146f0b3258b814493ca0c4064aa92c37baabccd1eb94cc073bcd2"
+    },
+    "authority_roots_unchanged_at_merge": {
+      "AGENTS.md": "f969ab3c661acc1106bd3a2e2a819678e334e3b92f211f1441abc5a2922f621d",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "5003f6d3a935dbc5ed72fe9edc5fddf583ae84df5a3399559e9224a32207f4b4",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "a23a3b820834c316831176a5846b487aa92df8829603402716281460741a3e28",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "4ab2bc9e4d5833c175e2eb6aef090ae98f71d8435d35757c2b031e26145e94ae",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "1d1988708e2216e2bf0b04817305f6f1d8b6accf968c92065ca3cc2a93076971",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "a163f3e8e75425ae9b97a6248f4f199c9adeab5b5aba89dccca0c593d2c91729"
+    },
+    "required_automatic_PR_checks": [
+      {
+        "name": "verify",
+        "head": "2d33c96421fd7cb80546261ec38018151b1b0a82",
+        "conclusion": "success",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39754011251/job/119741327677"
+      },
+      {
+        "name": "verify",
+        "head": "2d33c96421fd7cb80546261ec38018151b1b0a82",
+        "conclusion": "success",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39754011263/job/119741326182"
+      },
+      {
+        "name": "verify",
+        "head": "2d33c96421fd7cb80546261ec38018151b1b0a82",
+        "conclusion": "success",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39754011226/job/119741325797"
+      },
+      {
+        "name": "verify",
+        "head": "2d33c96421fd7cb80546261ec38018151b1b0a82",
+        "conclusion": "success",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39754011203/job/119741325777"
+      }
+    ],
+    "originals": {
+      "607": {
+        "frozen_head": "15f1439137073afc53e6ad036aa959d2e42ee20f",
+        "files": 11,
+        "byte_exact": true
+      },
+      "608": {
+        "frozen_head": "6f94424b08f2efe125d97710ade6b75ffd88818f",
+        "files": 11,
+        "byte_exact": true
+      },
+      "609": {
+        "frozen_head": "fe0806c66f0abb39db95258fceae577e86a073d8",
+        "files": 11,
+        "byte_exact": true
+      },
+      "610": {
+        "frozen_head": "2e5abdffedb3045225ac185eccb7591f6a0ead8a",
+        "files": 2,
+        "byte_exact": true
+      }
+    },
+    "own_lease_unchanged": {
+      "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792657938048",
+      "acquired_ts": 1792657938048,
+      "expires_ts": 1792662438048,
+      "expected_main": "f1774e0cfa86cf5f869520e492dc8f0795478b5f",
+      "released": false,
+      "scope": "OWNER_FIVE_ACTIVE_DIRECTIONS.REGRESSION_RECOVERY_AND_READY_ANOMALY_DUE_INTEGRATION_20261022. New explicit owner asks continue Telegram/all active blocks/new anomaly block. Root reads already-saved GitHub ordinary artifacts/logs and exact accounting/finalization code to find producer of UTC22unknown1 blocking current native report/LIQ before Telegram; no synthetic causal attribution/reset/refund/capraise/guard weakening. Integrate exact frozen READY original60715f1439137073afc53e6ad036aa959d2e42ee20f and6086f94424b08f2efe125d97710ade6b75ffd88818f only after actual scope/pin/diff review, plus newly assigned minimal generic returned-data-getter purity closure proposal and its NEW UNEXECUTED delta case when ready. Target existing public runner/current parent capability, Worker due consumer, new proposed due-watch consumer and existing assembler copy-list/pins/tests only; actual frozen source manifests define exact files before apply. Existing native schema/kernel/policy defaultOFF, immutable original16cell plan/card/firstknowledge/revisions/DRAFT/knowncost/unknown/per-IO parent/day/statistics/downstream/finalizer all preserved. One common NEW connected affected qualification on actual assembled current baseline/candidate; do NOT invoke completed60620/source60812/third6079 or other accepted components for replay; original frozen callable files retained unchanged, new common may invoke first-ever UNEXECUTED607/608 controls plus getter delta once. Failed later-only repair preserves completed results before next component. Existing automatic required PR/main checks allowed normal path, no manual old-suite reexecution. Any actual proved existing accounting defect correction requires scope precise amendment/readback before apply if outside listed parent/runner files. NO forcedMAIN/manual/source/provider/TG/CF/nativeSQL/schema/deploy/newprivatefragment extraction/ENTRYfollowup/physicalstorage/anomaly activation; one alreadySAVEDnewnatural read for actual results permitted, no poll loops. Root may use temporary existing qualification workflow guarded exact owner/expiry/all4/source/runtime pins; restore workflow/archiveguard after first common, centralPR/requiredchecks/squash expectedhead/exactfiles/9roots readback, preserve originals closedunmerged and onlyownrelease beforeexpiry. Save exact next checkpoint/queue and update only existingownautomation2. Workers ownrefs separate; all105/122/9pauses/70/weights/forms/clocks/Paid/cursor/allbudgets/reserves/oldunknown15+1/currentUTC22unknown1/twoownerdeferrals unchanged."
+    },
+    "merged_readback": true
+  },
+  "actual_result_peers": [
+    {
+      "thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+      "result": "ACCEPTED_WITH_LIMITS",
+      "open_findings": [],
+      "mismatch": [],
+      "run": 39753599073,
+      "head": "1552181fba30a4e3be6ed6f0f086a4ab84be473b",
+      "independently_verified_extracted_members": 11,
+      "whole_ZIP_verified_by_root_not_repeated": true,
+      "source_pins": 940,
+      "runtime_pins": 263,
+      "groups": {
+        "due_parent": 12,
+        "due_consumer": 9,
+        "consumer_nested": 22,
+        "getter": 12
+      },
+      "baseline_getter_CONTROLLED": {
+        "status_reads": 3,
+        "wire_statements": 2,
+        "statistics_reservations": 1
+      },
+      "candidate_getter_CONTROLLED": {
+        "status_reads": 0,
+        "wire_statements": 1,
+        "statistics_reservations": 1
+      },
+      "central_factory_diff_ONLY_prefix_builtin_Functiondependency_fullrecipe": true,
+      "source_and_getter_native_policy_and_costs_CONTROLLED": true,
+      "source_peer_semantic_executions": 0,
+      "native_admission_or_SAVING_or_SENT_qualified": false,
+      "limits": "native policy NULL/defaultOFF; all16 outcomes pending; no native installed schema/cost/currentdaygrant/epoch/globalfirstknowledge/pendingjournal/fsdurability/CPUheap/sender/independent105/TG restoration."
+    },
+    {
+      "schema": "THIRD_FIRST_DUE_PURITY_COMMON_RESULT_PEER_V1",
+      "thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+      "mode": "ONE_READONLY_ACTUAL_MEMBERS_TO_CLAIMS_CONSUMER_AND_COMBINED_LIMITS",
+      "run": 39753599073,
+      "head": "1552181fba30a4e3be6ed6f0f086a4ab84be473b",
+      "result": "ACCEPTED_WITH_LIMITS",
+      "blockers": [],
+      "open_findings": [],
+      "mismatch": [],
+      "all11_extracted_member_lengths_and_SHA256_independently_match": true,
+      "reviewer_ZIP_download_or_wholeZIP_hash_claimed": false,
+      "actual_SPEC": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "Node": "v24.22.0"
+      },
+      "CONTROLLED_groups": {
+        "total": 33,
+        "due_parent": 12,
+        "consumer": 9,
+        "consumer_nested": 22,
+        "getter": 12
+      },
+      "source_pins": 940,
+      "runtime_pins": 263,
+      "current617_inventory": "e6afb2dcb56041bd1fa5dcd102878b35841e19b1ab68d89e6fbde23742397807",
+      "candidate618_inventory": "6d565bba4db7295397cf6b6d770fe239e9304d52a91b74330a45a98ad40bc6b6",
+      "actual_consumer": "DUE→verifiedORIGIN→WRITE→READBACK; existing observe/draftNotice LONG+SHORT, inactive pending due, immutable card/firstknown/descriptor/original16plan, all16PENDING preserved; same facts/restart no revision; missing/stale/gap/mismatch typedDEFERRED; unknown stops remaining and retains SAMEoperation.",
+      "limits": [
+        "fixtures/schema/counters/currentparent/cost CONTROLLED RemoteD1→LocalSQLite, not nativecost/admission",
+        "same completed Deep capture not independent105 cadence",
+        "no locked16 outcome classifier/accuracy/profit/SAVING/nativeACK/epoch/globalfirstknowledge/pendingjournal/fsdurability/sender/SENT",
+        "native policyNULL/defaultOFF",
+        "returneddatahardening not arbitraryJS sandbox",
+        "33groups withinONE SPEC",
+        "UNEXECUTED pre-run plan is historical, actual resultPASS"
+      ],
+      "reviewer_Node_import_tests_SQL_semantics_writes_lease_PR_or_replay": 0
+    }
+  ],
+  "actual_automatic_checks": [
+    {
+      "run": 39754011203,
+      "name": "Scheduled report recovery offline verification",
+      "event": "pull_request",
+      "head": "2d33c96421fd7cb80546261ec38018151b1b0a82",
+      "conclusion": "success",
+      "artifacts": [],
+      "SPEC_files": [],
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "automatic": true,
+      "manually_reexecuted": false,
+      "test_count_not_exported_in_selected_artifact": true
+    },
+    {
+      "run": 39754011226,
+      "name": "N10 technical path offline connected verification",
+      "event": "pull_request",
+      "head": "2d33c96421fd7cb80546261ec38018151b1b0a82",
+      "conclusion": "success",
+      "artifacts": [
+        {
+          "id": 12414692447,
+          "bytes": 4936,
+          "digest": "sha256:4927b2ac513be109d30497132a78027ca75bd017546726b7117ec549ec64922a",
+          "members": 6
+        }
+      ],
+      "SPEC_files": [
+        {
+          "file": "current-report-telegram.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 9,
+          "pass": 9,
+          "fail": 0
+        },
+        {
+          "file": "target-runtime.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 11,
+          "pass": 11,
+          "fail": 0
+        },
+        {
+          "file": "target-unit.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 49,
+          "pass": 49,
+          "fail": 0
+        }
+      ],
+      "tests": 69,
+      "pass": 69,
+      "fail": 0,
+      "automatic": true,
+      "manually_reexecuted": false
+    },
+    {
+      "run": 39754011251,
+      "name": "N11 HTX execution handoff and Telegram gate offline",
+      "event": "pull_request",
+      "head": "2d33c96421fd7cb80546261ec38018151b1b0a82",
+      "conclusion": "success",
+      "artifacts": [],
+      "SPEC_files": [],
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "automatic": true,
+      "manually_reexecuted": false,
+      "test_count_not_exported_in_selected_artifact": true
+    },
+    {
+      "run": 39754011263,
+      "name": "N12 spot futures and cross venue report proof offline",
+      "event": "pull_request",
+      "head": "2d33c96421fd7cb80546261ec38018151b1b0a82",
+      "conclusion": "success",
+      "artifacts": [],
+      "SPEC_files": [],
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "automatic": true,
+      "manually_reexecuted": false,
+      "test_count_not_exported_in_selected_artifact": true
+    },
+    {
+      "run": 39755187188,
+      "name": "LIQ assembled spot and 105 admission offline",
+      "event": "push",
+      "head": "53b50596dbed5d420459870694ad04f1b12c929e",
+      "conclusion": "success",
+      "artifacts": [
+        {
+          "id": 12414983911,
+          "bytes": 292383,
+          "digest": "sha256:82bcdbff74992dc8ea8c089f5914e99f43e6e934be4e6386ced4a48e8348acdb",
+          "members": 44
+        }
+      ],
+      "SPEC_files": [
+        {
+          "file": "active-source-finalist-and-markets.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 29,
+          "pass": 29,
+          "fail": 0
+        },
+        {
+          "file": "active-source-headroom.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 403,
+          "pass": 403,
+          "fail": 0
+        },
+        {
+          "file": "cold-archive.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 242,
+          "pass": 242,
+          "fail": 0
+        },
+        {
+          "file": "exact-asset-role-and-collector-audit.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 28,
+          "pass": 28,
+          "fail": 0
+        },
+        {
+          "file": "hourly-native-usage.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 41,
+          "pass": 41,
+          "fail": 0
+        },
+        {
+          "file": "index-useful-only.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 21,
+          "pass": 21,
+          "fail": 0
+        },
+        {
+          "file": "native-identity-source-handoff.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0
+        },
+        {
+          "file": "native-sector-provider-binding.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 260,
+          "pass": 260,
+          "fail": 0
+        },
+        {
+          "file": "native-transport-fallback.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 7,
+          "pass": 7,
+          "fail": 0
+        },
+        {
+          "file": "native-useful-budget.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 19,
+          "pass": 19,
+          "fail": 0
+        },
+        {
+          "file": "new-liq-research-admission.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 6,
+          "pass": 6,
+          "fail": 0
+        },
+        {
+          "file": "native-useful-runtime.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 24,
+          "pass": 24,
+          "fail": 0
+        },
+        {
+          "file": "private-forecast-consumer.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 10,
+          "pass": 10,
+          "fail": 0
+        },
+        {
+          "file": "private-price-connected.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 154,
+          "pass": 154,
+          "fail": 0
+        },
+        {
+          "file": "private-reader-runtime.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 38,
+          "pass": 38,
+          "fail": 0
+        },
+        {
+          "file": "public-venue-health-priority.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 281,
+          "pass": 281,
+          "fail": 0
+        },
+        {
+          "file": "retained-write-failure-guard.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 110,
+          "pass": 110,
+          "fail": 0
+        },
+        {
+          "file": "scheduled-evidence-budget.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 3,
+          "pass": 3,
+          "fail": 0
+        },
+        {
+          "file": "source-health-priority.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 17,
+          "pass": 17,
+          "fail": 0
+        },
+        {
+          "file": "target.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 223,
+          "pass": 223,
+          "fail": 0
+        },
+        {
+          "file": "weekly-htx-synchronized-plan.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 129,
+          "pass": 129,
+          "fail": 0
+        }
+      ],
+      "tests": 2084,
+      "pass": 2084,
+      "fail": 0,
+      "automatic": true,
+      "manually_reexecuted": false
+    }
+  ],
+  "common": {
+    "schema": "FIRST_DUE_CONSUMER_AND_CALLBACK_PURITY_CODE_QUALIFICATION_V1",
+    "run": 39753599073,
+    "head": "1552181fba30a4e3be6ed6f0f086a4ab84be473b",
+    "actual_reporter": "NODE_SPEC",
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "Node": "v24.22.0",
+    "CONTROLLED_groups": 33,
+    "due_parent_groups": 12,
+    "due_consumer_groups": 9,
+    "due_consumer_nested_variants": 22,
+    "callback_purity_groups": 12,
+    "artifact": {
+      "id": 12415041166,
+      "bytes": 117546,
+      "digest": "sha256:bda831632b44b9dfc3a41c72c91f84934d48c6cd4d2bf140eb185b51f57a8ba6",
+      "members": 11,
+      "whole_ZIP_verified": true
+    },
+    "actual_components": {
+      "due-parent-component.json": {
+        "bytes": 2611,
+        "sha256": "2b0ebca89d4ce1742712b0ae9b381eb842b2564a74e04f5f17e7b8d39dab3a02",
+        "groups": [
+          {
+            "name": "ACTUAL_EXISTING_DUE_SQL_ORDER_LIMIT_INACTIVE_PENDING_AND_METADATA",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED",
+            "RPC": 1,
+            "CONTROLLED_R": 2,
+            "CONTROLLED_W": 0
+          },
+          {
+            "name": "SAME_RESULT_NO_RETRY_CONFLICT_NO_REFRESH_AND_RESTORE",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "NO_DUE_POLICY_NO_DUE_HOOK_OLD_COMMIT_RETAINED",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "TYPED_FIXED_CLOCK_BOUND_NO_FUTURE_OR_OTHER_DAY",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "CURRENT_PARENT_DAY_RECEIPT_AND_SUM_PROJECTION_NO_GRANT",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "EXACT_STATISTICS_HTTP_AND_RAW_DUE_WITHOUT_TICKET_REFUSED",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "UNKNOWN_LOST_BEFORE_AFTER_NO_RETRY_AND_ACTUAL_FINALIZER_FENCE",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "KNOWN_PROJECTION_OVERRUN_AND_LATE_DAY_KEEP_ROWS_AND_COST_STOP_OPTIONAL",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "SNAPSHOT_THROW_FENCE_BEFORE_RECEIPT_AND_POST_CLOSE_FINALIZER",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "SIX_VERIFIED_ORIGIN_NO_WRITE_DEFER_REASONS_PRESERVE_FULL_ROW_AND_DUE",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "DEFER_BINDING_AND_DUE_REENTRY_REFUSED_WITHOUT_WRITE",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "DUE_RECEIPT_SINK_FAILURE_RETAINS_COST_AND_STOPS_OPTIONAL",
+            "status": "NEW_DUE_CONTROLLED_ASSERTIONS_COMPLETED"
+          }
+        ]
+      },
+      "due-consumer-component.json": {
+        "bytes": 2818,
+        "sha256": "802d6307682b64d56484f363199d4fb74676822e2895a165b595ad7f5fe3ecfc",
+        "groups": [
+          {
+            "name": "actual_new618_worker_seam_and_missing_hooks_no_selection_or_IO",
+            "variants": 1,
+            "classification": "NEW_CONTROLLED_DUE_CONSUMER_NOT_NATIVE_QUALIFICATION",
+            "source_pair_files": 618,
+            "non_runner_equal": 617
+          },
+          {
+            "name": "DUE_includes_inactive_pending_and_existing_LONG_SHORT_transitions",
+            "variants": 2,
+            "classification": "NEW_CONTROLLED_DUE_CONSUMER_NOT_NATIVE_QUALIFICATION",
+            "first_cut_domain_RPC": 5,
+            "new_HTTP": 0,
+            "original16_pending": true
+          },
+          {
+            "name": "fresh_client_same_closed_facts_new_body_and_clock_no_revision",
+            "variants": 1,
+            "classification": "NEW_CONTROLLED_DUE_CONSUMER_NOT_NATIVE_QUALIFICATION",
+            "explicit_CONTROLLED_SQLite_restart": true
+          },
+          {
+            "name": "real_refutation_closes_watch_without_clearing_mature_pending_due",
+            "variants": 1,
+            "classification": "NEW_CONTROLLED_DUE_CONSUMER_NOT_NATIVE_QUALIFICATION",
+            "outcome_evaluator_not_substituted": true
+          },
+          {
+            "name": "missing_stale_gap_material_mismatch_and_preknown_window_keep_due",
+            "variants": 5,
+            "classification": "NEW_CONTROLLED_DUE_CONSUMER_NOT_NATIVE_QUALIFICATION"
+          },
+          {
+            "name": "actual_revision_outbox_and_byte_capacity_preserve_original_state",
+            "variants": 3,
+            "classification": "NEW_CONTROLLED_DUE_CONSUMER_NOT_NATIVE_QUALIFICATION"
+          },
+          {
+            "name": "whole_due_rows_and_current_parent_cost_checked_before_any_origin",
+            "variants": 6,
+            "classification": "NEW_CONTROLLED_DUE_CONSUMER_NOT_NATIVE_QUALIFICATION"
+          },
+          {
+            "name": "stale_due_revision_never_overrides_current_verified_origin",
+            "variants": 1,
+            "classification": "NEW_CONTROLLED_DUE_CONSUMER_NOT_NATIVE_QUALIFICATION"
+          },
+          {
+            "name": "new_due_cycle_stops_remaining_events_and_retains_unknown_operation",
+            "variants": 2,
+            "classification": "NEW_CONTROLLED_DUE_CONSUMER_NOT_NATIVE_QUALIFICATION",
+            "production_pending_journal_qualified": false
+          }
+        ]
+      },
+      "getter-purity-component.json": {
+        "bytes": 3133,
+        "sha256": "1771539f6084faf4b88d56a65ab359293c68f0a795797dae443453a75543d857",
+        "groups": [
+          {
+            "name": "NEW_BASELINE_GETTER_NONDOMAIN_SQL_COUNTEREXAMPLE_AND_DELTA_REFUSAL",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED",
+            "CONTROLLED": [
+              {
+                "baseline": true,
+                "reads": 3,
+                "wire_statements": 2,
+                "statistics_reservations": 1
+              },
+              {
+                "baseline": false,
+                "reads": 0,
+                "wire_statements": 1,
+                "statistics_reservations": 1
+              }
+            ]
+          },
+          {
+            "name": "TOP_LEVEL_THEN_STATUS_TEXT_REQUEST_BYTES_TOJSON_ACCESSORS_NEVER_EXECUTED",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "NESTED_AND_NONENUMERABLE_ACCESSORS_NO_LATER_KERNEL_ACCESS",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "ALL_PROXY_REFLECTION_TRAPS_REJECTED_BEFORE_SCHEDULING_DELAYED_SQL",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "TOP_NESTED_REVOKED_PROXY_NEVER_REACHES_KERNEL",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "CALLBACK_OWNED_MUTATION_AFTER_AWAIT_CANNOT_CHANGE_EFFECTIVE_BYTES_OR_OPID",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "DATA_SNAPSHOT_DEPTH_KEYS_NODES_AND_AGGREGATE_UTF8_EXACT_BOUNDARIES",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "FUNCTION_THENABLE_SYMBOL_ARRAY_NONPLAIN_CYCLE_AND_LOSSY_PRIMITIVES_REFUSED",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "PLAIN_TERMINALS_AND_ACTUAL_COMMIT_THREE_PHASE_BYTES_COSTS_UNCHANGED",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "UNKNOWN_LOST_AND_KNOWN_OVERRUN_KEEP_SAME_EFFECTIVE_SNAPSHOT_NO_RETRY_FINALIZER_FENCE",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "LIVE_PARENT_DAY_UNKNOWN_AND_EACH_PHASE_STATISTICS_CHECKS_RETAINED",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          },
+          {
+            "name": "DEFAULT_OFF_METADATA_ONLY_RECEIPT_AND_EXACT_CLOSE_RESTORE",
+            "status": "NEW_PURITY_CONTROLLED_ASSERTIONS_COMPLETED"
+          }
+        ]
+      }
+    },
+    "baseline_binding": {
+      "current_before_files": 617,
+      "candidate_files": 618,
+      "source_and_getter_baselines_files": 618,
+      "source_non_runner_equal": 617,
+      "global_non_targets_equal": 615,
+      "current_before_inventory_sha256": "e6afb2dcb56041bd1fa5dcd102878b35841e19b1ab68d89e6fbde23742397807",
+      "candidate_inventory_sha256": "6d565bba4db7295397cf6b6d770fe239e9304d52a91b74330a45a98ad40bc6b6",
+      "inventories_bound_to_actual_assembled_tree": true,
+      "old_tests_reexecuted": false
+    },
+    "source_pins": 940,
+    "runtime_pins": 263,
+    "old_components_replayed": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "native_policy": null,
+    "independent105_connected": false,
+    "native_epoch_firstknowledge_ACK_SAVING_SENT_qualified": false,
+    "production_durable_pending_journal_qualified": false,
+    "all16_original_outcomes_pending_preserved": true,
+    "baseline_cleanup_removed": true
+  },
+  "originals_closed_unmerged": [
+    {
+      "PR": 607,
+      "frozen_head": "15f1439137073afc53e6ad036aa959d2e42ee20f",
+      "files_byte_exact_through_central": 11,
+      "CLOSED_unmerged": true,
+      "central_merge": "53b50596dbed5d420459870694ad04f1b12c929e"
+    },
+    {
+      "PR": 608,
+      "frozen_head": "6f94424b08f2efe125d97710ade6b75ffd88818f",
+      "files_byte_exact_through_central": 11,
+      "CLOSED_unmerged": true,
+      "central_merge": "53b50596dbed5d420459870694ad04f1b12c929e"
+    },
+    {
+      "PR": 609,
+      "frozen_head": "fe0806c66f0abb39db95258fceae577e86a073d8",
+      "files_byte_exact_through_central": 11,
+      "CLOSED_unmerged": true,
+      "central_merge": "53b50596dbed5d420459870694ad04f1b12c929e"
+    },
+    {
+      "PR": 610,
+      "frozen_head": "2e5abdffedb3045225ac185eccb7591f6a0ead8a",
+      "files_byte_exact_through_central": 2,
+      "CLOSED_unmerged": true,
+      "central_merge": "53b50596dbed5d420459870694ad04f1b12c929e"
+    }
+  ],
+  "app_attachment_attempt": "ONCE rejected: thread attachment identity count exceeds100; valid611 URL retained, no retry/delete",
+  "Telegram_restored": false,
+  "native_activation": false
+}

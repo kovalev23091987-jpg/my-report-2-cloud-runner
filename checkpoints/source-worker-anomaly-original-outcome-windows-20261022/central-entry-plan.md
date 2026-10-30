@@ -1,0 +1,9 @@
+# ONE FIRST new source projection
+
+`await runOriginalOutcomeWindowsConnected({runtime_root,baseline_runtime_root,repo_root})`:10 NEW CONTROLLED groups, UNEXECUTED at source freeze. No registration/autorun/oldcase import. `loadOriginalOutcomeWindowProjection(sameargs)` only validates FULL618 pair/all617otherssame/own manifest/actual selected15runtimepins+repoobserver3284/whole TEXT recipe, then imports actual consumer/kernel/tape/observer. Neither Worker nor main executes. No private payload import.
+
+Source baseline consumer224a90f1/14359B; source-only candidate adds exact projection.proposed.txt before prepare. ROOT combined consumer will also contain THIRD helper/prepare changes. Before FIRST common ROOT must declare actual FULL combined target recipe and rebind only CENTRAL loader/recipe/hash copies to that exact assembly; original source files stay byteexact. Keep independent full618 baseline with actualcurrent224a consumer for new source baseline counterexample, not a partly edited consumer that references absent projection. Both source/third actualfunctions in finaltarget; source projection function bytes/hash must remain exact. All other617runtimefiles same. No new module/assembler/kernel/runner/Worker/schema changes.
+
+Invoke source component serially once; save returned JSON BEFORE asserting10/SQL0/provider0/oldreplay0 or invoking next THIRD component. SQL0 belongs THIS pure source projection case; actual common THIRD LocalSQLite may execute SQL, nativeSQL remains0. On error persist `completed_new_original_window_groups`; later component/late hash guard failure must not replay a completed component. Global Date.now/fetch and capture map restore in finally.
+
+No native policy/currentday/epoch/firstknowledge/independent105/PnL/accuracy/sender/SENT proof. Current native unknown1/reserves persist. Only ROOT applies/integrates/qualifies centrally after both NEW static peers. Existing accepted61133/60620/all older cases never invoked.

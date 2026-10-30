@@ -1,0 +1,34 @@
+  // Invocation-local, six entries at most (the existing output SELECT limit).
+  // A duplicate attempt/tuple is ambiguous; never substitute the latest result.
+  const gateBindingDiagnostics=new Map();let gateDiagnosticOverflow=false;
+  const gateDiagnosticKey=v=>{
+    if(typeof v?.contract!=='string'||typeof v?.run_id!=='string'||!v.run_id||new TextEncoder().encode(v.contract).length>128||new TextEncoder().encode(v.run_id).length>128)return null;
+    const key=JSON.stringify([v.contract,v.run_id]);return new TextEncoder().encode(key).length<=256?key:null;
+  };
+  const gateDiagnosticTuple=v=>{
+    if(typeof v?.contract!=='string'||typeof v?.run_id!=='string'||!v.run_id||v.run_id.length>128||typeof v?.snapshot_id!=='string'||v.snapshot_id.length>128||!Number.isSafeInteger(v?.observed_ts)||v.observed_ts<1e12||v.snapshot_id!==`S392:${v.contract}:${v.observed_ts}`||!/^[a-f0-9]{64}$/.test(v?.analytical_fingerprint||''))return null;
+    const tuple={contract:v.contract,run_id:v.run_id,snapshot_id:v.snapshot_id,observed_ts:v.observed_ts,analytical_fingerprint:v.analytical_fingerprint};
+    return new TextEncoder().encode(JSON.stringify(tuple)).length<=512?tuple:null;
+  };
+  env.REPORT2_PUBLIC_ASSET_BINDING=async params=>{
+    const key=gateDiagnosticKey(params);let entry=key===null?null:gateBindingDiagnostics.get(key);
+    if(entry)entry.ambiguous=true;
+    else if(key!==null&&gateBindingDiagnostics.size<6){entry={binding:captureGateBindingDiagnostic(null,{contract:params.contract}),tuple:null,ambiguous:false};gateBindingDiagnostics.set(key,entry);}
+    else if(key!==null)gateDiagnosticOverflow=true;
+    const result=await bindGateOfficialAssetIdentity({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,db_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written}),...params});
+    if(entry&&!entry.ambiguous)entry.binding=captureGateBindingDiagnostic(result,{contract:params.contract});
+    return result;
+  };
+  env.REPORT2_GATE_BINDING_DIAGNOSTIC_BIND=value=>{
+    const tuple=gateDiagnosticTuple(value),entry=gateBindingDiagnostics.get(gateDiagnosticKey(value));
+    if(!entry)return;
+    if(!tuple||entry.tuple){entry.ambiguous=true;return;}
+    entry.tuple=tuple;
+  };
+  const gateDiagnosticFor=canonical=>{
+    const value={contract:canonical?.metadata?.contract,run_id:canonical?.run_id,snapshot_id:canonical?.snapshot_id,observed_ts:canonical?.observed_ts,analytical_fingerprint:canonical?.analytical_fingerprint};
+    const tuple=gateDiagnosticTuple(value),entry=gateBindingDiagnostics.get(gateDiagnosticKey(value));
+    if(!entry)return gateDiagnosticOverflow?{...captureGateBindingDiagnostic(null,{contract:value.contract}),carrier_status:'OVERFLOW'}:null;
+    if(!tuple||!entry.tuple||entry.ambiguous||Object.keys(tuple).some(k=>tuple[k]!==entry.tuple[k]))return null;
+    return entry.binding;
+  };

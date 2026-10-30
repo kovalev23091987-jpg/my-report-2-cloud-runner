@@ -1,11 +1,11 @@
 {
   "schema": "F667_BZ40_AND_FINAL_TARGET_PACKAGE_STATIC_REVIEW_V1",
-  "status": "C2_STATIC_PASS_ROOT_CASE_FAILED_HARNESS_FACTORY_DEFECT",
+  "status": "C2_STATIC_PASS_FINAL_ROOT_CASE_PENDING",
   "authority_main": "ca3491de3e30675f2f72b38ee52e5becb4ab5aba",
   "own_acquire_head": "65c04cd1b6e64be9ff5bc0c596d97f1bf173519a",
   "own_owner": "CODEX:SOURCES:01a171fd:1793272856000",
   "root_owner": "CODEX:PUMP_TARGET_PLAN_CONNECTED_ACCEPTANCE_20261029:1793272731389",
-  "review_UTC": "2026-10-29 11:34:35 UTC",
+  "review_UTC": "2026-10-29 11:26:05 UTC",
   "internal_finish_deadline_UTC": "2026-10-29T11:35:56.000Z",
   "own_expires_UTC": "2026-10-29T11:45:56.000Z",
   "required_FULL_release_margin_seconds": 300,
@@ -29,127 +29,11 @@
     "diff_scope": "Expected five existing modules: runner,movement,index,presentation,generated pin; fixed76names, exactindexfa0 targetcontext instead of oldversion-onlyguard. All existing current272/841/fullmap, sparse content upload, pin-source checks and11-call path retained. No actual after artifact/case proof yet."
   },
   "final_package_review": {
-    "status": "BUILT_UNQUALIFIED_CASE_FAILED_NOT_INSTALLABLE",
-    "case": {
-      "path": "checkpoints/pump-report-20261025/ROOT_TARGET_PLAN_CONNECTED_CASE_V1.json",
-      "sha256": "f71e2a060fae544ae8f24ac4aa9f049e254510805220c3c06f51cc6029868bba",
-      "content": {
-        "schema": "ROOT_TARGET_PLAN_CONNECTED_CASE_V1",
-        "status": "FAILED_PRESERVED_NO_AUTO_RETRY",
-        "authority_main": "ca3491de3e30675f2f72b38ee52e5becb4ab5aba",
-        "case_count": 1,
-        "Node_processes": 1,
-        "engine_calls": 2,
-        "pure_plan_calls": 0,
-        "pure_target_selector_calls": 1,
-        "builds": 1,
-        "mock_controller_calls": 0,
-        "mock_Telegram_calls": 0,
-        "native_SQL": 0,
-        "Cloudflare_HTTP": 0,
-        "market_HTTP": 0,
-        "Telegram": 0,
-        "installed": false,
-        "real_AUTO_SENT": false,
-        "stages": [
-          {
-            "stage": "BUILD_EXACT_PROPOSED_GRAPH",
-            "artifact_sha256": "a799fe2fb70b3a2b71332acc5ba89d80352851394767e58bd16569f81fc21154",
-            "implementation_sha256": "930905e4840003ab8e28ac2482d2915980bba2b3c4d9ccce0a103cb48a286531",
-            "changed_modules": [
-              "analytics/index.mjs",
-              "analytics/movement.mjs",
-              "analytics/presentation.mjs",
-              "runtime/implementation-pin.mjs",
-              "runtime/runner.mjs"
-            ],
-            "unchanged_modules": 71,
-            "qualified_v7_runner_reused_exactly": true,
-            "profile_same_bytes": true
-          },
-          {
-            "stage": "SAME_SAVED_INIT_IDOL_NEW_TARGET_POLICY",
-            "outcomes": [
-              {
-                "ticker": "INIT",
-                "wave_state": "CALM_PULLBACK",
-                "current_threshold_passed": false,
-                "automatic_eligible": false,
-                "ready": false,
-                "reasons": [
-                  "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
-                ],
-                "target": 0.21913,
-                "minimum_potential_pct": null,
-                "plan_code": "NO_ENTRY_MEETS_OWNER_MINIMUM"
-              },
-              {
-                "ticker": "IDOL",
-                "wave_state": "CALM_PULLBACK",
-                "current_threshold_passed": true,
-                "automatic_eligible": true,
-                "ready": false,
-                "reasons": [
-                  "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
-                ],
-                "target": 0.01355,
-                "minimum_potential_pct": null,
-                "plan_code": "NO_ENTRY_MEETS_OWNER_MINIMUM"
-              }
-            ],
-            "counterfactual": true,
-            "not_a_new_native_event": true,
-            "immutable_originals_unchanged": true
-          }
-        ],
-        "failed_stage": "INDEPENDENT_TARGET_AND_OBSTACLE_BOUNDARIES",
-        "error_type": "AssertionError",
-        "error_message": "HISTORICAL_RANGE_WITH_MINOR"
-      }
-    },
-    "admission": {
-      "path": "checkpoints/pump-report-20261025/ROOT_TARGET_PLAN_QUALIFICATION_ADMISSION_V1.json",
-      "sha256": "82681f4fae14287742503b3b2b9c7aae22ff30abc85c0ad5f8b45db0ac960ea6",
-      "issued_status": "ADMITTED_ONE_CONNECTED_TARGET_CASE_AND_BUILD",
-      "effective_status": "SPENT_FAILED_PRESERVE_NO_AUTO_RETRY"
-    },
-    "artifact": {
-      "status": "BUILT_BEFORE_FAILED_CASE_NOT_QUALIFIED",
-      "path": "pump-report/.private/native-20261029/pump-target-plan-v1-76-artifact.json",
-      "sha256": "a799fe2fb70b3a2b71332acc5ba89d80352851394767e58bd16569f81fc21154",
-      "bytes": 2588256,
-      "pin": "930905e4840003ab8e28ac2482d2915980bba2b3c4d9ccce0a103cb48a286531",
-      "recomputed_pin": "930905e4840003ab8e28ac2482d2915980bba2b3c4d9ccce0a103cb48a286531",
-      "module_count": 76,
-      "names_equal_base": true,
-      "metadata_equal_base": true,
-      "changed": {
-        "analytics/index.mjs": "fa0a1e13fcad7201d2083bc536da048a3addcb645828d7a15e01438c373d7ddb",
-        "analytics/movement.mjs": "589abe087ccf60192625a8ab15f685d1b992190c8c148ffce5d8259e505e6453",
-        "analytics/presentation.mjs": "7ef43971b2b185e8cb4da9960c10ade59558a24b90ff764128e567d5842281b1",
-        "runtime/runner.mjs": "386d17be497b374e5d2fc0a71566b4b340b2ad8eda172f11926f65e5733c0ce5",
-        "runtime/implementation-pin.mjs": "da7d5acfaed4c564a47f9175d72efff2dd7b70d5c9d43c4d113e0ca7b0623909"
-      },
-      "unchanged_count": 71,
-      "sourcecaps_modules_byte_unchanged": {
-        "profile/start-v1.mjs": true,
-        "contracts/index.mjs": true,
-        "sources/index.mjs": true,
-        "registry/index.mjs": true,
-        "runtime/budget.mjs": true,
-        "runtime/native-budget.mjs": true,
-        "runtime/provider-policy.mjs": true,
-        "runtime/production-policy.mjs": true,
-        "runtime/discovery-reserve.mjs": true,
-        "runtime/future-candidate-reserve.mjs": true,
-        "runtime/candidate-surplus.mjs": true,
-        "runtime/source-evidence-admission.mjs": true
-      },
-      "controller_draft_sha256": "d6a5b90494051a2aa91cf813c53a1abb8234f8b4cf800156eeeba84958bff143"
-    },
-    "controller_status": "WIP_d6a_not_reached_mock_controller_calls0",
-    "helper735_status": "Not reached in failed connected case; F665 static review unchanged",
-    "no_case_replay_by_SOURCE": true
+    "status": "PENDING_EXACT_ROOT_FINAL_ARTIFACT_AND_CONNECTED_CASE",
+    "case_not_rerun": true,
+    "new_artifact_sha256": null,
+    "new_pin": null,
+    "helper735_case_proof": null
   },
   "previous_deviation": {
     "F666_release_head": "8917eabe0f84ae0564700bea0dac5df2365d71c5",
@@ -288,44 +172,5 @@
     "intact(before) and intact(after) both require complete observed closed path from known clock to current observed end, current price not below LOW and no lower observed bar. Missing path fails completeInterval rather than becoming intact.",
     "When prior100 broken95 occurred beforeHIGH110 but LOW95 only known after HIGH event, old pair misses95. New before-intact observes that actual row and prevents false MINOR. This is direct code reasoning, not an executed case.",
     "Only the16-byte expression extension is different from old3cf movement. Indexfa0/presentation7ef and prior C1 geometry/current-fact target pivot rebinding remain byte-identical. No new threshold/source/entry/seed/volume rule."
-  ],
-  "harness_static_finding": {
-    "priority": "P2",
-    "path": "pump-report/tests/runtime/target-plan-connected-once.mjs",
-    "sha256": "0484bc0536c7cc339d90ede7a7aaa39391151779f521137f9080496b3c51ae58",
-    "line": 72,
-    "vector_path": "pump-report/handoffs/analytics/package-bz39/BZ39_UNEXECUTED_ARTIFICIAL_PLAN_VECTORS_V1.json",
-    "vector_sha256": "0f694bfe72d559f66141aaf7c573105de417e96cf10f8bef5a9cc703977fd49c",
-    "issue": "Harness materialize reads factory.movement.created_at_index and expires_after_asof_ms. Frozen factory has neither property; it declares created_ts_rule=asof and expires_rule=created_ts+profile.wave_max_age_ms. Therefore created_ts and expires_ts are NaN. selectJustifiedPlanTarget rejects TARGET_CONTEXT_OR_WAVE_NOT_ACTIVE before historical target semantics; assert(out.allowed,v.id) then reports first HISTORICAL_RANGE_WITH_MINOR.",
-    "derivation": "Static code/data reasoning only; no selector/engine/Node call by SOURCE. This explains the immediate first target-vector refusal, not proof all subsequent stages will pass.",
-    "minimal_ROOT_owned_action": "Implement the ALREADY DECLARED vector clock recipe: created_ts=asof, expires_ts=created_ts+existing profile.wave_max_age_ms; preserve original fixture/expected target values, freeze corrected harness and qualify affected boundary under ROOT's separate admission. Do not change strategy thresholds or expected target to force pass.",
-    "SOURCE_code_or_expected_changed": false
-  },
-  "qualification_limits": [
-    "Failed case preserved: ROOT Node1,engine2,pure target selector1,build1,mockCF0; actualINIT/IDOL counterfactual stages remain recorded, neitherREADY. No runtime PASS for whole package/controller/helper735.",
-    "Artifact a799/pin9309 is built unqualified, not LIVE. ExactΔ5/76/metadata/71source bytes and unchanged sourcecap modules statically verified, not provider totals recalculated.",
-    "C2 source589 still exact one-line repair; its causal runtime branch was not reached by this failed first HIST fixture. No new source/runtime defect inferred from harness refusal; later stages remain unqualified.",
-    "No nativeSQL13/14/install/market/TG authority. Preserve failed proof and all costs, no auto retry or old-case replay."
-  ],
-  "proof_availability_at_close": {
-    "commit_message": "Admit one frozen approved-target connected case/build, C2 and quiescence boundaries; no native13/14 grant",
-    "matching_local_proofs": "checkpoints/pump-report-20261025/ROOT_TARGET_PLAN_QUALIFICATION_ADMISSION_V1.json\ncheckpoints/pump-report-20261025/ROOT_TARGET_PLAN_CONNECTED_CASE_V1.json.attempt\ncheckpoints/pump-report-20261025/ROOT_TARGET_PLAN_CONNECTED_CASE_V1.json\n",
-    "UTC": "2026-10-29 11:30:59 UTC"
-  },
-  "close_timing": {
-    "internal_deadline": "2026-10-29T11:35:56Z",
-    "observed_overrun_UTC": "2026-10-29 11:36:56 UTC",
-    "internal_deadline_met": false,
-    "reason": "Closing save and own release continued after internal 15min deadline; no extra case, Node, build or native IO. This is a timing deviation, not rehabilitated by sufficient expiry margin.",
-    "required_FULL_expiry_margin_seconds": 300
-  },
-  "root_followup_at_close": {
-    "root_confirmed_harness_cause": true,
-    "root_diagnostic_pure_call": 1,
-    "root_additional_engine": 0,
-    "root_additional_build": 0,
-    "remaining_case_pending": true,
-    "SOURCE_waited_for_remaining_case": false,
-    "qualification_status": "BUILT_UNQUALIFIED_NOT_LIVE"
-  }
+  ]
 }

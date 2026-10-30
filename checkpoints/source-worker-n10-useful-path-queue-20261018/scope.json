@@ -1,0 +1,98 @@
+{
+  "schema": "REPORT2_N10_USEFUL_SOURCE_QUEUE_OFFLINE_V1",
+  "recorded_utc": "2026-10-18T09:04:23.653037+00:00",
+  "expected_main_at_acquire": "c03db6ec179125f982a1a9e3cd21c96386510c13",
+  "working_base": "4f624e7c82d5201df2c00d22eb277d778609f933",
+  "dependency_PR": 428,
+  "dependency_must_integrate_first": true,
+  "branch": "work/report2-sources-n10-useful-path-queue-20261018",
+  "thread_id": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "lease": {
+    "lease_commit": "653dd24ba7eef4e71f8737bbb96a426b46dfefbc",
+    "lease": {
+      "schema": "REPORT2_SOURCE_WORKER_OFFLINE_CAS_LEASE_V1",
+      "owner": "CODEX:SOURCES:01a14e11:1792314003777",
+      "thread_id": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+      "acquired_ts": 1792314003777,
+      "expires_ts": 1792318803777,
+      "expected_main": "c03db6ec179125f982a1a9e3cd21c96386510c13",
+      "scope": "OFFLINE_ONLY N10 useful independent path queue: prefilter SPOT/USDT and deduplicate exact source components before the existing four-cache-read ceiling in loadN10ReusedVenuePaths. Coordinator explicitly requests dependent branch from frozen PR428 head4f624e7c; global authority still fresh main/phase/fence/generation/status. Use retained RLC originals and controlled queue order, no provider HTTP/nativeSQL/deploy/MAIN/Telegram, no shared edits, cap/unknown/reservation reset or changes to frozen428.",
+      "released": false,
+      "guard_sha256": {
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "b964b5224490f3f46e2a5e2269b2ed28ffefd89710647a87614a2bdbf4a2737d",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "6680cb2a33b36e008501686072852ca359def4a5ffbafabe9e828cbb00cc29bd",
+        "REPORT2_CURRENT_GENERATION.json": "3c7bd755f8d44f941c52667001e6d473016aa9b9a6bdbd599f0e14ab53139ef3",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "418dca72f01c8a9de64d3c45bd6eb79464f3852a9fa43c56f1ec7e2a9588a117"
+      },
+      "working_base": "4f624e7c82d5201df2c00d22eb277d778609f933"
+    },
+    "phase_owner": {
+      "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792313525633",
+      "acquired_ts": 1792313525633,
+      "expires_ts": 1792318325633,
+      "expected_main": "98ced7341b9425ac16c119b5a85eaf9e0d225f4a",
+      "scope": "Coordinator N04 concrete version-only cache acceptance defect in finalized-chain-events EVM token/Solana native-token and XRPL payments: exact requested asset/chain/mint/mode/original source-observation-knowledge clocks and qualified immutable XRP rederivation, controlled saved originals and existing negative/paused boundaries. Do not touch worker N10 provider files; integrate only ready frozen worker N10 with exact shared CI proposal if available. Read already-saved natural reports after PR424, retain exact same-run accounting/refusal/delivery, no forced MAIN/manual. No new provider acquisition/nativeSQL/deploy/Worker invocation/Telegram or cap/unknown/reservation reset. One connected verification per concrete package, precise GitHub save and release only own lease; preserve cursor710/paid policy/native relocation and all4unmodified roots."
+    },
+    "fence_active": false,
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "exact_readback": true
+  },
+  "defect": "N10 selected the first four generically qualified N05 components before its SPOT/USDT/complete-window requirements. Inapplicable futures/quote/window components and repeated components could consume the read ceiling and suppress a later real retained price fact. One source key could also be reread per observation version.",
+  "fix": "Preselect exact requested SPOT/USDT/240m components, group the existing source cache keys by venue in original eligible-source order, read at most four distinct source keys, and select the component matching the unchanged cached observed_ts. Final derivation remains authority. No source acquisition, extra query, raised cap, clock refresh or invalid-market rebinding.",
+  "source_inputs": {
+    "current-generation/tests/fixtures/n10-reused-original-15m-samples.json": {
+      "sha256": "052de7726e587b1f0239a58335913fe0f1c552f0d9ba620fca085523b0b2c3b3",
+      "selected_contract": "RLC-USDT",
+      "selected_venue": "BITGET"
+    }
+  },
+  "tests": {
+    "baseline10": {
+      "path": "checkpoints/source-worker-n10-useful-path-queue-20261018/baseline10.tap.gz",
+      "raw_sha256": "465629b09e3c70a031b3176901207ba7cbfa04d61af626baab7716327306fa4a",
+      "gzip_sha256": "f42bbdc43559d307177e1f8b098ea11ba9196f5972d0fe9030f4aea37c52f3b5",
+      "counts": {
+        "tests": 10,
+        "pass": 2,
+        "fail": 8
+      }
+    },
+    "related22": {
+      "path": "checkpoints/source-worker-n10-useful-path-queue-20261018/related22.tap.gz",
+      "raw_sha256": "59422183c28ddc671174b35d993be21cf854c2e26a1e96d13fc297b758645b8d",
+      "gzip_sha256": "9aa5b8653e3028c64637c525f0a5d14f706cfc1515a45661cd33e00a0de1d8a3",
+      "counts": {
+        "tests": 22,
+        "pass": 22,
+        "fail": 0
+      }
+    }
+  },
+  "new_cases": 10,
+  "new_baseline": {
+    "pass": 2,
+    "fail": 8
+  },
+  "related_pass": 22,
+  "source_cache_read_ceiling_unchanged": 4,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "normal_path_extra_SQL": 0,
+  "shared_files_modified": false,
+  "original_source_clocks_preserved": true,
+  "strategy_weights_forms_caps_pauses_unchanged": true,
+  "limitations": [
+    "Inapplicable headers, duplicates and ordering are controlled queue variations, not an observed production starvation rate or simultaneous live multi-venue coverage.",
+    "The retained RLC Bitget derived15m input and original source clocks remain unchanged. The earlier225 candle rows in the established fixture builder are controlled padding, not a newly qualified240m source response.",
+    "SELECT counts are controlled indexed query counts; native read costs and day totals are not measured or reset.",
+    "This branch depends on the frozen PR428 provider base. The ready428 branch was not modified. Coordinator must integrate428, then this change and the new CI binding, before main acceptance.",
+    "No native full-report, all105 useful coverage or same-run SENT claim."
+  ],
+  "next_action": "Coordinator integrates after PR428, adds n10-useful-path-queue.test.mjs to the existing N10 assembled CI command/path and performs one combined affected-chain check. Worker leaves ready branches frozen and selects the next concrete source-fact gap from current typed N05/N12/LIQ evidence rather than repeating accepted probes.",
+  "changed_file_sha256": {
+    "current-generation/files/src/htx-technical-structure.mjs": "6cb3f4bc562d66effc10b1ec0946fdb3587147a6459565a5a0135762093db4bf",
+    "current-generation/tests/n10-useful-path-queue.test.mjs": "be7471e06334ca554d73a01986d0a27b8844ba9f34d988620b452c8f5341f353"
+  }
+}

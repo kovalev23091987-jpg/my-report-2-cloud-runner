@@ -1,0 +1,123 @@
+{
+  "schema": "AW_FIRST_SAVED_AUTO_METADATA_ONLY_V1",
+  "input_path": "pump-report/.private/observations/first-candidate-bank-auto-result.json",
+  "input_sha256": "b3481f88239f2f5f56b77c0b294b1aee0d9afba52f511c68952eb72cef498e3e",
+  "input_bytes": 236900,
+  "run_id": "08029a99-7574-43ef-aebd-2ce125a5350b",
+  "run_status": "INCOMPLETE",
+  "implementation_sha256": "3f872be34da54d645ae7e12add0d0297f0f64c9f22cd24bbe571176ba16d7e93",
+  "saved_original_bound": true,
+  "executor_owner_null": true,
+  "executor_completed_status": "COMPLETED_RUN_AVAILABLE",
+  "checked_count": 1,
+  "checked": [
+    {
+      "instrument_id": "BINGX:USDT_M:104308:KIMCHI-USDT",
+      "ready": false,
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "liquidity_status": "INSUFFICIENT",
+      "candidate_quota": {
+        "period_start": 1793005200000,
+        "maximum": 1,
+        "base_per_period": 1,
+        "carried_in": 0,
+        "issued": 1,
+        "remaining": 0,
+        "day_issued": 1,
+        "never_refunded": true
+      },
+      "source_coverage_status": "USABLE"
+    }
+  ],
+  "deferred": [
+    {
+      "instrument_id": "BINGX:USDT_M:101818:APR-USDT",
+      "status": "DEFERRED",
+      "source_coverage": {
+        "status": "NOT_CHECKED",
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION"
+      },
+      "delivery": null
+    }
+  ],
+  "errors": [
+    {
+      "reason": "SOURCE_EVIDENCE_PENDING",
+      "count": 9
+    },
+    {
+      "reason": "UNIVERSE_QUALIFICATION_INCOMPLETE",
+      "unqualified": 20
+    },
+    "SOURCE_BUDGET_DEFERRED"
+  ],
+  "market_run_resource_counts": {
+    "total": 6,
+    "lanes": {
+      "hot": 6,
+      "background": 0,
+      "statistics": 0
+    },
+    "liquidations": 0,
+    "unknown": 0,
+    "mode": "STATISTICS"
+  },
+  "delivery_count": 0,
+  "manual_count": 0,
+  "day_HTTP": 361,
+  "BINGX_day": 361,
+  "BINGX_month": 391,
+  "TELEGRAM_day": 0,
+  "TELEGRAM_month": 2,
+  "plan": {
+    "baseline_charged": 5,
+    "protected_at_creation": 102,
+    "fraction": 0.8,
+    "limit": 634,
+    "charged": 356
+  },
+  "allocation": {
+    "version": "pump-even-day-deep-v2",
+    "created_ts": 1793005850578,
+    "first_period": "1793005200000",
+    "remaining_periods": 8,
+    "http_upper_bound": 12,
+    "http_by_provider": {
+      "BINGX": 10,
+      "TELEGRAM": 1
+    },
+    "candidates_per_period": 1,
+    "baseline_auto_charged": 350
+  },
+  "pacing_buckets": {
+    "1793005200000": {
+      "version": "pump-even-day-deep-v2",
+      "day": "2026-10-26",
+      "key": "1793005200000",
+      "created_ts": 1793005861434,
+      "limit": 12,
+      "charged": 4,
+      "candidate_count": 1,
+      "carried_in": 0,
+      "maximum": 1,
+      "issued_before": 0
+    }
+  },
+  "unknown_count": 2,
+  "outstanding_count": 0,
+  "LOOKUPusage": {
+    "requests": 9,
+    "rows_read": 44,
+    "rows_written": 4,
+    "unknown_ops": 0
+  },
+  "new_LOOKUP_by_AW": 0,
+  "new_analyzer_callbacks": 0,
+  "receipt_HTTP_by_purpose_counts_only": {
+    "DISCOVERY": 2,
+    "CORE": 4
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "schema": "PUMP_BUSINESS_CONFIGURATION_PROPOSAL_V1",
+  "status": "ADMITTED_CONFIGURATION_PENDING_ACTUAL_ACK",
+  "authority_main": "996f36e81e0d7a4d278f380c4bfeccd08ffd6fd9",
+  "implementation_sha256": "e75ecbf4a733202ba0864fae418a1986bce7e484c88420867b0f4976a0f75b8a",
+  "artifact_sha256": "04203d493039d1bad3184951e48ddfe95b4d72f8d7c31f812592cfc85bfa979d",
+  "worker": "my-report-2-hub",
+  "old_binding_count": 19,
+  "expected_new_binding_count": 21,
+  "secret_values_read_or_exported": false,
+  "settings_patch": {
+    "method": "PATCH",
+    "path": "/workers/scripts/my-report-2-hub/settings",
+    "form_field": "settings",
+    "json": {
+      "bindings": [
+        {
+          "name": "ALERT_DISPATCH_KEY",
+          "type": "inherit"
+        },
+        {
+          "name": "ANALYTICS_ENABLED",
+          "type": "inherit"
+        },
+        {
+          "name": "BYKARANTELI_API_KEY",
+          "type": "inherit"
+        },
+        {
+          "name": "CALIBRATION_APPLY_ENABLED",
+          "type": "inherit"
+        },
+        {
+          "name": "CANONICAL_ARCHIVE_DB",
+          "type": "inherit"
+        },
+        {
+          "name": "CANONICAL_ARCHIVE_DB_A1",
+          "type": "inherit"
+        },
+        {
+          "name": "CANONICAL_ARCHIVE_DB_A2",
+          "type": "inherit"
+        },
+        {
+          "name": "CANONICAL_ARCHIVE_DB_A3",
+          "type": "inherit"
+        },
+        {
+          "name": "CANONICAL_ARCHIVE_DB_A4",
+          "type": "inherit"
+        },
+        {
+          "name": "DATA_DB",
+          "type": "inherit"
+        },
+        {
+          "name": "DELIVERY_ENABLED",
+          "type": "inherit"
+        },
+        {
+          "name": "PRICE_RECHECK_ENABLED",
+          "type": "inherit"
+        },
+        {
+          "name": "PUBLIC_COLLECTOR_ENABLED",
+          "type": "inherit"
+        },
+        {
+          "name": "PUMP_CONTROL_KEY",
+          "type": "inherit"
+        },
+        {
+          "name": "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+          "type": "inherit"
+        },
+        {
+          "name": "REPORT2_CURRENT_GENERATION",
+          "type": "inherit"
+        },
+        {
+          "name": "TELEGRAM_BOT_TOKEN",
+          "type": "inherit"
+        },
+        {
+          "name": "TELEGRAM_CHAT_ID",
+          "type": "inherit"
+        },
+        {
+          "name": "TELEGRAM_TEST_KEY",
+          "type": "inherit"
+        },
+        {
+          "name": "PUMP_REPORT_ENABLED",
+          "type": "plain_text",
+          "text": "1"
+        },
+        {
+          "name": "PUMP_REPORT_DELIVERY_ENABLED",
+          "type": "plain_text",
+          "text": "1"
+        }
+      ]
+    }
+  },
+  "new_report_cron": {
+    "method": "PUT",
+    "path": "/workers/scripts/my-report-2-hub/schedules",
+    "body": [
+      {
+        "cron": "*/5 7-16 * * *"
+      }
+    ],
+    "zone": "UTC",
+    "owner_window": "10:00–20:00 Europe/Moscow"
+  },
+  "other_worker_crons_remain_empty": [
+    "my-report-2-free-history",
+    "my-report-2-liq-forecast-history"
+  ],
+  "old_Actions_not_reenabled": true,
+  "old_queued_run_ids_rejected": [
+    40129114072,
+    37642396120
+  ],
+  "new_scheduled_never_calls_legacy": true,
+  "preconditions": [
+    "COMPLETE:F568 source actual550/550 and CORE1 verified",
+    "COMPLETE:AG actual original recomputation matched NOTREADY",
+    "COMPLETE:53reactivated tuples reviewed finite non-targets; selectedcrypto550unchanged",
+    "positive provider/whole-budget/native recurring program admission pinned to exact artifact",
+    "freshmain/all4/window/phase/fence/generation/ownlease FULL",
+    "freshsettings+exactmodule bytes unchanged before and after mutation"
+  ],
+  "delivery_rules": {
+    "owner_BTC_ETH_excluded": true,
+    "minimum_independent_plan_potential_pct": 10,
+    "no_synthetic_first_signal": true,
+    "no_fixed_required_signal_count": true,
+    "no_forced_READY": true,
+    "missing_map_explicit_nonblocking": true
+  },
+  "budget": {
+    "http_day": 900,
+    "http_run": 164,
+    "BINGX_month": 27900,
+    "BINGX_minute": 10,
+    "BINGX_second": 1,
+    "manual_future_checks": 3,
+    "manual_HTTP": {
+      "BINGX": 51,
+      "TELEGRAM": 3
+    },
+    "delivery_HTTP": 24,
+    "outcomes_HTTP": 24,
+    "planned_automatic_fraction": 0.8,
+    "full_candidate_planning_bound": 12,
+    "cold_manual_planning_bound": 13,
+    "new_Telegram_production_day": 27,
+    "new_Telegram_production_month": 837,
+    "old_qualification_caps_counters_unknowns_unmodified": true,
+    "SQL_day_R": 3500000,
+    "SQL_day_W": 70000,
+    "SQL_run_R": 5000,
+    "SQL_run_W": 300,
+    "future_5min_discovery_and_hourly_full_candidate_protected": true
+  },
+  "engineering_capacity_illustrations": {
+    "conditions": "Illustrative upper bounds using selected12HTTP full candidate; actual available budget calculated before each candidate and may be lower.",
+    "remaining_day_formula": "floor((floor(0.8*(900-54-24-24-current_charged))-2*remaining_5min_slots)/12)",
+    "zero_other_spend_full10h_day": {
+      "discovery_HTTP": 240,
+      "planned_auto_allowance": 638,
+      "full_candidates_upper": 33
+    },
+    "same_full_window_with30alreadycharged": {
+      "planned_auto_allowance": 614,
+      "full_candidates_upper": 31
+    },
+    "provider_month_and_SQL_can_reduce_capacity": true
+  },
+  "actual_Telegram_attempts_by_this_proposal": 0,
+  "actual_SQL_provider_schedules_by_this_proposal": 0,
+  "primary_admin_API_refs": [
+    "https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/script_and_version_settings/methods/edit/",
+    "https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/schedules/methods/update/"
+  ],
+  "module_count": 65,
+  "current_classification_unknowns_at_reviewed_capture": 0,
+  "mandatory_unit_deferred9_kept_INCOMPLETE_scope": true,
+  "admission_ref": "checkpoints/pump-report-20261025/ROOT_BUSINESS_SCHEDULE_ADMISSION.json",
+  "AJ_receipt_and_echo_corrections_accepted": true
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "RUNNER_ANOMALY_PARENT_TEXT_RECIPE_V1",
+  "target": "current-generation/files/runner-main.mjs",
+  "before_sha256": "480faff4a63cfc8a9a5aecb90b9beabf28b28fd8c954517f5a8b79850f06be57",
+  "before_bytes": 157651,
+  "after_sha256": "c72f8f26850089c0dc8a8514abad257afa80c3699af79427ec0f2fb77c0eb4ac",
+  "after_bytes": 177020,
+  "insertion_file": "runner-parent.insertion.txt",
+  "insertion_sha256": "e813edcb5ac4fb2882530d24defb887e14b635e419ce65bd091dfb5817b139d1",
+  "imports_prefix": "import {readAnomalyOrigin,commitAnomalyBundle,ORIGIN_SQL,COMMIT_SQL,READBACK_SQL} from './src/anomaly-native-domain.mjs';\n",
+  "insertion_before": "async function main() {",
+  "callsite_before": "  await worker.scheduled({ scheduledTime: started, cron: source === \"schedule\" ? \"ROTATING_EXACT_20_MINUTES\" : \"manual\" }, env, ctx);",
+  "callsite_after": "  const anomalyParentCapability=installRunnerAnomalyParentCapability({\n    env,db:env.DATA_DB,reservation:d1RunReservation,reservation_id:d1ReservationId,\n    receipt:d1ReservationReceipt,day_admission:d1DayAdmission,http_budget:unifiedHttpBudget,\n    post_v7:postV7UnifiedEnabled,cost_bounds:process.env.REPORT2_ANOMALY_DOMAIN_COST_BOUNDS,on_receipt:persistRunnerAnomalyReceipts,\n  });\n  try {\n    await worker.scheduled({ scheduledTime: started, cron: source === \"schedule\" ? \"ROTATING_EXACT_20_MINUTES\" : \"manual\" }, env, ctx);\n  } finally {\n    try { await anomalyParentCapability.close(); }\n    finally { if(anomalyParentCapability.installed)try{await persistRunnerAnomalyReceipts(anomalyParentCapability.receipts());}catch{console.error(\"ANOMALY_RECEIPT_ARTIFACT_NOT_SAVED\");} }\n  }",
+  "author_execution": false,
+  "runtime_layout": {
+    "count": 617,
+    "non_target_equal": 616,
+    "both_roots_end": "src",
+    "baseline_contains_all_third_changes": true
+  },
+  "coordinator_prefix": "async function persistRunnerAnomalyReceipts(snapshot) {\n  if (snapshot?.schema !== 'ANOMALY_PARENT_BOUNDED_RECEIPTS_V1') throw Error('ANOMALY_RECEIPT_SCHEMA_REQUIRED');\n  const body = JSON.stringify(snapshot);\n  if (Buffer.byteLength(body,'utf8') > 16384) throw Error('ANOMALY_RECEIPT_METADATA_BOUND');\n  const envelope = {schema:'RUNNER_ANOMALY_RECEIPT_ARTIFACT_V1',head:process.env.GITHUB_SHA||null,cloud_run_id:process.env.GITHUB_RUN_ID||null,recorded_ts:Date.now(),scope:'BOUND_OPERATION_METADATA_NOT_NATIVE_EVENT_FIRST_KNOWLEDGE_OR_DELIVERY',receipts:snapshot,additional_SQL:0,provider_HTTP:0,native_qualification_claimed:false,filesystem_durability_qualified:false};\n  const text = JSON.stringify(envelope);\n  if (Buffer.byteLength(text,'utf8') > 20480) throw Error('ANOMALY_RECEIPT_ARTIFACT_BOUND');\n  const file = 'report2-anomaly-domain-receipts.json';\n  await fs.writeFile(file+'.tmp',text);\n  await fs.rename(file+'.tmp',file);\n  return {bytes:Buffer.byteLength(text,'utf8'),sha256:crypto.createHash('sha256').update(text).digest('hex'),native_qualification_claimed:false};\n}\n\n",
+  "coordinator_prefix_sha256": "0bfe15c6ab23b6d257703c9456008fc59b5785df94c372c84c77622cc96a960d",
+  "central_change": "Exact source fn unchanged; real metadata artifact consumer and finally fallback"
+}

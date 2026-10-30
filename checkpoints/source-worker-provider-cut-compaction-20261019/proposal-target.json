@@ -1,0 +1,49 @@
+{
+  "schema": "BOUNDED_PROVIDER_COMPACTION_TECHNICAL_TARGET_V1",
+  "working_base": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+  "target": "current-generation/files/src/run-budget-context.mjs",
+  "before_sha256": "1ca7685fa2230f5b746b13d3c22e9e50c69272d980ed7d42f1fc8724be82a3e8",
+  "after_sha256": "60528420d20824dbe905e1e16e20c323c4219395709d6dba8460a950d8b162d9",
+  "patch_sha256": "7a7fbf7d495507bb9f97ed60d8704bf0667acb8dd514ef5ae109ebcf0f9c6a33",
+  "runner_completion_line_sha256": "7f6ce32ed5c4c2eab4d9a6506c4d873e4926abd7631147952ec222523619fce3",
+  "production_files_edited": false,
+  "producer_reader_collectors_cache_FP_changed": false,
+  "source_case_semantic_executions": 0,
+  "callable_component": "compact-connected.mjs",
+  "export": "runProviderCaptureCompactConnected",
+  "technical_schema_versions_accepted": [
+    "EXISTING_PROVIDER_LEDGER_OBSERVATIONS_V1",
+    "EXISTING_PROVIDER_LEDGER_OBSERVATIONS_V2"
+  ],
+  "new_summary_schema": "EXISTING_PROVIDER_LEDGER_OBSERVATIONS_V2",
+  "bounds": {
+    "records": 16,
+    "record_utf8_bytes": 1024,
+    "frame_utf8_bytes": 16384,
+    "group_payload_reserved_bound": 14336
+  },
+  "groups_share_only": [
+    "source",
+    "run_id",
+    "contract",
+    "route",
+    "reference_key",
+    "attempt_sequence",
+    "query_window_end_ts",
+    "day_utc"
+  ],
+  "cut_columns": [
+    "capture_order",
+    "phase",
+    "captured_ts",
+    "provider",
+    "row_presence",
+    "reported_used_units",
+    "configured_cap",
+    "reported_own_reserved_units",
+    "minute_bucket",
+    "returned_allowed",
+    "returned_status",
+    "native_usage_guard_passed"
+  ]
+}

@@ -1,0 +1,485 @@
+{
+  "schema": "BRIDGE_CORRELATION_MERGE_AND_CHECKS_V1",
+  "runtime_merge": {
+    "PR": 618,
+    "frozen_head": "ee1251d7cf627264790189ab5e62de1666e65377",
+    "squash": "ddd8abd6d3a591ba3a52dfaa04a7cf5260a91914",
+    "base": "b8091ec946e09e4571d465695640ff9b25be46ee",
+    "changed_files_exact": {
+      ".github/workflows/current-bridge-module-inspection-20261016.yml": "86cdde437d5655808ca7c45e8c1ba74ce5b4e05747d645800c813b9cc03451e8",
+      ".github/workflows/n10-technical-path-offline-20261011.yml": "9218e9224a5ab543b2717f6bd772e2990e92d6278cbd75bdac4f15c4f4f24a3a",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/CONTRACT_RU.md": "51fe14bb0c06619042a607ffeb8269c833fff1ac3e9ae4becff3ce8265ca9bf0",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/README_RU.md": "b602a739ac1ba630584fa909185157c43e176e5d0632930c01b23a8eec1fce43",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/bridge-patch.proposed.txt": "151bd35e9ba6548601f1840d6deede6f34369b66d45f6f52dda3d52ef0936190",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/bridge-worker.proposed.mjs": "c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/central-integration-plan.md": "5481b91c6e2b5ee17093cb4d270086ed4e8c5f85dff4341ef90ee9d85a6b01d5",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/connected.mjs": "b8a1c9d65ccbaa3fece649fe8f0f5d7e7d3df218fef21621bf9770aaf077e478",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/dependencies.json": "2e1d8e26db7a683de555e8eff4c15efb2fb63625d4537c3521b726f42440b42c",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/manifest.json": "955cb89b43a231f6a71e6f887a0bf8253a1d332fe5c51e657674905298b5c395",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/provenance.json": "4c7019e620cd599d07a81cb2f3cc88956e58765d7c04b2d1f75d8f8b0d42e7c8",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/repair-with-correlation.proposed.mjs": "67b5213a52d0d9ccbde29a6f905c5ef5ab072bc9b93e38488c6de6998e9d5084",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/server-static-peer.json": "b740b3495142bb218d7865303b212fe8666f8aac14d3e7cd287b2c7aa3d52d8d",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/source-static-peer.json": "0af7d50434096a3bd06e20ca42bac17ac2471537fe627b123625237e32711174",
+      "anomaly-research/bridge-correlated-cost-receipts-20261022/target-pins.json": "9ef63e0c2dba86fc4913aca53ec5563b9e7c9decedfdacd7faef5a64f41bcac8",
+      "checkpoints/bridge-correlated-cost-connected-20261022/CI-exact-path-binding.json": "1c3c704ba413399e134bf87c4c483befebe87f23c3fbeff8cbaab4b161651df5",
+      "checkpoints/bridge-correlated-cost-connected-20261022/README_RU.md": "8c71fc95d7bbb8c1f3592db10a73c792eecb018d5cf57e4e04d9e4b0b4a68dc0",
+      "checkpoints/bridge-correlated-cost-connected-20261022/central-targets.json": "b1315d5e362dcf2813e59d025b68a9ba329dcda56642bf9872579ab510d966f4",
+      "checkpoints/bridge-correlated-cost-connected-20261022/connected-common.qualified.mjs": "e5035f82aefbba4dd2632f67e29a4152aefc949b5adccd003fed282292f1f065",
+      "checkpoints/bridge-correlated-cost-connected-20261022/control-plan.json": "4edf7f5208811ce626d2e064b5a556268ac8bd5f811de98fef7276901402bba3",
+      "checkpoints/bridge-correlated-cost-connected-20261022/logging-control.connected.mjs": "f9ef7ccbdfb9f940fd54e271c1c1ce5150ce2929705c74d3a48652406deb36bc",
+      "checkpoints/bridge-correlated-cost-connected-20261022/qualification-plan.json": "2b15231ec990f68a1a89cd0870ce36db4065af52d3816cf69602dbd824c3d31f",
+      "checkpoints/bridge-correlated-cost-connected-20261022/qualification-receipt.json": "cbd040291b49ef9d3ad3b7a74f25770f33de9050fb41da38a9f212ebedc1bacc",
+      "checkpoints/bridge-correlated-cost-connected-20261022/qualification-scope.json": "3bf2ffe9a6aef99986781206404aca37dbb38b210ca0ddaa75c60483d1ef0d29",
+      "checkpoints/bridge-correlated-cost-connected-20261022/root-control-static-peer.json": "e319cda4b5c1c4f96f0272a2cc49570811d32ff2cfd19168e3f3a35219c81df7",
+      "checkpoints/bridge-correlated-cost-connected-20261022/temporary-guard.qualified.mjs": "42bc7741c0b6a8b08133b3e0e7d1f6a3f5dac5256c461f3eb476b47baf638d19",
+      "checkpoints/bridge-correlated-cost-connected-20261022/temporary-workflow.qualified.yml": "07bbddcf244cb59b9dccb168298db3915abf919456376e712074b601d87b4970",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/PROTOCOL_RU.md": "c60f769893ad4e0db464ebadf51ea6c80495c38beefecae42d0e30f426bf7eb9",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/README_RU.md": "6ded77e4a44f90aeea77151cb35433f843fa6317603a3ad288b2ea275cf56692",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/central-entry-plan.md": "8b929615d777c1e576abb7165b0d1dd310f08bb59ad86ce9cb814898c39fd1bf",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/connected.mjs": "e4971988a70d21cd56ec6504517940d8d510f8333c715e4e04379e1fa8ca94ec",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/dependencies.json": "b3e71171e285c2ea199aa0d34665223f18de6d80a2bcbd0d2ed17c475864f558",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/manifest.json": "05c948372d883d741d1cd18f8df844dea8ae9fb372d25e72d8256ab395399b7c",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/native-query-cost-journal.proposed.mjs": "dc00990939ab39019add4f2217731965b3699e89b9df9b8cd15ff12e1a3a7071",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/native-query-cost-journal.proposed.patch": "e918e2b2129ac9b9063d65ef4d69749be9ddf9fec10512efa48c313c802a3886",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/peer-receipt.json": "0af7d50434096a3bd06e20ca42bac17ac2471537fe627b123625237e32711174",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/provenance.json": "b0a794c381ea25f9650946347987c3acf27c920bac677804af4852516efb0f30",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/report2-d1-adapter.proposed.mjs": "cab59c2b26c12c657fda2918d97f80e11f8139e455f5ef878fc427794f3db220",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/report2-d1-adapter.proposed.patch": "3ef60dc1bdda9b010e464c561a85a7dd174251dd40119a25cf53f37b958f6de2",
+      "checkpoints/source-worker-bridge-transport-correlation-20261022/target-bindings.json": "b9241def6ff3b4b72ab68006ca3a881a6c40ebec800b9c00259c0feb7b805986",
+      "runner/native-query-cost-journal.mjs": "dc00990939ab39019add4f2217731965b3699e89b9df9b8cd15ff12e1a3a7071",
+      "runner/report2-d1-adapter.mjs": "cab59c2b26c12c657fda2918d97f80e11f8139e455f5ef878fc427794f3db220",
+      "runner/sql-bridge-counter-repair.mjs": "67b5213a52d0d9ccbde29a6f905c5ef5ab072bc9b93e38488c6de6998e9d5084",
+      "tools/rollout-correlated-sql-bridge-20261022.mjs": "b9598c7cd557d562e9688fcc86c9fdbf4e1896594c1dac2f4d5cd016a9df5382"
+    },
+    "authority_roots_unchanged_at_merge": {
+      "AGENTS.md": "d37aac2d435046ad08d300ada7139eebacefe5bfaf12776ad7433cdd2a195dbd",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "27f5704acb564b903327872afe28ab453882bacea65c9ef13642447c9dc58dfb",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "cdaf043a7aaae2efd0225613f136ae0ccd46706e125b889c0df07918fc156943",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "bc18b441f849688ade77f84e99892a1f5ab8dad0db49a143b4fa861d2ffa6c55",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "fe71fe0e3fb46593ef89e588b07f7188ea072350ffd24e4b12a50c02e612ffbf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "5d17759fd489e3c6bfc248b5a078d328daf7b80fbc393e21d4f67674cd031af8"
+    },
+    "required_automatic_PR_checks": [
+      {
+        "name": "verify",
+        "head": "ee1251d7cf627264790189ab5e62de1666e65377",
+        "conclusion": "success",
+        "details_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39796627121/job/119885327994"
+      }
+    ],
+    "originals": {
+      "617": {
+        "frozen_head": "a05d3ab396ee4b694a0a71b1f55859a2c5a2afdf",
+        "files": 13,
+        "byte_exact": true
+      },
+      "616": {
+        "frozen_head": "fbe1c92d59d1d534cafd760d472f234cead01ae3",
+        "files": 13,
+        "byte_exact": true
+      }
+    },
+    "own_lease_unchanged": {
+      "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792676225831",
+      "acquired_ts": 1792676225831,
+      "expires_ts": 1792681325831,
+      "expected_main": "78dc9b03231f5ca3f70fcb853c8c653f1d605cf2",
+      "released": false,
+      "scope": "OWNER_FIVE_ACTIVE_DIRECTIONS.BRIDGE_CORRELATED_COST_RECEIPTS_CONNECTED_20261022. Directownercontinue22Oct13UTC. NEW concrete actual existing lost-response tracing gap: current RemoteD1 SDK/native cost journal records sequence andSQLhash but has NO shared pertransport identifier with installed06603 SQLbridge, so droppedresponse lacks future independentlyfindable costcarrier. Build only optionalnativejournal-backed x-report2-request-id header/clientmetadata and exact06603 bridge bounded costlog/echo correlation; legacyjournaloff/SQL/body/params/results/auth/counters/unknown/quotas/sourceclocks/gates unchanged. Header carries clientgenerated boundedUUID, NOTgrant/dedupe/retry/reconciliation; no oldunknownrecovery orzero. Server logs metadataONLY id/op/exactreceivedSQLSHA/order/existingnativeknowncounter+NULL/clock/status, NO SQLtext/params/results/body/key/errorraw. Counters and responseJSON remainexact,raw/exec unavailableusage remainsUNKNOWN, batch<=100 explicitboundedwholeomission, loggingfailurecannotchangeSQLresult/retry. CurrentnativeQUERYreceiptUTC22unknown1 remainsunrecovered; exhaustedoldCFquery MUSTNOTrepeat/widen. Scope proposedworkerprefixes; rootonly shared runner/report2-d1-adapter.mjs, runner/native-query-cost-journal.mjs, minimalnew exactbridgepatch export inexisting runner/sql-bridge-counter-repair.mjs or exact existing deploymenttoolbinding asneeded; no speculativebackend/schema/sourceHTTP/ENTRY/storage/anomalyactivation. Actualassembled618old/new andnontargetbyteexact; ONE FIRSTnew connectedaffectedcase actualcurrentclient→controlledexactold/new06603 Worker/D1 fakeorLocalSQLite/lostreply correlation/controlknownNULL/legacy/noextraIO, EACHcomponentJSON beforeassert/next. No old21/61133/60620/59916/60312/60110/read4/oldstudies/testexports or manuallyreplayacceptedcases. Source/Third newcallablesUNEXECUTED/refscopedleases/separatecheckouts/one mutualSTATICpeer thenFIRSTrootcommon; latefailrepairfailedonly. Currentinstalledbridge7011/06603 notrolledback; anyactualtargetedCFrollout ONLYAFTER frozenqualifiedpacket/requiredchecks/fresh exactownrootguard+currentnativecontroladmission+<=40CFcontrolwithinwhole164/manual24 androllbackheadroom; settings/bindings/tokens/crons/limits preserved; NO nativeSQL/Workerinvocation/provider/MAIN/manual/TG/probe/policygrant. Observabilityenable/rolloutrequiresconcretefinitecontrolplan before scopeamend, no automaticsettingschange fromloggerfixture. RequiredautomaticPR/mainCI; exactfiles9roots/readback/frozenoriginalsCLOSEDunmerged/checkpoint/queue/all4rootspans/newtechnicalfields/ONLYownrelease BEFOREexpiry; updateONLYautomation2after substantivepackage. PreserveoldUTC18unknown15/UTC20unknown1/currentUTC22unknown1/reserves/3500000R70000W164HTTP/manual24/sharedLIQ8/native4/supplement2/nextfull59000R920W/all1051229pausesMAGIC106/70/weights/forms/clocks/Paid5GB4GB3.5GB48h/cursor710limitedcopies/twoOWNERdeferrals/full17. ProjectNOTcomplete. Exactrootcontrolplan control-plan.json prepared: allow purposebuilt tools/rollout-correlated-sql-bridge-20261022.mjs + existing current-bridge-module-inspection workflow newdefaultfalse explicitinput/guard/artifactbinding and ONEnewroot pureCONTROLLEDconfig case insideSAMEFIRSTcommon. Code-only exactnewmodule rollout first preservingallsettings/SQL/counters; ONLYAFTERfinalnewversionreadback, optional nonversioned /script-settings GET/PATCH(JSONobservabilityonly)/exactreadback: logs enablepersisttrue/head1/invocation_logsfalse/Cloudflareonly destinations, preserveunknownfields/no externaldestination or newtraces; initialcurrent settingsdeployedversion exact. Qualifiedcurrentfullsource/runtimepins andsamehead/all4 mirror guardbeforeEACHmutation; <=40CFcontrolattempts/whole164/manual24+existingrollbackheadroom; plan success38maxCF/conditionalobsrestore3 onlyifours/currentguards/no foreignoverwrite. Metadata/rawsettings/module stayboundedprivateinputs andsanitizedhashproof, no secrets/SQLparams/results export. /settings multipart mutations NOTallowed. Oldcodecoordinatorconditionalonlyourversionrollback maintained. Noactualnativecontrolmutation beforequalifiedcommon+requiredchecks+exactmainreadback. Thisamend ONLYscope/SAMEowner/SAMEexpiry; no extension/oldunknownreset/recovery/logquery/SQL/provider/MAIN/TG/newpolicy/anomalyactivation/ENTRY/storage. CI-ONLY precise runtime-source PR binding: actualPR618 head dbbd5d8a has NOautomaticcheck because existing n10-technical-path PRpaths include current-generation/** but not runnerSDK/journal/helper/newreleaseCLI. Allow ONLY addfourexactaffectedpaths to .github/workflows/n10-technical-path-offline-20261011.yml pull_request.paths; nojob/command/assertion/runtime/gate/cap changes. Existingworkflowitself path triggers its normal automaticcheck; no manual old69/common35 replay. OneSOURCEstatic4line deltaACK, preserveallqualifiedruntime/helper/control/cases/sourcebytes and oldcommon historicalscope/guard. Mergecurrentmain scope into samebranch; requirednormalautomaticPR/main then exactreadback/checkpoint/releaseONLYown SAMEexpiry. Owner new finishpriority REPORT+Telegram thenLIQ thennativeanomaly thenremainingfull17; fullscope/twoOWNERdeferrals preserved."
+    },
+    "merged_readback": true
+  },
+  "actual_result_peers": [
+    {
+      "reviewer_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+      "result": "ACCEPTED_WITH_LIMITS",
+      "open_findings": [],
+      "blockers": [],
+      "all11_local_memberhashes_verified": true,
+      "whole_ZIP_download_or_reexecution": false,
+      "actual_NODE_SPEC_pass": 1,
+      "actual_NODE_SPEC_fail": 0,
+      "CONTROLLED_groups": 35,
+      "source_pins": 1007,
+      "runtime_pins": 265,
+      "actual_complete_pair": "618/618616otherssame",
+      "limits": "CONTROLLED RemoteD1/Worker/LocalSQLite costs, notnativecost/logdelivery/oldunknownrecovery/currentSENT/installation. ActualPaidpin guard refusesbeforeCF; no reviewerexecution/writes."
+    },
+    {
+      "reviewer_thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+      "result": "ACCEPTED_WITH_LIMITS",
+      "open_findings": [],
+      "blockers": [],
+      "all11_local_memberhashes_verified": true,
+      "whole_ZIP_download_or_reexecution": false,
+      "actual_NODE_SPEC_pass": 1,
+      "actual_NODE_SPEC_fail": 0,
+      "CONTROLLED_groups": 35,
+      "source_pins": 1007,
+      "runtime_pins": 265,
+      "actual_complete_pair": "618/618616otherssame",
+      "limits": "CONTROLLED RemoteD1/Worker/LocalSQLite costs, notnativecost/logdelivery/oldunknownrecovery/currentSENT/installation. ActualPaidpin guard refusesbeforeCF; no reviewerexecution/writes."
+    }
+  ],
+  "actual_automatic_checks": [
+    {
+      "run": 39796627121,
+      "name": "N10 technical path offline connected verification",
+      "event": "pull_request",
+      "head": "ee1251d7cf627264790189ab5e62de1666e65377",
+      "conclusion": "success",
+      "artifacts": [
+        {
+          "id": 12433119407,
+          "bytes": 4932,
+          "digest": "sha256:6376b79952fff752550644cb30c66825e961319225732fd025f86dd0721f95ba",
+          "members": 6
+        }
+      ],
+      "SPEC_files": [
+        {
+          "file": "current-report-telegram.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 9,
+          "pass": 9,
+          "fail": 0
+        },
+        {
+          "file": "target-runtime.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 11,
+          "pass": 11,
+          "fail": 0
+        },
+        {
+          "file": "target-unit.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 49,
+          "pass": 49,
+          "fail": 0
+        }
+      ],
+      "tests": 69,
+      "pass": 69,
+      "fail": 0,
+      "automatic": true,
+      "manually_reexecuted": false
+    },
+    {
+      "run": 39797849093,
+      "name": "LIQ assembled spot and 105 admission offline",
+      "event": "push",
+      "head": "ddd8abd6d3a591ba3a52dfaa04a7cf5260a91914",
+      "conclusion": "success",
+      "artifacts": [
+        {
+          "id": 12433803109,
+          "bytes": 292763,
+          "digest": "sha256:36907be75613e51cfbe05f692893f81a2607d5ce69a50c1441314488d016836a",
+          "members": 44
+        }
+      ],
+      "SPEC_files": [
+        {
+          "file": "active-source-finalist-and-markets.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 29,
+          "pass": 29,
+          "fail": 0
+        },
+        {
+          "file": "active-source-headroom.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 403,
+          "pass": 403,
+          "fail": 0
+        },
+        {
+          "file": "cold-archive.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 242,
+          "pass": 242,
+          "fail": 0
+        },
+        {
+          "file": "exact-asset-role-and-collector-audit.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 28,
+          "pass": 28,
+          "fail": 0
+        },
+        {
+          "file": "hourly-native-usage.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 41,
+          "pass": 41,
+          "fail": 0
+        },
+        {
+          "file": "index-useful-only.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 21,
+          "pass": 21,
+          "fail": 0
+        },
+        {
+          "file": "native-identity-source-handoff.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 39,
+          "pass": 39,
+          "fail": 0
+        },
+        {
+          "file": "native-sector-provider-binding.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 260,
+          "pass": 260,
+          "fail": 0
+        },
+        {
+          "file": "native-transport-fallback.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 7,
+          "pass": 7,
+          "fail": 0
+        },
+        {
+          "file": "native-useful-budget.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 19,
+          "pass": 19,
+          "fail": 0
+        },
+        {
+          "file": "native-useful-runtime.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 24,
+          "pass": 24,
+          "fail": 0
+        },
+        {
+          "file": "new-liq-research-admission.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 6,
+          "pass": 6,
+          "fail": 0
+        },
+        {
+          "file": "private-forecast-consumer.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 10,
+          "pass": 10,
+          "fail": 0
+        },
+        {
+          "file": "private-price-connected.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 154,
+          "pass": 154,
+          "fail": 0
+        },
+        {
+          "file": "private-reader-runtime.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 38,
+          "pass": 38,
+          "fail": 0
+        },
+        {
+          "file": "public-venue-health-priority.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 281,
+          "pass": 281,
+          "fail": 0
+        },
+        {
+          "file": "retained-write-failure-guard.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 110,
+          "pass": 110,
+          "fail": 0
+        },
+        {
+          "file": "scheduled-evidence-budget.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 3,
+          "pass": 3,
+          "fail": 0
+        },
+        {
+          "file": "source-health-priority.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 17,
+          "pass": 17,
+          "fail": 0
+        },
+        {
+          "file": "target.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 223,
+          "pass": 223,
+          "fail": 0
+        },
+        {
+          "file": "weekly-htx-synchronized-plan.tap",
+          "actual_reporter": "NODE_SPEC",
+          "tests": 129,
+          "pass": 129,
+          "fail": 0
+        }
+      ],
+      "tests": 2084,
+      "pass": 2084,
+      "fail": 0,
+      "automatic": true,
+      "manually_reexecuted": false
+    }
+  ],
+  "common": {
+    "schema": "FIRST_CLIENT_BRIDGE_COST_CORRELATION_CODE_QUALIFICATION_V1",
+    "run_id": 39794325079,
+    "head": "244ddfdf95dd2edd7e18ee2c78bdb82e1e8cf708",
+    "actual_reporter": "NODE_SPEC",
+    "actual_SPEC_pass": 1,
+    "actual_SPEC_fail": 0,
+    "Node": "v24.22.0",
+    "CONTROLLED_groups": 35,
+    "artifact": {
+      "id": 12433415581,
+      "bytes": 123990,
+      "digest": "sha256:e3a2695d4feff4de0a2fd7d8b2d868510d52c056139ecc1e3671667980fc67d1",
+      "members": 11,
+      "whole_ZIP_verified": true
+    },
+    "actual_components": {
+      "client-component.json": {
+        "bytes": 4770,
+        "sha256": "30e946955fc35a99f826720ff8244b93c91148d7778db0e6ed89085cc630c3da",
+        "controlled_groups": 14
+      },
+      "server-component.json": {
+        "bytes": 3745,
+        "sha256": "b7638dbef11decc77c541ea4da2524d6aff5be728a70b31f8b26e14dce3ddf01",
+        "controlled_groups": 12
+      },
+      "logging-control-component.json": {
+        "bytes": 1006,
+        "sha256": "f85be9af1c93692dbf27852a3c03309df656082945b67ab180fff4ba9cdd4f9f",
+        "controlled_groups": 9
+      }
+    },
+    "baseline_binding": {
+      "current_before_files": 618,
+      "candidate_files": 618,
+      "non_targets_equal": 616,
+      "current_before_inventory_sha256": "c80fbb74148e6221504a2f8f1d9c3ed2572768649db710fa395a27af482a25e7",
+      "candidate_inventory_sha256": "f635163c6cb4d5e4704fa3f97b4421d65aa6889b71e5e87c4903d5aaebec2463",
+      "actual_complete_assembled_pair": true,
+      "old_tests_reexecuted": false
+    },
+    "source_pins": 1007,
+    "runtime_pins": 265,
+    "old_components_replayed": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "old_unknown_recovered": false,
+    "native_log_delivery_or_future_reconciliation_qualified": false,
+    "native_rollout_performed": false,
+    "baseline_cleanup_removed": true
+  },
+  "root_static_control_peer": {
+    "schema": "ONE_SOURCE_STATIC_ROOT_LOGGING_CONTROL_REVIEW_V1",
+    "reviewer_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+    "result": "ACCEPTED_WITH_LIMITS",
+    "blockers": [],
+    "files": {
+      "tools/rollout-correlated-sql-bridge-20261022.mjs": "b9598c7cd557d562e9688fcc86c9fdbf4e1896594c1dac2f4d5cd016a9df5382",
+      "checkpoints/bridge-correlated-cost-connected-20261022/logging-control.connected.mjs": "f9ef7ccbdfb9f940fd54e271c1c1ce5150ce2929705c74d3a48652406deb36bc",
+      ".github/workflows/current-bridge-module-inspection-20261016.yml": "86cdde437d5655808ca7c45e8c1ba74ce5b4e05747d645800c813b9cc03451e8"
+    },
+    "review_scope": "ONE STATIC exact route/conditionalrestore/headroom/guard/config eight new preparedgroups. No Node/import/SQL/API/semantic execution. ActualnativeAPI/settings/cost/CPU/logdelivery not qualified. Alloldunknown/reserves preserved.",
+    "initial_review_files": {
+      "tools/rollout-correlated-sql-bridge-20261022.mjs": "17bb7933d96bc5c91c878ab54e0a2ce637f5ddb2d5b471c116644736920d9bb2",
+      "checkpoints/bridge-correlated-cost-connected-20261022/logging-control.connected.mjs": "cad9ce5950cd0e7420021ff0819fb6569f380a9763d3d3c3cae3a247ae6e1219",
+      ".github/workflows/current-bridge-module-inspection-20261016.yml": "86cdde437d5655808ca7c45e8c1ba74ce5b4e05747d645800c813b9cc03451e8"
+    },
+    "only_new_delta_ACK": {
+      "result": "ACCEPTED_WITH_LIMITS",
+      "blockers": [],
+      "actual_P_sha256": "5b172d218bd324db8f572b963a1169e2530e1c4a2ea0ca1d26539ea00417cef2",
+      "scope": "Only new actualPaidpin import, pure refusalguard and preCFcall plus new9thcase assertion. Removing exactdelta reconstructs prior17bb tool/cad9eightcase byteexact. No fullrereview/Node/import/SQL/API/execution. Hypotheticalfutureprovenance transition unqualified."
+    }
+  },
+  "CI_exact4path_static_delta": {
+    "schema": "ONE_EXACT_FOUR_PATH_PR_BINDING_STATIC_DELTA_V1",
+    "reviewer_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+    "result": "ACCEPTED_WITH_LIMITS",
+    "blockers": [],
+    "open_findings": [],
+    "mismatch": [],
+    "before_sha256": "5e1561f6e0039b26882d4f9cd9513437e6dc7d05a83ccdbd9ee829c07c3f111e",
+    "after_sha256": "9218e9224a5ab543b2717f6bd772e2990e92d6278cbd75bdac4f15c4f4f24a3a",
+    "only_added_paths": [
+      "runner/report2-d1-adapter.mjs",
+      "runner/native-query-cost-journal.mjs",
+      "runner/sql-bridge-counter-repair.mjs",
+      "tools/rollout-correlated-sql-bridge-20261022.mjs"
+    ],
+    "entire_old_workflow_exact_after_removing_four_lines": true,
+    "jobs_sha256_unchanged": "82650367152850eae73f5f9a67e0d49144257a13add6fe8de9b39b9e9754a678",
+    "runtime_or_jobs_or_assertions_changed": false,
+    "manual_old_check_or_common_reexecution": false,
+    "initial_PR_head_dbbd_had_zero_checks_not_pass": true,
+    "static_not_actual_CI_pass": true
+  },
+  "app_attachment_attempt": {
+    "PR": 618,
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/618",
+    "attempts": 1,
+    "attached": false,
+    "reason": "thread attachment identity count exceeds 100",
+    "no_retry_or_delete": true
+  },
+  "originals_closed_unmerged": [
+    {
+      "PR": 617,
+      "frozen_head": "a05d3ab396ee4b694a0a71b1f55859a2c5a2afdf",
+      "files_byte_exact_through_central": 13,
+      "CLOSED_unmerged": true,
+      "central_merge": "ddd8abd6d3a591ba3a52dfaa04a7cf5260a91914"
+    },
+    {
+      "PR": 616,
+      "frozen_head": "fbe1c92d59d1d534cafd760d472f234cead01ae3",
+      "files_byte_exact_through_central": 13,
+      "CLOSED_unmerged": true,
+      "central_merge": "ddd8abd6d3a591ba3a52dfaa04a7cf5260a91914"
+    }
+  ],
+  "native_rollout_boundary": {
+    "schema": "CURRENT_PAID_BRIDGE_PROVENANCE_PREVENTS_UNCOORDINATED_ROLLOUT_V1",
+    "file": "runner/retention-bridge-provenance.mjs",
+    "used_by": [
+      "tools/run-paid-sliding-history-20261018.mjs",
+      "tools/recover-lossless-retained-history-20261014.mjs"
+    ],
+    "current_module_sha256": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf",
+    "last_observed_native_version": "7011c257-4bdc-4244-a858-42c30e8532ab",
+    "prepared_new_module_sha256": "c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063",
+    "reason": "PAID_RETENTION_EXACT_BRIDGE_REBIND_REQUIRED_BEFORE_ROLLOUT",
+    "CF_attempts": 0,
+    "native_module_or_logging_settings_changed_by_this_package": false,
+    "retention_code_changed": false,
+    "old_pins_weakened": false,
+    "next": "Qualify a concrete compatible exact provenance transition preserving accepted old identity and protected Paid maintenance before native code/logging rollout. No physical storage tests, expiry tests or deferred ENTRY work authorized by this dependency."
+  },
+  "ordinary_caller_optin": false,
+  "native_CF_attempts": 0,
+  "native_SQL_provider_HTTP_MAIN_TG": 0,
+  "Telegram_restored": false
+}

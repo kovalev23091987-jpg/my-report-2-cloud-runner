@@ -93,7 +93,7 @@ test('same-run HTX spot candles supply N10 factual path, with one-sided fallback
  const end=1_800_000_000_000,now=end+42_000,start=end-15*60_000;
  const bars=Array.from({length:15},(_,i)=>({id:(start+i*60_000)/1000,open:100+i,high:101+i,low:99+i,close:100.5+i,count:2}));
  const spot_kline={market:'SPOT',contract:'ARB-USDT',received_ts:end+10_000,payload:{status:'ok',ch:'market.arbusdt.kline.1min',ts:end+1000,data:bars}};
- const htx_window={label:'15m',window_end_ts:end,open:100,high:115,low:99,close:99.5};
+ const htx_window={label:'15m',window_start_ts:start,window_end_ts:end,candle_count:15,open:100,high:115,low:99,close:99.5};
  const facts=deriveHtxSpotSameRunPathEvidence({contract:'ARB-USDT',spot_kline,htx_window,now});
  assert.equal(facts.length,1);
  assert.equal(facts[0].comparison_status,'DIRECTION_CONFLICT');

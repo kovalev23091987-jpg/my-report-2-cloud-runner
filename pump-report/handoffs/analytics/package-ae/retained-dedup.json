@@ -1,0 +1,207 @@
+{
+  "schema": "AE_BOUNDED_RETAINED_DEDUP_V1",
+  "scope": [
+    "pump-report/handoffs/sources",
+    "checkpoints",
+    "audit-fixes/source-optimization-20260930"
+  ],
+  "globs": [
+    "*.md",
+    "*.json",
+    "*.mjs",
+    "*.txt"
+  ],
+  "max_file_size": "1M",
+  "not_global_archive_census": true,
+  "patterns": {
+    "Lighter": {
+      "pattern": "lighter",
+      "matching_files_in_scope": 194,
+      "sample_paths": [
+        "audit-fixes/source-optimization-20260930/receipt-only-fix.md",
+        "checkpoints/blockscout-backoff-runtime-manifest-20261004.json",
+        "checkpoints/bingx-primary-producer-connected-20261024/remaining-input-pins.json",
+        "checkpoints/bingx-primary-producer-connected-20261024/qualification-pins.json",
+        "checkpoints/independent-capture-and-origin-connected-20261023/qualification-plan.json",
+        "checkpoints/independent-capture-and-origin-connected-20261023/first-qualification-plan.json",
+        "checkpoints/N05_LIGHTER_INDEPENDENT_VENUE_PILOT_RESULT_20261011.json",
+        "checkpoints/independent-capture-and-origin-connected-20261023/qualification-scope.json",
+        "checkpoints/bingx-primary-producer-connected-20261024/executed-bindings/first/qualification-pins.json.qualified.txt",
+        "checkpoints/position-clock-source-priority-release-20261006.json",
+        "checkpoints/entry-approved-integration-20261019/main521-fixed-originals/qnt-lsk-native4-retained-proof.json",
+        "checkpoints/post243-production-readback-20261008/37846542006/summary.json"
+      ],
+      "classification": "RETAINED_CONFIRMED_BY_ROOT",
+      "rg_exit": 0
+    },
+    "GMX": {
+      "pattern": "\\bgmx\\b",
+      "matching_files_in_scope": 130,
+      "sample_paths": [
+        "checkpoints/position-clock-source-priority-release-20261006.json",
+        "pump-report/handoffs/sources/FULL_UNIVERSE_934_MATRIX_V1.json",
+        "checkpoints/blockscout-backoff-runtime-manifest-20261004.json",
+        "checkpoints/bingx-primary-producer-connected-20261024/remaining-input-pins.json",
+        "checkpoints/bingx-primary-producer-connected-20261024/executed-bindings/first/qualification-pins.json.qualified.txt",
+        "checkpoints/independent-capture-and-origin-connected-20261023/qualification-scope.json",
+        "checkpoints/independent-capture-and-origin-connected-20261023/qualification-plan.json",
+        "checkpoints/independent-capture-and-origin-connected-20261023/first-qualification-plan.json",
+        "checkpoints/bingx-primary-producer-connected-20261024/qualification-pins.json",
+        "checkpoints/SOURCE_CATALOG_ACTUAL_USE_20261006.md",
+        "checkpoints/entry-approved-integration-20261019/main521-automatic-originals/tron-sector-retained-four-proof.json",
+        "pump-report/handoffs/sources/U3_SELECTED_550_SYMBOLS_V1.txt"
+      ],
+      "classification": "RETAINED_CONFIRMED_BY_ROOT",
+      "rg_exit": 0
+    },
+    "Drift": {
+      "pattern": "\\bdrift\\b",
+      "matching_files_in_scope": 38,
+      "sample_paths": [
+        "audit-fixes/source-optimization-20260930/current-acceptance-repair.md",
+        "pump-report/handoffs/sources/DAY_GROWTH_J_RU.md",
+        "pump-report/handoffs/sources/DAY_GROWTH_J_INDEX_SEAM_OFFLINE_QUALIFICATION.json",
+        "pump-report/handoffs/sources/F551_ACTUAL_CAPTURE_PRICE_COVERAGE_550_V1.json",
+        "pump-report/handoffs/sources/U3_SELECTED_550_SYMBOLS_V1.json",
+        "pump-report/handoffs/sources/U3_FULL_934_SCOPE_SELECTION_V1.json",
+        "pump-report/handoffs/sources/FULL_UNIVERSE_934_MATRIX_V1.json",
+        "checkpoints/SOURCE_CATALOG_ACTUAL_USE_20261006.md",
+        "checkpoints/expired-bound-delivery-20261018/cloud-and-actual-consumer-receipts.json",
+        "checkpoints/expired-bound-delivery-20261018/weekly-mirror-drift.json",
+        "checkpoints/veranta-v2-readonly-37679978751/veranta-v2-readonly-proof.json",
+        "checkpoints/n05-poloniex-qualification-38069848900/poloniex-summary.json"
+      ],
+      "classification": "RETAINED_CONFIRMED_BY_ROOT",
+      "rg_exit": 0
+    },
+    "dYdX": {
+      "pattern": "dydx",
+      "matching_files_in_scope": 269,
+      "sample_paths": [
+        "audit-fixes/source-optimization-20260930/live-audit.mjs",
+        "checkpoints/LATEST_SAVED105_LSK_ZEC_SOURCE_READBACK_20261015.json",
+        "checkpoints/native-role-index-production-20261014/native-receipts.json",
+        "checkpoints/SOURCE_CATALOG_ACTUAL_USE_20261006.md",
+        "checkpoints/native-core-data-closure-tests-37644177086/dydx-automatic-report-search-proof.json",
+        "checkpoints/bingx-primary-producer-connected-20261024/remaining-input-pins.json",
+        "checkpoints/native-role-utility-tests-37845986269/native-empty-source-health-proof.json",
+        "pump-report/handoffs/sources/FULL_UNIVERSE_934_MATRIX_V1.json",
+        "checkpoints/source-worker-source-order-fallback-20261023/provenance.json",
+        "checkpoints/DYDX_RETAINED_ACTUAL_EXACT_CANONICAL_PROOF_20261007.json",
+        "checkpoints/entry-approved-integration-20261019/main521-automatic-originals/native-sector-denominations-retained-proof.json",
+        "checkpoints/entry-approved-integration-20261019/main521-fixed-originals/qnt-lsk-native4-retained-proof.json"
+      ],
+      "classification": "NAME_MENTION_ONLY_NOT_PROVIDER_TEST_PROOF",
+      "rg_exit": 0
+    },
+    "Jupiter": {
+      "pattern": "jupiter|perps-api\\.jup",
+      "matching_files_in_scope": 18,
+      "sample_paths": [
+        "checkpoints/entry-approved-integration-20261019/main521-fixed-originals/tron-sector-retained-four-proof.json",
+        "checkpoints/returned-budget-integration-20261019/main-39254030429/members/tron-sector-retained-four-proof.json",
+        "checkpoints/entry-approved-integration-20261019/main521-automatic-originals/tron-sector-retained-four-proof.json",
+        "checkpoints/coingecko-demo-38455066684/validation.json",
+        "checkpoints/cache-body-asof-connected-20261021/automatic-main-39573108983/result/tron-sector-retained-four-proof.json",
+        "checkpoints/LIQ_COVERAGE_105_AND_NEW_SOURCE_RESEARCH_20261012.json",
+        "checkpoints/compact-catalog-primary-carriers-connected-20261021/automatic-main-39584656300/result/tron-sector-retained-four-proof.json",
+        "checkpoints/N06_SANTIMENT_CATALOG_PREQUALIFICATION_20261011.json",
+        "checkpoints/VERIFIED_ESTIMATED_LIQUIDATION_PACKAGE_PENDING_20261005.json",
+        "checkpoints/btw-preserved-sector-rendering-input-20261004.json",
+        "checkpoints/gate-existing-base-integration-20261019/main-39246249184/members/tron-sector-retained-four-proof.json",
+        "checkpoints/compact-provider-integration-20261019/automatic-main-39263515743/tron-sector-retained-four-proof.json"
+      ],
+      "classification": "NAME_MENTION_ONLY_NOT_PROVIDER_TEST_PROOF",
+      "rg_exit": 0
+    },
+    "Avantis": {
+      "pattern": "avantis",
+      "matching_files_in_scope": 19,
+      "sample_paths": [
+        "checkpoints/veranta-v2-readonly-37679978751/veranta-v2-readonly-proof.json",
+        "checkpoints/n01-free-source-qualification-38044429000/cmc-page-2-next-data.json",
+        "checkpoints/ACTIVE_SOURCE_PR351_PR352_CURRENT_HANDOFF_20261014.json",
+        "checkpoints/ADDITIONAL_NATIVE_LIQ_PRIMARY_RESEARCH_20261014.json",
+        "checkpoints/VERANTA_V2_CURRENT_SOURCE_QUALIFICATION_20261007.json",
+        "checkpoints/CHAT_TRANSFER_20261007.md",
+        "checkpoints/AVANTIS_READONLY_SCHEMA_REVIEW_20261015.json",
+        "checkpoints/attention-post-clock-tests-37682149172/veranta-v2-retained-formula-replay.json",
+        "checkpoints/additional-native-source-docs-20261014/provenance.json",
+        "checkpoints/N06_SANTIMENT_CONNECTOR_PILOT_OBSERVATION_20261011.json",
+        "checkpoints/VERIFIED_ESTIMATED_LIQUIDATION_PACKAGE_PENDING_20261005.json",
+        "checkpoints/N06_SANTIMENT_CATALOG_PREQUALIFICATION_20261011.json"
+      ],
+      "classification": "NAME_MENTION_ONLY_NOT_PROVIDER_TEST_PROOF",
+      "rg_exit": 0
+    },
+    "Ostium": {
+      "pattern": "ostium",
+      "matching_files_in_scope": 3,
+      "sample_paths": [
+        "checkpoints/CHAT_TRANSFER_20261007.md",
+        "checkpoints/ADDITIONAL_NATIVE_LIQ_PRIMARY_RESEARCH_20261014.json",
+        "checkpoints/PUBLIC_VENUE_AUTOMATIC_SOURCE_PRIORITY_CANDIDATE_20261014.json"
+      ],
+      "classification": "NAME_MENTION_ONLY_NOT_PROVIDER_TEST_PROOF",
+      "rg_exit": 0
+    },
+    "DIA": {
+      "pattern": "diadata|dia\\.org",
+      "matching_files_in_scope": 10,
+      "sample_paths": [
+        "checkpoints/wikimedia-native-pages-tests-37684887952/wikimedia-native-pages-live-proof.json",
+        "checkpoints/n06-wikimedia-extra2-38144720142/batch-summary.json",
+        "checkpoints/n06-wikimedia-native10-38144019618/batch-summary.json",
+        "checkpoints/WIKIMEDIA_EXACT_NATIVE_PAGE_MANIFEST_20261007.json",
+        "checkpoints/source-worker-provider-latency-contract-20261020/callgraph.json",
+        "checkpoints/wikimedia-additional-native-pages-37867799302/wikimedia-additional-native-pages-live-proof.json",
+        "checkpoints/wikimedia-additional-native-pages-37867799302/recovered-connected-proof.json",
+        "checkpoints/FREE_16_SOURCE_SEARCH_20261004.md",
+        "checkpoints/wikimedia-attention-release-evidence-20261005.json",
+        "checkpoints/WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_CONNECTED_20261009.json"
+      ],
+      "classification": "NAME_MENTION_ONLY_NOT_PROVIDER_TEST_PROOF",
+      "rg_exit": 0
+    },
+    "Endless": {
+      "pattern": "endless\\.financial",
+      "matching_files_in_scope": 0,
+      "sample_paths": [],
+      "classification": "NOT_FOUND_IN_BOUNDED_INDEX_NOT_GLOBAL_NEW_PROOF",
+      "rg_exit": 1
+    },
+    "Pyth": {
+      "pattern": "pyth",
+      "matching_files_in_scope": 67,
+      "sample_paths": [
+        "pump-report/handoffs/sources/FULL_UNIVERSE_934_MATRIX_V1.json",
+        "checkpoints/bingx-primary-producer-connected-20261024/bound-schema/verification.json",
+        "checkpoints/independent-capture-and-origin-connected-20261023/source-independent-static-peer.json",
+        "checkpoints/ISOLATED_MONTHLY_HISTORY_CONNECTED_20261009.json",
+        "checkpoints/entry-approved-integration-20261019/main521-fixed-originals/tron-sector-retained-four-proof.json",
+        "checkpoints/source-worker-global-source-docs-20261018/documentation-receipts.json",
+        "checkpoints/N05_LIGHTER_INDEPENDENT_VENUE_PILOT_RESULT_20261011.json",
+        "checkpoints/source-worker-global-source-docs-20261018/scope.json",
+        "pump-report/handoffs/sources/U3_SELECTED_550_SYMBOLS_V1.txt",
+        "checkpoints/entry-approved-integration-20261019/main521-automatic-originals/tron-sector-retained-four-proof.json",
+        "checkpoints/CLOUD_EXECUTOR_SETUP_20261009.md",
+        "checkpoints/ADDITIONAL_LIQUIDATION_SOURCE_CLOCK_REVIEW_20261007.json"
+      ],
+      "classification": "NAME_MENTION_ONLY_NOT_PROVIDER_TEST_PROOF",
+      "rg_exit": 0
+    },
+    "Pacifica": {
+      "pattern": "pacifica",
+      "matching_files_in_scope": 3,
+      "sample_paths": [
+        "checkpoints/FREE_SOURCE_EXPANSION_20261004.md",
+        "checkpoints/FREE_16_SOURCE_SEARCH_20261004.md",
+        "checkpoints/GENERAL_LIQUIDATION_SOURCE_DIAGNOSIS_20261005.json"
+      ],
+      "classification": "RETAINED_CONFIRMED_BY_ROOT",
+      "rg_exit": 0
+    }
+  },
+  "broad_name_matches_are_not_source_api_test_proof": true,
+  "classification_superseded_by": "novelty-and-delta-evidence.json and first-party retained research records"
+}

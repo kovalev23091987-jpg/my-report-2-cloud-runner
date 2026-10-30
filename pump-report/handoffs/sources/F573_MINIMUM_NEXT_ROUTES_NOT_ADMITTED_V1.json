@@ -1,0 +1,75 @@
+{
+  "schema": "F573_MINIMUM_NEXT_ROUTES_NOT_ADMITTED_V1",
+  "actual_calls_now": 0,
+  "proposals": [
+    {
+      "lineage": "VARIATIONAL",
+      "method": "GET",
+      "url": "https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/v2/stats",
+      "body": null,
+      "headers": "No auth in official read-only example; actual entitlement/reachability still must be admitted",
+      "maximum_attempts_proposed": 1,
+      "retries": 0,
+      "redirects": 0,
+      "automatic_pages_or_followups": 0,
+      "maximum_body_bytes_proposed": 2000000,
+      "purpose": "One bulk v2 stats response for native contract_type/OI sides/funding units and coverage fields; not a future-map request",
+      "status": "NOT_ADMITTED",
+      "before_transport": [
+        "Separate exact provider/whole/native ROOT admission",
+        "Preserve v1+v2 shared per-IP/global limits and future reserves",
+        "No raw values in public artifacts"
+      ],
+      "next_response_minimum": [
+        "Native key+contract_type and economic underlying binding separate",
+        "Correct USDC OI denominators/double-count scope",
+        "Funding annualized/interval units and null semantics",
+        "Original observation clocks per field or explicit UNKNOWN",
+        "Listing omission versus all-market count explicit; all550 mapping NOT_CHECKED"
+      ]
+    },
+    {
+      "lineage": "DECIBEL",
+      "method": "GET",
+      "url": "https://api.mainnet.aptoslabs.com/decibel/api/v1/markets",
+      "headers": "Authorization: Bearer <EXISTING_ROOT_ADMITTED_NODE_API_KEY>",
+      "maximum_attempts_proposed": 1,
+      "retries": 0,
+      "redirects": 0,
+      "automatic_pages_or_followups": 0,
+      "maximum_body_bytes_proposed": 2000000,
+      "purpose": "Native market address/type/precision definitions only; zero account queries",
+      "status": "HOLD_NOT_ADMITTED",
+      "before_transport": [
+        "Existing permitted non-expiring/free node key entitlement and exact quota scope must be established without creating accounts or keys",
+        "Separate exact actual provider/whole/native ROOT admission",
+        "No assumption public endpoint means no node key"
+      ],
+      "not_included": [
+        "account_positions",
+        "Account/address discovery",
+        "Public-portfolio addresses found by search",
+        "RPC",
+        "Trading",
+        "WS",
+        "Any private capture read"
+      ]
+    },
+    {
+      "lineage": "NADO",
+      "method": null,
+      "url": null,
+      "status": "NO_NATIVE_PROPOSAL_EXACT_SCHEMA_MISSING",
+      "minimum_input": "A materially new official API/schema URL with public access/quota/identity/clock/unit facts; failed llms URL must not be retried"
+    }
+  ],
+  "before_any_future_position_use": [
+    "Already-admitted exact account set plus bounded complete coverage/cursor evidence",
+    "Vendor OPEN status and liq-price field semantics; do not relabel histories or book levels",
+    "Native stable position ID, source generation clock, amount/notional denomination",
+    "Independent BingX asset binding and contemporaneous quote-rate/venue-basis proof",
+    "Shared native positions/SDK/WS/hosted indexer/aggregates deduplicated"
+  ],
+  "source_runtime_policy_updates_authorized": false,
+  "old_funding_clock_proposals_not_adopted": true
+}

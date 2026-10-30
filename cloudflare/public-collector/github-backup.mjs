@@ -9,6 +9,7 @@ import {PRIVATE_CANONICAL_DATABASES,privateCanonicalBindings} from '../../runner
 import {runPrivatePriceRechecks} from './private-price-consumer.mjs';
 import {observeCollectorD1} from './native-cost-observer.mjs';
 import {readCollectorPriorRows} from './prior-snapshot-read.mjs';
+import {loadVerifiedNativeDayReconciliation} from '../../runner/verified-native-day-reconciliation.mjs';
 
 const SLOT=5*60_000;
 const ACTOR='HUB_PUBLIC_COLLECTOR';
@@ -54,7 +55,8 @@ async function main(){
   const sourceBudget=createCollectorJobBudget({used:previousBudget?.attempted_source_http||0,on_charge:used=>fs.writeFileSync(budgetFile,JSON.stringify({schema:'COLLECTOR_JOB_SOURCE_HTTP_BUDGET_V1',cloud_run:cloudRun,attempted_source_http:used,maximum_source_http:164}))});
   const archiveToken=String(process.env.REPORT2_CANONICAL_ARCHIVE_D1_API_TOKEN||'').trim();
   const archive=archiveToken?createPrivateArchivePool({enabled:true,token:archiveToken}):null;
-  const collector=loadExactCollector(source,sourceBudget.fetch,{runPrivatePriceRechecks,privateCanonicalBindings,observeCollectorD1,readCollectorPriorRows});
+  const nativeCostReconciliation=loadVerifiedNativeDayReconciliation({root:process.cwd(),generation:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',now_ts:Date.now()});
+  const collector=loadExactCollector(source,sourceBudget.fetch,{runPrivatePriceRechecks,privateCanonicalBindings,observeCollectorD1,readCollectorPriorRows,native_cost_reconciliation:nativeCostReconciliation});
   const token=required('GITHUB_TOKEN'),repository=required('GITHUB_REPOSITORY'),manifest=codeManifest(),receipts=[];
   const durationMinutes=Number(process.env.REPORT2_BACKUP_WORKER_MINUTES||0);
   const recoveryEnabled=['1','true','yes','on'].includes(String(process.env.REPORT2_SCHEDULED_RECOVERY_ENABLED||'').toLowerCase());

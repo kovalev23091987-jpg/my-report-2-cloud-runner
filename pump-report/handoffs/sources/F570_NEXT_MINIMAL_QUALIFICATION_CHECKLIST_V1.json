@@ -1,0 +1,78 @@
+{
+  "schema": "F570_NEXT_MINIMAL_QUALIFICATION_CHECKLIST_V1",
+  "purpose": "Review queue only. No native request, code route, new quota, account discovery or runtime policy is admitted.",
+  "ordered_leads": [
+    {
+      "rank": 1,
+      "provider": "GRVT",
+      "single_call": "POST https://market-data.grvt.io/full/v1/all_instruments",
+      "body": {
+        "is_active": true,
+        "kinds": [
+          "PERPETUAL"
+        ]
+      },
+      "status": "PROPOSED_NOT_ADMITTED",
+      "benefit": "Native definition/unit carrier across bulk-market/funding/flow leads",
+      "stop": "No entitlement/quota/parent admission or body limit support -> no transport."
+    },
+    {
+      "rank": 2,
+      "provider": "REYA",
+      "single_call": "GET https://api.reya.xyz/v2/perpMarketDefinitions",
+      "status": "PROPOSED_NOT_ADMITTED",
+      "benefit": "Current V2 native reference schema; future wallet-position investigation has separate requirements",
+      "stop": "No public-route/parent admission -> no transport. No wallets in this call."
+    },
+    {
+      "rank": 3,
+      "provider": "DEFX",
+      "single_call": null,
+      "status": "BLOCKED_BY_EXACT_DOCUMENTED_PATH_GAP",
+      "benefit": "Explicit public no-auth API and native USDC contract specs",
+      "stop": "No guessed paths.502 doc failure remains spent."
+    },
+    {
+      "rank": 4,
+      "provider": "HIBACHI",
+      "single_call": null,
+      "status": "NAVIGATION_ONLY_NO_NATIVE_PROPOSAL",
+      "benefit": "No data utility proven yet",
+      "stop": "Doc budget exhausted; no index/API browsing without new bounded docs allowance."
+    }
+  ],
+  "before_any_actual_call": [
+    "Fresh ROOT/provider/whole/native admissions with exact host/method/path/body/count/bytes/deadline; a free/public service does not replace them.",
+    "Resolve applicable free entitlement/terms/auth and provider-limit scope; project caps/reserves are not vendor quota.",
+    "One response, zero retry/redirect/fallback/autopaging/automatic follow-up proposed; record true charged/unknown outcomes in ROOT unified budget.",
+    "Do not activate routes from this file or add independently counted suppliers for SDK/WS/RPC/indexer wrappers of the same primary."
+  ],
+  "actual_definition_reply_minimum": [
+    "Original capture hash/receive clock separate from source generation clock.",
+    "Native IDs, asset and quote/settlement/margin identifiers, market kind/status, decimals and exact package/quantity denominations; keep absent fields null with reason.",
+    "Economic classification excludes noncrypto/RWA and preserves native source venue; PERPETUAL or ticker match alone insufficient.",
+    "Independent binding to selected BingX USDT crypto target; definitions alone do not close all550 overlap."
+  ],
+  "if_future_positions_later_admitted": [
+    "Documented exact already-admitted wallet/account set; no address guessing or account discovery.",
+    "Verified active/open status, original native market/asset, long/short side and exact liability/liquidation field semantics.",
+    "Source-native stable position ID and nested aggregate membership; array index/price/time distance cannot be an ID.",
+    "Actual source generation/block clock for each snapshot; response/server/account update time is not automatically that clock.",
+    "Native quantity/notional/quote denomination proven separately from price and quantity; never infer dollars from liquidation price.",
+    "Observed native position state versus externally estimated liquidation price/model explicitly distinguished; never substitute past liquidations or book levels.",
+    "Complete page/cursor/row coverage and bounded sample denominator; absence behind unread cursor remains NOT_CHECKED.",
+    "Independent cross-venue asset binding and contemporaneous USDC/USDT rate+venue basis before exact BingX order-level use.",
+    "Same positions, shared protocol, SDK/RPC/indexers and nested totals share lineage to prevent double count."
+  ],
+  "unchanged_required_boundaries": {
+    "all550_new_status": "NOT_CHECKED",
+    "new_maps_usable": 0,
+    "new_zones": 0,
+    "existing_maps_or_models_promoted": false,
+    "code_or_policy_changed": false,
+    "benchmark_BTC_ETH": false,
+    "statistics_calibration_after_launch": true,
+    "old9pauses2deferrals_and_all_spent_unknowns_reserves_preserved": true
+  },
+  "no_statistics_or_fixtures_substituted_for_actual_evidence": true
+}

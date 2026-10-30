@@ -1,0 +1,79 @@
+{
+  "schema": "F590_MINIMAL_ROOT_ACTUAL_ADMISSION_PROPOSAL_V1",
+  "status": "PROPOSAL_NOT_ADMISSION",
+  "actual_calls": 0,
+  "preferred_existing_access": "ExistingOAuthMCP if alreadyvalid;nonewkey/account. NoauthprobebeyondexplicitROOTtooladmission;noByKwrapperorRESTbypass.",
+  "packet": {
+    "max_MCP_tool_calls": 2,
+    "sequence": [
+      {
+        "n": 1,
+        "tool": "mcp__codex_apps__0xarchive2_get_instruments",
+        "args": {},
+        "purpose": "Onecorecataloguebatch,nohistoricalHL/SOLaudit",
+        "documented_REST_operation_credits": 1,
+        "total_MCP_upstream_HTTP": "UNKNOWN",
+        "total_MCP_credit_upper": "UNKNOWN"
+      },
+      {
+        "n": 2,
+        "tool": "mcp__codex_apps__0xarchive2_get_liquidation_levels",
+        "args_template": {
+          "coin": "ONE_EXACT_IDENTITY_QUALIFIED_SELECTED550_CORE_CANDIDATE",
+          "range_pct": 1,
+          "buckets": 10
+        },
+        "purpose": "Oneconditionalfuturemodelsample",
+        "documented_REST_operation_credits": 1,
+        "total_MCP_credit_upper": "UNKNOWN",
+        "depends": "Call1success,completecatalogue andqualifiedcanonicaljoin/mapcoverage,positivewholeprovider/native/creditadmission;otherwiseSTOPwithUNKNOWN"
+      }
+    ],
+    "REST_operation_credit_subtotal_if_exactly_one_per_tool": 2,
+    "subtotal_is_MCP_total_upper": false,
+    "wrapper_credit_upper": "UNKNOWN_NOT_UNBOUNDED_PERMISSION",
+    "max_response_bytes_each": 2000000,
+    "max_total_bytes": 4000000,
+    "shared_deadline_ms": 10000,
+    "retries": 0,
+    "fallbacks": 0,
+    "HIP3_calls": 0,
+    "history_calls": 0,
+    "signup_paid_newkey_calls": 0
+  },
+  "exact_existing_key_REST_alternative": {
+    "state": "ONLY_IF_EXISTING_KEY_AND_FULLCATALOGUECONTRACT_ALREADYQUALIFIED;noautomaticfallbackfromfailedMCP",
+    "methods": [
+      {
+        "method": "GET",
+        "url": "https://api.0xarchive.io/v1/symbols",
+        "credits": 1,
+        "query_schema": "UNKNOWN_BLOCKED_UNTIL_CLOSED"
+      },
+      {
+        "method": "GET",
+        "url_template": "https://api.0xarchive.io/v1/hyperliquid/liquidations/{EXACT_SYMBOL}/levels?range_pct=1&buckets=10",
+        "credits": 1
+      }
+    ],
+    "max_HTTP": 2,
+    "max_credits_if_these_exact_two_requests_only": 2,
+    "not_authorized_here": true
+  },
+  "preconditions": [
+    "ROOT verifyexistingaccesswithoutsecretprinting;do notcreateaccount/key",
+    "Positiveprovider/wholeaccountreservedheadroom despitebalanceUNKNOWN,actualMCPtransportunknownandqualification17/24",
+    "MCPunknownadditionalcreditsmustreceiveexplicitboundedreservation/proofbeforecalling;2RESTcreditsarenotMCPupper",
+    "All10dailyLOOKUPrunsSPENT;do notspendnewLOOKUP/SQL. Nativepersist/readbackneedseparateordinaryauthorizedcapacity,notrelabelledlookup.",
+    "Todaybank1/hour+carry;2/hourfutureonly;protect3manuals/futurehours/delivery/outcomes/allspentunknowns/caps",
+    "Onlypositiveexactnativeadmissioncanallowstorage;thisproposalgrants0SQL/R/W"
+  ],
+  "stop": [
+    "Auth/toolunknown/plan/credits/ratefailure:retainspent/unknown,stopnoalternatewrapper/retry",
+    "Incompletecatalogue ornextCursorwithoutdocumentedcontinuation:stopUNKNOWNfullcoverage",
+    "Ticker-onlyjoin/unknownproject/binwidth/clock/conversion:stopnonoise500queries",
+    "Onecontrolledsuccessdoesnotprove550orfullcurrentmodelcoverage"
+  ],
+  "evidence": "RequestID/toolID,sanitizedexactargs,bodyhash/bytes/privateoriginal,receivedclock,snapshot_ts/baseblock,sourceunit/binwidth,flaggedexposure,coverage/cursor/completion,exactidentityrefs,credit/rateheadersifavailable,actualtool/upstreamunknownledger,consumerusefulness.",
+  "remaining_scope": "Ifinputsnotclosed,noSOURCEcode/testrequestyet. ROOTcanholdactualpacket;thisisaconcretepreparationwithremainingUNKNOWNs,notinventednativeadmission."
+}

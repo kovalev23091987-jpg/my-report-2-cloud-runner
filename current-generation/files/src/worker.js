@@ -1,5 +1,5 @@
 import {originalIdeaIdentity,qualifyOriginalIdeaSettlement,finishOriginalIdeaAnalysis} from './original-idea-recheck.mjs';
-import {bindApprovedHtxAnalysisScope,approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
+import {bindApprovedHtxAnalysisScope,approvedHtxAnalysisAssetForContract,approvedHtxLimitedReportAdmitted,approvedHtxLimitedScanAdmitted,APPROVED_HTX_LIMITED_CRON_MARKER} from './approved-htx-analysis-scope.mjs';
 import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
 import {buildHtxPrimaryTechnicalReceipt,deriveHtxSpotSameRunPathEvidence,loadN10ReusedVenuePaths,readHtxClosedTriggerCandles} from './htx-technical-structure.mjs';
@@ -28,6 +28,8 @@ import {
   runOpportunityShadowCycle,
   selectOpportunityJournalCandidate,
 } from "./opportunity-intelligence-runtime.mjs";
+import {prepareCapturedAnomalyCardWatch,runIndependentCapturedAnomalyIngress} from './anomaly-native-ingress.mjs';
+import {runCapturedAnomalyDueCycle} from './anomaly-native-due-watch.mjs';
 
 import {
   MULTI_WAVE_VERSION,
@@ -291,8 +293,8 @@ function normalizeSpotSymbol(value) {
 async function fetchJson(url) {
   let timeout = null;
   const started_ts=Date.now();
-  let received_ts=null,http_status=null,reading_body=false;
-  const retain=(stage,error_code=null)=>observeHtxAcquisitionAttempt({url,started_ts,received_ts,http_status,stage,error_code});
+  let received_ts=null,http_status=null,reading_body=false,body_completed_ts=null,body_text=null;
+  const retain=(stage,error_code=null)=>observeHtxAcquisitionAttempt({url,started_ts,received_ts,http_status,stage,error_code,body_completed_ts,body_text});
   retain('REQUEST_STARTED');
   try {
     const controller = new AbortController();
@@ -310,6 +312,7 @@ async function fetchJson(url) {
     received_ts=Date.now();http_status=response.status;retain('HTTP_RESPONSE');
     reading_body=true;
     const text = await response.text();
+    body_completed_ts=Date.now();body_text=text;
     reading_body=false;
     let data;
     try {
@@ -4635,6 +4638,8 @@ function compactStage0Payload(
     timestamp:
       scan.timestamp,
 
+    approved_scope: scan.scope_audit?.approved_generation || null,
+
     contracts:
       scan.contracts.map(
         (c) => [
@@ -4690,8 +4695,7 @@ async function persistStage0(
 
   try {
     if (
-      !scan?.health
-        ?.contracts ||
+      (!scan?.health?.contracts && !approvedHtxLimitedScanAdmitted(scan?.scope_audit?.approved_generation,{ts:scan?.timestamp,...scan?.counts,...scan?.coverage})) ||
       !scan?.counts
         ?.universe_total
     ) {
@@ -5312,7 +5316,7 @@ async function persistStage0(
    * consumer and persisted market-history shard. Unknown classifications are
    * retained in the audit and fail completeness; they are never silently
    * promoted to crypto. */
-  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now});
+  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now,include_native_availability_diagnostic:true,allow_owner_limited_six_unknown:true,native_catalog:{...contractsR,observed_ts:Date.now(),classify:classifyHtxInstrumentScope}});
   const contracts = allContracts.filter(
     (row) => row?.instrument_scope?.classification === "CRYPTO_CONFIRMED" && approvedScope.contracts.includes(row)
   );
@@ -5324,7 +5328,7 @@ async function persistStage0(
     .filter((row) => row?.instrument_scope?.classification === "UNKNOWN_FAIL_CLOSED")
     .map((row) => row.contract_code);
 
-  const scanned =
+  const scannedMarketData =
     contracts.filter(
       (c) =>
         c.data_status ===
@@ -5333,6 +5337,11 @@ async function persistStage0(
           "STALE"
     ).length;
 
+  // A suspended contract is checked through its current official status; it
+  // contributes no market row, price, score, deep request or entry permission.
+  const officiallyUnavailable=approvedScope.audit.officially_unavailable_analysis_contracts.length;
+  const scanned=scannedMarketData+officiallyUnavailable;
+
   const stale =
     contracts.filter(
       (c) =>
@@ -5340,7 +5349,7 @@ async function persistStage0(
         "STALE"
     ).length;
 
-  const missing = approvedScope.audit.missing_approved_analysis_contracts.length +
+  const missing = approvedScope.audit.unresolved_approved_analysis_contracts.length +
     contracts.filter(
       (c) =>
         c.data_status ===
@@ -5458,6 +5467,9 @@ async function persistStage0(
         universeTotal,
 
       scanned,
+      scanned_market_data: scannedMarketData,
+      officially_unavailable: officiallyUnavailable,
+      scan_count_basis: approvedScope.audit.scan_count_basis,
       missing,
 
       crypto_scope_confirmed:
@@ -5522,6 +5534,8 @@ async function persistStage0(
 
       stage0_coverage_pct:
         stage0CoveragePct,
+      market_data_coverage_pct: universeTotal ? scannedMarketData/universeTotal*100 : 0,
+      official_availability_checked: officiallyUnavailable,
 
       crypto_instrument_scope:
         instrumentScopeUnknown === 0
@@ -8766,6 +8780,7 @@ async function runBoundedDeepCheckScheduler(
     const target
     of plan.selected
   ) {
+    if(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)&&env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report.unknown_contracts.some(row=>row.contract===target.contract)){results.push({contract:target.contract,run_id:runId,execution_status:'SKIPPED',reason:'CURRENT_NATIVE_CATALOG_RECORD_UNKNOWN'});continue;}
     if(options?.execution_runtime==="GITHUB_ACTIONS_NODE"){
       const grant=typeof env?.REPORT2_DEEP_HTTP_ADMIT==="function"?env.REPORT2_DEEP_HTTP_ADMIT({logical_request_id:`FULL_DEEP:${runId}:${target.contract}`,lane:"hot",attempts:40}):null;
       if(grant?.allowed!==true||grant?.duplicate===true){results.push({contract:target.contract,run_id:runId,execution_status:"SKIPPED",reason:grant?.status||"NODE_DEEP_HTTP_ADMISSION_REQUIRED"});continue;}
@@ -8997,6 +9012,31 @@ async function runBoundedDeepCheckScheduler(
           direction_candidate:
             deep?.direction_candidate ??
             null,
+          // Copy existing initial-analysis metadata before this projection loses it.
+          initial_analysis_diagnostic: (() => {
+            const c=deep?.canonical_analytical_bundle?.canonical,p=deep?.post_v7_canonical_persistence,max=4096;
+            let diagnostic={schema:'INITIAL_ANALYSIS_METADATA_DIAGNOSTIC_V1',status:'OMITTED_UNBOUND_CANONICAL',complete:false,representation:'EXISTING_PARSED_INITIAL_ANALYSIS_METADATA',requested_contract:typeof target.contract==='string'&&target.contract.length<=64?target.contract:null,requested_run_id:typeof runId==='string'&&runId.length<=128?runId:null,max_candidate_utf8_bytes:max,emitted_json_basis:'EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH4',identity:null,canonical_state:null,canonical_direction:null,persistence:null,metadata:null,omission_reason:'EXACT_CURRENT_CANONICAL_IDENTITY_REQUIRED',source_clocks_refreshed:false,entry_authorized:false};
+            try{
+              if(!(['CLOSED','NOT_CLOSED'].includes(deep?.canonical_analytical_bundle?.status)&&c?.status==='CLOSED'&&typeof runId==='string'&&runId.length>0&&runId.length<=128&&c.run_id===runId&&typeof target.contract==='string'&&target.contract.length>0&&target.contract.length<=64&&c.metadata?.contract===target.contract&&c.candidates?.[0]?.contract===target.contract&&typeof c.snapshot_id==='string'&&c.snapshot_id.length>0&&c.snapshot_id.length<=160&&Number.isSafeInteger(c.observed_ts)&&c.observed_ts>=1000000000000&&typeof c.analytical_fingerprint==='string'&&/^[a-f0-9]{64}$/.test(c.analytical_fingerprint)&&deep.canonical_analytical_bundle.parity_fingerprint===c.analytical_fingerprint&&['REJECTED','OBSERVE','WAIT_FOR_TRIGGER','ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(c.state)&&(c.direction===null||['LONG','SHORT'].includes(c.direction))))return diagnostic;
+              const presentation={schema:'INITIAL_ANALYSIS_METADATA_DIAGNOSTIC_V2',canonical_status:c.status,bundle_status:deep.canonical_analytical_bundle.status,metadata_encoding:'PARSED_OBJECT',telegram_formatter_status:typeof deep.canonical_analytical_bundle.telegram?.status==='string'&&deep.canonical_analytical_bundle.telegram.status.length<=64?deep.canonical_analytical_bundle.telegram.status:null,manual_formatter_status:typeof deep.canonical_analytical_bundle.manual?.status==='string'&&deep.canonical_analytical_bundle.manual.status.length<=64?deep.canonical_analytical_bundle.manual.status:null,telegram_length:Number.isSafeInteger(deep.canonical_analytical_bundle.telegram?.length)?deep.canonical_analytical_bundle.telegram.length:null,telegram_max_length:Number.isSafeInteger(deep.canonical_analytical_bundle.telegram?.max_length)?deep.canonical_analytical_bundle.telegram.max_length:null};
+              diagnostic={...diagnostic,identity:{contract:target.contract,run_id:c.run_id,snapshot_id:c.snapshot_id,observed_ts:c.observed_ts,analytical_fingerprint:c.analytical_fingerprint},canonical_state:c.state,canonical_direction:c.direction,...(presentation.bundle_status==='CLOSED'?{}:presentation)};
+              if(!((p?.status==='CLOSED'&&p.persisted===true||p?.status==='DEDUPLICATED'&&p.persisted===false)&&typeof p.publication_id==='string'&&/^PUB:[a-f0-9]{40}$/.test(p.publication_id)&&p.contract===target.contract&&p.direction===c.direction&&p.run_id===c.run_id&&p.snapshot_id===c.snapshot_id&&p.observed_ts===c.observed_ts))return{...diagnostic,status:'OMITTED_PERSISTENCE_IDENTITY',omission_reason:'EXACT_RETAINED_PERSISTENCE_IDENTITY_REQUIRED'};
+              diagnostic={...diagnostic,persistence:{status:p.status,persisted:p.persisted,publication_id:p.publication_id,identity_matched:true,fingerprint_independently_returned:false}};
+              if(!(c.metadata&&Object.hasOwn(c.metadata,'direction_resolution')&&Object.hasOwn(c.metadata,'score_basis')))return{...diagnostic,status:'OMITTED_LEGACY_METADATA',omission_reason:'INITIAL_ANALYSIS_METADATA_FIELDS_ABSENT'};
+              const text=JSON.stringify({direction_resolution:c.metadata.direction_resolution,score_basis:c.metadata.score_basis},function(key,value){
+                if(Object.is(value,-0)||this[key]!==value||['undefined','function','symbol','bigint'].includes(typeof value)||typeof value==='number'&&!Number.isFinite(value))throw Error('NON_LOSSLESS_METADATA');
+                if(value&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)!==Object.prototype&&Object.getPrototypeOf(value)!==null)throw Error('NON_JSON_METADATA_OBJECT');
+                return value;
+              });
+              const complete={...diagnostic,status:'CAPTURED_EXISTING_INITIAL_ANALYSIS',complete:true,metadata:JSON.parse(text),omission_reason:null};
+              if(new TextEncoder().encode(JSON.stringify(complete,null,2).replace(/\n/g,'\n        ')).byteLength>max){
+                const encoded={...complete,...presentation,metadata_encoding:'COMPACT_PARSED_JSON_TEXT',metadata:null,metadata_json:text};
+                if(new TextEncoder().encode(JSON.stringify(encoded,null,2).replace(/\n/g,'\n        ')).byteLength<=max)return encoded;
+                return{...diagnostic,status:'OMITTED_OVERSIZE',omission_reason:'CANDIDATE_EMITTED_UTF8_LIMIT'};
+              }
+              return complete;
+            }catch{return{...diagnostic,status:'OMITTED_NON_LOSSLESS_METADATA',omission_reason:'INVALID_CYCLIC_OR_NON_LOSSLESS_METADATA'};}
+          })(),
         },
         full_evidence_persistence: {
           stage: "FULL_EVIDENCE_PERSISTENCE",
@@ -14614,9 +14654,39 @@ async function persistFullEvidenceShadowRecord(env, record, { stage392_prepared_
 
   const now = Date.now();
   const dq = record?.data_quality || {};
-  const proofBundleJson = stage392_prepared_proof_bundle?.bundle
-    ? fullEvidenceJson(stage392_prepared_proof_bundle.bundle, null)
-    : null;
+  let proofBundleJson = null;
+  if (stage392_prepared_proof_bundle?.bundle != null) {
+    // Match the existing D1 CHECK before issuing its INSERT. Never truncate a
+    // proof, replace an invalid prepared proof with NULL, or mint a D1 ACK.
+    let proofBundleBytes = null;
+    let proofBundleError = null;
+    try {
+      const serialized = JSON.stringify(stage392_prepared_proof_bundle.bundle);
+      const parsed = JSON.parse(serialized);
+      proofBundleBytes = new TextEncoder().encode(serialized).byteLength;
+      if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+        proofBundleError = "FULL_EVIDENCE_PROOF_BUNDLE_NOT_OBJECT";
+      } else if (proofBundleBytes > 262144) {
+        proofBundleError = "FULL_EVIDENCE_PROOF_BUNDLE_EXCEEDS_EXISTING_262144_BYTE_CHECK";
+      } else {
+        proofBundleJson = serialized;
+      }
+    } catch {
+      proofBundleError = "FULL_EVIDENCE_PROOF_BUNDLE_JSON_NOT_SERIALIZABLE";
+    }
+    if (proofBundleError !== null) {
+      return {
+        status: "REFUSED_PROOF_STORAGE_CONTRACT",
+        persisted: false,
+        insert_changes: 0,
+        hot_path_statements: 0,
+        cleanup_deferred: true,
+        proof_bundle_bytes: proofBundleBytes,
+        proof_bundle_max_bytes: 262144,
+        error: proofBundleError,
+      };
+    }
+  }
 
   try {
     const insert = env.DATA_DB
@@ -15955,6 +16025,8 @@ async function buildDeepCheckInput(params, env) {
       "ETHFI-USDT"
     );
 
+  if(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)&&env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report.unknown_contracts.some(row=>row.contract===contract))return{tool:'deep_check_input',contract,status:'NOT_CLOSED',data_sufficiency:'INSUFFICIENT',reason:'CURRENT_NATIVE_CATALOG_RECORD_UNKNOWN',entry_authorized:false};
+
   const futuresParams = {
     contract,
     notional_usdt: 1000,
@@ -16675,6 +16747,10 @@ async function buildDeepCheckInput(params, env) {
   }
   // Receipt observation cannot predate completion of its market inputs.
   now = Date.now();
+  let anomalyDomainCandidate = null;
+  if (typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
+    anomalyDomainCandidate = prepareCapturedAnomalyCardWatch({contract,known_ts:now});
+  }
   let opportunityIntelligence;
   try {
     const primaryOpportunityInputs =
@@ -16841,6 +16917,15 @@ async function buildDeepCheckInput(params, env) {
           false,
       },
     };
+  }
+
+  if (anomalyDomainCandidate?.status === 'ANOMALY_DRAFT_CANDIDATE' && typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
+    try {
+      await env.REPORT2_ANOMALY_DOMAIN_COMMIT({logical_event_id:anomalyDomainCandidate.logical_event_id,prepare_from_origin:anomalyDomainCandidate.prepare_from_origin});
+    } catch {
+      // Capability retains the effective prepared/opid and UNKNOWN fence.
+      // No retry, replacement operation or public output from this optional lane.
+    }
   }
 
   const executionRefresh = await refreshHtxExecutionQuoteIfNeeded({
@@ -17215,7 +17300,7 @@ async function buildDeepCheckInput(params, env) {
     if(primaryTechnicalReceipt.status!=='CHECKED_PRIMARY_TECHNICAL_CONTEXT')primaryTechnicalReceipt.status='CHECKED_SPOT_ONLY_TECHNICAL_CONTEXT';
     primaryTechnicalReceipt.receipts.push({source:'SAME_RUN_HTX_SPOT_CLOSED_CANDLES',status:'CLOSED_SPOT_PRICE_PATH',provider_http_delta:0,market:'SPOT',same_htx_upstream_not_independent:true,check_completed:true});
   }
-  const reusedVenuePaths=await loadN10ReusedVenuePaths({db:env?.DATA_DB,contract,flow_result:candidateEvidenceV2?.sources?.EXTERNAL_N05_FLOW,primary_receipt:primaryTechnicalReceipt,now});
+  const reusedVenuePaths=await loadN10ReusedVenuePaths({db:env?.DATA_DB,contract,flow_result:candidateEvidenceV2?.sources?.EXTERNAL_N05_FLOW,primary_receipt:primaryTechnicalReceipt,htx_spot_kline:spot?.data?._n10_spot_kline,now});
   if(reusedVenuePaths.evidence.length){
     primaryTechnicalReceipt.evidence.push(...reusedVenuePaths.evidence);
     primaryTechnicalReceipt.receipts.push({source:'N05_ORIGINAL_VENUE_CANDLE_CACHE',status:reusedVenuePaths.status,cache_reads:reusedVenuePaths.cache_reads,provider_http:0,venues:reusedVenuePaths.receipts});
@@ -17234,7 +17319,7 @@ async function buildDeepCheckInput(params, env) {
     });
   }
   console.log('STRICT_17_FINAL_COVERAGE',JSON.stringify({contract,run_id:String(params?.run_id||''),block_coverage:candidateEvidenceV2?.block_coverage||null}));
-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,orderly_public_positions:orderlyPublicPositions,coinboss_liquidation:coinBossLiquidation,swole_liquidation:swoleLiquidation,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
+  const internalMarketContext={...globalInternalContext,...(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)?{limited_report_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report}:{}),candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,orderly_public_positions:orderlyPublicPositions,coinboss_liquidation:coinBossLiquidation,swole_liquidation:swoleLiquidation,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
   const canonicalRunId=String(params?.run_id||'').trim()||nativeLiquidationAcquisition?.run_id||`manual-shadow-${now}`;
   let canonicalExecutionContextSource=null;
   // One bounded indexed read of the source already saved by this exact cycle;
@@ -17295,6 +17380,8 @@ async function buildDeepCheckInput(params, env) {
         previousSnapshotContext,
     });
   console.log('SUPPLEMENTAL_SCORE_RECEIPT',JSON.stringify({contract,run_id:String(params?.run_id||''),status:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.status,base_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.base_score,adjustment:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.adjustment,final_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.final_score,receipts:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.receipts||[]}));
+  // Bounded technical callback after the canonical result is complete; never mutate its metadata/fingerprint.
+  if(typeof env?.REPORT2_GATE_BINDING_DIAGNOSTIC_BIND==='function')try{env.REPORT2_GATE_BINDING_DIAGNOSTIC_BIND({contract,run_id:canonicalRunId,snapshot_id:stage392SnapshotId,observed_ts:now,analytical_fingerprint:canonicalAnalyticalBundle?.canonical?.analytical_fingerprint});}catch{/* Diagnostics cannot change the analysis. */}
   if(typeof env?.REPORT2_LIQUIDATION_FORECAST_RECORD==='function'){
     try{console.log('LIQUIDATION_FORECAST_MEMORY',JSON.stringify(await env.REPORT2_LIQUIDATION_FORECAST_RECORD({contract,run_id:String(params?.run_id||''),liquidations:canonicalAnalyticalBundle?.canonical?.liquidations,observed_ts:now,reference_price:canonicalAnalyticalBundle?.canonical?.current_price??params?.discovery_row?.current_price??null})));}
     catch(error){console.log('LIQUIDATION_FORECAST_MEMORY',JSON.stringify({status:'SOURCE_ERROR',reason:String(error?.message||error).slice(0,160)}));}
@@ -19780,6 +19867,18 @@ const __REPORT2_ORIGINAL_HANDLER = {
           }
         );
 
+      if (typeof env?.REPORT2_ANOMALY_DOMAIN_DUE === 'function' && typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {
+        try { await runCapturedAnomalyDueCycle({env,now_ts:Date.now(),logical_request_id:'ANOMALY_DUE:'+runId,limit:2}); }
+        catch { /* SOURCE retains uncertain operations and the SAME DB fence. */ }
+      }
+
+      // Independent approved-roster slice AFTER existing bounded Deep/DUE work.
+      // Default OFF; IO owner must protect report/final-delivery reserve; native SQL keeps its owner callback.
+      if(env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_ENABLED==='1'){
+        try { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT=await runIndependentCapturedAnomalyIngress({env,run_id:String(runId),fetch_json:fetchJson,classify_contract:classifyHtxInstrumentScope}); }
+        catch { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT={status:'INDEPENDENT_CAPTURE_CALLER_NOT_CLOSED',native_admission_qualified:false,SENT_claimed:false}; }
+      }
+
       env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT={
         schema:'report2-candidate-selection-audit-v1',
         run_id:runId,
@@ -19791,6 +19890,39 @@ const __REPORT2_ORIGINAL_HANDLER = {
         deep_check_selected:(boundedDeepCheck?.plan?.selected||[]).map(row=>row?.contract).filter(Boolean),
         deep_check_capacity_this_invocation:Number(boundedDeepCheck?.plan?.parameters?.configured_max_per_run??0),
       };
+
+
+      // Preserve at most two existing initial-analysis diagnostics in the same failure carrier.
+      {
+        const fulfilled=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[]).filter(row=>row?.execution_status==='FULFILLED'),seen=new Set();
+        env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT.initial_analysis_diagnostics=fulfilled.slice(0,2).map(row=>{
+          const source=row?.canonical_analytical_result?.initial_analysis_diagnostic,p=row?.post_v7_canonical_persistence,max=4096;
+          let diagnostic={schema:'INITIAL_ANALYSIS_METADATA_DIAGNOSTIC_V1',status:'OMITTED_LEGACY_ROW',complete:false,representation:'EXISTING_PARSED_INITIAL_ANALYSIS_METADATA',requested_contract:typeof row.contract==='string'&&row.contract.length<=64?row.contract:null,requested_run_id:typeof runId==='string'&&runId.length<=128?runId:null,max_candidate_utf8_bytes:max,emitted_json_basis:'EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH4',identity:null,canonical_state:null,canonical_direction:null,persistence:null,metadata:null,omission_reason:'INITIAL_ANALYSIS_DIAGNOSTIC_ABSENT',source_clocks_refreshed:false,entry_authorized:false};
+          try{
+            if(!(typeof runId==='string'&&runId.length>0&&runId.length<=128&&typeof row.contract==='string'&&row.contract.length>0&&row.contract.length<=64&&row.run_id===runId)||seen.has(row.contract))return{...diagnostic,status:'OMITTED_UNBOUND_ROW',omission_reason:seen.has(row.contract)?'DUPLICATE_RESULT_CONTRACT':'EXACT_CURRENT_RESULT_IDENTITY_REQUIRED'};
+            seen.add(row.contract);
+            if(!source)return diagnostic;
+            const id=source.identity,v2=source.schema==='INITIAL_ANALYSIS_METADATA_DIAGNOSTIC_V2',encoded=v2&&source.metadata_encoding==='COMPACT_PARSED_JSON_TEXT';
+            let metadata=source.metadata;
+            if(encoded){if(typeof source.metadata_json!=='string'||new TextEncoder().encode(source.metadata_json).byteLength>max)throw Error('ENCODED_METADATA_NOT_BOUNDED');metadata=JSON.parse(source.metadata_json);if(JSON.stringify(metadata)!==source.metadata_json)throw Error('ENCODED_METADATA_NOT_LOSSLESS');}
+            if(v2&&!(source.canonical_status==='CLOSED'&&['CLOSED','NOT_CLOSED'].includes(source.bundle_status)&&row.canonical_analytical_result.status===source.bundle_status&&source.telegram_formatter_status===row.canonical_analytical_result.telegram_formatter_status&&source.manual_formatter_status===row.canonical_analytical_result.manual_formatter_status&&(source.telegram_length===null||Number.isSafeInteger(source.telegram_length)&&source.telegram_length>=0)&&(source.telegram_max_length===null||Number.isSafeInteger(source.telegram_max_length)&&source.telegram_max_length>=0)&&(encoded||source.metadata_encoding==='PARSED_OBJECT'&&!Object.hasOwn(source,'metadata_json'))))return{...diagnostic,status:'OMITTED_UNBOUND_ROW',omission_reason:'EXACT_CANONICAL_AND_PRESENTATION_STATUS_REQUIRED'};
+            if(!((source.schema===diagnostic.schema||v2)&&source.requested_contract===row.contract&&source.requested_run_id===runId&&source.max_candidate_utf8_bytes===max&&source.emitted_json_basis===diagnostic.emitted_json_basis&&source.source_clocks_refreshed===false&&source.entry_authorized===false&&(source.complete===true&&source.status==='CAPTURED_EXISTING_INITIAL_ANALYSIS'&&source.omission_reason===null&&metadata&&typeof metadata==='object'&&!Array.isArray(metadata)&&Object.hasOwn(metadata,'direction_resolution')&&Object.hasOwn(metadata,'score_basis')&&(encoded?source.metadata===null:source.metadata===metadata)||source.complete===false&&source.metadata===null&&!encoded&&!Object.hasOwn(source,'metadata_json')&&['OMITTED_UNBOUND_CANONICAL','OMITTED_PERSISTENCE_IDENTITY','OMITTED_LEGACY_METADATA','OMITTED_OVERSIZE','OMITTED_NON_LOSSLESS_METADATA'].includes(source.status))))return{...diagnostic,status:'OMITTED_UNBOUND_ROW',omission_reason:'INITIAL_ANALYSIS_DIAGNOSTIC_SHAPE_UNBOUND'};
+            if(id!==null&&!(id&&typeof id==='object'&&!Array.isArray(id)&&id.contract===row.contract&&id.run_id===runId&&typeof id.snapshot_id==='string'&&id.snapshot_id.length>0&&id.snapshot_id.length<=160&&Number.isSafeInteger(id.observed_ts)&&id.observed_ts>=1000000000000&&typeof id.analytical_fingerprint==='string'&&/^[a-f0-9]{64}$/.test(id.analytical_fingerprint)&&row.canonical_analytical_result.status===(v2?source.bundle_status:'CLOSED')&&row.canonical_analytical_result.state===source.canonical_state&&row.canonical_analytical_result.analytical_fingerprint===id.analytical_fingerprint))return{...diagnostic,status:'OMITTED_UNBOUND_ROW',omission_reason:'CANONICAL_RESULT_IDENTITY_CHANGED'};
+            if(source.complete===true||source.persistence!==null){
+              if(!(id&&source.persistence?.identity_matched===true&&source.persistence.fingerprint_independently_returned===false&&(p?.status==='CLOSED'&&p.persisted===true||p?.status==='DEDUPLICATED'&&p.persisted===false)&&source.persistence.status===p.status&&source.persistence.persisted===p.persisted&&source.persistence.publication_id===p.publication_id&&typeof p.publication_id==='string'&&/^PUB:[a-f0-9]{40}$/.test(p.publication_id)&&p.contract===id.contract&&p.run_id===id.run_id&&p.snapshot_id===id.snapshot_id&&p.observed_ts===id.observed_ts&&p.direction===source.canonical_direction))return{...diagnostic,status:'OMITTED_UNBOUND_ROW',omission_reason:'RETAINED_PERSISTENCE_IDENTITY_CHANGED'};
+            }
+            const text=JSON.stringify(source,function(key,value){
+              if(Object.is(value,-0)||this[key]!==value||['undefined','function','symbol','bigint'].includes(typeof value)||typeof value==='number'&&!Number.isFinite(value))throw Error('NON_LOSSLESS_METADATA');
+              if(value&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)!==Object.prototype&&Object.getPrototypeOf(value)!==null)throw Error('NON_JSON_METADATA_OBJECT');
+              return value;
+            });
+            const copy=JSON.parse(text);
+            if(new TextEncoder().encode(JSON.stringify(copy,null,2).replace(/\n/g,'\n        ')).byteLength>max)return{...diagnostic,status:'OMITTED_OVERSIZE',omission_reason:'CANDIDATE_EMITTED_UTF8_LIMIT'};
+            return copy;
+          }catch{return{...diagnostic,status:'OMITTED_UNBOUND_ROW',omission_reason:'INVALID_CYCLIC_OR_NON_LOSSLESS_ROW_DIAGNOSTIC'};}
+        });
+        env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT.initial_analysis_diagnostics_omitted_count=Math.max(0,fulfilled.length-2);
+      }
 
       if(queuedLiquidationContract&&typeof env?.REPORT2_LIQUIDATION_QUEUE_COMPLETE==='function'){
         const queueResult=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[]).find(row=>String(row?.contract||'').trim().toUpperCase()===queuedLiquidationContract);
@@ -19810,7 +19942,8 @@ const __REPORT2_ORIGINAL_HANDLER = {
         .map(row=>({contract:row?.contract??null,...(row?.full_evidence_persistence||{})}))
         .find(row=>row?.status&&!(row.persisted===true&&row.status==='CLOSED'&&Number(row.insert_changes)===1));
       const scanPersistenceStatus=scan?.persistence?.status||null;
-      const scanCompleted=Boolean(scan?.health?.contracts&&scan?.counts?.universe_total>0&&scanPersistenceStatus==='CLOSED');
+      const limitedScopeAdmitted=approvedHtxLimitedScanAdmitted(scan?.scope_audit?.approved_generation,{ts:scan?.timestamp,...scan?.counts,...scan?.coverage});
+      const scanCompleted=Boolean((scan?.health?.contracts||limitedScopeAdmitted)&&scan?.counts?.universe_total>0&&scanPersistenceStatus==='CLOSED');
       const scanFailure=scanCompleted?null:{
         status:'DEGRADED_PIPELINE',
         reason:(!scan?.health?.contracts||!(scan?.counts?.universe_total>0))?'STAGE0_SCAN_FAILED':'STAGE0_PERSISTENCE_FAILED',
@@ -20135,7 +20268,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
         JSON.stringify({ run_id: runId, ...stage392FullEvidenceMaintenance })
       );
       const persistenceStatus=scanPersistenceStatus;
-      const success=scanCompleted;
+      const success=scanCompleted&&!limitedScopeAdmitted;
 
       const completedTs =
         Date.now();
@@ -20174,9 +20307,9 @@ const __REPORT2_ORIGINAL_HANDLER = {
             persistenceStatus,
 
           error_text:
-            success
-              ? null
-              : JSON.stringify(
+            scanCompleted&&limitedScopeAdmitted
+              ? APPROVED_HTX_LIMITED_CRON_MARKER
+              : success ? null : JSON.stringify(
                   scan?.endpoint_errors ||
                   scan?.persistence ||
                   {}

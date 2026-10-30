@@ -1,0 +1,157 @@
+{
+  "schema": "F579_OPTIONAL_PUBLIC_FEEDS_FIELD_UNIT_TIME_COVERAGE_V1",
+  "decision": "ONE_EDGEX_V2_SETTLED_FUNDING_BOUNDED_QUALIFICATION_PROPOSAL; NO_ACTIVATION",
+  "contracts": {
+    "tz_v2_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+    "unified_spec_sha256": "384e038c734e02230845925fa564d46402ffc4be4555ca6345315ac5ea335048",
+    "source_index_sha256": "05917c92e98212b79389eeb7cecc53e84197ae18b3cf329041abdc32a85e510b"
+  },
+  "dedup": "Pacifica/Extended prior known; ApeX Omni direct API new in bounded corpus; edgeX prior only4STOCK identity news, V2 market API new. Aster prior signed positionRisk excluded; new public funding history/config examined.",
+  "ASTER": {
+    "primary": [
+      "https://asterdex.github.io/aster-api-website/futures/market-data/",
+      "https://asterdex.github.io/aster-api-website/futures/general-info/"
+    ],
+    "family": "Production futures/v1 only, not v3/testnet interchange",
+    "funding_history": {
+      "method": "GET",
+      "path": "/fapi/v1/fundingRate",
+      "weight": 1,
+      "limit_default": 100,
+      "limit_max": 1000,
+      "fields": [
+        "symbol",
+        "fundingRate",
+        "fundingTime"
+      ],
+      "time_unit": "milliseconds (General info)",
+      "start_end_ms": "inclusive",
+      "order": "ascending",
+      "rate_encoding_unit": null
+    },
+    "funding_config": {
+      "method": "GET",
+      "path": "/fapi/v1/fundingInfo",
+      "weight": 1,
+      "fields": [
+        "fundingIntervalHours",
+        "time",
+        "interestRate",
+        "fundingFeeCap",
+        "fundingFeeFloor"
+      ],
+      "interval_unit": "hours",
+      "gap": "Current config interval is not proof of every historical settlement interval."
+    },
+    "access_quota": "Public market examples; current access not tested. Exchange-info example2400 REQUEST_WEIGHT/min is illustrative; IP-based limits/429/418 described. Actual current allowance unknown.",
+    "hold_reason": "Raw funding decimal-vs-percent encoding and historical period changes not closed. No private account or liquidationRisk repetition.",
+    "coverage550": "NOT_CHECKED"
+  },
+  "APEX_OMNI": {
+    "primary": "https://api-docs.omni.apex.exchange/",
+    "family": "v3.0.0 Omni, do not use Pro/QA mirrors",
+    "method": "GET",
+    "path": "https://omni.apex.exchange/api/v3/history-funding",
+    "symbol_source": "crossSymbolName from All Config Data, not ticker guess",
+    "fields": [
+      "historicalFunds[].rate",
+      "fundingTime",
+      "fundingTimestamp"
+    ],
+    "period_prose": "Funding exchanged hourly",
+    "rate_definition": "Vendor fee formula uses funding rate multiplier",
+    "timestamp_unit": null,
+    "timestamp_role_gap": "History fields described only Time/Funding timestamp; sample12315555 does not establish epoch/unit.",
+    "quota": "600 HTTP requests/60s/IP; 403 IP bans; private-account limits not extra public allowance",
+    "access": "PublicApi group; no native access/key/signup test",
+    "hold_reason": "No timestamp-unit inference from sample digits, websocket envelope or auth header; no native proposal.",
+    "coverage550": "NOT_CHECKED"
+  },
+  "EDGEX_V2": {
+    "primary_repository": "https://github.com/edgex-org/edgex-gitbook",
+    "primary_files": [
+      "api-v2/public-api/funding-api.md",
+      "api-v2/public-api/quote-api.md",
+      "trading/funding-fees.md"
+    ],
+    "host": "https://edgex-prod-v2.edgex.exchange",
+    "public_no_auth": true,
+    "funding_history": {
+      "method": "GET",
+      "path": "/api/v2/public/funding/getFundingRatePage",
+      "params": {
+        "contractId": "native edgeX ID",
+        "size": "1..100, default100; proposal2",
+        "offsetData": "first page empty",
+        "filterSettlementFundingRate": true,
+        "filterBeginTimeInclusive": "optional ms",
+        "filterEndTimeExclusive": "optional ms"
+      },
+      "data_path": "data.dataList[]",
+      "fields": {
+        "fundingRate": "vendor rate multiplier; preserve raw decimal",
+        "fundingTimestamp": "rate calculation time in milliseconds",
+        "fundingTime": "settlement time; native string, independent clock",
+        "isSettlement": "settled flag",
+        "fundingRateIntervalMin": "minutes"
+      },
+      "unit_evidence": "Vendor funding definition uses dimensionless price ratios and a multiplicative rate. This is a semantic inference linking the API rate to that definition, not a magnitude-based scale guess.",
+      "unit_mapping_limit": "API page does not separately state raw fraction versus percent-point serialization. Keep raw text; ROOT must accept/close scale mapping before normalized percentage adoption.",
+      "clock_rule": "Calculation clock is source as-of; not receive time, settlement clock or server responseTime. Do not refresh age when re-downloaded."
+    },
+    "conflicts": [
+      "History filter description says8h; exampleintervalMin240; trading prose starts hourly then permitsN1/N4. Never hardcode period or annualize; retain per-record interval and review inconsistency.",
+      "Minimal Calls mentions getFundingRatePageByContractId/page/limit, but detailed operation defines getFundingRatePage/size/offsetData. Proposal uses detailed operation only."
+    ],
+    "ticker": {
+      "method": "GET",
+      "path": "/api/v2/public/quote/getTicker",
+      "contractId_optional": true,
+      "fields": [
+        "contractId",
+        "contractName",
+        "fundingRate",
+        "fundingTime",
+        "nextFundingTime",
+        "openInterest"
+      ],
+      "fundingRate_definition": "Latest settled rate in current ticker window",
+      "OI_unit": null,
+      "OI_specific_asof": null,
+      "ticker_not_OI_delta_or_direction": true
+    },
+    "coverage_area": {
+      "candidate": "4STOCK crypto meme perpetual only as retained documentary overlap",
+      "selected550_membership": true,
+      "prior_edgeX_listing": "https://pro.edgex.exchange/en-US/news/article/4stock-on-edgex-stock-themed-bnb-meme-perpetual",
+      "prior_evidence": "U3_FULL_934_SCOPE_SELECTION_V1.json; ROOT primary research reused, no refetch",
+      "current_native_contractId": null,
+      "current_status": null,
+      "canonical_crossvenue_identity_acceptance": "ROOT review required; ticker match alone insufficient",
+      "quote_settle": "Retain native venue and unknown quote/settle until metadata proof; never rename to BingX USDT."
+    },
+    "auth_free_quota": "V2 quote/funding docs explicitly public/no-auth. No keys/signup/trial creation. Current actual access/permanent SLA untested; V2 per-route quota and shared usage unknown; V1 Zendesk quota not carried over.",
+    "utility": "Settled funding factor plus calculation time and record interval can add venue-specific context for an already selected crypto asset. No new required gate, no future liquidation map.",
+    "consumer_state": "Documentary proposal only. Scale mapping/identity/current access/quota/actual record consistency must pass ROOT review/check; no READY normalized production fact claimed."
+  },
+  "coverage": {
+    "selected550": "NOT_CHECKED",
+    "future_maps_checked": 0,
+    "future_maps_qualified": 0,
+    "unsupported": 0,
+    "new_native_asset_joins": 0,
+    "new_registered_routes": 0,
+    "new_provider_votes": 0
+  },
+  "actual": {
+    "docs_attempts": 10,
+    "single_searches": 3,
+    "native_market_metadata_provider_RPC_SQL_TG_Worker_deploy_privatecaptures": 0,
+    "code_changes": 0,
+    "source_vendor_imports": 0,
+    "production_tests": 0,
+    "new_chats_agents_automations": 0,
+    "outgoing_messages": 0
+  },
+  "preservation": "All old SPENT/unknowns/reserves/caps/9pauses/2OWNERdeferrals preserved. Old report stays paused; ROOT live program independent."
+}

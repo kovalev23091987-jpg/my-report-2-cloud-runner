@@ -1,0 +1,74 @@
+{
+  "schema": "NATIVE_CARD_WATCH_WIRE_PROPOSED_TARGETS_V1",
+  "base_main": "48a523c0e0cedea47c15d69c810b6fd8bea8bcc4",
+  "status": "AUTHOR_UNEXECUTED",
+  "targets": {
+    "anomaly-research/observer/observer.mjs": {
+      "before_bytes": 23190,
+      "before_sha256": "23a40a47843c9ab37900edd237548c0ad0f734b6f12bdbe54342d8d717f5cc60",
+      "after_bytes": 24988,
+      "after_sha256": "3284152626d52bc51079819726dac44e1e9f28643a8bfb240e5606ab7762e739"
+    },
+    "current-generation/files/src/anomaly-native-domain.mjs": {
+      "before_bytes": 19500,
+      "before_sha256": "a7e4bebe19c9ffecc27aa3274b5d4d5157ed32529356f21cbcb56bb5a0684ede",
+      "after_bytes": 24309,
+      "after_sha256": "5a366465cf546a08c022c04f070a125fb41cd4cc7601b0ce82254badd30bd4c6"
+    },
+    "current-generation/files/src/anomaly-native-ingress.mjs": {
+      "before_bytes": 0,
+      "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 9072,
+      "after_sha256": "5dfeddeb3693c3561ed374d6fc0c59889e1e5a5fff6a99c610c47fdaecf51172"
+    },
+    "current-generation/apply-runtime-overlay.mjs": {
+      "before_bytes": 12518,
+      "before_sha256": "860177eadb8c05c331b02acf59ef5b8fa00e749f14bca7fa9860215d59275a9d",
+      "after_bytes": 12684,
+      "after_sha256": "35610fbb9f9ccd90317d851d31b99959ad23d24114612d06689a120c276fcc84"
+    },
+    "current-generation/files/src/worker.js": {
+      "before_bytes": 632373,
+      "before_sha256": "3c9e8e2ec2c5570d0ef00f050447f0ce5b11bab6d783616a525b372b26f924b3",
+      "after_bytes": 633138,
+      "after_sha256": "e410ba6cdd00886e426e7148a0a715b8df86a755f559c170fae524c6ce6d28dd"
+    }
+  },
+  "worker_insertions": [
+    {
+      "name": "import",
+      "anchor": "} from \"./opportunity-intelligence-runtime.mjs\";\n",
+      "anchor_utf8_bytes": 49,
+      "anchor_sha256": "b30b0849aa295c6bda39b0dba06ba51d6ddbad51f86cec7aedd2d457254e0e3a",
+      "placement": "AFTER",
+      "new_text": "import {prepareCapturedAnomalyCardWatch} from './anomaly-native-ingress.mjs';\n",
+      "new_text_sha256": "75944e0c25950df4cba8ffc5e99b16d6c230d9907668a0d63a8322ce15690e5a"
+    },
+    {
+      "name": "prepare_after_source_capture",
+      "anchor": "  let opportunityIntelligence;\n",
+      "anchor_utf8_bytes": 31,
+      "anchor_sha256": "4e901f9b21d101842953e4e0ef5ce9a72baec5895b1cbce14d32c8ca514d830f",
+      "placement": "BEFORE",
+      "new_text": "  let anomalyDomainCandidate = null;\n  if (typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {\n    anomalyDomainCandidate = prepareCapturedAnomalyCardWatch({contract,known_ts:now});\n  }\n",
+      "new_text_sha256": "eccef006274c148c00da14241351510c804f3e79f98ded2661cdaab7565b7c2f"
+    },
+    {
+      "name": "commit_after_complete_legacy_cycle",
+      "anchor": "  const executionRefresh = await refreshHtxExecutionQuoteIfNeeded({\n",
+      "anchor_utf8_bytes": 68,
+      "anchor_sha256": "7eee2b3ac3af80b00cd494bf37e4c97b48b83bd0899b3c4273483e8885358aba",
+      "placement": "BEFORE",
+      "new_text": "  if (anomalyDomainCandidate?.status === 'ANOMALY_DRAFT_CANDIDATE' && typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT === 'function') {\n    try {\n      await env.REPORT2_ANOMALY_DOMAIN_COMMIT({logical_event_id:anomalyDomainCandidate.logical_event_id,prepare_from_origin:anomalyDomainCandidate.prepare_from_origin});\n    } catch {\n      // Capability retains the effective prepared/opid and UNKNOWN fence.\n      // No retry, replacement operation or public output from this optional lane.\n    }\n  }\n\n",
+      "new_text_sha256": "61df4babee28346ca7a3e6d8274e25c6239caf590f78fabe20d6f8dc8cbccad3"
+    }
+  ],
+  "runtime_new_files": [
+    "src/anomaly-native-ingress.mjs",
+    "src/anomaly-record-observer.mjs"
+  ],
+  "full_runtime_before": 615,
+  "full_runtime_after": 617,
+  "source_admission_baseline_and_candidate": 617,
+  "production_imports_or_activation": false
+}

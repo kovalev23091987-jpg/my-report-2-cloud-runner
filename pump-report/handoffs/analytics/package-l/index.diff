@@ -1,0 +1,80 @@
+--- pump-report/handoffs/analytics/package-l/baseline/index.before.mjs	2026-10-25 18:00:55
++++ pump-report/analytics/index.mjs	2026-10-25 18:15:41
+@@ -1,4 +1,4 @@
+-import {assertInput, ANALYSIS_SCHEMA, CONTRACT_VERSION, factUsable, finite, positive, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, CANDLE_CCXT_TIME_BASIS, candleNativeComparisonKey} from '../contracts/index.mjs';
++import {assertInput, ANALYSIS_SCHEMA, CONTRACT_VERSION, factUsable, finite, positive, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, CANDLE_CCXT_TIME_BASIS, candleNativeComparisonKey,OWNER_MIN_PLAN_POTENTIAL_PCT,ownerPublicationRefusal} from '../contracts/index.mjs';
+ import {START_PROFILE} from '../profile/start-v1.mjs';
+ import {closedCandles, unique} from './math.mjs';
+ import {analyzeMovement, constructPlan} from './movement.mjs';
+@@ -7,9 +7,10 @@
+ import {explainOptionalFacts, explainMapPlan} from './context.mjs';
+ import {consumeObservedDayGrowth} from './day-growth.mjs';
+ import {explainManualAnalysis} from './manual-text.mjs';
++import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT} from './presentation.mjs';
+ export {evaluateOutcome} from './outcome.mjs';
+ 
+-export const RULES_VERSION='pump-analytics-v2-growth24h-20261025';
++export const RULES_VERSION='pump-analytics-v3-owner-eligibility-20261025';
+ const clip=(s,n)=>{let out='';for(const point of s){if(out.length+point.length>n)break;out+=point;}return out;};
+ const wellFormed=s=>s.replace(/\p{Cs}/gu,'�');
+ const label=value=>clip(String(value??'').replace(/[\r\n\p{C}]/gu,' '),128);
+@@ -58,18 +59,15 @@
+ function render(result){
+   const p=result.plan,context=result.findings.filter(f=>contextCodes.includes(f.code)).map(f=>wellFormed(f.text));
+   function make(compact,selected){
+-  const lines=[label(result.instrument.native_symbol)+' · +10% за 4 часа: вероятность пока не оценена',result.findings.filter(f=>!contextCodes.includes(f.code)).slice(0,2).map(f=>f.text).join(' '),
++  const mode=presentationModeLines(result),lines=[label(result.instrument.native_symbol)+' · '+mode[0],...mode.slice(1),growthProofLine(result.growth_proof,compact),FUTURE_EVENT_TEXT,result.findings.filter(f=>!contextCodes.includes(f.code)).slice(0,2).map(f=>f.text).join(' '),
+     'Покупка на откате: '+p.entry_zones.map(z=>px(z.lower)+'–'+px(z.upper)+' ('+(z.basis_level.kind==='HIGH'?'прежняя вершина':'прежний минимум')+' '+px(z.basis_level.price)+'; '+(z.confirmation_status==='CONFIRMED_RECLAIM'?'возврат подтверждён':'предварительная область')+')').join('; ')+'.',
+     'Фиксация всей позиции: '+px(p.exit_zone.lower)+'–'+px(p.exit_zone.upper)+' — ближайшая подтверждённая вершина выше цены.'];
+   if(selected.length)lines.push(selected.join(' '));
+   const map=result.liquidations;
+   if(map.map_mode==='WITHOUT_MAP')lines.push('Карта ликвидаций недоступна. Области входа и выхода определены по движению цены и объёму; текущая ликвидность проверена.');
+   else{lines.push('Ликвидации сверху: '+(map.zones_up.map(z=>mapLine(z,result.analysis_ts,compact)).join('; ')||'пригодных зон нет')+'.');lines.push('Ликвидации снизу: '+(map.zones_down.map(z=>mapLine(z,result.analysis_ts,compact)).join('; ')||'пригодных зон нет')+'.');if(map.status==='PARTIAL')lines.push('Карта неполная.');lines.push('Охват карты: только полученные данные источников.');}
+-  lines.push('Размер: до '+p.position_limit_usdt+' USDT по текущему стакану; будущая цена исполнения не гарантирована.');
+   lines.push('Важно: пересмотреть план при цене ниже '+px(p.invalidation.price)+'.');
+-  if(result.activity?.volume_basis?.field==='volume_native')lines.push('Объём сопоставлен только со своей историей; абсолютная единица количества неизвестна.');
+   if(result.wave_state==='SHARP_PULLBACK_UNCONFIRMED')lines.push('Возврат не подтверждён; предварительная область не является доказанным выкупом.');
+-  if(p.desired_potential_status==='BELOW_DESIRED')lines.push('Обоснованный потенциал ниже желаемых '+p.desired_plan_potential_pct+'%.');
+   return wellFormed(lines.join('\n'));
+   }
+   const full=make(false,context);if(full.length<=4096)return full;
+@@ -86,10 +84,10 @@
+ function analyzeCore(input, profile){
+   assertInput(input);
+   const {facts,analysis_ts:at,instrument}=input;
+-  const result={schema_version:ANALYSIS_SCHEMA,contract_version:CONTRACT_VERSION,rules_version:RULES_VERSION,profile_version:profile?.version??null,run_id:input.run_id,mode:input.mode,
++  const result={schema_version:ANALYSIS_SCHEMA,contract_version:CONTRACT_VERSION,rules_version:RULES_VERSION,profile_version:profile?.version??null,run_id:input.run_id,mode:input.mode,run_purpose:typeof input.run_purpose==='string'?input.run_purpose:null,
+     instrument:{...instrument},analysis_ts:at,reference_price:null,wave_id:null,wave_state:null,previous_wave:input.previous_wave??null,next_wave:null,current_threshold_passed:false,
+     automatic_eligible:false,ready:false,status:'WAITING',reasons:[],findings:[],plan:null,liquidity:null,liquidations:null,
+-    probability:{value_pct:null,event:'PRICE_PLUS_10_PERCENT_WITHIN_4_HOURS',reason:'NOT_CALIBRATED'},fact_ids:[],card_text:null};
++    probability:{value_pct:null,event:'PRICE_PLUS_10_PERCENT_WITHIN_4_HOURS',reason:'NOT_CALIBRATED'},notification_eligibility:{eligible:false,reason:'ANALYSIS_NOT_READY',required_potential_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,minimum_potential_pct:null,comparison:null},fact_ids:[],card_text:null};
+   if(!profileReady(profile))return {...result,reasons:['ANALYTICS_PROFILE_REQUIRED']};
+   const usable={};
+   for(const kind of ['price','candles','orderbook']){
+@@ -113,6 +111,7 @@
+       candle_time_basis:facts.candles.coverage?.time_basis??null,candle_evidence_ref:facts.candles.evidence_ref??null,
+       candle_provenance:{coverage:structuredClone(facts.candles.coverage??null),event_ts:facts.candles.event_ts,received_ts:facts.candles.received_ts,source:facts.candles.source,venue:facts.candles.venue}},
+     reasons:unique([...result.reasons,...movement.reasons]),fact_ids:[facts.price.fact_id,facts.candles.fact_id,...(ticker?[ticker.fact_id]:[]),...(day.usable?[day.fact_id]:[])]});
++  result.growth_proof=selectGrowthProof(result,profile);
+   result.liquidations=selectZones(input.liquidations,instrument,result.reference_price,movement.normal_range,at,profile);
+   if(!movement.active){result.status=movement.reasons.some(r=>['CURRENT_VOLUME_REQUIRED','VOLUME_BASELINE_UNAVAILABLE','WAVE_PATH_INCOMPLETE','WAVE_VOLUME_COMPARISON_BASIS_CHANGED','VOLUME_BASELINE_ZERO_OR_UNKNOWN','IMPULSE_VOLUME_ZERO_OR_UNKNOWN','VOLUME_RATIO_NOT_FINITE'].includes(r))?'WAITING':'REJECTED';return result;}
+   if(descriptions[movement.state])result.findings.push({code:movement.state,text:descriptions[movement.state],fact_ids:[facts.candles.fact_id]});
+@@ -124,13 +123,17 @@
+   if(result.liquidity.status!=='USABLE')return {...result,status:result.liquidity.status==='INSUFFICIENT'?'REJECTED':'WAITING',reasons:unique([...result.reasons,result.liquidity.reason])};
+   result.plan=constructPlan(movement,result.reference_price,result.liquidity,facts.candles.fact_id,instrument.price_tick,profile);
+   if(!result.plan)return {...result,status:'REJECTED',reasons:unique([...result.reasons,'INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED'])};
++  const potentialReason=ownerPublicationRefusal(result),minimum=result.plan.potential_pct?.minimum;
++  result.notification_eligibility={eligible:potentialReason===null,reason:potentialReason,required_potential_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,minimum_potential_pct:finite(minimum)?minimum:null,
++    comparison:{entry_upper:Math.max(...result.plan.entry_zones.map(z=>z.upper)),exit_lower:result.plan.exit_zone.lower,basis:'GROSS_ENTRY_TO_EXIT_NOT_EXECUTED_PROFIT',execution_proven:false}};
++  if(potentialReason)return {...result,status:'REJECTED',reasons:unique([...result.reasons,potentialReason])};
+   const context=explainOptionalFacts(facts,at,profile);
+   if(context.trade_context)result.trade_context=context.trade_context;
+   if(Object.keys(context.optional_context).length)result.optional_context=context.optional_context;
+   result.findings.push(...context.findings);result.fact_ids.push(...context.fact_ids);
+   const mapContext=explainMapPlan(result.plan,result.liquidations);
+   if(mapContext){result.plan_context={liquidation_confluence:mapContext.liquidation_confluence};result.findings.push(mapContext.finding);}
+-  result.findings.push({code:'STRUCTURAL_PLAN',text:'Вход и выход обоснованы подтверждённой структурой цены; размер ограничен текущей двусторонней ликвидностью.',fact_ids:[facts.candles.fact_id,facts.orderbook.fact_id]});
++  result.findings.push({code:'STRUCTURAL_PLAN',text:'Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.',fact_ids:[facts.candles.fact_id,facts.orderbook.fact_id]});
+   result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids]);result.card_text=render(result);
+   return result;
+ }

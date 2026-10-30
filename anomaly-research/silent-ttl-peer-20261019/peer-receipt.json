@@ -1,0 +1,225 @@
+{
+  "schema": "ANOMALY_WORKER_SILENT_TTL_POLICY_DIAGNOSTIC_CODE_PEER_V1",
+  "created_at_utc": "2026-10-19T09:22:50.569709+00:00",
+  "verdict": "ZERO_REMAINING_CONCRETE_BLOCKERS_IN_REVIEWED_CODE_SNAPSHOT",
+  "review_basis": "READ_ONLY_STATIC_CODE_NO_APPLICATION_OR_TEST_EXECUTION",
+  "target": {
+    "coordinator_checkout": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-schedule-fix",
+    "coordinator_branch": "work/entry-existing-receipt-20261019",
+    "coordinator_HEAD": "511fb5bdf1900432311a83c57a9e1958ed0f2b9c",
+    "working_tree_was_uncommitted": true,
+    "reviewed_files": {
+      "current-generation/files/src/original-idea-terminal.mjs": {
+        "sha256": "8ee55b30cf2f6c289d8c51c8e6c8eed1cc56555041985ed9a68c8a16c39ea614",
+        "bytes": 7693
+      },
+      "current-generation/files/src/canonical-publication.mjs": {
+        "sha256": "658505469318149f4b796903e11e7a90c69b37f5f6fced55c7927cf1a79733d0",
+        "bytes": 48767
+      },
+      "current-generation/files/src/publication-reconciler.mjs": {
+        "sha256": "73cc72450ab47b5fe0d7ab0cc42eec1456c140015e3e5726eadef4ef3f21085f",
+        "bytes": 21543
+      },
+      "current-generation/files/src/original-task-followup-audit.mjs": {
+        "sha256": "b27e7a9aaab4fb6ba9dc5fe1f36fe4f0c45c359d0f6097cc635554a678b16f65",
+        "bytes": 5583
+      },
+      "current-generation/apply-runtime-overlay.mjs": {
+        "sha256": "0e82fe31a0166ff26b9a5422b6346d5d792919fa7241ef9fe32b979cd3909516",
+        "bytes": 12301
+      },
+      "current-generation/files/src/bound-telegram-delivery-sidecar.mjs": {
+        "sha256": "a5a829eaf3dcc41c654271ab191aedc2cceebfdaf8dec9d3e0082080f701f891",
+        "bytes": 9007
+      },
+      "current-generation/files/src/owner-telegram-expiry-policy.mjs": {
+        "sha256": "b99d2bcd806e4b7e0119b0e5042a00bc064f4a5d43b0e53007fb96f35fe65eeb",
+        "bytes": 794
+      }
+    },
+    "immutable_snapshot_zip": {
+      "path": "anomaly-research/silent-ttl-peer-20261019/reviewed-code-snapshots.zip",
+      "bytes": 42773,
+      "sha256": "e9b0497a9c245defbe97307b3c2cd7b46c238597409f282e482864dbe6b2e141",
+      "members": "7 reviewed final files plus3 initial finding files; own-prefix evidence, no production imports"
+    },
+    "initial_finding_file_hashes": {
+      "current-generation/files/src/original-idea-terminal.mjs": {
+        "bytes": 7309,
+        "sha256": "24ca103aa12a4e1796f990864530eb677c6269c3d2f481d3f2ef5a288996de90"
+      },
+      "current-generation/files/src/publication-reconciler.mjs": {
+        "bytes": 21092,
+        "sha256": "104a213774a0c241612c45242cfd7f5df651b5e6f0f0cd5978afc479842e8e76"
+      },
+      "current-generation/files/src/bound-telegram-delivery-sidecar.mjs": {
+        "bytes": 8234,
+        "sha256": "7003bd905a193a765c7fa2b9a961caebe0d7154719f1d4649581d9d6dad7ee31"
+      }
+    },
+    "coordinator_commit_exact_for_all_reviewed_files": "05ce093e9e4428ffec5e15d5bc677044346a2f53"
+  },
+  "scope": {
+    "reviewer_thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "fresh_main_at_acquire": "0080851276223fdd6c7dfa111bbaf2efe3f5cb87",
+    "own_lease_ref_sha": "e6ec81206d20e27f4108823d60a442ac6d572595",
+    "own_lease_owner": "CODEX:OFFLINE_ANOMALIES:1792401275974",
+    "exact_readback": true,
+    "owner_policy": "Suppress Telegram messages solely about original idea TTL expiry. Preserve OBSERVE/confirmedENTRY and task expiry/price cancellation rules. Never rewrite prior SENT bytes.",
+    "application_or_tests": 0,
+    "old_34_or_7_collector_checks_repeated": 0,
+    "provider_or_artifact_network_GET": 0,
+    "native_SQL_or_MAIN_or_Telegram": 0,
+    "shared_runtime_or_main_changes_by_reviewer": 0,
+    "combined_source_512_515_code_reviewed": false,
+    "cleanup": "DEFERRED_TO_END_OF_OWNER_PLAN"
+  },
+  "initial_findings": [
+    {
+      "id": "F1",
+      "status": "RESOLVED_BY_READONLY_FINAL_CODE_DELTA",
+      "scope": "known unsent TTL backlog before life/publication-dependent processing",
+      "counterexamples": [
+        {
+          "input": {
+            "dispatch": {
+              "lifecycle_event": "IDEA_REMOVED",
+              "state": "PENDING",
+              "message_hash": "valid LIFECYCLE_REMOVAL_RECEIPT_V1 reason ORIGINAL_TTL_EXPIRED with identity matching dispatch"
+            },
+            "binding": null,
+            "lifecycle": null,
+            "second_dispatch": "unbound ENTRY/PENDING"
+          },
+          "trace": [
+            "reconcile selected=[administrativeTTL] even with pending ENTRY",
+            "exactPublicationForDispatch life SELECT null -> LIFECYCLE_NOT_FOUND before new TTL branch",
+            "status not in final mark list -> TTL remains pending",
+            "network load BINDING_NOT_FOUND -> FAILED_RETRYABLE",
+            "next invocation selects same TTL before reconciling ENTRY"
+          ],
+          "effect": "reproducible static queue starvation in the two-row input; no native-row existence asserted"
+        },
+        {
+          "input": {
+            "dispatches": "two already bound IDEA_REMOVED PENDING TTL rows",
+            "binding": "present",
+            "publication": "missing or invalid canonical_json",
+            "later_dispatch": "eligible bound ENTRY"
+          },
+          "trace": [
+            "loadBoundTelegram PUBLICATION_NOT_FOUND or CANONICAL_JSON_INVALID before OWNER_TTL_NOTICE_DISABLED",
+            "sidecar maps both to FAILED_RETRYABLE",
+            "same two bound IDEA_REMOVED rows fill two lifecycle slots next time"
+          ],
+          "effect": "known TTL rows do not reach policy terminal state; no notification leak but repeated slot occupation"
+        }
+      ],
+      "resolution": "Known unsent TTL receipt is identified from already selected row before lifecycle/binding lookup. Reconciler marks FAILED_FINAL and processes remaining rows; bound sidecar selects bounded existing message_hash and suppresses before load. No new query, no SENT state selected."
+    },
+    {
+      "id": "F2",
+      "status": "RESOLVED_BY_READONLY_FINAL_CODE_DELTA",
+      "scope": "silent TTL lifecycle closure and zero ACK",
+      "input": {
+        "task_state": "EXPIRED",
+        "original_OBSERVE": "SENT/bound/exact identity",
+        "lifecycle_status": "OBSERVE",
+        "existing_IDEA_REMOVED_dispatch": "same wave/rules in any state",
+        "other_task": "later sorted valid CANCELLED task"
+      },
+      "trace": [
+        "prepareOriginalIdeaTerminal selector includes expired task with life OBSERVE",
+        "lifecycle UPDATE NOT EXISTS any same-wave IDEA_REMOVED dispatch -> zero changes",
+        "new if(expired) returns immediately with lifecycle_closed=false",
+        "existing dispatch may become FAILED_FINAL but NOT EXISTS still false",
+        "same unclosed expired task remains selectable ahead of other task during original bounded selection window"
+      ],
+      "effect": "silent closure not achieved and terminal scan can repeatedly stop on zero ACK; dispatch SENT bytes need not change",
+      "native_row_claim": false,
+      "resolution": "Expired lifecycle update uses1=1 instead of any-dispatch exclusion; price cancellation preserves original NOT EXISTS. Zero changes continues existing two-task scan; unknown ACK is explicitly not closed. No new TTL dispatch inserted."
+    }
+  ],
+  "remaining_findings": [],
+  "final_code_reasoning": [
+    {
+      "files": [
+        "original-idea-terminal.mjs"
+      ],
+      "claim": "New TTL expiry is silent and closes lifecycle",
+      "basis": "Existing task selector/canonical identity/expiry/cancel predicates retained. Only EXPIRED path omits dispatch INSERT and removes dispatch-existence veto from lifecycle UPDATE. Zero ACK scans next selected task; unknown ACK reports not-closed. Price cancellation retains guarded UPDATE+INSERT and original receipt fields."
+    },
+    {
+      "files": [
+        "owner-telegram-expiry-policy.mjs",
+        "publication-reconciler.mjs"
+      ],
+      "claim": "Known unsent TTL backlog terminates before missing lifecycle/publication can cause a retry loop",
+      "basis": "Pure matcher requires PENDING/FAILED_RETRYABLE +IDEA_REMOVED +bounded parsed removal receipt +ORIGINAL_TTL_EXPIRED +same contract/direction/wave. Selected silent rows get FAILED_FINAL before exactPublicationForDispatch; remaining ENTRY/OBSERVE rows continue within the original bounded query result. No prior read/canonical persistence for matched TTL."
+    },
+    {
+      "files": [
+        "owner-telegram-expiry-policy.mjs",
+        "bound-telegram-delivery-sidecar.mjs"
+      ],
+      "claim": "Known bound TTL rows cannot occupy retry slots repeatedly or reach network",
+      "basis": "The existing selected-row query adds bounded message_hash projection; no extra SQL query. Matcher runs before binding/publication loading; unsent TTL becomes FAILED_FINAL and is absent from next pending selection. Existing max_reconcile4/max_lifecycle2/envelope and ACK/network/claim functions remain. A usageSnapshot-only guard after terminal preparation stops before further work if the unchanged delivery envelope is exceeded; it adds no SQL and does not grant headroom."
+    },
+    {
+      "files": [
+        "canonical-publication.mjs"
+      ],
+      "claim": "Canonical policy refuses TTL in both finalize actionability and bound load",
+      "basis": "Only IDEA_REMOVED with lifecycle_removal.reason ORIGINAL_TTL_EXPIRED receives OWNER_TTL_NOTICE_DISABLED. Existing OBSERVE/WAIT/ENTRY gates are not relaxed. Bound TTL refusal occurs before prior-delivery query/network; valid cancellation reasons preserve existing route."
+    },
+    {
+      "files": [
+        "original-task-followup-audit.mjs",
+        "original-idea-terminal.mjs"
+      ],
+      "claim": "Diagnostic projection does not acquire or authorize trading",
+      "basis": "Pure helper bounds last_result to16384 code units, projects only retained identity-bound input and at most8 retained light rows. Source/observed/checked clock checks and original task identity are preserved. History is always incomplete, actual_ENTRY null, entry_authorized false, SQL/sourceHTTP0. projectFollowup catches projection failures after existing writes; no trading predicate depends on diagnostic output."
+    },
+    {
+      "files": [
+        "apply-runtime-overlay.mjs"
+      ],
+      "claim": "Both new policy/diagnostic modules are copied",
+      "basis": "Overlay includes original-task-followup-audit.mjs and owner-telegram-expiry-policy.mjs. The same working overlay also contains source integration additions; those additions and their runtime behavior are outside this code peer."
+    }
+  ],
+  "immutability_and_authority": {
+    "prior_SENT_dispatch_mutation_added": false,
+    "basis": "Known-TTL matcher excludes SENT; reconciliation mark only PENDING/FAILED_RETRYABLE, network setState receives pending-selected rows and SQL excludes SENT. No old publication text/message_hash/Telegram message-id rewrite is added. Lifecycle close is internal; historical expiry messages remain historical.",
+    "OBSERVE_ENTRY_rules_altered": false,
+    "raw_query_count_increase_required_by_policy": false,
+    "task_expiry_extended_or_price_cancel_removed": false,
+    "actual_delivery_or_native_cost_qualified": false
+  },
+  "limits_ru": [
+    "Статический peer конкретных сохранённых bytes. Новых unit/app/проб не было. Общую affected/cloud проверку и интеграцию выполняет координатор.",
+    "Контрпримеры — точные входные формы и трассы кода, не утверждение о наличии таких строк в production. По финальным bytes обе переданные проблемы закрыты; production queue readback здесь не выполнялся.",
+    "Диагностика отражает только уже выбранный и прошедший старый parser/identity task перед terminal writes. Она не восстанавливает все LIGHT, задачи вне selector, пропавшие/invalid original replies, цены или первую причину отказа всей цепочки. История явно неполная, UNKNOWN сохраняется.",
+    "16K ограничение helper задано в UTF-16 code units; bounded SQL message_hash expression — длинаSQLite text. Это не доказательство native wire/heap/body/day budget.",
+    "Общий source512+515/Bitfinex compact consumer/formatter, текущие105/nativecache/cost/delivery и старые принятые проверки этим peer не квалифицированы.",
+    "Receipt относится к точному snapshot ZIP и listed SHA; более поздние кодовые изменения требуют проверки только нового delta."
+  ],
+  "verification": {
+    "status": "PASS",
+    "kind": "ONE_FINAL_CODE_EVIDENCE_INTEGRITY_ONLY",
+    "checks": [
+      "IMMUTABLE_CODE_ZIP_EXACT_SHA_10MEMBERS",
+      "SEVEN_REVIEWED_CURRENT_CODE_FILES_BYTEEXACT_TO_SNAPSHOT",
+      "THREE_INITIAL_FINDING_FILES_BYTEEXACT",
+      "TWO_REPORTED_STATIC_FINDINGS_RESOLVED_NEW_DELTA",
+      "SCOPE_APP_TESTS_PROBES_HTTP_SQL_TG_ZERO",
+      "OWN_PREFIX_ONLY_TWO_EVIDENCE_FILES",
+      "FRESH_MAIN_ALL4_EQUAL_OWN_ACTIVE_CAS_READBACK"
+    ],
+    "application_or_tests": 0,
+    "fresh_main": "0080851276223fdd6c7dfa111bbaf2efe3f5cb87",
+    "own_lease_ref_sha": "e6ec81206d20e27f4108823d60a442ac6d572595",
+    "all_four_active_equal": true
+  }
+}

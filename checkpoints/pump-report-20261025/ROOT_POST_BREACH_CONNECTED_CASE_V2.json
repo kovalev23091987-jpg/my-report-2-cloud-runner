@@ -1,0 +1,423 @@
+{
+  "schema": "ROOT_POST_BREACH_CONNECTED_CASE_V1",
+  "status": "PASS",
+  "authority_main": "0084ef43eb7029cf8167739499c1aa7295a8481e",
+  "Node": 1,
+  "builds": 1,
+  "engine_calls": 3,
+  "pure_movement_calls": 11,
+  "pure_cause_calls": 16,
+  "guard_checks": 5,
+  "queue_checks": 7,
+  "operator_syntax_checks": 3,
+  "named_gate_constructor_calls": 10,
+  "named_sql_transform_calls": 4,
+  "mock_CF_requests": 11,
+  "mock_Telegram": 1,
+  "native_SQL": 0,
+  "Cloudflare_HTTP": 0,
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "real_AUTO_SENT": false,
+  "stages": [
+    {
+      "stage": "EXACT_FROZEN_BUILD",
+      "artifact_path": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-bingx-migration-20261024/pump-report/.private/qualification/post-breach-v2/artifact.json",
+      "artifact_sha256": "f8dca4949ec623ccc994d5a2a0179959111212084ed278a767e20a4c42937061",
+      "implementation_sha256": "265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854",
+      "module_count": 78,
+      "changed_modules": [
+        "analytics/cold-first-structural-base.mjs",
+        "analytics/index.mjs",
+        "analytics/movement.mjs",
+        "analytics/post-breach-wave.mjs",
+        "contracts/index.mjs",
+        "contracts/wave-lifetime.mjs",
+        "runtime/candidate-priority.mjs",
+        "runtime/implementation-pin.mjs"
+      ],
+      "unchanged_before_modules": 70
+    },
+    {
+      "stage": "POST_BREACH_NEW_BEHAVIOR",
+      "vectors": [
+        {
+          "id": "known_closed_cause_and_late_receipt",
+          "status": "PASS",
+          "state": "CALM_PULLBACK",
+          "wave_id": "PUMP:ARTIFICIAL:BINGX:BZ45-USDT:POST_BREACH_V1:1799994480000:1799994060000",
+          "reasons": [],
+          "anchor": 1799994780000,
+          "expiry": 1800009180000,
+          "cause_proved": true,
+          "artificial": true
+        },
+        {
+          "id": "partial_closed_path_uses_conservative_boundary",
+          "status": "PASS",
+          "state": "CANCELLED",
+          "wave_id": "ARTIFICIAL:BZ45:OLD_CANCELLED",
+          "reasons": [
+            "PLAN_INVALIDATED"
+          ],
+          "anchor": null,
+          "expiry": 1800002700000,
+          "cause_proved": false,
+          "artificial": true
+        },
+        {
+          "id": "qualified_incomplete_prefix_does_not_block_complete_required_path",
+          "status": "PASS",
+          "state": "CALM_PULLBACK",
+          "wave_id": "PUMP:ARTIFICIAL:BINGX:BZ45-USDT:POST_BREACH_V1:1799994480000:1799994060000",
+          "reasons": [],
+          "anchor": 1799994780000,
+          "expiry": 1800009180000,
+          "cause_proved": true,
+          "artificial": true
+        },
+        {
+          "id": "expired_old_wave_keeps_original_expiry_cutoff",
+          "status": "PASS",
+          "state": "EXPIRED",
+          "wave_id": "ARTIFICIAL:BZ45:OLD_CANCELLED",
+          "reasons": [
+            "WAVE_LIFETIME_EXPIRED"
+          ],
+          "anchor": null,
+          "expiry": 1799996400000,
+          "cause_proved": false,
+          "artificial": true
+        },
+        {
+          "id": "later_first_observation_does_not_give_extra_lifetime",
+          "status": "PASS",
+          "state": "CALM_PULLBACK",
+          "wave_id": "PUMP:ARTIFICIAL:BINGX:BZ45-USDT:POST_BREACH_V1:1799994480000:1799994060000",
+          "reasons": [],
+          "anchor": 1799994780000,
+          "expiry": 1800009180000,
+          "cause_proved": true,
+          "artificial": true
+        },
+        {
+          "id": "continuation_keeps_identity_origin_anchor_and_expiry",
+          "status": "PASS",
+          "state": "CALM_PULLBACK",
+          "wave_id": "PUMP:ARTIFICIAL:BINGX:BZ45-USDT:POST_BREACH_V1:1799994480000:1799994060000",
+          "reasons": [],
+          "anchor": 1799994780000,
+          "expiry": 1800009180000,
+          "cause_proved": false,
+          "artificial": true
+        },
+        {
+          "id": "legacy_without_closed_cause_remains_conservative",
+          "status": "PASS",
+          "state": "CANCELLED",
+          "wave_id": "ARTIFICIAL:BZ45:OLD_CANCELLED",
+          "reasons": [
+            "PLAN_INVALIDATED"
+          ],
+          "anchor": null,
+          "expiry": 1800002700000,
+          "cause_proved": false,
+          "artificial": true
+        },
+        {
+          "id": "distinct_identity_and_previous_object_immutability",
+          "status": "PASS",
+          "state": "CALM_PULLBACK",
+          "wave_id": "PUMP:ARTIFICIAL:BINGX:BZ45-USDT:POST_BREACH_V1:1799994480000:1799994060000",
+          "reasons": [],
+          "anchor": 1799994780000,
+          "expiry": 1800009180000,
+          "cause_proved": true,
+          "artificial": true
+        },
+        {
+          "id": "active_to_cancel_has_no_same_call_rearm",
+          "status": "PASS",
+          "state": "CANCELLED",
+          "wave_id": "ARTIFICIAL:BZ45:OLD_CANCELLED",
+          "reasons": [
+            "PLAN_INVALIDATED"
+          ],
+          "anchor": null,
+          "expiry": 1800002700000,
+          "cause_proved": false,
+          "artificial": true
+        },
+        {
+          "id": "broken_new_seed_is_not_rescued_by_cold_base",
+          "status": "PASS",
+          "state": "CANCELLED",
+          "wave_id": "ARTIFICIAL:BZ45:OLD_CANCELLED",
+          "reasons": [
+            "POST_BREACH_INTACT_SEED_REQUIRED"
+          ],
+          "anchor": null,
+          "expiry": 1800002700000,
+          "cause_proved": true,
+          "artificial": true
+        },
+        {
+          "id": "cause_fact_identity_mismatch_no_event_rearm",
+          "status": "PASS",
+          "cause_proved": false
+        },
+        {
+          "id": "future_proof_receipt_is_not_known",
+          "status": "PASS",
+          "cause_proved": false
+        },
+        {
+          "id": "partial_new_lifetime_marker_cannot_reset_as_legacy",
+          "status": "PASS",
+          "state": "CANCELLED",
+          "wave_id": "ARTIFICIAL:BZ45:OLD_CANCELLED",
+          "reasons": [
+            "WAVE_LIFETIME_METADATA_INVALID"
+          ],
+          "anchor": 1799988300000,
+          "expiry": 1800002700000,
+          "cause_proved": false,
+          "artificial": true
+        },
+        {
+          "id": "invalid_anchor_on_new_previous_cannot_reset",
+          "status": "PASS",
+          "state": "CALM_PULLBACK",
+          "wave_id": "PUMP:ARTIFICIAL:BINGX:BZ45-USDT:POST_BREACH_V1:1799994480000:1799994060000",
+          "reasons": [
+            "WAVE_LIFETIME_METADATA_INVALID"
+          ],
+          "anchor": 1799994840000,
+          "expiry": 1800009180000,
+          "cause_proved": false,
+          "artificial": true
+        },
+        {
+          "id": "partial_cold_metadata_cannot_prove_cause",
+          "status": "PASS",
+          "cause_proved": false
+        },
+        {
+          "id": "cold_low_pivot_wrong_fact_link_cannot_prove_cause",
+          "status": "PASS",
+          "cause_proved": false
+        }
+      ],
+      "unique_movement_inputs": 11,
+      "old_accepted_suites_replayed": 0
+    },
+    {
+      "stage": "SHARED_CLOCK_AND_QUEUE_COUNTEREXAMPLES",
+      "invalid_wave_clears_prior_BOUND_LIVE_to_UNKNOWN": true,
+      "legacy_and_new_anchor_geometry_separate": true,
+      "clock_checks": 5,
+      "queue_checks": 7
+    },
+    {
+      "stage": "SAME_SAVED_IDOL_AND_EXPLICIT_COUNTERFACTUAL",
+      "evidence_class": "CACHED_ORIGINAL_AND_EXPLICIT_COUNTERFACTUAL_NOT_NATIVE",
+      "actual_saved_input_old_wave_stays_CANCELLED": {
+        "ready": false,
+        "reasons": [
+          "PLAN_INVALIDATED"
+        ]
+      },
+      "counterfactual_same_facts_CANCELLED_previous": {
+        "ready": false,
+        "reasons": [
+          "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
+        ],
+        "wave_id": "PUMP:BINGX:USDT_M:101334:IDOL-USDT:POST_BREACH_V1:1793275200000:1793268540000",
+        "post_breach": true,
+        "plan_diagnostic": {
+          "version": "pump-plan-diagnostic-v1-20261029",
+          "stage": "PLAN",
+          "code": "NO_ENTRY_MEETS_OWNER_MINIMUM",
+          "required_minimum_pct": 10,
+          "half_width": 0.00007050000000000003,
+          "invalidation_price": 0.013558,
+          "target": {
+            "kind": "NEARER_STRUCTURAL_BARRIER",
+            "lower": 0.0139805,
+            "upper": 0.014121499999999999,
+            "basis_level": {
+              "kind": "HIGH",
+              "price": 0.014051,
+              "event_ts": 1793226420000,
+              "known_ts": 1793226540000,
+              "fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101334:IDOL-USDT:price_structure:de685fe6-b54e-4685-b581-194497835d62",
+              "evidence_ref": "de685fe6-b54e-4685-b581-194497835d62"
+            }
+          },
+          "support_candidates": 66,
+          "entry_candidates_below_current": 57,
+          "entry_candidates_meeting_minimum": 0,
+          "best_candidate_minimum_potential_pct": 2.0139370279835145,
+          "fixed_invalidation_potential_supremum_pct": 2.054894517848016,
+          "accepted_entry_count": 0,
+          "target_assessment": {
+            "version": "JUSTIFIED_TARGETS_V1",
+            "selected_kind": "NEARER_STRUCTURAL_BARRIER",
+            "selected": {
+              "kind": "HIGH",
+              "price": 0.014051,
+              "event_ts": 1793226420000,
+              "known_ts": 1793226540000,
+              "fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101334:IDOL-USDT:price_structure:de685fe6-b54e-4685-b581-194497835d62",
+              "evidence_ref": "de685fe6-b54e-4685-b581-194497835d62"
+            },
+            "historical_floor": null,
+            "history_fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101334:IDOL-USDT:price_structure:de685fe6-b54e-4685-b581-194497835d62",
+            "historical_role_bound": true,
+            "qualified_historical_ceilings": 5,
+            "candidates": [
+              {
+                "kind": "HISTORICAL_OUTER_RANGE",
+                "pivot": {
+                  "kind": "HIGH",
+                  "price": 0.016145,
+                  "event_ts": 1793237580000,
+                  "known_ts": 1793237700000,
+                  "fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101334:IDOL-USDT:price_structure:de685fe6-b54e-4685-b581-194497835d62",
+                  "evidence_ref": "de685fe6-b54e-4685-b581-194497835d62"
+                }
+              },
+              {
+                "kind": "HISTORICAL_NEAREST_OUTER",
+                "pivot": {
+                  "kind": "HIGH",
+                  "price": 0.01536,
+                  "event_ts": 1793246220000,
+                  "known_ts": 1793246340000,
+                  "fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101334:IDOL-USDT:price_structure:de685fe6-b54e-4685-b581-194497835d62",
+                  "evidence_ref": "de685fe6-b54e-4685-b581-194497835d62"
+                }
+              },
+              {
+                "kind": "CURRENT_WAVE_CEILING",
+                "pivot": {
+                  "kind": "HIGH",
+                  "price": 0.014685,
+                  "event_ts": 1793275500000,
+                  "known_ts": 1793275620000,
+                  "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:3fd34a36-4ce9-4763-b416-dbd130c07a6a",
+                  "evidence_ref": "3fd34a36-4ce9-4763-b416-dbd130c07a6a"
+                }
+              },
+              {
+                "kind": "NEAREST_CONFIRMED_HIGH",
+                "pivot": {
+                  "kind": "HIGH",
+                  "price": 0.0142,
+                  "event_ts": 1793227560000,
+                  "known_ts": 1793227680000,
+                  "fact_id": "pump-report-sources-day-growth-v1:BINGX:USDT_M:101334:IDOL-USDT:price_structure:de685fe6-b54e-4685-b581-194497835d62",
+                  "evidence_ref": "de685fe6-b54e-4685-b581-194497835d62"
+                }
+              }
+            ],
+            "obstacle_count": 13,
+            "current_above_count": 13,
+            "minor_reaction_count": 0,
+            "minor_is_not_passed_or_guaranteed": true,
+            "selection_before_entry_and_potential": true
+          }
+        }
+      },
+      "original_file_immutable_sha256": "96ef9124d3b20301dddb1dafead6db47f30760ea18f5bbc6c4ce95f16c1d9eaf",
+      "current_freshness_not_claimed": true
+    },
+    {
+      "stage": "ARTIFICIAL_NEW_WAVE_PLAN_TO_SAME_TEXT_RECEIPT",
+      "evidence_class": "ARTIFICIAL_NOT_NATIVE",
+      "support_fixture": "one explicit closed HIGH104.2 at T-120min, no product threshold change",
+      "ready": true,
+      "old_cancelled_journal_preserved": true,
+      "new_journal_expiry_from_seed": true,
+      "minimum_potential_pct": 15.148609779482246,
+      "exact_text_and_memory_receipt_readback": true,
+      "real_Telegram": 0,
+      "artificial_not_promoted_to_production": true
+    },
+    {
+      "stage": "EXACT_ARTIFACT_OPERATOR_AND_CONTROLLER_PACKAGE",
+      "generated_files": [
+        {
+          "path": "pump-report/operator/post-breach-owner15-16-sql-exception.mjs",
+          "sha256": "3f495273ab59f48336f61596efc53e62eefaeb16be48c5f64f1ee830e89edc72"
+        },
+        {
+          "path": "pump-report/operator/post-breach-install15-quiescence-once.mjs",
+          "sha256": "27aa54e359bfcb216e41d913996c1ab3b596a7d13693c306636e12993f44f9ba"
+        },
+        {
+          "path": "pump-report/operator/post-breach-acceptance16-once.mjs",
+          "sha256": "00965189e8124698513bb684a767c9c11eabf6a5699d5aed9241cdb48018ef66"
+        },
+        {
+          "path": "pump-report/operator/cloudflare-post-breach-control.template.js",
+          "sha256": "c73eb9e8bad4470fe6fff3988677d6fb5c781de69eb3733365440dbf5eee7ab6"
+        }
+      ],
+      "named_gate_cases": [
+        {
+          "extra": 15,
+          "mock_only": true,
+          "replay_wrongartifact_wrongcount_unapproved_expired_refused": true
+        },
+        {
+          "extra": 16,
+          "mock_only": true,
+          "replay_wrongartifact_wrongcount_unapproved_expired_refused": true
+        }
+      ],
+      "owner_15_16_approval": false,
+      "native_IO_admission": false,
+      "mock_controller_requests": 11,
+      "all21bindings_and3schedules_preserved": true
+    },
+    {
+      "stage": "COMPLETE"
+    }
+  ],
+  "artifact_path": "/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-bingx-migration-20261024/pump-report/.private/qualification/post-breach-v2/artifact.json",
+  "artifact_sha256": "f8dca4949ec623ccc994d5a2a0179959111212084ed278a767e20a4c42937061",
+  "implementation_sha256": "265143646dd713655419fe56fa5c0451a81450781112c171de6146629a716854",
+  "module_count": 78,
+  "changed_modules": [
+    "analytics/cold-first-structural-base.mjs",
+    "analytics/index.mjs",
+    "analytics/movement.mjs",
+    "analytics/post-breach-wave.mjs",
+    "contracts/index.mjs",
+    "contracts/wave-lifetime.mjs",
+    "runtime/candidate-priority.mjs",
+    "runtime/implementation-pin.mjs"
+  ],
+  "generated_files": [
+    {
+      "path": "pump-report/operator/post-breach-owner15-16-sql-exception.mjs",
+      "sha256": "3f495273ab59f48336f61596efc53e62eefaeb16be48c5f64f1ee830e89edc72"
+    },
+    {
+      "path": "pump-report/operator/post-breach-install15-quiescence-once.mjs",
+      "sha256": "27aa54e359bfcb216e41d913996c1ab3b596a7d13693c306636e12993f44f9ba"
+    },
+    {
+      "path": "pump-report/operator/post-breach-acceptance16-once.mjs",
+      "sha256": "00965189e8124698513bb684a767c9c11eabf6a5699d5aed9241cdb48018ef66"
+    },
+    {
+      "path": "pump-report/operator/cloudflare-post-breach-control.template.js",
+      "sha256": "c73eb9e8bad4470fe6fff3988677d6fb5c781de69eb3733365440dbf5eee7ab6"
+    }
+  ],
+  "approved_policy_only_not_native_installation": true,
+  "full_TZ_complete": false,
+  "first_genuine_AUTO_SENT": false
+}

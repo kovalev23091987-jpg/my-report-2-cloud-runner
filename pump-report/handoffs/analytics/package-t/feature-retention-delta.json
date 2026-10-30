@@ -1,0 +1,75 @@
+{
+  "schema": "PUMP_T_QUOTE_NOTIONAL_FEATURE_RETENTION_DELTA_V1",
+  "parent": {
+    "path": "pump-report/handoffs/analytics/package-s/retention-consumer-map.json",
+    "sha256": "5ca1963cd98b59e18cca173190b988f9df73942a55b9152be7d40ddbcfa2785a",
+    "unchanged": true
+  },
+  "extends_dataset_ids": [
+    "S06",
+    "S27"
+  ],
+  "ROOT_contract": {
+    "ref": "0e6ecbe973f2b44c1ba80736fdaaf7e35a2ba736",
+    "path": "pump-report/contracts/index.mjs",
+    "version": "pump-report-contract-v1.2-quote-notional",
+    "base_unit": "USDT_PRICE_BASE_QUANTITY",
+    "quote_unit": "USDT_PRICE_QUOTE_NOTIONAL"
+  },
+  "fields": [
+    {
+      "path": "input.facts.trades.unit",
+      "consumer": "analytics/context.mjs:summarizeTradeSample",
+      "meaning": "Select exactly one amount field for the entire normalized fact",
+      "protected_by": [
+        "immutable original analysis/input",
+        "card source_input_key",
+        "paired/calibration audit original refs"
+      ]
+    },
+    {
+      "path": "input.facts.trades.value[].notional_quote",
+      "consumer": "summarizeTradeSample direct quote-branch amount",
+      "meaning": "Positive finite observed quote amount denominated USDT, exact recent route evidence required from SOURCE",
+      "base_quantity_known": false,
+      "base_derivation": "NONE: quote/price is not performed"
+    },
+    {
+      "path": "analysis.trade_context.buy_usdt/sell_usdt/netflow_usdt",
+      "consumer": "TRADE_SAMPLE/TRADE_PRICE_RESPONSE and future original-feature sidecar",
+      "meaning": "Sum selected-unit qualified unique fresh rows; not capital flow or full-market total"
+    },
+    {
+      "path": "analysis.trade_context.amount_basis/base_quantity_qualified",
+      "consumer": "original feature provenance/audit replay",
+      "meaning": "OBSERVED_USDT_QUOTE_NOTIONAL / false only for quote form; old BASE context unchanged"
+    },
+    {
+      "path": "analysis.trade_context.price_response / price_response_reason / coverage / provenance",
+      "consumer": "same qualified sample price response and selected Q reason",
+      "meaning": "Preserve endpoint ambiguity/null reasons, original source clocks and per-unit evidence"
+    }
+  ],
+  "window": {
+    "freshness_ms": 30000,
+    "sample_scope": "RETURNED_QUALIFIED_UNIQUE_SAMPLE_ONLY",
+    "no_fixed_market_coverage_window": true
+  },
+  "retention": {
+    "approved_delete_TTL_ms": null,
+    "new_retention_or_reserve_granted": false,
+    "minimum_condition": "Retain original selected-unit amount/price/id/clocks/source route-field-unit evidence until every original analysis/card/outcome/audit reference is closed or a verified archive reader exists",
+    "protect_originals": true,
+    "automatic_delete": false
+  },
+  "feature_schema": {
+    "old_v1_modified": false,
+    "new_writer_installed": false,
+    "proposal": "Future versioned feature capsule must keep selected unit and amount derivation metadata, value/null reason and source_event/received/known clocks. Q price-response additions still require explicit schema version; no silent expansion."
+  },
+  "historicalTrades_quoteQty_Turnover_qualified": false,
+  "benchmark_consumer": false,
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0
+}

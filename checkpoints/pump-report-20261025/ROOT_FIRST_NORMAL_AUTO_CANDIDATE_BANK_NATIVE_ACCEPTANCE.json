@@ -1,0 +1,167 @@
+{
+  "schema": "ROOT_FIRST_NORMAL_AUTO_CANDIDATE_BANK_NATIVE_ACCEPTANCE_V1",
+  "status": "OBSERVED_CURRENT_IMPLEMENTATION_ALLOCATION_AND_NORMAL_SAVED_RUN",
+  "recorded_utc": "2026-10-26T09:15:37.722165+00:00",
+  "implementation_sha256": "3f872be34da54d645ae7e12add0d0297f0f64c9f22cd24bbe571176ba16d7e93",
+  "private_result_file": "pump-report/.private/observations/first-candidate-bank-auto-result.json",
+  "private_result_sha256": "b3481f88239f2f5f56b77c0b294b1aee0d9afba52f511c68952eb72cef498e3e",
+  "observed_auto_run_id": "08029a99-7574-43ef-aebd-2ce125a5350b",
+  "run_status": "INCOMPLETE",
+  "checked": [
+    {
+      "analysis_key": "pump:analysis:f0832a6a070d3d8441ff68a1685ed38c6ad01aa7c6a2587ed92f72f2b8b9b925",
+      "instrument_id": "BINGX:USDT_M:104308:KIMCHI-USDT",
+      "ready": false,
+      "reasons": [
+        "CURRENT_ACTIVITY_NOT_CONFIRMED"
+      ],
+      "candidate_quota": {
+        "period_start": 1793005200000,
+        "maximum": 1,
+        "base_per_period": 1,
+        "carried_in": 0,
+        "issued": 1,
+        "remaining": 0,
+        "day_issued": 1,
+        "never_refunded": true
+      }
+    }
+  ],
+  "deferred": [
+    {
+      "instrument_id": "BINGX:USDT_M:101818:APR-USDT",
+      "status": "DEFERRED",
+      "source_coverage": {
+        "status": "NOT_CHECKED",
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION"
+      },
+      "delivery": null
+    }
+  ],
+  "current_original_bound": true,
+  "mandatory_fact_metadata": {
+    "price": {
+      "status": "USABLE",
+      "unit": "USDT_PER_BASE",
+      "reason": null,
+      "event_ts": 1793005912000,
+      "received_ts": 1793005914841,
+      "expires_ts": 1793005942000
+    },
+    "candles": {
+      "status": "USABLE",
+      "unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+      "reason": null,
+      "event_ts": 1793005860000,
+      "received_ts": 1793005919287,
+      "expires_ts": 1793005950000
+    },
+    "orderbook": {
+      "status": "USABLE",
+      "unit": "USDT_PRICE_BASE_QUANTITY",
+      "reason": null,
+      "event_ts": 1793005921074,
+      "received_ts": 1793005921141,
+      "expires_ts": 1793005936074
+    }
+  },
+  "discovery_coverage": {
+    "status": "CHECKED",
+    "expected": 550,
+    "checked": 550,
+    "invalid_response_rows": 0,
+    "evidence_ref": "45f1e805-9962-4685-8a5a-d9afaa3c781b"
+  },
+  "source_evidence_coverage": {
+    "eligible_for_deep_check": 541,
+    "temporarily_deferred": 9,
+    "reason_counts": {
+      "NATIVE_CORE_UNIT_EVIDENCE_REQUIRED": 9
+    },
+    "not_an_asset_exclusion": true,
+    "current_CORE_proven": false
+  },
+  "native_allocation": {
+    "version": "pump-even-day-deep-v2",
+    "created_ts": 1793005850578,
+    "first_period": "1793005200000",
+    "remaining_periods": 8,
+    "http_upper_bound": 12,
+    "http_by_provider": {
+      "BINGX": 10,
+      "TELEGRAM": 1
+    },
+    "candidates_per_period": 1,
+    "baseline_auto_charged": 350
+  },
+  "native_pacing_buckets": {
+    "1793005200000": {
+      "version": "pump-even-day-deep-v2",
+      "day": "2026-10-26",
+      "key": "1793005200000",
+      "created_ts": 1793005861434,
+      "limit": 12,
+      "charged": 4,
+      "candidate_count": 1,
+      "carried_in": 0,
+      "maximum": 1,
+      "issued_before": 0
+    }
+  },
+  "project_resources_at_capture": {
+    "day_HTTP": 361,
+    "BINGX_day": 361,
+    "BINGX_month": 391,
+    "automatic_plan": {
+      "schema": "PUMP_PLANNED_AUTOMATIC_DAY_V1",
+      "day": "2026-10-26",
+      "created_ts": 1792998049811,
+      "baseline_charged": 5,
+      "protected_at_creation": 102,
+      "fraction": 0.8,
+      "limit": 634,
+      "charged": 356
+    },
+    "retained_HTTP_unknown": 2,
+    "outstanding": 0
+  },
+  "native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-first-candidate-bank-auto-observation-20261026-one",
+    "usage": {
+      "requests": 9,
+      "rows_read": 44,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 44,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "LOOKUP_used_day": 7,
+  "LOOKUP_remaining_day": 3,
+  "run_HTTP": 6,
+  "run_HTTP_unknown": 0,
+  "production_Telegram_observed_in_run": 0,
+  "latest_executor_status": "COMPLETED_RUN_AVAILABLE",
+  "saved_run_survived_budget_deferral": true,
+  "new_market_HTTP_by_observer": 0,
+  "Telegram_by_observer": 0,
+  "current_hour_capacity_native": 1,
+  "remaining_hour_periods_native": 8,
+  "next_fresh_full_day_capacity_2_per_hour": "ARTIFICIAL_MODEL_NOT_NEXT_DAY_NATIVE_PROOF",
+  "carry0_then4": "ARTIFICIAL_CONNECTED_TEST_PLUS_STATIC_REVIEW;not fabricated native quiet hour",
+  "quality_or_strategy_reduced": false,
+  "full_TZ_or_same_original_SENT_claimed": false,
+  "engineering_lower_bound_excluding_AUTO": {
+    "queries": 865,
+    "rows_read": 1497,
+    "rows_written": 460,
+    "SQL_unknown": 0
+  },
+  "whole_account_day": "UNKNOWN",
+  "all_old_spends_unknowns_reserves_caps_9pauses2OWNERdeferrals_preserved": true
+}

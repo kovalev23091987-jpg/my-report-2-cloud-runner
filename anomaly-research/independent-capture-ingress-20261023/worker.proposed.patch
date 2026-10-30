@@ -1,0 +1,23 @@
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -28,7 +28,7 @@
+   runOpportunityShadowCycle,
+   selectOpportunityJournalCandidate,
+ } from "./opportunity-intelligence-runtime.mjs";
+-import {prepareCapturedAnomalyCardWatch} from './anomaly-native-ingress.mjs';
++import {prepareCapturedAnomalyCardWatch,runIndependentCapturedAnomalyIngress} from './anomaly-native-ingress.mjs';
+ import {runCapturedAnomalyDueCycle} from './anomaly-native-due-watch.mjs';
+ 
+ import {
+@@ -19872,6 +19872,11 @@
+         catch { /* SOURCE retains uncertain operations and the SAME DB fence. */ }
+       }
+ 
++      // Independent approved-roster slice AFTER existing bounded Deep/DUE work.
++      // Default OFF; IO owner must protect report/final-delivery reserve; native SQL keeps its owner callback.
++      try { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT=await runIndependentCapturedAnomalyIngress({env,run_id:String(runId),fetch_json:fetchJson,classify_contract:classifyHtxInstrumentScope}); }
++      catch { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT={status:'INDEPENDENT_CAPTURE_CALLER_NOT_CLOSED',native_admission_qualified:false,SENT_claimed:false}; }
++
+       env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT={
+         schema:'report2-candidate-selection-audit-v1',
+         run_id:runId,

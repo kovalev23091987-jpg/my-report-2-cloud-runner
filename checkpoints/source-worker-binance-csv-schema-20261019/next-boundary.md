@@ -1,0 +1,5 @@
+Завершено ровно порученное bounded documentary mapping для шести existing CSV и один first-two-row structural check. Координатор и третий получают closed/NULL поля раздельно. Старые531/534/533 головы и suites не меняются и не повторяются.
+
+Для field7 relative-size research достаточно подтверждённой quote-asset basis внутри того же exact рынка/инструмента/масштаба; конкретная futures USDT-единица здесь независимо не утверждается. Для field5 абсолютных base/contract units и полной нормативной USD‑M identity нужен конкретный доступный official USD‑M schema/явный instrument reference; Spot glossary/Testnet и текущий suffix не заменяют его. Эта отсутствующая нормативная граница не означает provider failure и не требует нового market API.
+
+Если потребуется абсолютная native units квалификация этих оставшихся полей, это отдельный узкий новый source-вопрос с точным документом/контрпримером, а не повод повторять весь BTC replay или строить adapter/framework. Новые source/runtime/admission/Telegram claims требуют собственных доказательств. ENTRY-followup и physical-storage остаются отложенными до отдельной прямой команды владельца.

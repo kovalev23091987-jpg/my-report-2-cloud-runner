@@ -1,0 +1,101 @@
+{
+  "schema": "PUMP_F550_FIXED_SOURCE_OPERATION_PROPOSAL_V1",
+  "status": "PREPARED_NOT_OWNER_ADMITTED_NOT_EXECUTED",
+  "authority_main": "39503161e66082fdc9ac746ace5c5da6653c1bc4",
+  "run_id": "pump-f550-source-feasibility-20261025-one",
+  "route": "POST /pump/source-feasibility",
+  "body": {
+    "grant_id": "pump-f550-source-feasibility-20261025-one"
+  },
+  "additional_CONTROL_operations_requested": 1,
+  "effective_CONTROL_total_before_after": [
+    5,
+    6
+  ],
+  "prior5_never_reset_or_replayed": true,
+  "new_operation_fixed_single_ID": true,
+  "provider": "BINGX",
+  "provider_version_unchanged": "pump-manual-native-relative-acceptance-20261025-v1",
+  "provider_attempts_max": 3,
+  "qualification_pool_old_spent": 12,
+  "qualification_pool_cap": 24,
+  "remaining_after_max": 9,
+  "daily_cap": 900,
+  "monthly_cap": 27900,
+  "rolling_minute_cap": 10,
+  "second_cap": 1,
+  "native_envelope": {
+    "rows_read": 5000,
+    "rows_written": 300,
+    "max_queries": 800
+  },
+  "preserved_production_manual_reserve": 6,
+  "whole_day_existing_guard_and_unknown_stop_required": true,
+  "operation_scope": [
+    "SOL recent trades limit100",
+    "SOL125closedminute candles",
+    "full bulk ticker, price coverage of saved550 analysed separately"
+  ],
+  "new_catalog": false,
+  "metadata_provider_calls": 0,
+  "Telegram": 0,
+  "production_enabled": false,
+  "delivery_enabled": false,
+  "schedules_enabled": false,
+  "max_retry_redirects": 0,
+  "stop_on_rate_error_or_unknown_ACK": true,
+  "raw_response_proof_private_only": true,
+  "tests": {
+    "new_unique_final_pass": 5,
+    "initial_pass": 2,
+    "initial_assertion_failure": 1,
+    "failure_was_test_unit_name_USDT_vs_actual_contract_USDT_PRICE_QUOTE_NOTIONAL": true,
+    "focused_only_failed_case_pass": 1,
+    "old_tests_replayed": false,
+    "native": false,
+    "additional_focused_cases": [
+      "transport clock/body bytes23ms vs delayedSQL5000ms",
+      "bounded shared-shadow ledger reservation maxima/unknown/truncation, logical localSQLite only"
+    ]
+  },
+  "activation_requires_human_additional_control_budget": true,
+  "activation_changes": [
+    "Only fixed SOURCE_FEASIBILITY_SINGLE stage",
+    "Expiry bounded20minutes after admission within current ROOT lease",
+    "Exact compiledartifact and independent byte readback before one call"
+  ],
+  "files": {
+    "pump-report/runtime/source-feasibility.mjs": "f9b0fe29394d91665350051226da2ddbe8adb1e42d7283674beb51f5b599c9d5",
+    "pump-report/runtime/worker.mjs": "f32c3a2f891705a9c8bc678f1e142a7d5702ef8b814d61a2a791e3e8e44cff30",
+    "pump-report/runtime/budget.mjs": "74c7bd864028ca2a4127e9066c32e265b4c44b882e5767ed0a2d2fd1838d7831",
+    "pump-report/runtime/native-budget.mjs": "7001ef58fc671225e5909a66de8eed6b342f7d5e5b2ec65180a3c3c5627a4189",
+    "pump-report/runtime/provider-policy.mjs": "d0a3ab7b96b90e5979f7c52429eb94db0d1d2d8756baebb17d1429eeb481a5a4",
+    "pump-report/tests/runtime/source-feasibility-connected.test.mjs": "580cb46231c14a1ad46e9b7d6999d69328b127d414b3cd5e5590fb55045ec7ee",
+    "checkpoints/pump-report-20261025/ROOT_SOURCE_FEASIBILITY_PROPOSED_FIRST.tap": "769d61ad380b4000039ce7ec2648b7103a08004aa7ac60632c6be4f2d1a7e6c8",
+    "checkpoints/pump-report-20261025/ROOT_SOURCE_FEASIBILITY_FIXED_UNIT_ONLY.tap": "747ec195424b3e6ebc3f49684914fd06ef6aa5ab36488d631ccc001ee90b34e3"
+  },
+  "all_old_unknowns_caps_reserves_9pauses_2OWNERdeferrals_preserved_except_explicit_requested_one_slot": true,
+  "native_HTTP_SQL_TG_deploy": 0,
+  "inactive_artifact": {
+    "modules": 47,
+    "implementation_sha256": "75ba7a6e203877500e7706ad702bbc058c4bcb0b6853d673646c256140164fb2",
+    "artifact_sha256": "a764e435e65b494a93ea4f934bfd5891b7666ff0adf3ebdeca1b0ace0c77db7d",
+    "stage": "SUMMARY_INDEX_ACCEPTANCE_ONLY",
+    "expired_provider_admission": true,
+    "deployed": false
+  },
+  "proposal_revision": 2,
+  "previous_revision_saved_at": "e9eaac0f6a52ce0205af60b288058238f92fad84",
+  "operator_client": {
+    "path": "pump-report/operator/source-feasibility-once.mjs",
+    "new_unique_pass": 1,
+    "durable_before_IO_no_retry": true,
+    "native": false
+  },
+  "pre_source_native_snapshot": {
+    "bounded_rows": 501,
+    "query_reservation_reads": 1100,
+    "within_same5000R300W_envelope": true,
+    "whole_account_claim": false
+  }
+}

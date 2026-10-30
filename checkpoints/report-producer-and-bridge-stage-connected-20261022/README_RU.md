@@ -1,0 +1,3 @@
+Реальный обычный запуск включает существующий nativeQueryReceipts; ID переносится существующим fatal accounting writer без нового exporter. Stage-only CLI проверяет одну неактивированную версию и сохраняет рабочую старую Paid identity. Unknown upload ACK остаётся unowned; без повторной загрузки/удаления/активации/смены settings.
+
+Первый общий run 39808818327: NODE_SPEC1PASS0FAIL,12 новых CONTROLLED групп5caller+7stage17variants с фактическим exported ROOTadapter, реальным FormData и test-onlyCONTROLLED Paid fingerprint. Full618/618/617others equal; каждый JSON до assert/следующей части. Старые cases не повторялись. NativeSQL/provider/MAIN/TG0; текущий Telegram/старый unknown не восстановлены.

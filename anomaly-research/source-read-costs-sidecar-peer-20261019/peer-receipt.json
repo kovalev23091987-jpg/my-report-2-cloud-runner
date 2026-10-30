@@ -1,0 +1,224 @@
+{
+  "schema": "SOURCE_READ_COSTS_SIDECAR_DELTA_STATIC_PEER_V1",
+  "recorded_ts": 1792413372011,
+  "review_thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+  "source_branch": "work/returned-source-read-and-provider-cuts-20261019",
+  "frozen_head": "037555aed03bcae9920ae6d8ec28f69f1c0a31df",
+  "comparison_main": "9d03c094375e78067a45fc754523f0ae6314397a",
+  "target": {
+    "path": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+    "before_sha256": "bc5845ba2f4904f320d7eb9c952759c5e4a4fc0ae33fc595df5f097e1125ac99",
+    "after_sha256": "d7a35968052d52279d1cda5704b64dae8b5450d87b1243aa5b91e0671c5d2d7a",
+    "added_lines": 24,
+    "removed_lines": 5,
+    "diff_sha256": "c1cbbdbd4d42d90f4fa213a996c7cf70148ff03fd09ab778903ea77de37a59c5",
+    "diff_utf8": "diff --git a/current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs b/current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs\nindex e10483c3..64edb21e 100644\n--- a/current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs\n+++ b/current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs\n@@ -222,0 +223,17 @@ export async function loadCompletedLifecycleHandoffs(db,{source_run_id,now_ts=Da\n+// Technical receipt of the already returned source-read batch. No SQL/results\n+// content, forecast or capacity grant; missing counters remain unknown.\n+function sourceReadCosts(result,{canonical_required,source_run_id,evaluation_now_ts}){\n+ const names=['EARLY_WAVES','SHADOW_DECISIONS','FINAL_WITH_CONTEXT','PREVIOUS_LIFECYCLE',...(canonical_required?['CURRENT_CANONICAL']:[])];\n+ const counter=v=>Number.isSafeInteger(v)&&v>=0?v:null;\n+ const replies=names.map((query,index)=>{\n+  const r=Array.isArray(result)?result[index]:null;\n+  return{query,reply_success:typeof r?.success==='boolean'?r.success:null,rows_read:counter(r?.meta?.rows_read),rows_written:counter(r?.meta?.rows_written),returned_rows:Array.isArray(r?.results)?r.results.length:null};\n+ });\n+ const sum=(key,require_all)=>{\n+  if(require_all&&(!Array.isArray(result)||result.length!==names.length||replies.some(r=>r.reply_success!==true||r[key]===null)))return null;\n+  const n=replies.reduce((v,r)=>v+(r[key]??0),0);return Number.isSafeInteger(n)?n:null;\n+ };\n+ const read=sum('rows_read',true),write=sum('rows_written',true);\n+ return{schema:'EXISTING_LIFECYCLE_SOURCE_READ_COSTS_V1',source_run_id,caller_evaluation_ts:evaluation_now_ts,basis:'ALREADY_RETURNED_BATCH_REPLY_META_NOT_WHOLE_DAY_OR_PROVIDER_HEADROOM',scope:'BATCH_STATEMENT_META_ONLY_NOT_ADAPTER_OR_RESTORER_EXTRA_WORK',status:read!==null&&write!==null?'REPORTED_COUNTERS_COMPLETE':'REPORTED_COUNTERS_INCOMPLETE',expected_queries:names.length,actual_reply_count:Array.isArray(result)?result.length:null,queries:replies,known_rows_read_subtotal:sum('rows_read',false),known_rows_written_subtotal:sum('rows_written',false),total_rows_read:read,total_rows_written:write,admission_authorized:false,additional_SQL:0,additional_source_HTTP:0,SQL_params_and_result_values_exported:false};\n+}\n+\n@@ -232,0 +250 @@ export async function loadLifecycleSourceRows(db,{source_run_id,now_ts=Date.now(\n+  let source_read_costs=null;\n@@ -253,2 +271,3 @@ export async function loadLifecycleSourceRows(db,{source_run_id,now_ts=Date.now(\n-    return {status:'CLOSED',handoffs,early:rows(result?.[0]),shadow:rows(result?.[1]),final:rows(result?.[2]),previous:rows(result?.[3]),canonical:canonical_required?rows(result?.[4]):[]};\n-  }catch(error){const msg=String(error?.message||error);return {status:/no such table|no such column/i.test(msg)?'MIGRATION_REQUIRED':'PARTIAL',handoffs,early:[],shadow:[],final:[],previous:[],error:msg};}\n+    source_read_costs=sourceReadCosts(result,{canonical_required,source_run_id:run,evaluation_now_ts:now});\n+    return {status:'CLOSED',handoffs,early:rows(result?.[0]),shadow:rows(result?.[1]),final:rows(result?.[2]),previous:rows(result?.[3]),canonical:canonical_required?rows(result?.[4]):[],source_read_costs};\n+  }catch(error){const msg=String(error?.message||error);return {status:/no such table|no such column/i.test(msg)?'MIGRATION_REQUIRED':'PARTIAL',handoffs,early:[],shadow:[],final:[],previous:[],error:msg,...(source_read_costs?{source_read_costs}:{})};}\n@@ -264 +283 @@ export async function runV3TelegramLifecycleSidecar(db,{source_run_id,now_ts=Dat\n-    return {...base,status:loaded.status,error:loaded.error??null,transitions:[],usage_delta:usageDelta(before,after)};\n+    return {...base,status:loaded.status,error:loaded.error??null,transitions:[],usage_delta:usageDelta(before,after),...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};\n@@ -269 +288 @@ export async function runV3TelegramLifecycleSidecar(db,{source_run_id,now_ts=Dat\n-  if(loadedDelta && (loadedDelta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read || loadedDelta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:loadedDelta};\n+  if(loadedDelta && (loadedDelta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read || loadedDelta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:loadedDelta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};\n@@ -297 +316 @@ export async function runV3TelegramLifecycleSidecar(db,{source_run_id,now_ts=Dat\n-  if(delta&&(delta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read||delta.rows_written>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written||delta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:delta};\n+  if(delta&&(delta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read||delta.rows_written>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written||delta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:delta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};\n"
+  },
+  "conclusion": {
+    "new_static_blockers": 0,
+    "status": "NO_NEW_STATIC_BLOCKER_WITH_SOURCE_LOAD_BUDGET_COVERAGE_LIMIT",
+    "runtime_or_native_acceptance": false,
+    "central_job_executed_or_result_claimed": false
+  },
+  "observations": [
+    {
+      "id": "SQL",
+      "result": "NO_NEW_STATIC_BLOCKER",
+      "text_ru": "Добавлены только sourceReadCosts, локальная переменная и распространение diagnostics в существующие failure returns. Queryarray/порядок, SQL, bindings, число batch statements и старые gating conditions не изменены. Новых SQL/HTTP/reservations нет; это заключение о diff, не новый native cost benchmark."
+    },
+    {
+      "id": "COUNTERS",
+      "result": "NO_NEW_STATIC_BLOCKER",
+      "text_ru": "Strict Number.isSafeInteger/nonnegative сохраняет missing/invalid/string/bool как NULL. Полные R и W суммы проверяются отдельно: отсутствие rows_read не превращает подтверждённый rows_written0 в unknown и наоборот. Для total нужны expected replycount, success===true и каждый нужный counter. Known subtotals — только сумма известной части;0при пустом known-наборе не означает измеренный total0."
+    },
+    {
+      "id": "PARTIAL",
+      "result": "NO_NEW_STATIC_BLOCKER",
+      "text_ru": "Costs вычисляются из уже returned array до rows()validation. Если failed reply приводит к прежнему rows()throw, known meta остаётсявcatch/sourcefailure result, totalsNULL. Если сам db.batch throws и returned replies нет, новых costs нет; старые usage_delta/error/status не заменяются."
+    },
+    {
+      "id": "SCOPE",
+      "result": "NO_NEW_STATIC_BLOCKER_WITH_LIMITS",
+      "text_ru": "caller_evaluation_ts — прежнее времяcaller, не commonSQLasof/nativecommitclock. Scope=BATCH_STATEMENT_META_ONLY: не включает optionalcompletedhandofflookup/adapter/restorer дополнительную работу. Returned rowcount не подменяет native rows_read. Admissionfalse, дополнительныхcalls0, нет source/account/month/manual/whole-day capacity grant."
+    },
+    {
+      "id": "RETURNS",
+      "result": "COVERAGE_LIMIT",
+      "text_ru": "Новая секция возвращается из loadLifecycleSourceRows и передаётся source-loadfailure и двум BUDGETfail exits run-sidecar. Normal success и поздний PERSISTENCE_NOT_CLOSED return сохраняют прежнюю форму и source_read_costs не передают. Поэтому этот peer не утверждает покрытие всех partial/persistencefailure paths. Переходы/ENTRYлогику не исследовали и не изменяли."
+    },
+    {
+      "id": "SAVED",
+      "result": "ACTUAL_SCOPE_BOUND",
+      "text_ru": "Exactsaved392455telegraminfo: lifecycle BUDGETfail/182R0W5requestsunknown0; source_read_costs отсутствовал. Это реальный агрегат, не исторический per-querysplit. Cap160 остаётся прежним; patch не устраняет overrun и не создаёт индекс/новый лимит."
+    },
+    {
+      "id": "TEST",
+      "result": "CODE_ONLY_NOT_EXECUTED",
+      "text_ru": "Планируемая новая единая центральная case исполняет5локальныхSQLiteSELECT через exact saved counter-repaired06603 bridge; D1 metadata split40/18/3/28/93 задаётсяCONTROLLED. Текст проверяет unchangedlegacyresult/queries, RNULL/W0/known179при missingread, PARTIAL+knownfailedreply metadata, JSONtelegraminfo propagation. Actualhistoricalper-querysplit=NULL. Peer не запускал Node/app/test/job и не проверял outcome центральнойjob."
+    }
+  ],
+  "anchors": [
+    {
+      "line": 225,
+      "text": "function sourceReadCosts(result,{canonical_required,source_run_id,evaluation_now_ts}){"
+    },
+    {
+      "line": 227,
+      "text": " const counter=v=>Number.isSafeInteger(v)&&v>=0?v:null;"
+    },
+    {
+      "line": 236,
+      "text": " const read=sum('rows_read',true),write=sum('rows_written',true);"
+    },
+    {
+      "line": 271,
+      "text": "    source_read_costs=sourceReadCosts(result,{canonical_required,source_run_id:run,evaluation_now_ts:now});"
+    },
+    {
+      "line": 288,
+      "text": "  if(loadedDelta && (loadedDelta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read || loadedDelta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:loadedDelta,...(loaded.source_read_costs?{source_read_costs:loaded.source_read_costs}:{})};"
+    },
+    {
+      "line": 317,
+      "text": "  if(transitions.some(t=>['PARTIAL','PERSISTENCE_READBACK_FAILED','MIGRATION_REQUIRED','SOURCE_UNSUPPORTED'].includes(t.status)))return {...base,status:'PERSISTENCE_NOT_CLOSED',transitions,usage_delta:delta};"
+    }
+  ],
+  "new_test_code_only": {
+    "path": "current-generation/tests/returned-source-budget-connected.runtime.mjs",
+    "sha256": "36e18c300350cd0991a9d0df3603551ca9f8cd97191366a43f178a85c1e3174d",
+    "source_part_lines": [
+      22,
+      50,
+      57,
+      65,
+      70,
+      71
+    ],
+    "controlled_meta_split": [
+      40,
+      18,
+      3,
+      28,
+      93
+    ],
+    "actual_historical_per_query_split": null,
+    "case_executed_by_peer": false,
+    "native_bridge_install_or_requalification": false
+  },
+  "saved_actual_source_failure": {
+    "path": "checkpoints/natural-39245523405/report2-telegram-info-proof/telegram-info-proof.json",
+    "sha256": "24eee8e090e2a163d42baf33db7dd25f604aab7499fb28def575ed1dcb50becd",
+    "pointer": "/lifecycle",
+    "source_run_id": "1792409648781-1792409663854",
+    "status": "BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED",
+    "usage_delta": {
+      "rows_read": 182,
+      "rows_written": 0,
+      "requests": 5,
+      "unknown_ops": 0
+    },
+    "old_source_read_costs_present": false,
+    "unchanged_stagecap": 160
+  },
+  "application_binding": {
+    "path": "checkpoints/returned-budget-and-source-read-20261019/source-read-diagnostic-application.json",
+    "sha256": "9678d38c85d57ad6651fc3ab0943233959734448f74fedf3a5715292d3892ad6",
+    "query_text_or_bindings_changed": false,
+    "extra_SQL_HTTP_or_reservations": 0
+  },
+  "guards": {
+    "main": "9d03c094375e78067a45fc754523f0ae6314397a",
+    "guard_sha256": {
+      "AGENTS.md": "93fcecb6066f0dd699e2a9eba7dcb9b3400206b5a0599b505b500d5ffb327cbc",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "0cb1acce7f70e5d0bf5ae54bc286ae59b6e161968ee8688c01c419f8d655d675",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "34c046ff88359da25052dc6c460798147306df647fe8c6383c1bdcfe6a67b3e9",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "47d8f4e64304f2890d853ff0d3def57f26c26fbde38d63485beaa9191d7ec694",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "eacedab85c1af2d9774000aa1573ab3b72cb6f4544b6a15effa66de4e77b1ff6",
+      "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "443aa0d5481e1ca18a8682ef12f655cb8539e2d218c55f7ce3016e753a9c1b29",
+      "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+    },
+    "active_three_proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_GATE_AND_EXISTING_ANOMALY_BASE_HANDOFF_20261019.json",
+        "sha256": "c9b191f14ce66a3f9b8f79e373ad5a6ecfe44e4e661a0b7b6ee6926453ba9146"
+      },
+      {
+        "path": "checkpoints/gate-existing-base-integration-20261019/cloud-and-originals-receipts.json",
+        "sha256": "fd4f33acde970586f7d2e4eeacc314c848a2f8c038035ebc08ed1a8cb0bc2b0f"
+      },
+      {
+        "path": "checkpoints/gate-existing-base-integration-20261019/next-worker-queues.json",
+        "sha256": "cff380edf3a348a615eb0552e2d08e4b1367d99745b5b384949b65e92de50b6a"
+      }
+    ],
+    "all4active_equal": true,
+    "frozen_branch_head_at_guard": "037555aed03bcae9920ae6d8ec28f69f1c0a31df",
+    "own_lease": {
+      "owner": "CODEX:OFFLINE_ANOMALIES:1792412963362",
+      "acquired_ts": 1792412963362,
+      "expires_ts": 1792415663362,
+      "expected_main": "9d03c094375e78067a45fc754523f0ae6314397a",
+      "ref": "4d67c5d9493108ccdbb767ad915568ee2493db50",
+      "exact_readback": true,
+      "scope_sha256": "c119867d4ffaba7d8282be7cbcda37becce71bee0756bd05513d557d0c1db5be"
+    }
+  },
+  "scope": {
+    "only_lifecycle_new_delta_reviewed": true,
+    "source543_five_target_peer_repeated": false,
+    "application_module_Node_test_probe_execution": 0,
+    "central_job_run": 0,
+    "native_SQL_provider_HTTP_artifact_GET": 0,
+    "shared_main_generation_status_changes": 0,
+    "old14_2_37_541swaps_repeated": 0,
+    "ENTRY_followup_or_physical2": "DEFERRED_NOT_INVESTIGATED"
+  },
+  "next_central_step": "Use actual centralONEjob result plus exact targetafter hash; no peer app/test rerun or borrowed capacity inferred. This receipt does not review the otherfiveprovider targets again.",
+  "final_own_artifact_linkage": {
+    "pass": 9,
+    "fail": 0,
+    "type": "Only peer receipt text/provenance linkage; no application or test execution",
+    "checks": [
+      {
+        "name": "Exact one-file before/after binding",
+        "pass": true
+      },
+      {
+        "name": "Exact 24insert5delete diff bytes preserved",
+        "pass": true
+      },
+      {
+        "name": "No changed SQL or binding added in diagnostic diff",
+        "pass": true
+      },
+      {
+        "name": "Original budget guard conditions and cap preserved",
+        "pass": true
+      },
+      {
+        "name": "Planned new test text bound, outcome not fabricated",
+        "pass": true
+      },
+      {
+        "name": "Saved native182 aggregate isolated from CONTROLLED perquery split",
+        "pass": true
+      },
+      {
+        "name": "Coverage limitations explicitly included",
+        "pass": true
+      },
+      {
+        "name": "Own exact unexpired lease and allfour current guards",
+        "pass": true
+      },
+      {
+        "name": "Only one own artifact and no source/provider/tests rereview",
+        "pass": true
+      }
+    ]
+  }
+}

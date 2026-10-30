@@ -1,0 +1,403 @@
+{
+  "schema": "AAVE_NATIVE_TURNOVER_EXISTING_CONSUMER_BOUNDARY_V1",
+  "recorded_ts": 1792415429151,
+  "worker_thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+  "scope": "One already saved AAVE4h event plus its already selected20 prior candles. Concrete native trade_turnover -> existing typed feature consumer gap check. No new cohort/replay/feature execution.",
+  "result": {
+    "native_trade_turnover_lost_to_existing_typed_feature_consumer": false,
+    "new_helper_or_patch_required": false,
+    "new_application_case_warranted_without_code_change": false,
+    "production_activation": false,
+    "reason": "Existing corrected consumer already binds native row trade_turnover to preserved quote lexeme, maps it to volume and calls existing pure features in the accepted historical witness. No concrete field-loss defect found."
+  },
+  "authorization": {
+    "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+    "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792415220825",
+    "own_lease_ref_sha": "096b35c3bd3013dde890ea8ae451c4dfa614bc81",
+    "own_exact_acquisition_readback": true,
+    "expires_ts": 1792419720825,
+    "fresh_main": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+    "all_four_working_mirrors_equal": true,
+    "guard_sha256": {
+      "AGENTS.md": "8c6d33ef4b339d437dc58ff528355d1fee0fd6ed8d62cbf511b828e911c243a1",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "30e7366163956d7373d827bc8e3bb92bb051ade5fee1562799ea48fe1312800d",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "c14aceaaf1537aac562aa9d3782a31aee0e766ec12d5b34929165fd62f444d5b",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "3690a1bd9477a2c065d7b2874e7112b063683240676940c297f56ebf5ecd6fef",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "c8eb3af0cf3c39cbc25159919f2673322d02fc703eecb41f8064a7b93768db26",
+      "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "6a4577e829c73ebf01e68917e1029ea28728110eb8a088ab4db260dcac31266c",
+      "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+    },
+    "three_active_proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_RETURNED_BUDGET_AND_WLD_NATIVE_HANDOFF_20261019.json",
+        "sha256": "b58bf0b4e6067261d6a1682278fbbd6554086de4d0d137239f542071b9912aed"
+      },
+      {
+        "path": "checkpoints/returned-budget-integration-20261019/cloud-and-originals-receipts.json",
+        "sha256": "915e0e4e39ea9edbe04722aafb0e4ee8b18fb4df8098d227840b6ee812ff355d"
+      },
+      {
+        "path": "checkpoints/returned-budget-integration-20261019/next-worker-queues.json",
+        "sha256": "400582fe1fcde4bf453a0c05ac6261ae9f06186749a2b8b46b3170ef4b6f1efd"
+      }
+    ]
+  },
+  "exact_sources": {
+    "anomaly-research/saved-candle-typed-input-20261019/sample-inputs.json": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 47850,
+      "sha256": "c8f3d9b5447f4779c7bb3a565ea0f58a3a3a165e66a3d310f5f88a2b8d42ce62"
+    },
+    "anomaly-research/saved-candle-typed-input-20261019/witness.json": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 44723,
+      "sha256": "3b01303ca6c4450de64a84000c4360a00da36adef65b763be7e94ce08236dd84"
+    },
+    "anomaly-research/saved-candle-typed-input-20261019/typed-input.mjs": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 10625,
+      "sha256": "bc9d1ea6eada466352843e622678c0c7e4586646386eee44124fcd8b6cd3d442"
+    },
+    "anomaly-research/observer/observer.mjs": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 21115,
+      "sha256": "086274b4bab805c18bb1db740e0d59e30b374b3f5dd4be72dac3880cfa76da05"
+    },
+    "anomaly-research/saved-candle-typed-input-20261019/typed-input.test.mjs": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 9437,
+      "sha256": "422c64ce6b98d81f3c008bb1aafbb64da7e981cec5625fd83090fb4c758863fe"
+    },
+    "checkpoints/source-worker-htx4h-native-turnover-20261019/documentation.json": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 1201,
+      "sha256": "036cd7bfb73a40bbce312dfd951271ded3ca6f660126e8eaaa290db0f0e22f69"
+    },
+    "checkpoints/htx-compact-4h/AAVE-USDT.manifest.json": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 1424,
+      "sha256": "121ac8113f7c5e3a7ceacdefe5b4f4570787181c11330aef93ef8c7404ed8e62"
+    },
+    "checkpoints/returned-budget-integration-20261019/cloud-and-originals-receipts.json": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 47001,
+      "sha256": "915e0e4e39ea9edbe04722aafb0e4ee8b18fb4df8098d227840b6ee812ff355d"
+    },
+    "checkpoints/htx-compact-4h/AAVE-USDT.raw.json.gz": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 41461,
+      "sha256": "431a0f6a9f365930f9dc4342bf9fe3cfd697d498f4465e944895d58a08efd829"
+    },
+    "tools/acquire-htx-compact-4h-history.mjs": {
+      "head": "3398c162459ffb0fda39fafa2309cff2494e7f3f",
+      "bytes": 8336,
+      "sha256": "08ed3126b8645845b8e1ee70fc414d2bbc3c80abe23f95fa95ccdb4b09ee4f33"
+    }
+  },
+  "actual_native_event": {
+    "json_pointer": "/data/20",
+    "native_row": {
+      "id": 1774785600,
+      "open": 95.729,
+      "close": 95.478,
+      "high": 95.879,
+      "low": 94.939,
+      "amount": 2001.2,
+      "vol": 20012,
+      "trade_turnover": 190565.2326,
+      "count": 619
+    },
+    "original_row_JSON_text": "{\"id\":1774785600,\"open\":95.729,\"close\":95.478,\"high\":95.879,\"low\":94.939,\"amount\":2001.2,\"vol\":20012,\"trade_turnover\":190565.2326,\"count\":619}",
+    "row_text_is_from_complete_original_body": true,
+    "event_start_ts": 1774785600000,
+    "event_end_ts": 1774800000000,
+    "timeframe": "4h",
+    "venue": "HTX",
+    "market": "FUTURES",
+    "contract": "AAVE-USDT",
+    "body_channel": "market.AAVE-USDT.kline.4hour",
+    "raw_gzip_bytes": 41461,
+    "uncompressed_body_bytes": 170076,
+    "raw_body_sha256": "8ffb93cf747d255a0a6824affb20ef9348df517745e142661f568227eba86219",
+    "retained_receipt": {
+      "url": "https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code=AAVE-USDT&period=4hour&size=1200",
+      "contract": "AAVE-USDT",
+      "requested_ts": 1791765482450,
+      "http_status": 200,
+      "bytes": 170076,
+      "sha256": "8ffb93cf747d255a0a6824affb20ef9348df517745e142661f568227eba86219",
+      "received_ts": 1791765483910,
+      "server_date": "Mon, 12 Oct 2026 00:38:02 GMT"
+    },
+    "original_source_ts": 1791765483520,
+    "original_provider_body_completion_ts": null,
+    "original_true_first_known_ts": null,
+    "new_detection_claim": false,
+    "BACKFILLED": true
+  },
+  "native_field_meanings": {
+    "vol": {
+      "actual": 20012,
+      "documented_basis": "CONTRACT_COUNT_BOTH_SIDES",
+      "used_in_existing_quote_features": false
+    },
+    "amount": {
+      "actual": 2001.2,
+      "documented_basis": "COIN_QUANTITY_FROM_TRADED_CONTRACTS_AND_FACE_VALUE_BOTH_SIDES",
+      "used_in_existing_quote_features": false,
+      "asset_chain_address_independently_verified": false
+    },
+    "trade_turnover": {
+      "actual": 190565.2326,
+      "documented_basis": "NATIVE_SUM_OF_TRADED_CONTRACT_QUANTITY_TIMES_FACE_VALUE_TIMES_TRADE_PRICE_BOTH_SIDES",
+      "consumer_interpretation": "QUOTE_ASSET; USDT for this explicitly retained linear-USDT route under pinned documentary policy",
+      "used_in_existing_quote_features": true,
+      "divide_by_two": false,
+      "derived_from_current_contract_size_or_close": false
+    },
+    "count": {
+      "actual": 619,
+      "documented_basis": "REPORTED_TRANSACTION_COUNT_BOTH_SIDES",
+      "used_in_existing_quote_features": false,
+      "not_unique_trade_or_taker_side_claim": true
+    }
+  },
+  "documentary_evidence": {
+    "existing_policy": {
+      "head": "3ac0ecb1c0b26c18fa1078b1391a982b00db54e4",
+      "path": "checkpoints/source-worker-htx4h-native-turnover-20261019/documentation.json",
+      "sha256": "036cd7bfb73a40bbce312dfd951271ded3ca6f660126e8eaaa290db0f0e22f69"
+    },
+    "current_official_page_read": {
+      "url": "https://huobiapi.github.io/docs/usdt_swap/v1/cn/",
+      "section_url": "https://huobiapi.github.io/docs/usdt_swap/v1/cn/#k",
+      "endpoint": "GET /linear-swap-ex/market/history/kline",
+      "source_kind": "OFFICIAL_HTX_USDT_SWAP_API",
+      "lookup": "Firecrawl direct official-page targeted retrieval; documentation only, not provider acquisition",
+      "scrape_id": "01a15445-fe77-766f-8370-d5031a3a391b",
+      "page_title": "简介 – 火必U本位合约 API 文档",
+      "retrieval_result_sha256": "088eb781d3cfef54bdb68e4a1593741da19626e90fb90ae4e0cc424bc42e60d1",
+      "paraphrase": "Kline id is interval start; vol is contracts, amount is coin amount, trade_turnover is the sum of contract quantity times face value times trade price, count is reported transactions. These fields count both sides. The Kline definition expresses turnover by formula; no exact standalone USDT denomination quote is claimed from that table alone. Existing specific USDT-route interpretation is pinned separately.",
+      "direct_quoted_words": 0
+    },
+    "historical_epoch_continuity_or_runtime_connection_proved_by_documentation": false
+  },
+  "existing_source_to_consumer": {
+    "current_typed_code_anchors": [
+      {
+        "line": 49,
+        "text": "HTX_NATIVE_FUTURES_ROLE"
+      },
+      {
+        "line": 54,
+        "text": "trade_turnover!=="
+      },
+      {
+        "line": 57,
+        "text": "quantity={native_field:'trade_turnover'"
+      },
+      {
+        "line": 61,
+        "text": "const toBar="
+      },
+      {
+        "line": 62,
+        "text": "const candle=toBar"
+      },
+      {
+        "line": 68,
+        "text": "native_contract_size:null"
+      }
+    ],
+    "pure_features_anchors": [
+      {
+        "line": 33,
+        "text": "export function features"
+      },
+      {
+        "line": 36,
+        "text": "volume_ratio:med>0"
+      }
+    ],
+    "accepted_historical_witness_driver_anchors": [
+      {
+        "line": 39,
+        "text": "const view=buildResearchInput"
+      },
+      {
+        "line": 54,
+        "text": "results.push"
+      },
+      {
+        "line": 69,
+        "text": "const witness="
+      }
+    ],
+    "chain": [
+      "Exact full retained raw body SHA + source channel/clock",
+      "native data[index].trade_turnover matches saved raw_quote_turnover_lexeme together with native OHLC/time",
+      "typed toBar.volume = number(raw_quote_turnover_lexeme), quote basis attached separately",
+      "existing features(view.candle,view.prior) reads this volume and20 preceding same-market volumes",
+      "original accepted witness stores typed quantity, numbers, clocks, blockers and precomputed pure_features"
+    ],
+    "accepted_historical_witness_not_rerun": {
+      "original_PR": 541,
+      "original_frozen_head": "c6d2bf850fcf673fc7c43fd1a1c98f79fbf34094",
+      "original_code_sha256": "d9893148e7976973e81be150cc54b0b85397c70da12ce020e4e9c36961fd80f3",
+      "binding_corrected_by_PR": 542,
+      "corrected_code_sha256": "bc9d1ea6eada466352843e622678c0c7e4586646386eee44124fcd8b6cd3d442",
+      "central_integration_PR": 547,
+      "reason_for_reuse": "542 corrected outer market/asset binding; accepted originals retained. This static receipt does not mislabel old541 output as a new execution of bc9d current code."
+    },
+    "already_computed_features_copied_without_recalculation": {
+      "volume_ratio": 1.0389043796748962,
+      "volume_median": 183429.03960000002,
+      "volume_mad": 98086.2875,
+      "volume_robust_z": 0.04907273280681542,
+      "range": 0.9400000000000119,
+      "range_pct": 0.9819385974992029,
+      "range_relative_median": 0.5253936910791294,
+      "body": 0.2510000000000048,
+      "body_ratio": 0.26702127659574637,
+      "upper_wick": 0.15000000000000568,
+      "lower_wick": 0.5390000000000015,
+      "upper_wick_ratio": 0.15957446808511042,
+      "lower_wick_ratio": 0.5734042553191432,
+      "close_location": 0.5734042553191432,
+      "body_return_pct": -0.2621984978428693,
+      "background_count": 20
+    },
+    "interpretation": "Saved selected window volume_ratio1.0389043796748962 is about1.04x its preceding background. This receipt makes no new unusual-volume anomaly, directional, causal or prospective detection claim. Other native fields remain available in raw evidence but do not require speculative feature plumbing."
+  },
+  "knowledge_and_observation": {
+    "accepted_original_local_marker": {
+      "receipt": {
+        "schema": "SAVED_CANDLE_LOCAL_READ_MARKER_V1",
+        "scope": "HTX_ORIGINAL_JSON_BODY_LOCAL_READ",
+        "raw_ref": "checkpoints/htx-compact-4h/AAVE-USDT.raw.json.gz#uncompressed",
+        "body_sha256": "8ffb93cf747d255a0a6824affb20ef9348df517745e142661f568227eba86219",
+        "parsed_value_sha256": "4aa407058e64391cff4c900382a22a5c0b7d920fed708150a9b13013961d6602",
+        "read_started_ts": 1792410497617,
+        "verified_at_ts": 1792410497617,
+        "clock_basis": "CURRENT_LOCAL_CONSUMER_AFTER_COMPLETE_INPUT_HASH_AND_JSON_PARSE",
+        "full_input_read": true,
+        "hash_match": true,
+        "parse_complete": true,
+        "receipt_ref": "anomaly-research/saved-candle-typed-input-20261019/witness.json#/markers/HTX_AAVE",
+        "original_provider_body_completion_ts": null,
+        "native_ACK": false
+      },
+      "receipt_sha256": "be661be1aad032ecddba4141fb56a10f8056976f9cc64f1a4cd653b99300dafb"
+    },
+    "accepted_consumer_clocks": {
+      "event_start_ts": 1774785600000,
+      "event_end_ts": 1774800000000,
+      "source_ts": 1791765483520,
+      "original_recorded_receipt_ts": 1791765483910,
+      "original_provider_body_completion_ts": null,
+      "original_immutable_card_first_known_ts": null,
+      "verified_input_known_by_ts": 1792410497617,
+      "schema_known_by_ts": 1792410497604,
+      "usable_research_known_by_ts": 1792410497617,
+      "discovery": "BACKFILLED",
+      "first_known_semantics": "CONSERVATIVE_CURRENT_INPUT_KNOWN_BY_NOT_TRUE_ORIGINAL_FIRST_DETECTION"
+    },
+    "original_reader_clock_anchor": {
+      "path": "tools/acquire-htx-compact-4h-history.mjs",
+      "headers_received_line": 30,
+      "stream_read_lines": [
+        33,
+        37
+      ],
+      "body_concat_line": 39,
+      "conclusion": "AAVE original recorded receipt1791765483910 is set at headers before full body read; unlike exact-recovery391236 catalog producer reviewed in550. It cannot become original full-body/hash/parse known-by."
+    },
+    "current_review_creates_no_event_first_known_or_native_ACK": true,
+    "accepted_local_known_by_semantics": "1792410497617 is conservative current retained-input hash+parse known-by from original541; not true provider ingress/first detection/persistenceACK. Schema-known clock1792410497604 is separate. Both precede this static review and remain immutable.",
+    "later_saved_bar": "Existing later archived bar predates research known-by; no eligible forward watch outcome inferred."
+  },
+  "preserved_boundaries": {
+    "historical_native_contract_size": null,
+    "contract_size_applicability": "UNKNOWN",
+    "do_not_infer_historical_size_from_amount_div_vol": true,
+    "native_instrument_epoch_verified": false,
+    "project_identity_verified": false,
+    "new_native_volume_qualification_or_original_manifest_flag_change": false,
+    "original_manifest_volume_qualified": false,
+    "raw_quote_conversion_factor_is_contract_size": false,
+    "taker_buy_sell_signed_flow_or_net_inflow_inferred": false,
+    "LONG_or_SHORT_assigned": false,
+    "accumulation_distribution_manipulation_claimed": false,
+    "factual_trade_tape_OI_funding_for_this_window_added": false,
+    "card_memory_watch_notification_admitted": false,
+    "main_score_contribution": 0,
+    "ENTRY_physical_work": "DEFERRED_SEPARATE_DIRECT_OWNER_COMMAND"
+  },
+  "verification": {
+    "static_value_and_digest_linkage_checks": [
+      {
+        "check": "exact saved gzip digest",
+        "status": "PASS"
+      },
+      {
+        "check": "exact original body digest and bytes match retained receipt",
+        "status": "PASS"
+      },
+      {
+        "check": "exact body channel/source clock retained",
+        "status": "PASS"
+      },
+      {
+        "check": "same selected closed4h event and original OHLC/quote-turnover",
+        "status": "PASS"
+      },
+      {
+        "check": "only existing twenty background rows bind to native body",
+        "status": "PASS"
+      },
+      {
+        "check": "already accepted typed event uses original trade_turnover",
+        "status": "PASS"
+      },
+      {
+        "check": "already accepted twenty prior typed volumes use saved native turnovers",
+        "status": "PASS"
+      },
+      {
+        "check": "accepted marker binds same retained original input not native ACK",
+        "status": "PASS"
+      },
+      {
+        "check": "pinned documentary policy exact digest unchanged",
+        "status": "PASS"
+      },
+      {
+        "check": "current corrected typed consumer exact bc9d code",
+        "status": "PASS"
+      },
+      {
+        "check": "central original541 and corrected542 distinction retained",
+        "status": "PASS"
+      },
+      {
+        "check": "old memory/watch/card and identity/size gates still blocked",
+        "status": "PASS"
+      }
+    ],
+    "static_checks_pass": 12,
+    "applications_modules_Node_syntax_tests_probes_executed": 0,
+    "features_calls": 0,
+    "new_case_or_old_case_runs": 0,
+    "old37_cohort_1556_or_BTC_fullCSV_replayed": 0,
+    "new_provider_HTTP_native_SQL_artifact_GET": 0,
+    "deploy_MAIN_manualfull_Telegram": 0,
+    "production_imports": 0,
+    "shared_files_changed": 0,
+    "new_code_or_executable_patch": false,
+    "test_not_repeated_reason": "Concrete loss absent; coordinator explicitly required precise boundary only if existing consumer already preserves native turnover."
+  }
+}

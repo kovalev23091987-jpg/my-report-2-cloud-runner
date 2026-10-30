@@ -1,0 +1,139 @@
+{
+  "schema": "F583_ONE_RETAINED_EXTRA_ROUTE_NEXT_PACKET_V1",
+  "status": "HOLD_PREREQUISITES_AND_SEPARATE_ACTUAL_ADMISSION",
+  "selected_route": "HYPERLIQUID_CLEARINGHOUSE_STATE_ONE_RETAINED_ACCOUNT_SOL",
+  "block": 6,
+  "why_one": "Alreadyconnected F556 getLiquidations producer and zoneconsumer; retainedfiniteaccount previouslycontainedSOL;1publicrequest;no walletdiscovery ornewservice. RecentTradeswouldneednewproducerandUSDCconsumersemantics;OIcontexthasnoclock,so notchosen.",
+  "request": {
+    "method": "POST",
+    "url": "https://api.hyperliquid.xyz/info",
+    "json_template": {
+      "type": "clearinghouseState",
+      "user": "ONE_EXACT_ROOT_ADMITTED_RETAINED_ADDRESS"
+    },
+    "optional_dex": "Onlyexplicitlyqualified;no defaultnewdex",
+    "max_request_bytes": 4096,
+    "max_response_bytes": 2000000,
+    "timeout_ms": 10000,
+    "requests_max": 1,
+    "retries": 0,
+    "discovery": 0,
+    "pagination": 0,
+    "accounts": 1
+  },
+  "target_bingx": {
+    "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+    "asset_id": "BINGX_UNDERLYING:SOL",
+    "venue": "BINGX",
+    "native_symbol": "SOL-USDT",
+    "market_type": "PERPETUAL",
+    "base": "SOL",
+    "quote": "USDT",
+    "settle": "USDT",
+    "margin": "USDT",
+    "classification_status": "VERIFIED_CRYPTO",
+    "identity_evidence_ref": "PUMP_SAVED_NATIVE100028_SOL_CRYPTO_DOCS_V1:sha256:2f931d6fab2b3afcdfe62c2fcb7280bceb23dd5ea3fb5fb4977f6f8c9be36ea7",
+    "price_tick": null,
+    "quantity_step": null,
+    "contract_multiplier": null,
+    "canonical_cross_venue_identity_qualified": false
+  },
+  "retained_account_ref": "checkpoints/OFFICIAL_TRADE_NATIVE_DISCOVERY_CAPABILITY_20261007.json:native_samples[0] (address remains in retained source; not republished)",
+  "retained_source": {
+    "proof": "checkpoints/source-inputs/official-trade-native-37607475099.proof.json",
+    "sourceHTTP_historical": 3,
+    "scope": "1recentTrades+2states old7Oct;no currentBingXqualification;oldgrantnotrevived",
+    "native_SOL_observed_in_first_account": true,
+    "original_state_sha256": "0cb5f075b84f1a32c4f6b39619ea0aaaa4430b81b838a7f3099c09d5d081770d"
+  },
+  "canonical_identity": {
+    "bingx_instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+    "bingx_asset_id": "BINGX_UNDERLYING:SOL",
+    "hyperliquid_coin": "SOL",
+    "hyperliquid_market_id": null,
+    "same_underlying": "UNKNOWN_NOT_TICKER_JOIN",
+    "network_or_project_identity_proof": null,
+    "price_quote": null,
+    "settle_currency": null,
+    "contract_size_or_multiplier": null,
+    "canonical_flag_current": false,
+    "required": "Independent exactHLmarket/project identity→BingX exactnativeID;ROOT-qualified canonical flag; no copyoldHTXbinding"
+  },
+  "facts": {
+    "position": "assetPositions[].oneWay.position",
+    "native_size": "szi signedLONG/SHORT onlywithindependentproof",
+    "native_liquidation_price": "liquidationPx;currentaccountestimate;null≠zero",
+    "position_value": "positionValue optionalunknownamount staysnull;never size×liqPx",
+    "clock": "payload.time Unixms nativeaccountstateclock;not perpositionupdate",
+    "ttl_ms": 120000,
+    "quote_conversion": "Explicitqualified sourcequote→USDT with originalevent/expiry;multiplierneverdefault1",
+    "converted_zone_expiry": "min(nativeexpiry,mappingexpiry,mappingevent+priceTTL30s)",
+    "caveats": [
+      "Subset oneadmittedaccount;not marketcensus",
+      "Crossmarginconditional;not riskfreefixed futurethreshold",
+      "0nonnullzones means boundedabsence,notuniversalnone",
+      "SourcevenueHYPERLIQUID;nativeUSDCneverautolabelUSDT",
+      "No wholemarketnotional;overlapaccount+market dedup"
+    ]
+  },
+  "new550coverage": {
+    "qualified_current": 0,
+    "canonical_overlap_current": 0,
+    "nominal_retained_SOL_name_overlap": 1,
+    "after_one_packet_max_exact_instruments": 1,
+    "maximum_total_CORE_increase": 0,
+    "extra_map_usable_increment": "0or1 onlyafteridentity/unit/clock/conversion/zonechecks",
+    "remaining549": "NOT_CHECKED notUNSUPPORTED"
+  },
+  "minimal_prerequisites": [
+    "ROOT explicitfiniteaccount admission for retainednative_samples[0], opaque stableaccount_ref; no walletsearch",
+    "Exact nativeHLmarketid/canonicalasset/sourcequote/settle/signedszi/liquidationPx semantics independently qualified; no ticker inference",
+    "Fresh sourcequote/BingX basis and FXconversion proof, or report nativezone unusableforBingX preciseorders",
+    "ROOT exactread-onlyPOST template current implementationpin and actualpositiveprovider+whole/nativeadmissions; productionpolicycurrently excludesHL"
+  ],
+  "minimal_docs_request": {
+    "reads_requested": 1,
+    "searches_requested": 0,
+    "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+    "exact_gap": "Read only clearinghouseState / perps metadata semantics to qualify signed szi unit/side, liquidationPx pricecurrency, positionValue currency, payload.time and explicit nativeSOLmarket. F556 schema/example alone didnotprove units/canonicalmapping. Ifpageinsufficient,stopwithUNKNOWN;no auto worldsearch.",
+    "already_spent_doc_grants_preserved": true,
+    "docs_native_funding_granted": false
+  },
+  "ROOT_owned_changes": {
+    "paths": [
+      "pump-report/runtime/production-policy.mjs",
+      "pump-report/runtime/provider-policy.mjs",
+      "pump-report/registry/index.mjs or ROOT-owned qualifiedrouteassembly",
+      "pump-report/runtime/worker.mjs onlyif boundedsourceprobe transport needed"
+    ],
+    "change": "Explicit1account1route scopedgrant and canonicalbinding; reuse F556 producer+existingbroker; do not moveanalysis.ready gate or startfourthMANUAL/CONTROL",
+    "new_execution_mode": "None authorized; ROOTdesignnewsourceonlymodeifneeded withactualadmission, notLOOKUPmarketabuse"
+  },
+  "cost": {
+    "HTTP_cold": 1,
+    "HTTP_samebody_fresh_warm": 0,
+    "cache_requirements": "OnlyifROOTbrokeractuallybodyhashcachedwithnativeclock; force/newstateexpiry1;nocatalogcacheclaim",
+    "provider_weight": "2perclearinghouseState in retainedrunner (not currentproviderquota guarantee)",
+    "provider_current_minute_day_month_remaining": null,
+    "old_monthly10000": "historicalretainedpool only,not currentadmission",
+    "proposed_packet_ceiling": {
+      "HTTP": 1,
+      "SQL": 16,
+      "rows_read": 5000,
+      "rows_written": 300,
+      "Telegram": 0
+    },
+    "native_status": "Designceiling only;exactROOTimplementation preflightmustprove4governorSQL+providerreserve/finalize+savedfactwritesfit16. No grant fromthisfile.",
+    "sourceTTL120s": true,
+    "observed_current_native_cost": null,
+    "reset": "UTCday/month boundaries;newgranthere=0",
+    "backoff": "429maxRetryAfterand60sminimum;temporary60s exponentialmax900;noauto retry;unknownnonrefundable",
+    "cadence": "onepacket only,0automaticdaily/monthlysubscription"
+  },
+  "not_done": [
+    "No officialdocs/newmarket/SQL/Worker/TG call",
+    "No routeactivated/codechanged",
+    "No qualified liquidationzone on550",
+    "NotclaimfullTZreadiness"
+  ]
+}

@@ -1,0 +1,459 @@
+{
+  "schema": "F570_NEW_PRIMARY_SOURCE_LEADS_V1",
+  "asof_documentary_utc": "2026-10-25 23:57:15 UTC",
+  "status": "THREE_NEW_API_LEADS_ONE_NAV_ONLY_NOT_NATIVE_QUALIFICATION",
+  "evidence_levels": {
+    "GRVT": "INDEXED_PRIMARY_DOC_PLUS_DIRECT_PRIMARY_OPEN",
+    "DEFX": "INDEXED_PRIMARY_DOC_ONLY_DIRECT_OPEN_502",
+    "REYA": "INDEXED_PRIMARY_BLOG_PLUS_OFFICIAL_SDK_README_OPEN",
+    "HIBACHI": "PRIMARY_HOME_NAVIGATION_ONLY"
+  },
+  "regional_lenses": [
+    "Japanese/Asian",
+    "Arabic/MENA",
+    "Spanish/Latin/Europe",
+    "Korean/Asian"
+  ],
+  "provider_domicile_inferred": false,
+  "novelty": "Absent as API primary patterns in the bounded retained scan; no assertion of worldwide novelty or market ranking.",
+  "actual_market_HTTP_RPC_SQL_TG_deploy_paid": 0,
+  "provider_free_permanent_confirmed_count": 0,
+  "usable_future_map_new": 0,
+  "checked_BingX_targets_new": 0,
+  "all550_coverage": "NOT_CHECKED",
+  "not_UNSUPPORTED": true,
+  "permanent_free_claim_rule": "Public documentation/no-key access is not a guarantee of perpetual hosted free service. No free-trial signup or paid dependency authorized.",
+  "non_target_native_settlement_rule": "Other venue/USDC evidence stays labeled as that venue and settlement; cannot be included in the BingX USDT trading universe.",
+  "leads": [
+    {
+      "id": "GRVT",
+      "upstream_group": "GRVT_NATIVE",
+      "decision": "PRIORITY1_DOCUMENTARY_MARKET_METADATA_AND_FUNDING_LEAD",
+      "evidence": [
+        {
+          "attempts": [
+            1,
+            2
+          ],
+          "url": "https://api-docs.grvt.io/market_data_api/"
+        },
+        {
+          "attempts": [
+            1
+          ],
+          "url": "https://help.grvt.io/en/articles/9636566-what-are-the-rate-limitations-on-grvt"
+        },
+        {
+          "attempts": [
+            1
+          ],
+          "url": "https://help.grvt.io/en/articles/12555039-funding-rate-mechanism"
+        },
+        {
+          "attempts": [
+            1
+          ],
+          "url": "https://help.grvt.io/en/articles/9614688-what-are-api-keys"
+        },
+        {
+          "attempts": [
+            1
+          ],
+          "url": "https://api-docs.grvt.io/trading_api/"
+        }
+      ],
+      "access": {
+        "automatable": "Official REST POST and WS documented",
+        "public_market": "Public trades explicitly documented; account Trading API is separate",
+        "public_no_auth_blanket": "UNKNOWN_NOT_EXPLICITLY_CAPTURED_FOR_EVERY_ENDPOINT",
+        "free_permanent": "UNKNOWN",
+        "trial": "No trial requirement found in reviewed docs; not a guarantee",
+        "account_or_payment_setup_performed": false
+      },
+      "limits": {
+        "market_instrument_miniticker_ticker_per_minute": 1500,
+        "other_market_REST_per_minute": 500,
+        "market_WS_concurrent_streams": 150,
+        "market_WS_subscriptions_per_minute": 300,
+        "tiers": "Same market figures1–9 in official table",
+        "quota_scope": "Trading read/write main-account shared subaccounts; market-rate IP/account scope not established",
+        "source": "https://help.grvt.io/en/articles/9636566-what-are-the-rate-limitations-on-grvt",
+        "not_project_grant": true
+      },
+      "canonical_carrier": {
+        "documented_fields": [
+          "instrument",
+          "instrument_hash",
+          "base",
+          "quote",
+          "kind",
+          "venues",
+          "settlement_period",
+          "base_decimals",
+          "quote_decimals",
+          "tick_size",
+          "min_size",
+          "max_position_size",
+          "funding_interval_hours",
+          "min_notional"
+        ],
+        "use": "Native market identity and denomination; STABLE_PERP includes USDC-settled RWA underlyings",
+        "independent_BingX_asset_identity": "UNKNOWN",
+        "canonical_token_contract_or_chain_binding": "NOT_OBTAINED"
+      },
+      "units": {
+        "min_size_and_max_position_size": "BASE_ASSET_DECIMAL_UNITS",
+        "min_notional": "QUOTE_CURRENCY_DECIMAL_UNITS",
+        "funding_rate": "PERCENTAGE_POINTS_WITH_PER_MARKET_INTERVAL_HOURS",
+        "funding_interval": "1/4/8/etc; do not substitute deprecated8h average",
+        "book_amount": "EXACT_RESPONSE_AMOUNT_UNIT_NOT_CAPTURED",
+        "trade_size": "EXACT_SIZE_DENOMINATION_NOT_CAPTURED",
+        "OI": "FIELD_AND_UNIT_NOT_CAPTURED",
+        "price_scaling": "Field-specific decimal descriptions; do not assume integer scaling or borrow precision from another field"
+      },
+      "clocks": {
+        "create_time": "UNIX_NANOSECONDS_DOC",
+        "funding_time": "UNIX_NANOSECONDS_DOC",
+        "trade_event_time": "Field and nanosecond-shaped example observed; exact unit declaration not retained in this bounded excerpt",
+        "book_snapshot_generation": "NOT_CAPTURED",
+        "warning": "Keep source strings/BigInt where ns; precision-loss check before converting. Fetch time cannot replace generation time."
+      },
+      "blocks": {
+        "future_liquidation_OPEN_positions": "No public whole-position/liq-price census proof; account API not census",
+        "movement_volume": "Candlestick and trades docs exist; exact closed windows/base volumes unqualified",
+        "liquidity": "Native orderbook lead; unit and depth support need qualification",
+        "flow": "Public trades; stable global trade_id and taker execution grouping documented; amount unit unqualified",
+        "OI": "NOT_PROVEN_IN_BOUNDED_DOCS",
+        "funding": "Positive documented rate/interval/clock lead",
+        "economic_identity": "Positive native definition carrier, no independent cross-venue binding"
+      },
+      "dedup": "Market REST, WS, account API, SDK and any same-data wrapper remain one GRVT upstream. ORDERBOOK vs RFQ is venue provenance, not independent supplier votes.",
+      "contradictions": [
+        "Orderbook prose says maximum10 levels; request enum10/50/100/500 and example50. Do not claim support without actual schema/reply."
+      ],
+      "next_minimal_actual_call": {
+        "admitted": false,
+        "method": "POST",
+        "url": "https://market-data.grvt.io/full/v1/all_instruments",
+        "body": {
+          "is_active": true,
+          "kinds": [
+            "PERPETUAL"
+          ]
+        },
+        "purpose": "One active native instrument-definition census; no per-symbol fanout, no BTC/ETH benchmark",
+        "expected_cost": "Proposed1HTTP only; provider weight/hosted entitlement/response bytes/native parent admission UNKNOWN",
+        "bounds_proposal": {
+          "attempts": 1,
+          "retries": 0,
+          "redirects": 0,
+          "automatic_followups": 0,
+          "maximum_body_bytes": 2000000
+        },
+        "subsequent_calls": "Book/trades/funding require separate exact admission and validated mapping/units; not included"
+      },
+      "unresolved": [
+        "Permanent free hosted entitlement",
+        "Public-route authentication requirements",
+        "Market quota identity scope",
+        "Response generation clocks and field denomination",
+        "Exact BingX overlap/canonical binding",
+        "No future liq-map proof"
+      ]
+    },
+    {
+      "id": "DEFX",
+      "upstream_group": "DEFX_NATIVE",
+      "decision": "PRIORITY3_PUBLIC_MARKET_LEAD_PRIVATE_POSITIONS_NOT_PUBLIC_MAP",
+      "evidence": [
+        {
+          "attempts": [
+            3
+          ],
+          "url": "https://docs.defx.com/docs/api-docs/developer-hub/rest-apis-documentation",
+          "evidence": "Primary search-index excerpt; attempt8 direct open failed502, no retry"
+        },
+        {
+          "attempts": [
+            3
+          ],
+          "url": "https://docs.defx.com/docs/resources/perpetual-contract-specifications"
+        },
+        {
+          "attempts": [
+            3
+          ],
+          "url": "https://docs.defx.com/docs/trade/defx-perp-dex/liquidation"
+        },
+        {
+          "attempts": [
+            3
+          ],
+          "url": "https://docs.defx.com/docs/trade/defx-perp-dex/price-oracle"
+        }
+      ],
+      "access": {
+        "automatable": "Official public GET market API no authentication; private API requires API key, timestamp and HMAC-SHA256",
+        "public_market": "Markets/prices/trade history documented",
+        "positions": "PRIVATE_ACCOUNT_SCOPED",
+        "free_permanent": "UNKNOWN",
+        "trial": "No trial or fee requirement stated in captured public API docs",
+        "no_secret_or_account_setup": true
+      },
+      "limits": {
+        "status": "UNKNOWN",
+        "reason": "Rate Limits section says Coming Soon",
+        "no_rate_assumption": true
+      },
+      "canonical_carrier": {
+        "documented_fields_or_prose": [
+          "Native market identifier",
+          "Underlying Market",
+          "Margin & Settlement Asset",
+          "Quantity Step",
+          "Notional Value denomination"
+        ],
+        "positive": "Contract specification separates quantity from underlying and settlement",
+        "package_example": "kPEPE-USDC quantity is kPEPE while underlying is PEPE-USDC; cannot infer numeric multiplier or solve BingX1000PEPE",
+        "BingX_binding": "UNKNOWN",
+        "RWA_crypto_screen": "Future/prelaunch/RWA categories require economic carrier; public API existence does not imply crypto"
+      },
+      "units": {
+        "decimal": "STRING_JSON",
+        "timestamp_type": "NUMERIC_UNIX_MILLISECONDS",
+        "specified_market_quantity": "Native base/package units per exact contract",
+        "margin_notional": "USDC for captured contracts",
+        "book_amount": "NOT_CAPTURED",
+        "trade_quantity": "NOT_CAPTURED",
+        "OI_funding": "FIELDS_UNITS_NOT_CAPTURED"
+      },
+      "clocks": {
+        "wire_timestamp": "UNIX_MS type definition only",
+        "request_signature_timestamp": "Request authentication clock, not snapshot generation",
+        "position_generation": "UNKNOWN",
+        "book_generation": "UNKNOWN"
+      },
+      "blocks": {
+        "future_liquidation_OPEN_positions": "Estimated liq price displayed for own position, private endpoint only; no public census",
+        "movement_volume": "Public price/trades lead; closed-candle semantics not captured",
+        "liquidity": "Public market/orderbook documentation lead; exact schema/units not captured",
+        "flow": "Trade-history lead, side and units unqualified",
+        "OI": "NOT_PROVEN",
+        "funding": "NOT_PROVEN",
+        "economic_identity": "Useful native contract denomination carrier"
+      },
+      "contradictions": [
+        "Liquidation page names Stork; price-oracle page names Pyth. Current live oracle source UNKNOWN.",
+        "Older isolated-margin/cross-upcoming text differs from newer portfolio descriptions; do not reuse formula/mode assumptions.",
+        "REST page mainnet heading carries testnet wording typo; hostname api.defx.com is listed separately from api.testnet.defx.com."
+      ],
+      "dedup": "REST/WS/site/SDK and Pyth or Stork underlying price feeds are not independent position datasets; shared-oracle provenance must be carried if established.",
+      "next_minimal_actual_call": {
+        "admitted": false,
+        "method": "GET",
+        "url": null,
+        "base_url": "https://api.defx.com",
+        "operation": "Public market-definition list",
+        "blocked": "Exact list path not established; direct doc failed502. Do not synthesize route or probe native host.",
+        "prerequisite": "New separately bounded documentation allowance to obtain exact schema/route first",
+        "conditional_future_bounds": {
+          "maximum_attempts": 1,
+          "retries": 0,
+          "maximum_body_bytes": 2000000
+        },
+        "native_calls_now": 0
+      },
+      "unresolved": [
+        "Exact public-market metadata route",
+        "Rate limits",
+        "Permanent free entitlement",
+        "Schema original clocks/units",
+        "Current oracle and margin mode",
+        "Whole public OPEN-position coverage absent"
+      ]
+    },
+    {
+      "id": "REYA",
+      "upstream_group": "REYA_NATIVE",
+      "decision": "PRIORITY2_NATIVE_DEFINITIONS_AND_CONDITIONAL_WALLET_POSITION_SCHEMA",
+      "evidence": [
+        {
+          "attempts": [
+            4
+          ],
+          "url": "https://blog.reya.network/superior-automated-trading-through-programmatic-access/"
+        },
+        {
+          "attempts": [
+            4
+          ],
+          "url": "https://blog.reya.network/faster-underneath-reya-moves-its-sequencer-to-conduit/"
+        },
+        {
+          "attempts": [
+            5
+          ],
+          "url": "https://github.com/Reya-Labs/reya-python-sdk",
+          "evidence": "Official V2 README only; no install or code execution"
+        }
+      ],
+      "access": {
+        "automatable": "Official V2 REST/WS and reference data documented; SDK MIT",
+        "REST_mainnet_base": "https://api.reya.xyz/v2",
+        "WS_mainnet": "wss://ws.reya.xyz/",
+        "wallet_owner_vs_signer": "Owner address for data queries distinguished from signer private key for transactions",
+        "public_no_auth_entitlement": "UNKNOWN from README alone",
+        "free_permanent": "UNKNOWN; SDK MIT is not hosted API service guarantee",
+        "trial": "No trial requirement stated in reviewed README",
+        "no_wallet_or_secret_discovery": true
+      },
+      "limits": {
+        "per_second": null,
+        "per_minute": null,
+        "monthly": null,
+        "status": "UNKNOWN_NO_LIMIT_TABLE_READ"
+      },
+      "canonical_carrier": {
+        "native_definition_paths": [
+          "/v2/perpMarketDefinitions",
+          "/v2/assetDefinitions"
+        ],
+        "fields": "Schemas not inspected; do not invent contract-address/chain-ID fields",
+        "BingX_binding": "UNKNOWN"
+      },
+      "units": {
+        "book_amount": "UNKNOWN",
+        "trade_quantity": "UNKNOWN",
+        "position_quantity_notional_settlement": "UNKNOWN",
+        "funding_and_OI_fields_units": "UNKNOWN"
+      },
+      "clocks": {
+        "account_example": "updated_timestamp_ms belongs to wallet-account example only",
+        "position_generation": "UNKNOWN",
+        "book_funding_trade_generation": "UNKNOWN",
+        "do_not_relabel_account_update_as_position_snapshot": true
+      },
+      "blocks": {
+        "future_liquidation_OPEN_positions": "Wallet positions endpoint documented; liquidation-price field, ID, notional and snapshot clock not proved; no whole-market census",
+        "movement_volume": "Market summaries, executions and candle history paths documented; schema unqualified",
+        "liquidity": "2026 official migration says AMM→orderbook; current book schema not inspected",
+        "flow": "perpExecutions path lead only",
+        "OI": "Summary schema not inspected, field/unit UNKNOWN",
+        "funding": "Programmatic oracle/funding context exists; exact V2 field/interval/unit UNKNOWN",
+        "economic_identity": "Separate native perp and asset definition routes are positive carriers pending schema"
+      },
+      "known_paths": [
+        "/v2/perpMarkets/summary",
+        "/v2/perpMarket/{symbol}/summary",
+        "/v2/market/{symbol}/perpExecutions",
+        "/v2/candleHistory/{symbol}/{resolution}",
+        "/v2/perpMarketDefinitions",
+        "/v2/assetDefinitions",
+        "/v2/wallet/{address}/accounts",
+        "/v2/wallet/{address}/positions"
+      ],
+      "future_positions": {
+        "requires": "Existing ROOT-admitted exact address set plus separate read-only access admission; no guessed/discovered account fanout",
+        "addresses_admitted": 0,
+        "whole_market_census": false
+      },
+      "migration_risk": "Official2026-08-07 post describes transition to orderbook. Use current V2 schema, not old AMM or old RPC assumptions; migration does not prove current book fields.",
+      "dedup": "Native REST/WS/SDK/read-precompiles and Blockscout-indexed same Reya chain are one primary data lineage, not separate provider coverage.",
+      "next_minimal_actual_call": {
+        "admitted": false,
+        "method": "GET",
+        "url": "https://api.reya.xyz/v2/perpMarketDefinitions",
+        "purpose": "One native perp-definition response to establish ID/asset/settlement schema; no wallets or per-symbol fanout",
+        "bounds_proposal": {
+          "attempts": 1,
+          "retries": 0,
+          "redirects": 0,
+          "automatic_followups": 0,
+          "maximum_body_bytes": 2000000
+        },
+        "expected_cost": "Proposed1HTTP only; hosted entitlement/provider weight/native parent admission UNKNOWN",
+        "not_included": [
+          "assetDefinitions follow-up",
+          "Wallet positions",
+          "WS subscription",
+          "RPC",
+          "Account discovery"
+        ]
+      },
+      "unresolved": [
+        "Public-route auth/free entitlement and quotas",
+        "Current exact schemas/units/source clocks",
+        "Position liquidation price/ID/notional fields",
+        "Admitted address set and coverage denominator",
+        "Independent BingX identity and USDC/USDT price basis"
+      ]
+    },
+    {
+      "id": "HIBACHI",
+      "upstream_group": "HIBACHI_NATIVE_UNQUALIFIED",
+      "decision": "NAVIGATION_ONLY_DEFER_NATIVE",
+      "evidence": [
+        {
+          "attempts": [
+            6
+          ],
+          "url": "https://docs.hibachi.xyz/",
+          "evidence": "Primary-domain search empty, spent"
+        },
+        {
+          "attempts": [
+            7
+          ],
+          "url": "https://docs.hibachi.xyz/",
+          "evidence": "Home35lines; navigation only, no API schema"
+        }
+      ],
+      "access": {
+        "automatable": "UNKNOWN",
+        "free_permanent": "UNKNOWN",
+        "trial": "UNKNOWN",
+        "API_auth": "UNKNOWN",
+        "account_setup_performed": false
+      },
+      "limits": {
+        "status": "UNKNOWN"
+      },
+      "canonical_carrier": {
+        "status": "UNKNOWN"
+      },
+      "units": {
+        "status": "UNKNOWN"
+      },
+      "clocks": {
+        "status": "UNKNOWN"
+      },
+      "blocks": {
+        "future_liquidation_OPEN_positions": "NOT_PROVEN",
+        "movement_volume": "NOT_PROVEN",
+        "liquidity": "NOT_PROVEN",
+        "flow": "NOT_PROVEN",
+        "OI": "NOT_PROVEN",
+        "funding": "NOT_PROVEN",
+        "economic_identity": "NOT_PROVEN"
+      },
+      "dedup": "Docs navigation does not establish independent upstream/data supply.",
+      "next_minimal_actual_call": {
+        "admitted": false,
+        "method": null,
+        "url": null,
+        "native_calls_now": 0,
+        "blocked": "No native API route/schema/terms in home page; budget exhausted. Needs separate doc-index/schema review before defining any single actual call.",
+        "known_next_document_only": "https://docs.hibachi.xyz/llms.txt"
+      },
+      "unresolved": [
+        "Everything beyond vendor documentation navigation"
+      ]
+    }
+  ],
+  "selection_notes": [
+    "Reya is the most concrete new conditional OPEN-position lead, but no liq-map fields/coverage qualification.",
+    "GRVT is most concrete across native definitions/funding/public trades, not demonstrated public future map.",
+    "Defx public market data has explicit no-key access, but positions are private and rates unspecified.",
+    "Hibachi carries no API evidence and must not inflate selected-source/free-source counts."
+  ]
+}

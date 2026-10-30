@@ -1,0 +1,162 @@
+--- /dev/null
++++ b/pump-report/contracts/zone-clock.mjs
+@@ -0,0 +1,61 @@
++import {positive,validTime} from './index.mjs';
++
++export const ZONE_CLOCK_VERSION='pump-zone-clock-bound-v1-proposal-20261026';
++export const ORDERLY_CLOCK_PROOF=Object.freeze({evidence_ref:'checkpoints/pump-report-20261025/ROOT_ORDERLY_CURRENT_PRIMARY_DELTA.json',sha256:'7f9a2ddf961cffab3439e15e9f77f7c015e2c6025295480acd62a0fb9d090277',max_age_ms:5000});
++const text=x=>typeof x==='string'&&x.length>0;
++const proof=x=>x&&typeof x==='object'&&text(x.evidence_ref);
++const fail=reason=>({usable:false,reason});
++// This validates an already supplied normalized point, never creates a zone
++// from a position observation or gives IO/identity/unit qualification.
++function orderlyPrerequisites(z,{instrument,reference,at,price_ttl_ms}){
++  const q=z.orderly_qualification,b=q?.binding,p=b?.price_mapping,s=b?.position_semantics,id=b?.position_identity,v=b?.position_value;
++  if(q?.schema!=='ORDERLY_BOUNDED_ZONE_PREREQUISITES_V1'||q.source_clock_evidence_sha256!==ORDERLY_CLOCK_PROOF.sha256||q.raw_position_receipt_ref!==z.evidence_ref)return false;
++  if(z.primary_provider!=='ORDERLY'||z.source!=='ORDERLY_PLATFORM_POSITIONS'||z.venue!=='ORDERLY'||z.basis_type!=='OBSERVED_POSITION'||z.price_currency!=='USDT')return false;
++  if(instrument?.canonical_cross_venue_identity_qualified!==true||!proof(b)||b.status!=='VERIFIED_SAME_UNDERLYING'||b.source_venue!=='ORDERLY'||
++    b.bingx_instrument_id!==instrument.instrument_id||b.bingx_asset_id!==instrument.asset_id||b.bingx_identity_evidence_ref!==instrument.identity_evidence_ref||
++    z.asset_id!==instrument.asset_id||b.source_market_id!==z.market_id||b.source_symbol!==z.native_symbol||!text(b.source_market_id)||!text(b.source_symbol))return false;
++  if(!proof(s)||s.side_field!=='side'||s.long_value!=='LONG'||s.short_value!=='SHORT'||s.liquidation_price_field!=='est_liq_price'||s.liquidation_price_kind!=='ESTIMATED_CURRENT_OPEN_POSITION_LIQUIDATION_PRICE')return false;
++  if(!proof(id)||id.kind!=='SOURCE_STABLE_POSITION_ID'||id.scope!=='PLATFORM_UNIQUE_CURRENT_POSITION'||typeof id.field!=='string'||! /^[A-Za-z_][A-Za-z0-9_]{0,63}$/.test(id.field)||
++    ['symbol','side','opened_at','mark_price','est_liq_price','notional'].includes(id.field)||!Array.isArray(z.position_ids)||z.position_ids.length!==1||
++    !/^ORDERLY:POSITION:SHA256:[a-f0-9]{64}$/.test(z.position_ids[0])||z.position_id!==z.position_ids[0])return false;
++  if(b.price_quote!=='USDC'||!text(b.price_quote_evidence_ref)||!proof(v)||v.field!=='notional'||v.unit!=='USDC'||z.native_price_quote!=='USDC'||z.native_notional_unit!=='USDC'||
++    z.notional_basis!=='SOURCE_REPORTED_OPEN_POSITION_NOTIONAL_NOT_VALUE_AT_LIQUIDATION')return false;
++  if(!proof(p)||p.kind!=='EXPLICIT_QUOTE_RATE_AND_VENUE_PRICE_BASIS'||!text(p.quote_conversion_evidence_ref)||!text(p.price_basis_evidence_ref)||
++    p.from_market_id!==b.source_market_id||p.to_instrument_id!==instrument.instrument_id||p.from_quote!=='USDC'||p.to_quote!=='USDT'||
++    p.from_price_basis!=='ORDERLY_EST_LIQ_PRICE'||p.to_price_basis!=='BINGX_NATIVE_PRICE'||!positive(p.quote_rate_to_usdt)||!positive(p.venue_price_basis_multiplier)||
++    !positive(price_ttl_ms)||!validTime(p.event_ts)||p.event_ts>z.received_ts||p.event_ts>at||at-p.event_ts>price_ttl_ms||!validTime(p.expires_ts)||p.expires_ts<at||z.price_mapping_evidence_ref!==p.evidence_ref)return false;
++  if(!positive(z.native_est_liq_price)||!positive(z.native_mark_price)||!positive(z.native_reported_position_notional)||!['LONG','SHORT'].includes(z.liquidated_side)||!['CROSS','ISOLATED'].includes(z.margin_mode))return false;
++  if(z.liquidated_side==='LONG'?z.native_est_liq_price>=z.native_mark_price:z.native_est_liq_price<=z.native_mark_price)return false;
++  const price=z.native_est_liq_price*p.quote_rate_to_usdt*p.venue_price_basis_multiplier,money=z.native_reported_position_notional*p.quote_rate_to_usdt;
++  return positive(price)&&positive(money)&&positive(reference)&&z.lower===price&&z.upper===price&&z.projected_bingx_liquidation_price_usdt===price&&
++    z.projected_position_notional_usdt===money&&z.magnitude_value===money&&z.magnitude_unit==='USDT'&&
++    (z.liquidated_side==='LONG'?price<reference:price>reference)&&z.quote_rate_to_usdt===p.quote_rate_to_usdt&&z.venue_price_basis_multiplier===p.venue_price_basis_multiplier;
++}
++export function assessZoneClock(z,{instrument,reference,at,ttl,price_ttl_ms}){
++  if(!validTime(at)||!positive(ttl)||!validTime(z?.received_ts)||z.received_ts>at)return fail('ZONE_CLOCK_NOT_USABLE');
++  if(validTime(z.event_ts)&&!z.source_asof_bound){
++    if(!validTime(z.expires_ts)||z.event_ts>z.received_ts||z.expires_ts<at||at-z.event_ts>ttl)return fail('ZONE_CLOCK_NOT_USABLE');
++    return {version:ZONE_CLOCK_VERSION,usable:true,reason:null,kind:'EXACT_SOURCE_EVENT',event_ts:z.event_ts,earliest_ts:z.event_ts,latest_ts:z.event_ts,conservative_expires_ts:z.expires_ts};
++  }
++  const b=z.source_asof_bound,t=z.source_response_ts;
++  if(z.event_ts!==null||z.generation_event_ts!==null||z.expires_ts!==null||!validTime(t)||t>z.received_ts||!b||
++    b.basis!=='DOCUMENTED_MAX_SNAPSHOT_AGE_AT_SERVER_RESPONSE'||b.evidence_ref!==ORDERLY_CLOCK_PROOF.evidence_ref||b.documented_max_age_ms!==5000||
++    !validTime(b.earliest_ts)||b.earliest_ts!==t-5000||b.latest_ts!==t)return fail('ZONE_BOUND_CLOCK_UNQUALIFIED');
++  if(!orderlyPrerequisites(z,{instrument,reference,at,price_ttl_ms}))return fail('ORDERLY_ZONE_PREREQUISITES_UNQUALIFIED');
++  const p=z.orderly_qualification.binding.price_mapping,limit=Math.min(b.earliest_ts+ttl,p.expires_ts,p.event_ts+price_ttl_ms),expiry=z.conservative_bound_expires_ts;
++  if(!validTime(limit)||!validTime(expiry)||expiry>limit||expiry<at||at-b.earliest_ts>ttl)return fail('ZONE_BOUND_CLOCK_STALE_OR_UNQUALIFIED');
++  return {version:ZONE_CLOCK_VERSION,usable:true,reason:null,kind:'BOUNDED_SOURCE_ASOF',event_ts:null,earliest_ts:b.earliest_ts,latest_ts:b.latest_ts,
++    conservative_expires_ts:expiry,evidence_ref:b.evidence_ref,evidence_sha256:ORDERLY_CLOCK_PROOF.sha256};
++}
++export function combineZoneClocks(components){
++  const xs=components.map(x=>x.clock_assessment),bounded=xs.some(x=>x.kind==='BOUNDED_SOURCE_ASOF');
++  return {version:ZONE_CLOCK_VERSION,kind:bounded?'BOUNDED_SOURCE_ASOF':'EXACT_SOURCE_EVENT',event_ts:bounded?null:Math.min(...xs.map(x=>x.event_ts)),
++    earliest_ts:Math.min(...xs.map(x=>x.earliest_ts)),latest_ts:Math.max(...xs.map(x=>x.latest_ts)),
++    conservative_expires_ts:Math.min(...xs.map(x=>x.conservative_expires_ts)),component_clock_kinds:[...new Set(xs.map(x=>x.kind))]};
++}
++export function zoneClockText(z,at,compact=false){
++  const c=z.clock_assessment;
++  if(c?.kind==='BOUNDED_SOURCE_ASOF')return compact?'возраст ≤'+Math.ceil((at-c.earliest_ts)/1000)+' с; точное время неизвестно':'время формирования неизвестно; возраст от '+Math.floor((at-c.latest_ts)/1000)+' до '+Math.ceil((at-c.earliest_ts)/1000)+' с по интервалу источника';
++  const time=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(z.event_ts);
++  return 'данные '+time+' МСК ('+Math.floor((at-z.event_ts)/1000)+' с назад)';
++}
+--- a/pump-report/analytics/zones.mjs
++++ b/pump-report/analytics/zones.mjs
+@@ -1,10 +1,11 @@
+ import {positive, finite, validTime} from '../contracts/index.mjs';
+ import {unique} from './math.mjs';
++import {assessZoneClock,combineZoneClocks} from '../contracts/zone-clock.mjs';
+ 
+ const provider=z=>z.primary_provider??z.source;
+ const currency=z=>z.price_currency??z.price_quote??null;
+ const lineage=z=>({zone_id:z.zone_id,source:z.source,primary_provider:provider(z),venue:z.venue,market_id:z.market_id,evidence_ref:z.evidence_ref,
+-  event_ts:z.event_ts,received_ts:z.received_ts,expires_ts:z.expires_ts,basis_type:z.basis_type,model_id:z.model_id??null,model_version:z.model_version??z.relative_scale?.model_version??null,
++  event_ts:z.event_ts,received_ts:z.received_ts,expires_ts:z.expires_ts,source_response_ts:z.source_response_ts??null,source_asof_bound:z.source_asof_bound??null,conservative_bound_expires_ts:z.conservative_bound_expires_ts??null,clock_assessment:{...z.clock_assessment},basis_type:z.basis_type,model_id:z.model_id??null,model_version:z.model_version??z.relative_scale?.model_version??null,
+   position_ids:[...(z.position_ids??[])],overlap_group:z.overlap_group??null,lower:z.lower,upper:z.upper,magnitude_value:z.magnitude_value??null,magnitude_unit:z.magnitude_unit??null,
+   relative_scale:z.relative_scale??null,coverage:z.coverage??null,limitations:[...(z.limitations??[])],price_currency:currency(z),price_comparability:z.price_comparability??null});
+ const overlap=(a,b)=>a.lower<=b.upper&&b.lower<=a.upper;
+@@ -19,7 +20,7 @@
+   const model=z.model_id??z.relative_scale?.scale_id,version=z.model_version??z.relative_scale?.model_version;
+   if(!provider(z)||!z.venue||!z.market_id)return null;
+   if(z.basis_type==='EXTERNAL_MODEL'&&(!model||!version))return null;
+-  return JSON.stringify([z.asset_id,provider(z),z.venue,z.market_id,currency(z),z.basis_type,model??null,version??null,z.event_ts,
++  return JSON.stringify([z.asset_id,provider(z),z.venue,z.market_id,currency(z),z.basis_type,model??null,version??null,z.clock_assessment.kind==='EXACT_SOURCE_EVENT'?z.event_ts:[z.clock_assessment.earliest_ts,z.clock_assessment.latest_ts,z.clock_assessment.conservative_expires_ts],
+     z.magnitude_unit??null,z.relative_scale?.scale_id??null,z.price_mapping_evidence_ref??z.price_comparability?.evidence_ref??null]);
+ }
+ function magnitudeTier(z){
+@@ -32,20 +33,21 @@
+   const rejected=[],kept=[],rows=Array.isArray(map?.zones)?map.zones:[];
+   for(const z of rows){
+     const ttl=z?.basis_type==='OBSERVED_POSITION'?profile.freshness_ms.observed_positions:profile.freshness_ms.model_map;
++    const clock=assessZoneClock(z,{instrument,reference,at,ttl,price_ttl_ms:profile.freshness_ms.price});
+     let reason=null;
+     if(z?.usable!==true||typeof z.zone_id!=='string'||!z.zone_id||typeof z.source!=='string'||!z.source||!z.venue||!z.market_id||!z.evidence_ref||z.asset_id!==instrument.asset_id||
+       !['OBSERVED_POSITION','EXTERNAL_MODEL'].includes(z.basis_type)||!positive(z.lower)||!positive(z.upper)||z.upper<z.lower)reason='ZONE_NOT_QUALIFIED';
+-    else if(!validTime(z.event_ts)||!validTime(z.received_ts)||!validTime(z.expires_ts)||z.event_ts>z.received_ts||z.received_ts>at||z.expires_ts<at||at-z.event_ts>ttl)reason='ZONE_CLOCK_NOT_USABLE';
++    else if(!clock.usable)reason=clock.reason;
+     else if(currency(z)!=='USDT'||z.venue!=='BINGX'&&!z.price_comparability?.evidence_ref&&!z.price_mapping_evidence_ref)reason='ZONE_PRICE_NOT_COMPARABLE_TO_BINGX_USDT';
+     else if(!(z.upper<reference||z.lower>reference))reason='ZONE_OVERLAPS_REFERENCE';
+     if(reason){rejected.push({zone_id:z?.zone_id??null,reason});continue;}
+     const magnitude=finite(z.magnitude_value)&&z.magnitude_value>=0&&z.magnitude_unit?z.magnitude_value:null;
+-    kept.push({...z,magnitude_value:magnitude,magnitude_unit:magnitude!==null?z.magnitude_unit:null,position_ids:[...(z.position_ids??[])],limitations:[...(z.limitations??[])],components:[lineage(z)]});
++    kept.push({...z,clock_assessment:clock,magnitude_value:magnitude,magnitude_unit:magnitude!==null?z.magnitude_unit:null,position_ids:[...(z.position_ids??[])],limitations:[...(z.limitations??[])],components:[lineage({...z,clock_assessment:clock})]});
+   }
+   // Select one coherent original for duplicate/overlapping economic coverage;
+   // preserve every original in lineage, never add the reported amounts.
+   const dedup=[];
+-  for(const z of kept.slice().sort((a,b)=>b.event_ts-a.event_ts||compareId(a.zone_id,b.zone_id))){
++  for(const z of kept.slice().sort((a,b)=>b.clock_assessment.earliest_ts-a.clock_assessment.earliest_ts||compareId(a.zone_id,b.zone_id))){
+     const prior=dedup.find(a=>sameEconomicObject(a,z));
+     if(prior){prior.components.push(...z.components);prior.limitations=unique([...prior.limitations,'OVERLAPPING_COVERAGE_NOT_SUMMED']);}
+     else dedup.push(z);
+@@ -60,9 +62,10 @@
+     if(strengthComparable(c,z)&&z.magnitude_value>c.magnitude_value)c.magnitude_value=z.magnitude_value;
+     else if(!strengthComparable(c,z)){c.magnitude_value=null;c.magnitude_unit=null;}
+   }
+-  const qualified=clusters.map(c=>{const {key,...zone}=c;return {...zone,zone_id:c.member_ids.join('+'),source_ids:unique(c.components.map(x=>x.source)),
++  const qualified=clusters.map(c=>{const {key,...zone}=c,clock=combineZoneClocks(c.components);return {...zone,clock_assessment:clock,zone_id:c.member_ids.join('+'),source_ids:unique(c.components.map(x=>x.source)),
+     distance_pct:100*((c.side==='UP'?c.lower:c.upper)/reference-1),strength_label_ru:magnitudeTier(c),magnitude_semantics:c.components.length>1?'MAX_SINGLE_COMPONENT_NOT_SUMMED':'REPORTED_COMPONENT',
+-    expires_ts:Math.min(...c.components.map(x=>x.expires_ts)),event_ts:Math.min(...c.components.map(x=>x.event_ts))};});
++    expires_ts:clock.kind==='BOUNDED_SOURCE_ASOF'?null:clock.conservative_expires_ts,event_ts:clock.event_ts,
++    ...(clock.kind==='BOUNDED_SOURCE_ASOF'?{generation_event_ts:null,conservative_bound_expires_ts:clock.conservative_expires_ts}:{})};});
+   const choose=side=>{
+     const sorted=qualified.filter(z=>z.side===side).sort((a,b)=>Math.abs(a.distance_pct)-Math.abs(b.distance_pct)||a.lower-b.lower),chosen=[];
+     if(!sorted.length)return chosen;
+--- a/pump-report/analytics/index.mjs
++++ b/pump-report/analytics/index.mjs
+@@ -4,6 +4,7 @@
+ import {analyzeMovement, constructPlan, describeMovementDetails} from './movement.mjs';
+ import {measureLiquidity} from './liquidity.mjs';
+ import {selectZones} from './zones.mjs';
++import {zoneClockText} from '../contracts/zone-clock.mjs';
+ import {explainOptionalFacts, explainMapPlan} from './context.mjs';
+ import {consumeObservedDayGrowth} from './day-growth.mjs';
+ import {explainManualAnalysis} from './manual-text.mjs';
+@@ -45,12 +46,11 @@
+   }
+   const version=z.model_version??z.relative_scale?.model_version;
+   const model=z.basis_type==='EXTERNAL_MODEL'?', расчётная, модель '+shortLabel(z.model_id??'не указана',compact?14:24)+(version?' / '+shortLabel(version,compact?10:16):' (версия не указана)'):', наблюдаемые позиции';
+-  const time=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(z.event_ts);
+-  const age=Math.floor((at-z.event_ts)/1000);
++  const clockText=zoneClockText(z,at,compact);
+   const knownLimits={PARTIAL_SOURCE_COVERAGE:'охват источника ограничен',OBSERVED_ACCOUNTS_ONLY:'только наблюдаемые аккаунты',RETURNED_BINS_ONLY:'только опубликованный диапазон',
+     OVERLAPPING_COVERAGE_NOT_SUMMED:'перекрывающееся покрытие не суммировалось',MERGED_MAGNITUDE_MAX_SINGLE_COMPONENT_NOT_SUMMED:'величина объединения не является суммой'};
+   const limits=z.limitations?.length?(compact?'; ограничения: ':'; ограничения источника: ')+unique(z.limitations.map(k=>knownLimits[k]??'дополнительные ограничения источника')).slice(0,2).map(t=>compact?shortLabel(t,26):t).join(', ')+(compact&&z.limitations.length>2?'; др.':''):'';
+-  return px(z.lower)+'–'+px(z.upper)+' — '+magnitude+', '+shortLabel(z.source,compact?18:32)+(z.venue?' / '+shortLabel(z.venue,compact?14:24):'')+model+'; данные '+time+' МСК ('+age+' с назад)'+limits;
++  return px(z.lower)+'–'+px(z.upper)+' — '+magnitude+', '+shortLabel(z.source,compact?18:32)+(z.venue?' / '+shortLabel(z.venue,compact?14:24):'')+model+'; '+clockText+limits;
+ }
+ function render(result){
+   const p=result.plan,narrative=result.user_narrative,selected=narrative.reasons.map(f=>wellFormed(f.text));
+--- a/pump-report/analytics/feature-capsule.mjs
++++ b/pump-report/analytics/feature-capsule.mjs
+@@ -111,7 +111,7 @@
+     original_plan_sha256:await capsuleDigest(analysis.plan),plan:planProjection(analysis.plan),features,
+     source_facts:facts.map(([,f])=>factHeader(f)),trade_sample:tradeProjection(analysis,input.facts.trades),
+     candle_comparison:pick(analysis.activity?.volume_basis,['field','unit','comparison_kind','comparison_key','interval_ms']),
+-    map_sources:[...(analysis.liquidations?.zones_up??[]),...(analysis.liquidations?.zones_down??[])].map(z=>({...pick(z,['zone_id','source','primary_provider','venue','basis_type','model_id','model_version','lower','upper','magnitude_value','magnitude_unit','event_ts','received_ts','expires_ts','evidence_ref']),relative_scale:pick(z.relative_scale,['scale_id','model_version'])})),
++    map_sources:[...(analysis.liquidations?.zones_up??[]),...(analysis.liquidations?.zones_down??[])].map(z=>({...pick(z,['zone_id','source','primary_provider','venue','basis_type','model_id','model_version','lower','upper','magnitude_value','magnitude_unit','event_ts','received_ts','expires_ts','evidence_ref','source_response_ts','source_asof_bound','conservative_bound_expires_ts','clock_assessment']),relative_scale:pick(z.relative_scale,['scale_id','model_version'])})),
+     probability:{value_pct:null,reason:analysis.probability?.reason??'NOT_CALIBRATED'},
+     audit_compatibility:'EXPLICIT_V2_READER_REQUIRED_NO_V1_PROMOTION',external_provenance_authenticated:false,
+     retention:{automatic_delete:false,approved_delete_ttl_ms:null,originals_required:true,reference_closure_established:false}});

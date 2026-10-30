@@ -1,0 +1,73 @@
+{
+  "schema": "N12_SUCCESSOR042_READ_ONLY_DELTA_REVIEW_V1",
+  "previous_review_PR": 472,
+  "previous_frozen_review": "a86e089bb0cffd97ba7ec9028f4dab3be4a27a94",
+  "from": "290e5224a10652a8ab3a489752c06cefdee4e18e",
+  "to": "042013378e45e560edeacdab20e0773adef0dd3f",
+  "changed_paths": [
+    "checkpoints/n12-component-origins-repair-20261018/n12-target6-final.tap.gz",
+    "checkpoints/n12-component-origins-repair-20261018/output-freeze.tap.gz",
+    "checkpoints/n12-component-origins-repair-20261018/scope.json",
+    "current-generation/files/src/block-result-context.mjs",
+    "current-generation/tests/fixtures/output-contract/MANIFEST.json",
+    "current-generation/tests/n12-market-trades.test.mjs"
+  ],
+  "runtime_changed_only_intrinsic_mapper_fields": [
+    "physical_root",
+    "quote",
+    "contract"
+  ],
+  "block_result_context_sha256": "fb0110ee6d77b01f40ad42897cbe4150fcc7df1f2c83fac95772a0bdb3cac1de",
+  "manifest_sha256": "4c505674bdd2fe2d59d86c73a604d92fce1e68a1a101d17a75af5354759daa49",
+  "fixture_hash_map_byte_values_unchanged": true,
+  "unchanged_consumer_files": [
+    {
+      "path": "current-generation/files/src/block-decision-use-audit.mjs",
+      "sha256": "9ae5511596818b2e60af715845ffe0cbfa73fc5ed0299ddd8c50e8304156d3dc"
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "sha256": "850edc9ac89a67b32bc721d93abaf01ab5c9b82067287c2c45b73359348631a0"
+    },
+    {
+      "path": "current-generation/files/src/telegram-plain-facts.mjs",
+      "sha256": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643"
+    },
+    {
+      "path": "current-generation/files/src/canonical-publication.mjs",
+      "sha256": "8113b3540a9d85fd6b05ab5e64013242a270831101229bbf95f6985c11991407"
+    },
+    {
+      "path": "current-generation/files/src/observation-source-role-gate.mjs",
+      "sha256": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc"
+    }
+  ],
+  "saved_logs_read": [
+    {
+      "path": "checkpoints/n12-component-origins-repair-20261018/n12-target6-final.tap.gz",
+      "sha256": "32649641afba0598f1d568cbe18c57f1b5b6d30c8f31ccc83fd82535a72d2627",
+      "saved_counts": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "skipped": 0
+      },
+      "executed_by_reviewer": false
+    },
+    {
+      "path": "checkpoints/n12-component-origins-repair-20261018/output-freeze.tap.gz",
+      "sha256": "4c8247d692dae9fea5db1b128a02d9fb4c9b11e0ea01b1195023188bbd7e65b6",
+      "saved_counts": {
+        "tests": 12,
+        "pass": 12,
+        "fail": 0,
+        "skipped": 0
+      },
+      "executed_by_reviewer": false
+    }
+  ],
+  "blocking_findings": [],
+  "own_runtime_tests": 0,
+  "review_scope": "Narrow successor delta only, previous290 review not repeated; output fixture bodies not regenerated or rerun.",
+  "connected_CI_or_native_acceptance": false
+}

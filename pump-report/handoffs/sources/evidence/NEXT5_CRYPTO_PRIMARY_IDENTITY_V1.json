@@ -1,0 +1,187 @@
+{
+  "schema": "PUMP_NEXT5_PRIMARY_CRYPTO_IDENTITY_EVIDENCE_V1",
+  "reviewed_ts": 1792931028177,
+  "authority_main": "108a5dbdfc670d9a48fbf953811f5aa1b7bc2864",
+  "own_lease_acquire_commit": "fdee1fa4aa73d7f250c967b87ec7472e145c5996",
+  "records": [
+    {
+      "base": "AVAX",
+      "native_contract_id": "100009",
+      "native_symbol": "AVAX-USDT",
+      "venue_asset_name": "Avalanche",
+      "reviewed_crypto_identity": "Avalanche Primary Network native AVAX",
+      "venue_underlying_document": {
+        "url": "https://bingx.com/en/price/avalanche-2",
+        "short_literal": "it uses its native token, AVAX, to pay network fees",
+        "capture_scope": "SHORT_RENDERED_LITERAL_NOT_ORIGIN_HTTP_BODY"
+      },
+      "independent_crypto_document": {
+        "url": "https://docs.avax.network/docs/primary-network/avax-token",
+        "short_literal": "AVAX is the native utility token of Avalanche.",
+        "capture_scope": "SHORT_RENDERED_PRIMARY_DOCUMENT_LITERAL"
+      },
+      "spot_document": {
+        "url": "https://bingx.com/en/spot/AVAXUSDT",
+        "status": "SPECIFIC_PAIR_AND_NAME_RETURNED",
+        "pair_literal": "AVAX/USDT",
+        "name_literal": "Avalanche"
+      },
+      "perpetual_document": {
+        "url": "https://bingx.com/en/perpetual/AVAX-USDT",
+        "specific_title_identity": "AVAXUSDT USDⓢ Margined Perpetual",
+        "body_scope": "NAVIGATION_SHELL_NOT_CURRENT_RULES"
+      },
+      "curator_conclusion": "VERIFIED_CRYPTO_VENUE_SCOPED_UNDERLYING_FOR_EXACT_SAVED_NATIVE_TUPLE",
+      "inference_disclosed": "Reviewed join of exact retained native contractId/asset/currency, specific venue named underlying explanation and perpetual product title, plus independent crypto primary document. No exchange-issued on-chain token certificate or cross-venue equivalence.",
+      "limitations": [],
+      "current_native_membership_verified": false,
+      "cross_venue_or_chain_token_binding_qualified": false
+    },
+    {
+      "base": "LINK",
+      "native_contract_id": "103",
+      "native_symbol": "LINK-USDT",
+      "venue_asset_name": "Chainlink",
+      "reviewed_crypto_identity": "Chainlink Network LINK token; on-chain representation unqualified",
+      "venue_underlying_document": {
+        "url": "https://bingx.com/en/price/chainlink",
+        "short_literal": "LINK is the native utility and governance token of the Chainlink network",
+        "capture_scope": "SHORT_RENDERED_LITERAL_NOT_ORIGIN_HTTP_BODY"
+      },
+      "independent_crypto_document": {
+        "url": "https://chain.link/faqs",
+        "short_literal": "LINK is a digital commodity and the native asset of the Chainlink Network",
+        "capture_scope": "SHORT_RENDERED_PRIMARY_DOCUMENT_LITERAL"
+      },
+      "spot_document": {
+        "url": "https://bingx.com/en/spot/LINKUSDT",
+        "status": "SPECIFIC_PAIR_AND_NAME_RETURNED",
+        "pair_literal": "LINK/USDT",
+        "name_literal": "Chainlink"
+      },
+      "perpetual_document": {
+        "url": "https://bingx.com/en/perpetual/LINK-USDT",
+        "specific_title_identity": "LINKUSDT USDⓢ Margined Perpetual",
+        "body_scope": "NAVIGATION_SHELL_NOT_CURRENT_RULES"
+      },
+      "curator_conclusion": "VERIFIED_CRYPTO_VENUE_SCOPED_UNDERLYING_FOR_EXACT_SAVED_NATIVE_TUPLE",
+      "inference_disclosed": "Reviewed join of exact retained native contractId/asset/currency, specific venue named underlying explanation and perpetual product title, plus independent crypto primary document. No exchange-issued on-chain token certificate or cross-venue equivalence.",
+      "limitations": [
+        "ERC677_AND_BRIDGED_LINK_VARIANTS_NOT_COLLAPSED_TO_CHAIN_CONTRACT_IDENTITY"
+      ],
+      "current_native_membership_verified": false,
+      "cross_venue_or_chain_token_binding_qualified": false
+    },
+    {
+      "base": "LTC",
+      "native_contract_id": "100006",
+      "native_symbol": "LTC-USDT",
+      "venue_asset_name": "Litecoin",
+      "reviewed_crypto_identity": "Litecoin digital currency",
+      "venue_underlying_document": {
+        "url": "https://bingx.com/en/price/litecoin",
+        "short_literal": "Litecoin (LTC) is a decentralized, open-source cryptocurrency",
+        "capture_scope": "SHORT_RENDERED_LITERAL_NOT_ORIGIN_HTTP_BODY"
+      },
+      "independent_crypto_document": {
+        "url": "https://github.com/litecoin-project/litecoin/blob/master/README.md",
+        "short_literal": "Litecoin is an experimental digital currency",
+        "git_blob": "002598ee09fe37c2d442fb73e786554095244c76",
+        "capture_scope": "OFFICIAL_PROJECT_README_SHORT_LITERAL_PINNED_GIT_BLOB"
+      },
+      "spot_document": {
+        "url": "https://bingx.com/en/spot/LTCUSDT",
+        "status": "PAIR_AND_NAME_RENDERED_EMPTY",
+        "pair_literal": null,
+        "name_literal": null,
+        "not_used_as_positive_identity_proof": true
+      },
+      "perpetual_document": {
+        "url": "https://bingx.com/en/perpetual/LTC-USDT",
+        "specific_title_identity": "LTCUSDT USDⓢ Margined Perpetual",
+        "body_scope": "NAVIGATION_SHELL_NOT_CURRENT_RULES"
+      },
+      "curator_conclusion": "VERIFIED_CRYPTO_VENUE_SCOPED_UNDERLYING_FOR_EXACT_SAVED_NATIVE_TUPLE",
+      "inference_disclosed": "Reviewed join of exact retained native contractId/asset/currency, specific venue named underlying explanation and perpetual product title, plus independent crypto primary document. No exchange-issued on-chain token certificate or cross-venue equivalence.",
+      "limitations": [
+        "SPOT_PAIR_NAME_UNAVAILABLE_NOT_ASSERTED",
+        "UNDERLYING_BINDING_USES_EXACT_NATIVE_PERPETUAL_TUPLE_AND_EXPLICIT_NAMED_VENUE_COIN_DOCUMENT"
+      ],
+      "current_native_membership_verified": false,
+      "cross_venue_or_chain_token_binding_qualified": false
+    },
+    {
+      "base": "DOT",
+      "native_contract_id": "100008",
+      "native_symbol": "DOT-USDT",
+      "venue_asset_name": "Polkadot",
+      "reviewed_crypto_identity": "Polkadot native DOT",
+      "venue_underlying_document": {
+        "url": "https://bingx.com/en/price/polkadot",
+        "short_literal": "Polkadot uses the DOT token for network governance, staking, and bonding",
+        "capture_scope": "SHORT_RENDERED_LITERAL_NOT_ORIGIN_HTTP_BODY"
+      },
+      "independent_crypto_document": {
+        "url": "https://docs.polkadot.com/reference/polkadot-hub/consensus-and-security/relay-chain/",
+        "short_literal": "is the native token of the Polkadot network",
+        "capture_scope": "SHORT_RENDERED_PRIMARY_DOCUMENT_LITERAL"
+      },
+      "spot_document": {
+        "url": "https://bingx.com/en/spot/DOTUSDT",
+        "status": "SPECIFIC_PAIR_AND_NAME_RETURNED",
+        "pair_literal": "DOT/USDT",
+        "name_literal": "Polkadot"
+      },
+      "perpetual_document": {
+        "url": "https://bingx.com/en/perpetual/DOT-USDT",
+        "specific_title_identity": "DOTUSDT USDⓢ Margined Perpetual",
+        "body_scope": "NAVIGATION_SHELL_NOT_CURRENT_RULES"
+      },
+      "curator_conclusion": "VERIFIED_CRYPTO_VENUE_SCOPED_UNDERLYING_FOR_EXACT_SAVED_NATIVE_TUPLE",
+      "inference_disclosed": "Reviewed join of exact retained native contractId/asset/currency, specific venue named underlying explanation and perpetual product title, plus independent crypto primary document. No exchange-issued on-chain token certificate or cross-venue equivalence.",
+      "limitations": [],
+      "current_native_membership_verified": false,
+      "cross_venue_or_chain_token_binding_qualified": false
+    },
+    {
+      "base": "TRX",
+      "native_contract_id": "100039",
+      "native_symbol": "TRX-USDT",
+      "venue_asset_name": "TRON",
+      "reviewed_crypto_identity": "TRON native TRX",
+      "venue_underlying_document": {
+        "url": "https://bingx.com/en/price/tron",
+        "short_literal": "users pay in its native token, TRX.",
+        "capture_scope": "SHORT_RENDERED_LITERAL_NOT_ORIGIN_HTTP_BODY"
+      },
+      "independent_crypto_document": {
+        "url": "https://developers.tron.network/docs/token-standards-trx",
+        "short_literal": "TRX is the native token of the TRON network.",
+        "capture_scope": "SHORT_RENDERED_PRIMARY_DOCUMENT_LITERAL"
+      },
+      "spot_document": {
+        "url": "https://bingx.com/en/spot/TRXUSDT",
+        "status": "SPECIFIC_PAIR_AND_NAME_RETURNED",
+        "pair_literal": "TRX/USDT",
+        "name_literal": "TRON"
+      },
+      "perpetual_document": {
+        "url": "https://bingx.com/en/perpetual/TRX-USDT",
+        "specific_title_identity": "TRXUSDT USDⓢ Margined Perpetual",
+        "body_scope": "NAVIGATION_SHELL_NOT_CURRENT_RULES"
+      },
+      "curator_conclusion": "VERIFIED_CRYPTO_VENUE_SCOPED_UNDERLYING_FOR_EXACT_SAVED_NATIVE_TUPLE",
+      "inference_disclosed": "Reviewed join of exact retained native contractId/asset/currency, specific venue named underlying explanation and perpetual product title, plus independent crypto primary document. No exchange-issued on-chain token certificate or cross-venue equivalence.",
+      "limitations": [],
+      "current_native_membership_verified": false,
+      "cross_venue_or_chain_token_binding_qualified": false
+    }
+  ],
+  "quote_membership_in_tool_returned_primary_text_verified": true,
+  "origin_HTTP_body_hash_claim": false,
+  "scope": "FIVE_RETAINED_UNDERLYING_CLASSIFICATIONS_NOT_CURRENT_NATIVE_ADMISSION",
+  "market_provider_HTTP": 0,
+  "SQL": 0,
+  "TG": 0,
+  "documentation_connector_cost": null
+}

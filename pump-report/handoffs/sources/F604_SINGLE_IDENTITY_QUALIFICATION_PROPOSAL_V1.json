@@ -1,0 +1,100 @@
+{
+  "schema": "F604_SINGLE_IDENTITY_QUALIFICATION_PROPOSAL_V1",
+  "status": "READY_FOR_ROOT_REVIEW_NOT_AN_ACTUAL_ADMISSION",
+  "max_source_attempts": 1,
+  "qualification_before": 23,
+  "qualification_cap": 24,
+  "remaining_before": 1,
+  "execution_by_SOURCE": false,
+  "request": {
+    "method": "GET",
+    "url": "https://api.coingecko.com/api/v3/derivatives/exchanges/bingx_futures?include_tickers=unexpired",
+    "headers": {
+      "Accept": "application/json",
+      "Accept-Encoding": "identity"
+    },
+    "authorization": "KEYLESS_OFFICIAL_MODE_PRESELECTED; no key/auth header",
+    "body": null,
+    "max_attempts": 1,
+    "retries": 0,
+    "redirects": 0,
+    "followups": 0,
+    "timeout_ms": 15000,
+    "max_response_body_bytes": 2097152,
+    "max_inflate_bytes": 2097152,
+    "SDK_execute_or_proxy_hidden_retry": false
+  },
+  "input": {
+    "selected550_csv": "pump-report/handoffs/sources/F589_COVERAGE_550_V1.csv",
+    "sha256": "49df3341e670d53e8f449a8267f42f567809348b1bbb4b6eda1a90399ff1a11f",
+    "native_registry": "ROOT existing accepted selected550 exact native registry/primary aliases; no new source lookup.",
+    "required_native_fields": [
+      "instrument_id",
+      "native_contract_id",
+      "native_symbol",
+      "base",
+      "quote",
+      "margin",
+      "settle",
+      "venue",
+      "market_type"
+    ],
+    "required_family": "BINGX USDT_M PERPETUAL quote/margin/settleUSDT",
+    "missing_native_input": "Stop not-admitted; do not guess or fetch another catalogue."
+  },
+  "preflight": [
+    "Fresh ROOT own authority plus positive source/provider/IP/whole-budget admission; source attempt23/24 is not permission.",
+    "Reuse an existing runner capable of enforcing exact1attempt/no redirects/no retries/byte/time ceilings before request; no new operator probe.",
+    "Preselect keyless once. No credential/ping/key/ID-list API call; no paid wrapper, SDK execute or auth fallback."
+  ],
+  "response_and_output": {
+    "expected": "Complete JSON object with BingX venue name and tickers array.",
+    "identity_whitelist": [
+      "source_exchange_id from fixed request context",
+      "reported exchange name",
+      "symbol",
+      "base",
+      "target",
+      "coin_id",
+      "target_coin_id",
+      "contract_type",
+      "trade_url"
+    ],
+    "proof_receipt": [
+      "request identity/mode",
+      "HTTP status",
+      "receive time as receive only",
+      "body bytes/hash/complete flag",
+      "physical call count and retained uncertain cost",
+      "original row index/ref"
+    ],
+    "counts": [
+      "complete_rows",
+      "perpetual_USDT_candidates",
+      "direct_vendor_ID_bindings",
+      "exact_native_tuple_proposals",
+      "missing_IDs",
+      "ambiguous_or_alias_unproved",
+      "non_target_rows",
+      "selected550_NOT_CHECKED"
+    ],
+    "native_binding": "Candidate only until ROOT reviews exact native join; vendor binding not all550 acceptance.",
+    "ignore_numeric": [
+      "funding_rate",
+      "open_interest_usd",
+      "price/index/volume/BTCETH conversions/exchange BTC aggregates"
+    ],
+    "no_metrics_or_strategy_activation": true,
+    "raw_body": "Private exact capture only; public handoff identity projections/hash/counts."
+  },
+  "stop_rules": [
+    "401/403/429: stop and count attempt spent; no fallback credential mode or wrapper.",
+    "Any3xx/other4xx/5xx/timeout/transporterror: stop, retain actual or UNKNOWN cost; no retry.",
+    "Unexpected encoding/nonJSON/malformed/schema/venue mismatch: stop, no synthetic repair.",
+    "Over2MiB: abort, preserve exact received prefix and truncation; no automatic8MiB retry.",
+    "No second call for pagination, names, metadata, aliases, exchange list, source clocks or missing550 rows."
+  ],
+  "success_scope": "Confirms bounded keyless access/schema and provider-attributed identity rows actually returned; does not prove full550/currentCORE/fundingOI freshness.",
+  "post_attempt_accounting": "If actual attempt occurs,23->24 remaining0 even if rejected/oversize; no refund/reset. SOURCE now leaves23/24remaining1 unchanged.",
+  "not_installed_or_executed": true
+}

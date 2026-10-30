@@ -1,0 +1,19 @@
+✔ retained actual forward range closes an early observation where old anomaly alone has no forward trigger (60.859944ms)
+✔ missing direction, low interest, hard veto, stale or missing range cannot become a new observation (22.344899ms)
+✔ WAIT/ENTRY rules and an existing routed plan do not consume the new range fallback (37.535852ms)
+✔ existing valid anomaly-based observation retains its original trigger and canonical fields (7.347009ms)
+✔ actual raw-fill producer timing reproduces rejected old target and closed measured new target (1.712877ms)
+✔ same assembled consumer receives the measured target without changing score, trigger, cancellation or ENTRY state (24.779284ms)
+✔ an admitted independent price conflict withholds only the fallback target (0.56805ms)
+✔ a precommitted scenario target already behind current price cannot become start-closing advice (5.697344ms)
+✔ the original unclosed source direction is not promoted by a measured target (2.753502ms)
+✔ old actual producer observations and stale QNT cannot become fresh technical targets (0.314558ms)
+✔ foreign and incomplete real receipt mutations cannot supply an assigned measured target (0.474486ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 305.586808

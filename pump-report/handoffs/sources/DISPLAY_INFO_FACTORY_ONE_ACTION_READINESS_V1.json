@@ -1,0 +1,73 @@
+{
+  "schema": "PUMP_CORRECTED_METADATA_ONE_ACTION_READINESS_V1",
+  "status": "OFFLINE_FACTORY6PASS_NOT_NATIVE_ADMITTED",
+  "source_module": "pump-report/sources/bingx-anonymous-display-info-request.mjs",
+  "source_sha256": "ba89cf7123d7012a0b24bc6cdb7ce8aa497b0b62ebf172cd3f003d317525d2a1",
+  "export": "createAnonymousDisplayInfoRequestFactory",
+  "dependencies": {
+    "clock": "explicit synchronous current Unixms,13digit safeinteger",
+    "uuid": "explicit synchronous canonical or compact UUIDv4; no cookie/token/fingerprint",
+    "sha256": "createSubtleSha256(injectedCrypto.subtle)",
+    "time_zone_hours": "explicit truthful client UTC offset hours, no clock/TZ mutation"
+  },
+  "output": [
+    "url",
+    "method",
+    "headers"
+  ],
+  "pinned_request": {
+    "method": "GET",
+    "url": "https://api-app.acc-de.com/api/coin/v1/display-info/list",
+    "query": {},
+    "body": null,
+    "headers": "Only pinned public common headers + fresh clock/trace/generatedanonymousdevice/sign; immutable output",
+    "authorization": null,
+    "cookies": null,
+    "antiDeviceId": "",
+    "device_brand": ""
+  },
+  "execution_limits_if_separately_admitted": {
+    "attempts": 1,
+    "timeout_ms": 10000,
+    "response_bytes": 2000000,
+    "follow_redirects": false,
+    "automatic_retries": 0,
+    "host_fallback": false,
+    "other_endpoint_fallback": false
+  },
+  "admission": {
+    "granted_here": false,
+    "owner": "ROOT",
+    "requires": "fresh exact artifact+provider route policy+whole budget+native SQL+new precise reservation and readback before IO",
+    "old_metadata_attempt_SPENT": 1,
+    "reuse_old_consumed_grant": false,
+    "caps_or_versions_reset": false,
+    "SQL_authority": "ROOT_NATIVE_BUDGET",
+    "future_SQL_cost": null,
+    "prior_bare_metadata_snapshot_not_new_admission": {
+      "requests": 10,
+      "read": 18,
+      "write": 8
+    },
+    "all_old_unknowns_and_protected_reserves_retained": true
+  },
+  "response_acceptance": "ROOT save private actual receipt/raw/schema/clock/status/size/cost. HTTP200 alone not success; even rows need positive type enum/native canonical bridge before crypto promotion. On one failure stop, no auth/login/device fingerprint/header/parameter retry.",
+  "runtime_readiness": "Source/tested only. No integration/export from existing source index, no deploy or Worker native signature acceptance. ROOT owns runtime/provider/budget.",
+  "latest_owner_literal": "Фьючерс на валюту также не нужен никакой.",
+  "classification_scope": "Positive crypto USDT perpetual only, any script; exclude FX/fiat/stocks/metals/gold/gold-backed/commodities/noncryptoindices. Settlement/active status not positive classification.919unknown unchanged; fullNnull.",
+  "ROOT_reported_latest_baseline_not_independent_SOURCE_proof": {
+    "SOL": "5BINGX200/coreUSABLE/PLAN_INVALIDATED/cardnull/TG0",
+    "BINGX_acceptance_spent": 12,
+    "BINGX_acceptance_grant_original": 24,
+    "provider_attempts": 21,
+    "native_requests": 354,
+    "native_read": 740,
+    "native_write": 227,
+    "SQL_unknown": 0,
+    "old_provider_UNKNOWN_preserved": 2,
+    "production": "off",
+    "server_publiccode": "17a8",
+    "modules": 34
+  },
+  "new_SOURCE_HTTP_SQL_TG_deploy": 0
+}

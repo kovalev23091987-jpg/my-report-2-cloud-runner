@@ -1,0 +1,65 @@
+{
+  "schema": "F574_NEXT_BOUNDED_ACTIONS_NOT_ADMITTED_V1",
+  "native_attempts_authorized_now": 0,
+  "entries": [
+    {
+      "lineage": "PERENNIAL",
+      "exact_library_route": "markets.read.marketSnapshots -> calcLiquidationPrice",
+      "native_wire_route": "Arbitrum JSON-RPC eth_call required by read-only SDK; endpoint/calldata/count UNKNOWN",
+      "proposal_status": "NOT_DISPATCHABLE",
+      "prerequisites": [
+        "New static proof of snapshot acquisition/oracle and raw scale helpers",
+        "Existing ROOT-admitted exact address/market set; no discovery",
+        "Current RPC/graph no-key or free entitlement/quota scope",
+        "One original consistent block/oracle/settlement snapshot with collateral/fees/pending state",
+        "Separate provider/whole/native budget allowing measured call count"
+      ],
+      "minimum_next_docs": [
+        {
+          "url": "https://github.com/equilibria-xyz/perennial-v2-sdk-ts/blob/main/src/lib/markets/chain.ts",
+          "git_blob": "4acbd8c2a3ba996ff10f73fed20d1b13bfff5054"
+        },
+        {
+          "url": "https://github.com/equilibria-xyz/perennial-v2-sdk-ts/blob/main/src/utils/big6Utils.ts",
+          "git_blob": "12a7895aeca55fdcdd707e66900e33fda871048e"
+        }
+      ],
+      "no_current_doc_allowance_remaining": true
+    },
+    {
+      "lineage": "ADRENA",
+      "exact_library_route": "getPositionStatus({wallet,rpc,principalToken,positionAddress})",
+      "native_wire_route": null,
+      "proposal_status": "HOLD",
+      "prerequisites": [
+        "New exact implementation text of core.js/ABI data path",
+        "Prove whether read requires signing and how full oracle/custody state is acquired",
+        "Existing admitted position/account only, free RPC quota and actual provider/native admission",
+        "Units/ID/clock and current-OPEN lifecycle proof"
+      ],
+      "minimum_next_doc": "https://github.com/AdrenaFoundation/adrena-sdk-ts/blob/main/core.js",
+      "not_a_retry_of_failed_api_type_file": true,
+      "no_current_doc_allowance_remaining": true
+    },
+    {
+      "lineage": "FLASH_TRADE",
+      "proposal_status": "NO_NATIVE_PROPOSAL_WIND_DOWN_GATE",
+      "minimum_input": "A materially new official current-operational notice would be needed before considering active-position route."
+    },
+    {
+      "lineage": "HMX",
+      "proposal_status": "NO_NATIVE_PROPOSAL_NO_SCHEMA",
+      "minimum_input": "Exact materially new official API/SDK schema reference; do not retry failed doc root merely to repeat failure."
+    }
+  ],
+  "future_use_rules": [
+    "No vendor zero fallback becomes a real liquidation zone",
+    "Margin threshold fields are not liquidation fields",
+    "SDK isActive helper is not sufficient OPEN proof",
+    "No payoff-unit amount is relabeled native token/USD without source conversion",
+    "Native vendor calculations retain protocol provenance, assumptions, source clock and sample limits",
+    "Independent BingX canonical asset and quote/basis/payoff mapping required before exact price use",
+    "No SDK logical invocation advertised as one HTTP without actual acquisition proof"
+  ],
+  "actual_provider_market_metadata_RPC_SQL_TG_deploy_privatecaptures": 0
+}

@@ -1,0 +1,302 @@
+{
+  "schema": "CONTROLLED_GATE_MEMORY_CONNECTED_WITNESS_V1",
+  "fixture_basis": "Synthetic missing-field carrier; no reconstructed historical first refusal or provider raw",
+  "vectors": [
+    {
+      "name": "literal_return_OFFICIAL_HTX_EXACT_TOKEN_REFERENCE_REQUIRED",
+      "bytes": 4379,
+      "first_binding_bytes": 175
+    },
+    {
+      "name": "literal_return_NO_USABLE_GATE_METRIC_REQUIRING_BINDING",
+      "bytes": 4375,
+      "first_binding_bytes": 171
+    },
+    {
+      "name": "literal_return_D1_BINDING_ADMISSION_NOT_CLOSED",
+      "bytes": 4367,
+      "first_binding_bytes": 163
+    },
+    {
+      "name": "literal_return_GATE_REFERENCE_CLOCK_OR_PROVENANCE_NOT_CLOSED",
+      "bytes": 4381,
+      "first_binding_bytes": 177
+    },
+    {
+      "name": "literal_return_SUPPORTED_CHAIN_ADDRESS_NOT_PROVIDED",
+      "bytes": 4372,
+      "first_binding_bytes": 168
+    },
+    {
+      "name": "literal_return_GATE_CHAIN_ADDRESS_NOT_EXACT",
+      "bytes": 4364,
+      "first_binding_bytes": 160
+    },
+    {
+      "name": "literal_return_AMBIGUOUS_GATE_CHAIN_ADDRESSES",
+      "bytes": 4366,
+      "first_binding_bytes": 162
+    },
+    {
+      "name": "literal_return_HTX_GATE_ADDRESS_MISMATCH",
+      "bytes": 4361,
+      "first_binding_bytes": 157
+    },
+    {
+      "name": "literal_return_GATE_REFERENCE_UNAVAILABLE",
+      "bytes": 4362,
+      "first_binding_bytes": 158
+    },
+    {
+      "name": "literal_return_CLOSED_NULL_REASON",
+      "bytes": 4334,
+      "first_binding_bytes": 130
+    },
+    {
+      "name": "foreign_run_id"
+    },
+    {
+      "name": "foreign_snapshot_id"
+    },
+    {
+      "name": "foreign_observed_ts"
+    },
+    {
+      "name": "foreign_analytical_fingerprint"
+    },
+    {
+      "name": "foreign_contract"
+    },
+    {
+      "name": "duplicate_tuple"
+    },
+    {
+      "name": "duplicate_attempt"
+    },
+    {
+      "name": "absent"
+    },
+    {
+      "name": "throw_without_return"
+    },
+    {
+      "name": "foreign_return"
+    },
+    {
+      "name": "reason_overflow"
+    },
+    {
+      "name": "missing_reason"
+    },
+    {
+      "name": "URL_not_code"
+    },
+    {
+      "name": "row_overflow"
+    },
+    {
+      "name": "duplicate_metric"
+    },
+    {
+      "name": "identity_overflow"
+    },
+    {
+      "name": "whole8192overflow"
+    },
+    {
+      "name": "foreign_identity"
+    },
+    {
+      "name": "private_fields_omitted"
+    },
+    {
+      "name": "missing_rows"
+    },
+    {
+      "name": "memory_capacity_no_provider_cap"
+    }
+  ],
+  "native_SQL": 0,
+  "provider_HTTP": 0,
+  "old_suites_rerun": 0,
+  "production_imports": false,
+  "example": {
+    "schema": "GATE_STORED_NORMALIZED_DIAGNOSTIC_V1",
+    "contract": "BTW-USDT",
+    "canonical_tuple": {
+      "contract": "BTW-USDT",
+      "run_id": "CONTROLLED:392358:MEMORY",
+      "snapshot_id": "S392:BTW-USDT:1792404897255",
+      "observed_ts": 1792404897255,
+      "analytical_fingerprint": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    },
+    "normalized_rows_status": "CAPTURED",
+    "first_binding": {
+      "schema": "GATE_RETURNED_BINDING_DIAGNOSTIC_V1",
+      "contract": "BTW-USDT",
+      "carrier_status": "CAPTURED",
+      "status": "NOT_CLOSED",
+      "reason": "OFFICIAL_HTX_EXACT_TOKEN_REFERENCE_REQUIRED"
+    },
+    "rows": [
+      {
+        "source_key": "GATE_OFFICIAL",
+        "venue": "GATE",
+        "status": "CLOSED",
+        "legacy_status": "CLOSED",
+        "fact_contract_status": "NOT_CLOSED",
+        "identity_status": "NOT_CLOSED",
+        "freshness_status": "CURRENT_AT_OBSERVATION",
+        "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+        "quality_status": "OK",
+        "reason_code": null,
+        "metric": "funding_rate",
+        "contract_code": "BTW-USDT",
+        "unit": "rate_per_settlement",
+        "interval": "1h",
+        "decision_usable": false,
+        "source_compatible": true,
+        "event_ts": 1792404867255,
+        "received_ts": 1792404897255,
+        "max_age_sec": 7200,
+        "coverage_pct": 100,
+        "identity": {
+          "status": "NOT_CLOSED",
+          "base_asset": "BTW",
+          "quote_asset": "USDT",
+          "market_type": "PERP",
+          "market_type_raw": "USDT_PERP",
+          "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+          "asset_identity_verification_method": "NOT_VERIFIED",
+          "contract_code": "BTW-USDT",
+          "instrument_id": "BTW_USDT",
+          "primary_market_id": "BTW_USDT:GATE:USDT_PERP",
+          "multiplier_required_for_metric": false,
+          "symbol_verified": true,
+          "asset_identity_verified": false
+        }
+      },
+      {
+        "source_key": "GATE_OFFICIAL",
+        "venue": "GATE",
+        "status": "CLOSED",
+        "legacy_status": "CLOSED",
+        "fact_contract_status": "NOT_CLOSED",
+        "identity_status": "NOT_CLOSED",
+        "freshness_status": "CURRENT_AT_OBSERVATION",
+        "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+        "quality_status": "OK",
+        "reason_code": null,
+        "metric": "oi_change_1h",
+        "contract_code": "BTW-USDT",
+        "unit": "pct",
+        "interval": "1h",
+        "decision_usable": false,
+        "source_compatible": true,
+        "event_ts": 1792404867255,
+        "received_ts": 1792404897255,
+        "max_age_sec": 7200,
+        "coverage_pct": 100,
+        "identity": {
+          "status": "NOT_CLOSED",
+          "base_asset": "BTW",
+          "quote_asset": "USDT",
+          "market_type": "PERP",
+          "market_type_raw": "USDT_PERP",
+          "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+          "asset_identity_verification_method": "NOT_VERIFIED",
+          "contract_code": "BTW-USDT",
+          "instrument_id": "BTW_USDT",
+          "primary_market_id": "BTW_USDT:GATE:USDT_PERP",
+          "multiplier_required_for_metric": false,
+          "symbol_verified": true,
+          "asset_identity_verified": false
+        }
+      },
+      {
+        "source_key": "GATE_OFFICIAL",
+        "venue": "GATE",
+        "status": "CLOSED",
+        "legacy_status": "CLOSED",
+        "fact_contract_status": "NOT_CLOSED",
+        "identity_status": "NOT_CLOSED",
+        "freshness_status": "CURRENT_AT_OBSERVATION",
+        "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+        "quality_status": "OK",
+        "reason_code": null,
+        "metric": "price_change_4h",
+        "contract_code": "BTW-USDT",
+        "unit": "pct",
+        "interval": "4h",
+        "decision_usable": false,
+        "source_compatible": true,
+        "event_ts": 1792404867255,
+        "received_ts": 1792404897255,
+        "max_age_sec": 7200,
+        "coverage_pct": 100,
+        "identity": {
+          "status": "NOT_CLOSED",
+          "base_asset": "BTW",
+          "quote_asset": "USDT",
+          "market_type": "PERP",
+          "market_type_raw": "USDT_PERP",
+          "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+          "asset_identity_verification_method": "NOT_VERIFIED",
+          "contract_code": "BTW-USDT",
+          "instrument_id": "BTW_USDT",
+          "primary_market_id": "BTW_USDT:GATE:USDT_PERP",
+          "multiplier_required_for_metric": false,
+          "symbol_verified": true,
+          "asset_identity_verified": false
+        }
+      },
+      {
+        "source_key": "GATE_OFFICIAL",
+        "venue": "GATE",
+        "status": "CLOSED",
+        "legacy_status": "CLOSED",
+        "fact_contract_status": "NOT_CLOSED",
+        "identity_status": "NOT_CLOSED",
+        "freshness_status": "CURRENT_AT_OBSERVATION",
+        "normalization_status": "LEGACY_VALUE_PASSTHROUGH",
+        "quality_status": "OK",
+        "reason_code": null,
+        "metric": "taker_balance_1h_raw",
+        "contract_code": "BTW-USDT",
+        "unit": "pct",
+        "interval": "1h",
+        "decision_usable": false,
+        "source_compatible": true,
+        "event_ts": 1792404867255,
+        "received_ts": 1792404897255,
+        "max_age_sec": 7200,
+        "coverage_pct": 100,
+        "identity": {
+          "status": "NOT_CLOSED",
+          "base_asset": "BTW",
+          "quote_asset": "USDT",
+          "market_type": "PERP",
+          "market_type_raw": "USDT_PERP",
+          "multiplier_status": "NOT_APPLICABLE_FOR_METRIC",
+          "asset_identity_verification_method": "NOT_VERIFIED",
+          "contract_code": "BTW-USDT",
+          "instrument_id": "BTW_USDT",
+          "primary_market_id": "BTW_USDT:GATE:USDT_PERP",
+          "multiplier_required_for_metric": false,
+          "symbol_verified": true,
+          "asset_identity_verified": false
+        }
+      }
+    ],
+    "proof_scope": "STORED_NORMALIZED_AND_RETURNED_CODES_NOT_RAW_API_OR_ADMISSION"
+  },
+  "exported_diagnostic_bytes": 4379,
+  "original_fp_unchanged": true,
+  "metadata_unchanged": true,
+  "existing_mock_candidate_SQL": 1,
+  "additional_mock_SQL": 0,
+  "mock_producer_calls_not_HTTP": 1,
+  "manual_text_unchanged": true,
+  "full_worker_or_runtime_imported": false,
+  "boundary": "Actual new functions/runner closure, exact worker callback and exact output loader executed with local dependency stubs; no whole assembled Worker/native persistence/HTTP, historical first reason remains UNKNOWN."
+}

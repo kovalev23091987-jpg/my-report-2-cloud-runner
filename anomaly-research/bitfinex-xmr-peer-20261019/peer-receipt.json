@@ -1,0 +1,615 @@
+{
+  "schema": "ANOMALY_WORKER_BITFINEX_XMR_NATIVE_USD_READONLY_PEER_V1",
+  "created_at_utc": "2026-10-19T08:55:46.024778+00:00",
+  "verdict": "ZERO_CONCRETE_BLOCKERS_WITHIN_REVIEWED_MODEL_AND_SAVED_XMR_ORIGINALS",
+  "blockers": [],
+  "target": {
+    "PR": 515,
+    "url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/515",
+    "frozen_head": "472c1433121e51eeab52e13b48a3712ca6ce6348",
+    "frozen_parent": "aa580e520426ab1b9ef4556bdf863ff999bd97c3",
+    "authoring_main": "0911097a469b78a2d11e745141544fd0cf7a06a4",
+    "source_branch_or_PR_changed": false
+  },
+  "scope": {
+    "reviewer_thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "own_lease_ref_sha": "6a063344000d54994abfae060a5a887667c8fc3f",
+    "own_lease_owner": "CODEX:OFFLINE_ANOMALIES:1792399989250",
+    "exact_readback": true,
+    "review": "ONLY new Bitfinex XMR native USD15m pure model/code+saved-original contract; combined512+515 integration excluded",
+    "new_app_or_test_execution": 0,
+    "old_34_cases_rerun": 0,
+    "provider_HTTP_or_probe": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "main_shared_or_source_changes": 0,
+    "cleanup": "DEFERRED_TO_END_OF_OWNER_PLAN"
+  },
+  "source_file_hashes": [
+    {
+      "path": "current-generation/files/src/bitfinex-n10-price-path.mjs",
+      "bytes": 5913,
+      "sha256": "a18d8033edb2193ac422043512505f570382a9b8329cd7913c8e275b4601d319"
+    },
+    {
+      "path": "current-generation/files/src/bitfinex-native-four-hour-flow.mjs",
+      "bytes": 7754,
+      "sha256": "68eac3f0c3b07ab26986776d0000939e8d4ff1d32aecdd88b3709ec1921f1234"
+    },
+    {
+      "path": "current-generation/tests/bitfinex-n10-price-path.test.mjs",
+      "bytes": 7068,
+      "sha256": "bff6cf2d7de9b3c0883e00c4d85fddc9aea23854aba9e5624d53c0a7ce1a46ab"
+    },
+    {
+      "path": "checkpoints/source-worker-bitfinex-n10-usd-20261019/README.md",
+      "bytes": 4960,
+      "sha256": "9d067605e89c1256522133ba141671f3613072f65a53621d05cc4a61309082f0"
+    },
+    {
+      "path": "checkpoints/source-worker-bitfinex-n10-usd-20261019/manifest.json",
+      "bytes": 1990,
+      "sha256": "33f1d1ed1f0262d8448c912fccf4c7bfe1d0e534b92efae99c8ed7cf28ea6975"
+    },
+    {
+      "path": "checkpoints/source-worker-bitfinex-n10-usd-20261019/native-price-witness.json",
+      "bytes": 6088,
+      "sha256": "a9557bbf8d7d752a556852473091dbf05cc9169f6e4eddd8e02eee9c4c527561"
+    },
+    {
+      "path": "checkpoints/source-worker-bitfinex-n10-usd-20261019/new-consumer.tap",
+      "bytes": 6677,
+      "sha256": "bde441b2c475c4520b1da3abf89b7b5b343b8696a05631a6e9ff0a567bc53bb2"
+    },
+    {
+      "path": "checkpoints/source-worker-bitfinex-n10-usd-20261019/verification.json",
+      "bytes": 2886,
+      "sha256": "e161ce61dcf5c7d1a54a876f782e0bb6303a05a77e111e59c369508292ad0d35"
+    },
+    {
+      "path": "checkpoints/n05-bitfinex-pilot-38138608166/batch-summary.json",
+      "bytes": 14005,
+      "sha256": "d94b1c7fefa1ea228e054708225f774e753730f32924b18a6343735ba12909c1"
+    },
+    {
+      "path": "checkpoints/n05-bitfinex-pilot-38138499328/batch-summary.json",
+      "bytes": 5874,
+      "sha256": "c9640518ed86e5bf61f395bddbf3b46827aa006a26fd89a051be3d9f12c118a7"
+    }
+  ],
+  "original_provenance": [
+    {
+      "path": "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-XMR-CANDLES1M.json.gz",
+      "bytes": 3377,
+      "sha256": "c2ea73a57e218c4fa2707b76293d2fff8583425ba71eb97109fc70e5d79801af",
+      "body_bytes": 12665,
+      "body_sha256": "d903a039713fa76bcd8ca7d1cb8554aa129e2fe4a963e493c395f7f477316718",
+      "receipt": {
+        "name": "BITFINEX-XMR-CANDLES1M",
+        "url": "https://api-pub.bitfinex.com/v2/candles/trade:1m:tXMRUSD/hist?start=1791706560000&end=1791720959999&limit=240&sort=1",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "http_status": 200,
+        "received_ts": 1791720976095,
+        "body_sha256": "d903a039713fa76bcd8ca7d1cb8554aa129e2fe4a963e493c395f7f477316718",
+        "gzip_sha256": "c2ea73a57e218c4fa2707b76293d2fff8583425ba71eb97109fc70e5d79801af",
+        "file": "BITFINEX-XMR-CANDLES1M.json.gz"
+      }
+    },
+    {
+      "path": "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-XMR-TRADES10000.json.gz",
+      "bytes": 40026,
+      "sha256": "deadc954682fb3ef3256c65e6d4e4f9f4accaa4457c0297b779541ebb5c99bcc",
+      "body_bytes": 186386,
+      "body_sha256": "8cc0a66f5c2f7aebe181d9c31b0f7339784d69ed13ad84be28ec0ec8a6eeb738",
+      "receipt": {
+        "name": "BITFINEX-XMR-TRADES10000",
+        "url": "https://api-pub.bitfinex.com/v2/trades/tXMRUSD/hist?start=1791706560000&end=1791720959999&limit=10000&sort=1",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "http_status": 200,
+        "received_ts": 1791720977667,
+        "body_sha256": "8cc0a66f5c2f7aebe181d9c31b0f7339784d69ed13ad84be28ec0ec8a6eeb738",
+        "gzip_sha256": "deadc954682fb3ef3256c65e6d4e4f9f4accaa4457c0297b779541ebb5c99bcc",
+        "file": "BITFINEX-XMR-TRADES10000.json.gz"
+      }
+    },
+    {
+      "path": "checkpoints/n05-bitfinex-pilot-38138499328/BITFINEX-CURRENT-CATALOG.json.gz",
+      "bytes": 2650,
+      "sha256": "d67c9a7951a45edff51a770bac05f00efc6fc01b02a11d557d003ad04e8e3e53",
+      "body_bytes": 8271,
+      "body_sha256": "13404655b75ab9df0bb9b209efb03417ea13677cdf94259d57fa64f2f46b20fc",
+      "receipt": {
+        "name": "BITFINEX-CURRENT-CATALOG",
+        "url": "https://api-pub.bitfinex.com/v2/conf/pub:list:pair:exchange,pub:map:currency:sym,pub:map:currency:label,pub:map:currency:pool",
+        "source": "N05_OFFICIAL_FLOW:BITFINEX",
+        "http_status": 200,
+        "received_ts": 1791720869429,
+        "body_sha256": "13404655b75ab9df0bb9b209efb03417ea13677cdf94259d57fa64f2f46b20fc",
+        "gzip_sha256": "d67c9a7951a45edff51a770bac05f00efc6fc01b02a11d557d003ad04e8e3e53",
+        "file": "BITFINEX-CURRENT-CATALOG.json.gz"
+      }
+    }
+  ],
+  "exact_asset_and_units": {
+    "analysis_contract": "XMR-USDT",
+    "venue": "BITFINEX",
+    "market": "SPOT",
+    "native_source_pair": "XMRUSD",
+    "native_quote": "USD",
+    "identity": {
+      "asset_kind": "NATIVE",
+      "chain": "monero",
+      "native_asset_id": "monero:mainnet",
+      "contract_or_mint": null
+    },
+    "catalog": {
+      "pair_present": true,
+      "label_rows": [
+        [
+          "XMR",
+          "Monero"
+        ]
+      ],
+      "alias_rows": []
+    },
+    "direct_native_symbol_mapping_ru": "XMR не требует переименования: bindings.XMR.api=XMR и pair=XMRUSD; в каталоге есть XMRUSD и [XMR,Monero]. Отсутствующая alias-строка для неизменённого символа не подменяет актив.",
+    "retained_HTX_identity": {
+      "path": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+      "pointer": "/data/14",
+      "gzip_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "body_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29",
+      "currency": "xmr",
+      "assetType": 1,
+      "native_chain": "xmr2",
+      "native_display_name": "XMR",
+      "same_window_HTX_price_proven": false
+    },
+    "native_volume_unit": "XMR_BASE",
+    "native_quote_volume_claimed": false,
+    "USD_to_USDT_conversion": false,
+    "htx_comparison": null,
+    "independent_source_count": 1
+  },
+  "data_review": {
+    "four_hour_presence": {
+      "start": 1791706560000,
+      "end": 1791720960000,
+      "returned_candles": 232,
+      "trade_count": 4556,
+      "trade_id_unique": 4556,
+      "trade_first_ts": 1791706563226,
+      "trade_last_ts": 1791720958899,
+      "presence_minutes": 240,
+      "presence_mismatches": [],
+      "no_candle_and_no_trade_minutes": [
+        1791710100000,
+        1791712680000,
+        1791712920000,
+        1791713040000,
+        1791713220000,
+        1791713580000,
+        1791713820000,
+        1791713880000
+      ]
+    },
+    "fifteen_minute_native_window": {
+      "window_start": 1791720060000,
+      "window_end": 1791720960000,
+      "actual_candle_count": 15,
+      "active_trade_minutes": 15,
+      "actual_trade_count": 322,
+      "open": 532.67,
+      "close": 533.61,
+      "high": 534.26,
+      "low": 532.51,
+      "change_pct": 0.1764694839206271,
+      "minute_ohlc_and_volume_matches": [
+        {
+          "ts": 1791720060000,
+          "trade_count": 32,
+          "ohlc_native": [
+            532.67,
+            532.92,
+            532.92,
+            532.62
+          ],
+          "ohlc_executions": [
+            532.67,
+            532.92,
+            532.92,
+            532.62
+          ],
+          "base_volume_native": 1.2,
+          "base_volume_executions": 1.2000000000000006,
+          "first_trade_ts": 1791720062180,
+          "last_trade_ts": 1791720119290
+        },
+        {
+          "ts": 1791720120000,
+          "trade_count": 28,
+          "ohlc_native": [
+            532.91,
+            532.51,
+            532.91,
+            532.51
+          ],
+          "ohlc_executions": [
+            532.91,
+            532.51,
+            532.91,
+            532.51
+          ],
+          "base_volume_native": 3.3867441,
+          "base_volume_executions": 3.386744099999999,
+          "first_trade_ts": 1791720125696,
+          "last_trade_ts": 1791720174206
+        },
+        {
+          "ts": 1791720180000,
+          "trade_count": 15,
+          "ohlc_native": [
+            532.76,
+            532.81,
+            532.92,
+            532.61
+          ],
+          "ohlc_executions": [
+            532.76,
+            532.81,
+            532.92,
+            532.61
+          ],
+          "base_volume_native": 0.64,
+          "base_volume_executions": 0.6400000000000001,
+          "first_trade_ts": 1791720188927,
+          "last_trade_ts": 1791720236582
+        },
+        {
+          "ts": 1791720240000,
+          "trade_count": 21,
+          "ohlc_native": [
+            532.91,
+            533.01,
+            533.01,
+            532.86
+          ],
+          "ohlc_executions": [
+            532.91,
+            533.01,
+            533.01,
+            532.86
+          ],
+          "base_volume_native": 0.75,
+          "base_volume_executions": 0.75,
+          "first_trade_ts": 1791720240857,
+          "last_trade_ts": 1791720292898
+        },
+        {
+          "ts": 1791720300000,
+          "trade_count": 12,
+          "ohlc_native": [
+            532.86,
+            533.08,
+            533.08,
+            532.86
+          ],
+          "ohlc_executions": [
+            532.86,
+            533.08,
+            533.08,
+            532.86
+          ],
+          "base_volume_native": 2.37249182,
+          "base_volume_executions": 2.372491819999999,
+          "first_trade_ts": 1791720301419,
+          "last_trade_ts": 1791720359600
+        },
+        {
+          "ts": 1791720360000,
+          "trade_count": 19,
+          "ohlc_native": [
+            533.12,
+            533.08,
+            533.12,
+            532.82
+          ],
+          "ohlc_executions": [
+            533.12,
+            533.08,
+            533.12,
+            532.82
+          ],
+          "base_volume_native": 2.61857183,
+          "base_volume_executions": 2.61857183,
+          "first_trade_ts": 1791720360667,
+          "last_trade_ts": 1791720417609
+        },
+        {
+          "ts": 1791720420000,
+          "trade_count": 23,
+          "ohlc_native": [
+            532.98,
+            533.01,
+            533.13,
+            532.96
+          ],
+          "ohlc_executions": [
+            532.98,
+            533.01,
+            533.13,
+            532.96
+          ],
+          "base_volume_native": 0.92999999,
+          "base_volume_executions": 0.9299999900000001,
+          "first_trade_ts": 1791720421110,
+          "last_trade_ts": 1791720474905
+        },
+        {
+          "ts": 1791720480000,
+          "trade_count": 24,
+          "ohlc_native": [
+            532.99,
+            532.89,
+            533.01,
+            532.81
+          ],
+          "ohlc_executions": [
+            532.99,
+            532.89,
+            533.01,
+            532.81
+          ],
+          "base_volume_native": 1.27910538,
+          "base_volume_executions": 1.2791053800000003,
+          "first_trade_ts": 1791720483240,
+          "last_trade_ts": 1791720522788
+        },
+        {
+          "ts": 1791720540000,
+          "trade_count": 17,
+          "ohlc_native": [
+            532.91,
+            533.06,
+            533.17,
+            532.89
+          ],
+          "ohlc_executions": [
+            532.91,
+            533.06,
+            533.17,
+            532.89
+          ],
+          "base_volume_native": 2.47324642,
+          "base_volume_executions": 2.47324642,
+          "first_trade_ts": 1791720543718,
+          "last_trade_ts": 1791720587169
+        },
+        {
+          "ts": 1791720600000,
+          "trade_count": 32,
+          "ohlc_native": [
+            533.02,
+            533.11,
+            533.85,
+            532.96
+          ],
+          "ohlc_executions": [
+            533.02,
+            533.11,
+            533.85,
+            532.96
+          ],
+          "base_volume_native": 4.61189923,
+          "base_volume_executions": 4.611899229999998,
+          "first_trade_ts": 1791720603893,
+          "last_trade_ts": 1791720659101
+        },
+        {
+          "ts": 1791720660000,
+          "trade_count": 17,
+          "ohlc_native": [
+            533.26,
+            533.42,
+            533.52,
+            533.16
+          ],
+          "ohlc_executions": [
+            533.26,
+            533.42,
+            533.52,
+            533.16
+          ],
+          "base_volume_native": 0.69323199,
+          "base_volume_executions": 0.6932319900000002,
+          "first_trade_ts": 1791720660165,
+          "last_trade_ts": 1791720718677
+        },
+        {
+          "ts": 1791720720000,
+          "trade_count": 18,
+          "ohlc_native": [
+            533.38,
+            533.4,
+            533.4,
+            533.28
+          ],
+          "ohlc_executions": [
+            533.38,
+            533.4,
+            533.4,
+            533.28
+          ],
+          "base_volume_native": 0.67730237,
+          "base_volume_executions": 0.67730237,
+          "first_trade_ts": 1791720728191,
+          "last_trade_ts": 1791720779638
+        },
+        {
+          "ts": 1791720780000,
+          "trade_count": 15,
+          "ohlc_native": [
+            533.38,
+            533.4,
+            533.43,
+            533.25
+          ],
+          "ohlc_executions": [
+            533.38,
+            533.4,
+            533.43,
+            533.25
+          ],
+          "base_volume_native": 0.36633906,
+          "base_volume_executions": 0.36633906000000005,
+          "first_trade_ts": 1791720782385,
+          "last_trade_ts": 1791720839805
+        },
+        {
+          "ts": 1791720840000,
+          "trade_count": 18,
+          "ohlc_native": [
+            533.43,
+            533.4,
+            533.68,
+            533.38
+          ],
+          "ohlc_executions": [
+            533.43,
+            533.4,
+            533.68,
+            533.38
+          ],
+          "base_volume_native": 4.4999094699999995,
+          "base_volume_executions": 4.4999094699999995,
+          "first_trade_ts": 1791720860248,
+          "last_trade_ts": 1791720899862
+        },
+        {
+          "ts": 1791720900000,
+          "trade_count": 31,
+          "ohlc_native": [
+            533.63,
+            533.61,
+            534.26,
+            533.51
+          ],
+          "ohlc_executions": [
+            533.63,
+            533.61,
+            534.26,
+            533.51
+          ],
+          "base_volume_native": 4.81287235,
+          "base_volume_executions": 4.81287235,
+          "first_trade_ts": 1791720902731,
+          "last_trade_ts": 1791720958899
+        }
+      ]
+    },
+    "interpretation_ru": "232 — фактически возвращённые native OHLC строки, а240 — проверенные минутные позиции присутствия свечей/сделок. В8 пустых минутах нет ни свечи, ни сделки; цена не переносится. Впоследних15минут все15actual native rows и322executions. OPEN/CLOSE/HIGH/LOW каждой минуты точно совпадают с first/last/max/min execution prices; tiny base-volume различия соответствуют суммированию float в пределах прежнего normalizer tolerance. Это новая проверка данных для нового consumer, без исполнения приложения и без повтора прежней qualification suite."
+  },
+  "original_clock_review": {
+    "source_window_start": 1791720060000,
+    "source_window_end": 1791720960000,
+    "receipts_received_ts": {
+      "BITFINEX-XMR-CANDLES1M": 1791720976095,
+      "BITFINEX-XMR-TRADES10000": 1791720977667,
+      "BITFINEX-CURRENT-CATALOG": 1791720869429
+    },
+    "first_known_ts": 1791720977667,
+    "first_known_basis": "MAXIMUM_ORIGINAL_CATALOG_CANDLE_TRADE_RECEIVED_TS",
+    "expires_at": 1791721260000,
+    "window_closed_before_first_known": true,
+    "historically_available_only_after_first_known": true,
+    "now_usage": "price_path.observed_ts is the evaluation clock; first_known and expires remain original",
+    "current_freshness_claimed": false
+  },
+  "code_review": [
+    {
+      "file": "current-generation/files/src/bitfinex-n10-price-path.mjs",
+      "lines": [
+        18,
+        19,
+        24,
+        25
+      ],
+      "finding": "NO_BLOCKER",
+      "reason_ru": "Approved exact contract + qualified native Bitfinex component + four-hour bounds; normalizer пересобирает raw catalog/candles/trades и сравнивает полный возвращённый descriptor. Чужой identity/quote/venue/status и подмена чисел не проходят этот путь."
+    },
+    {
+      "file": "current-generation/files/src/bitfinex-n10-price-path.mjs",
+      "lines": [
+        20,
+        21,
+        23
+      ],
+      "finding": "NO_BLOCKER",
+      "reason_ru": "Безопасные целые часы: closed end<=original observed==component observed<=now, payload clock exact; expires=end+5min, продление/устаревание исключены. Exact XMRUSD raw trade URL/window/200/original receipt clock/payload hash и<=900000bytes. Это producer/cached provenance trust, не независимый native ACK."
+    },
+    {
+      "file": "current-generation/files/src/bitfinex-n10-price-path.mjs",
+      "lines": [
+        28,
+        29,
+        31,
+        32,
+        34
+      ],
+      "finding": "NO_BLOCKER",
+      "reason_ru": "15 последовательных actual native rows без заполнения; finite positive OHLC/base и open/close в диапазоне. Отдельное точное O/C/H/L соответствие execution prices; count сверяется с rederived15m. Старый normalizer ограничивает все trades исходным закрытым4h окном, unique IDs и порядком."
+    },
+    {
+      "file": "current-generation/files/src/bitfinex-n10-price-path.mjs",
+      "lines": [
+        36,
+        37,
+        40,
+        41,
+        42
+      ],
+      "finding": "NO_BLOCKER",
+      "reason_ru": "USD и within-Bitfinex семантика явны; FX/HTXcomparison/score/coverage/ENTRY/target/runtime/cacheACK отсутствуют илиfalse/0. Verify пересобирает весь результат по полному raw input и сравнивает canonical DTO; один digest не служит допуском."
+    }
+  ],
+  "saved_checks_reused_only": {
+    "file": "checkpoints/source-worker-bitfinex-n10-usd-20261019/new-consumer.tap",
+    "reported_tests": 34,
+    "reported_PASS": 34,
+    "reported_FAIL": 0,
+    "peer_reran": false,
+    "negative_contracts_read": [
+      "foreign identity/contract/quote",
+      "incomplete or altered descriptor",
+      "future/altered/unknown first-known and payload clock",
+      "stale/extended expiry",
+      "missing duplicate shifted native minute and OHLC/base tamper",
+      "foreign trade receipt URL/hash/clock",
+      "oversized payload",
+      "altered output price/quote/first-known/FX/score/bars/binding"
+    ],
+    "qualification_or_probe_rerun": false
+  },
+  "limits_ru": [
+    "Вывод только об одном историческом XMR input из38138608166 с каталогом38138499328 и новом pure helper. Остальные монеты и сегодняшний105scope не квалифицированы.",
+    "CONTROLLED cache envelope в saved witness, а не прочитанная native cache row. Модель не доказывает producer acquisition/HTTP body authenticity независимо от сохранённого receipt. Parsed trade payload привязан exact hash; raw body SHA остаётся producer assertion.",
+    "Не проверяются combined512+515 wiring, compact DTO consumer, source admission, HTX same-window price/FX/agreement, native CPU/heap/стоимость/дневной бюджет, manual/Telegram delivery. Эти части остаются у координатора.",
+    "34 сохранённых PASS прочитаны, не повторены. Новые unit/app/probes не выполнялись. Точный контрпример в пределах прочитанной модели и данных не найден."
+  ],
+  "verification": {
+    "kind": "ONE_FINAL_CODE_DATA_RECEIPT_INTEGRITY_ONLY",
+    "status": "PASS",
+    "checks": [
+      "FROZEN_SOURCE_HEAD_AND_ALL10_MANIFEST_FILE_HASHES",
+      "ORIGINAL_THREE_GZIP_AND_BODY_SHA_RECEIPT_BINDING",
+      "SAVED_WITNESS_MATCHES_NEW_15M_DATA_REVIEW",
+      "232_NATIVE_ROWS_VS240_PRESENCE_WITH8_JOINTLY_EMPTY_MINUTES",
+      "ALL15_OHLC_AND_BASE_VOLUME_MATCH_EXECUTIONS_322TRADES",
+      "ORIGINAL_FIRST_KNOWN_EXPIRY_USD_NOFX_NOSCORE",
+      "FRESH_MAIN_GUARDS_ALL4_EQUAL_OWN_ACTIVE_CAS_ONLY_OWN_PREFIX"
+    ],
+    "application_or_tests": 0,
+    "fresh_main": "6f8586f02ebf5ab75bae63720b08bd1b7b3c494f",
+    "own_lease_ref_sha": "6a063344000d54994abfae060a5a887667c8fc3f",
+    "active_four_equal": true
+  }
+}

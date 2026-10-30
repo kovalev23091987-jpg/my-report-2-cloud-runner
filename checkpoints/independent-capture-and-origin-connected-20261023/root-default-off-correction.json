@@ -1,0 +1,16 @@
+{
+  "schema": "ROOT_INDEPENDENT_WORKER_DEFAULT_OFF_CALLER_CORRECTION_V1",
+  "frozen_original628": "848d16af/15files untouched",
+  "original_proposed_worker_sha256": "ca5ccd95cc79bd31862a91a7069e7eec1609587c8dd0ca48825b8e84ebefddaa",
+  "actual_worker_sha256": "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4",
+  "actual_worker_bytes": 634229,
+  "delta": "Only wrap new actualWorkerhook in exact ENABLED===1 guard; preserve absence of newhook/receipt when flagmissing/off; existing functions unchanged",
+  "guarded_insertion": "      // Independent approved-roster slice AFTER existing bounded Deep/DUE work.\n      // Default OFF; IO owner must protect report/final-delivery reserve; native SQL keeps its owner callback.\n      if(env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_ENABLED==='1'){\n        try { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT=await runIndependentCapturedAnomalyIngress({env,run_id:String(runId),fetch_json:fetchJson,classify_contract:classifyHtxInstrumentScope}); }\n        catch { env.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_RECEIPT={status:'INDEPENDENT_CAPTURE_CALLER_NOT_CLOSED',native_admission_qualified:false,SENT_claimed:false}; }\n      }\n\n",
+  "one_ROOT_new_affected_group_prepared": 3,
+  "executed": false,
+  "required_pin_only_paths": [
+    ".github/workflows/report2.yml",
+    "current-generation/tests/generation-guard.test.mjs"
+  ],
+  "native_policy_SQL_HTTP_admission_changed": false
+}

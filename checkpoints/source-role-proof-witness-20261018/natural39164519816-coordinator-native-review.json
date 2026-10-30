@@ -1,0 +1,210 @@
+{
+  "schema": "POST493_ACTUAL_CONTEXT_AND_STRK_SAME_RUN_DELIVERY_REVIEW_V1",
+  "cloud_run": 39164519816,
+  "head": "00e103f37774420f00d2043ba94dbd6dbbab2f5e",
+  "run_id": "1792356159202-1792356174618",
+  "artifacts": [
+    {
+      "id": 12150441158,
+      "name": "report2-run-result",
+      "digest": "sha256:0cdc0290341cb883234d3812231001c8791f4c5d594d2e4e2c5fe3200dcec1ab"
+    },
+    {
+      "id": 12150118154,
+      "name": "report2-telegram-info-proof",
+      "digest": "sha256:325a5d58863b8f752bfd40ccec5c2f91a8af995404cee08b9ae1b0b2e8bbd139"
+    }
+  ],
+  "member_sha256": {
+    "12150441158": {
+      "report2-run-result.json": "7bb96dee3201783e11144de25e64a5bf037b02bdfb4988b1d36b6970962ae68f",
+      "same-run-delivery-proof.json": "c4ff95f7628ffe1c73e5a62cd9e04a7ab53216dc104d106fc34b959d71f08daa",
+      "automatic-delivery-audit.json": "c87dbaee5d428ca021079eeec0c049f37d2fbe86504a45ae0db811d58607b6ab",
+      "known-d1-day-guard.json": "cb92abda06dd39c4fc3d65ac4ec08b28672b9fdc98396c8e321ac385fc0d32a1",
+      "report2-completion-accounting.json": "9d38873f8a1d079a8c6e0b18ce3a8f95e71741d20697b7bc1478fd8f83b69ea5",
+      "private-canonical-archive-receipt.json": "9cc41bf501fa3eb428544810d311a5baa3026a5e6031ea16b7d8d43e51ac6fe3"
+    },
+    "12150118154": {
+      "telegram-info-proof.json": "b9d3fb964b0d85e7776c20607561e1859caebd3e21ee312f1c63ca8f86372880"
+    }
+  },
+  "actual_PR493_completion_context_accepted": true,
+  "context_export_location": "report2-completion-accounting.json.existing_run_budget_context",
+  "context_in_report2_run_result_projection": false,
+  "existing_run_budget_context": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792356159202-1792356174618",
+    "recorded_ts": 1792356314269,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 28,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 112,
+      "reported_remaining_slots": 52,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 719,
+        "rows_read": 46872,
+        "rows_written": 609,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 7128,
+        "rows_written": 231
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-18",
+      "reported_unknown_ops": 15,
+      "reserved_rows_read": 936400,
+      "reserved_rows_written": 16040,
+      "reconciliation": {
+        "status": "AGGREGATE_BILLABLE_COST_CLOSED",
+        "manifest_sha256": "d26225b9364e03822354cf3b424dbf575e717693b1e69984ee965c0a6c79ab23",
+        "historical_unknown_operations_preserved": 15,
+        "new_or_unmatched_unknown_authorized": false,
+        "serialized_copy_is_not_a_proof_token": true
+      }
+    },
+    "native_liquidation_service": {
+      "scope": "EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB",
+      "reserved_http": 4,
+      "gross_reserved_http": null,
+      "claimed_http": null,
+      "actual_http": 4,
+      "max_http_per_run": 4
+    },
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "market_scan_audit": {
+    "universe_total": 105,
+    "numeric": 99,
+    "officially_suspended": 6,
+    "complete": true,
+    "errors": 0,
+    "stale": 0
+  },
+  "both_persisted": {
+    "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+    "status": "CLOSED",
+    "run_id": "1792356159202-1792356174618",
+    "expected_contracts": [
+      "WLD-USDT",
+      "STRK-USDT"
+    ],
+    "present_contracts": [
+      "STRK-USDT",
+      "WLD-USDT"
+    ],
+    "missing_contracts": [],
+    "expected_candidate_count": 2,
+    "present_candidate_count": 2,
+    "missing_is_technical_not_no_market_idea": false
+  },
+  "same_run_delivery_proof": {
+    "publication_id": "PUB:57bfee5fe4c7386e9675ac66ff21dcf2b323437e",
+    "contract": "STRK-USDT",
+    "direction": "SHORT",
+    "wave_id": "EDW:STRK-USDT:1792356174828:G3",
+    "lifecycle_event": "OBSERVE",
+    "run_id": "1792356159202-1792356174618",
+    "snapshot_id": "S392:STRK-USDT:1792356300866",
+    "observed_ts": 1792356300866,
+    "analytical_fingerprint": "94795216c1ed05028eea365e312e77b68b9836b438af88a27052c37e7136202d",
+    "presentation_hash": "429cc446a90a652069a7f569f7f2365d72b8dd5215de687041ffc633730071eb",
+    "same_run_binding_verified": true,
+    "exact_SENT": true,
+    "telegram_message_id": "222",
+    "dispatch_finalized": true,
+    "task_at_delivery": {
+      "state": "PENDING",
+      "run_id": "1792356159202-1792356174618",
+      "snapshot_id": "S392:STRK-USDT:1792356300866",
+      "due_ts": 1792356600866,
+      "expires_ts": 1792358100866
+    },
+    "task_at_delivery_verified": true,
+    "task_state_after_delivery_known": false,
+    "actual_ENTRY": false,
+    "reason": "EXACT_CURRENT_RUN_NETWORK_ACK_AND_DISPATCH_WRITE_CONFIRMED"
+  },
+  "separate_WLD_lifecycle_refusal": {
+    "contract": "WLD-USDT",
+    "status": "CAPACITY_DEFERRED",
+    "current_status": null,
+    "dispatch": null
+  },
+  "current_canonical_same_run_SENT": true,
+  "message_id": "222",
+  "actual_ENTRY": false,
+  "task_after_delivery_current_state": "UNKNOWN_NOT_READ",
+  "maintenance": {
+    "schema": "LOW_PRIORITY_MAINTENANCE_CADENCE_RECEIPT_V1",
+    "source": "schedule",
+    "unified_enabled": true,
+    "scheduled_minute_utc": 42,
+    "low_priority_cadence_due": false,
+    "claim": {
+      "status": "NOT_DUE",
+      "claimed": false,
+      "due": false,
+      "job_key": null,
+      "interval_ms": null,
+      "last_success_ts": 1792353851931,
+      "next_due_ts": 1792357451931,
+      "lease_owner": null,
+      "lease_started_ts": null,
+      "lease_expires_ts": null
+    },
+    "completion": null,
+    "projection_SQL_added": 0,
+    "projection_HTTP_added": 0
+  },
+  "DATA_DB_point": {
+    "requests": 719,
+    "rows_read": 46872,
+    "rows_written": 609,
+    "unknown_ops": 0
+  },
+  "old15unknown_preserved": true,
+  "whole_day_closed": false,
+  "provider_or_new_native_admission_authorized": false,
+  "new_source_HTTP_nativeSQL_MAIN_Telegram_by_inspection": 0,
+  "statistics_or_anomaly_accuracy_qualified": false,
+  "project_complete": false
+}

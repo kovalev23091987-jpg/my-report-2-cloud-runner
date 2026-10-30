@@ -1,0 +1,357 @@
+{
+  "schema": "BL_REV2_CORRECTED_ONE_CONNECTED_CASE_ACTUAL_V1",
+  "status": "STARTED",
+  "evidence_class": "ARTIFICIAL_ONLY",
+  "Node": 1,
+  "new_cases": 1,
+  "phases": [
+    {
+      "name": "OFF_original_deny",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "EVEN_DAY_CANDIDATE_ALLOCATION"
+      }
+    },
+    {
+      "name": "blocked_manual_global",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_DAY_CAPACITY"
+      }
+    },
+    {
+      "name": "blocked_future_plan",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION"
+      }
+    },
+    {
+      "name": "blocked_provider_day",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_PROVIDER_DAY"
+      }
+    },
+    {
+      "name": "blocked_provider_month",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_PROVIDER_MONTH"
+      }
+    },
+    {
+      "name": "blocked_backoff",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "SURPLUS_PROVIDER_BACKOFF"
+      }
+    },
+    {
+      "name": "blocked_native_unknown",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "SURPLUS_NATIVE_ADMISSION_REQUIRED"
+      }
+    },
+    {
+      "name": "blocked_native_expiry",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "SURPLUS_NATIVE_ADMISSION_REQUIRED"
+      }
+    },
+    {
+      "name": "blocked_native_requests",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "SURPLUS_NATIVE_CAPACITY_REQUIRED"
+      }
+    },
+    {
+      "name": "blocked_native_rows_read",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "SURPLUS_NATIVE_CAPACITY_REQUIRED"
+      }
+    },
+    {
+      "name": "blocked_native_rows_written",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "SURPLUS_NATIVE_CAPACITY_REQUIRED"
+      }
+    },
+    {
+      "name": "REV2_OFF_base3_no_grants",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "EVEN_DAY_CANDIDATE_ALLOCATION"
+      },
+      "extra": {
+        "http": 0,
+        "http_by_provider": {}
+      }
+    },
+    {
+      "name": "REV2_ON_base3_protected",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_DAY_CAPACITY"
+      }
+    },
+    {
+      "name": "REV2_base3_safe_headroom",
+      "answer": {
+        "allowed": true,
+        "scope": "CONDITIONAL_UNASSIGNED_WHOLE_OPERATION_HOLD",
+        "surplus_grant_id": "BL_ARTIFICIAL_14|BINGX:USDT_M:ARTIFICIAL_BL_A",
+        "candidate_quota": {
+          "kind": "UNASSIGNED_SURPLUS",
+          "logical_spent": true,
+          "never_refunded": true,
+          "idempotent": false,
+          "http_upper_bound": 12
+        }
+      },
+      "extra": {
+        "http": 72,
+        "http_by_provider": {
+          "BINGX": 60,
+          "TELEGRAM": 6
+        }
+      }
+    },
+    {
+      "name": "REV2_base3_provider_day",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_PROVIDER_DAY"
+      }
+    },
+    {
+      "name": "REV2_base3_provider_month_today_extra",
+      "answer": {
+        "allowed": false,
+        "reason": "PROTECTED_DAY_RESERVE",
+        "detail": "WHOLE_CANDIDATE_PROVIDER_MONTH"
+      }
+    },
+    {
+      "name": "competing_CAS",
+      "race": [
+        {
+          "allowed": true,
+          "scope": "CONDITIONAL_UNASSIGNED_WHOLE_OPERATION_HOLD",
+          "surplus_grant_id": "BL_ARTIFICIAL_RACE_A|BINGX:USDT_M:ARTIFICIAL_BL_A",
+          "candidate_quota": {
+            "kind": "UNASSIGNED_SURPLUS",
+            "logical_spent": true,
+            "never_refunded": true,
+            "idempotent": false,
+            "http_upper_bound": 12
+          }
+        },
+        {
+          "allowed": false,
+          "reason": "PROTECTED_DAY_RESERVE",
+          "detail": "WHOLE_CANDIDATE_DAY_CAPACITY"
+        }
+      ],
+      "conflicts": 1
+    },
+    {
+      "name": "idempotent_grant",
+      "idem": {
+        "allowed": true,
+        "scope": "CONDITIONAL_UNASSIGNED_WHOLE_OPERATION_HOLD",
+        "surplus_grant_id": "BL_ARTIFICIAL_RACE_A|BINGX:USDT_M:ARTIFICIAL_BL_A",
+        "candidate_quota": {
+          "kind": "UNASSIGNED_SURPLUS",
+          "logical_spent": true,
+          "never_refunded": true,
+          "idempotent": true,
+          "http_upper_bound": 12
+        }
+      }
+    },
+    {
+      "name": "own_CORE_DELIVERY_conversion",
+      "consumed": {
+        "version": "pump-unassigned-candidate-hold-v1",
+        "run_id": "BL_ARTIFICIAL_RACE_A",
+        "candidate_id": "BINGX:USDT_M:ARTIFICIAL_BL_A",
+        "day": "2026-10-26",
+        "state": "OPEN",
+        "created_ts": 1793021400000,
+        "original_http": 12,
+        "remaining_http": 10,
+        "consumed_http": 2,
+        "original_by_provider": {
+          "BINGX": 10,
+          "TELEGRAM": 1
+        },
+        "remaining_by_provider": {
+          "BINGX": 9,
+          "TELEGRAM": 0
+        },
+        "consumed_by_provider": {
+          "BINGX": 1,
+          "TELEGRAM": 1
+        },
+        "logical_spent": true,
+        "activation_decision_ref": "ARTIFICIAL_BL_ONLY_NOT_OWNER_ACTIVATION",
+        "native_evidence_ref": "ARTIFICIAL_BL_NATIVE_VIEW#PUMP:AUTO:BL_ARTIFICIAL_RACE_A",
+        "native_expires_ts": 1793022300000,
+        "hold_until_ts": 1793059200000
+      }
+    },
+    {
+      "name": "known_close",
+      "closed": {
+        "state": "CLOSED",
+        "remaining_http": 10,
+        "hold_retained": true,
+        "logical_spent": true,
+        "unused_releases_after": 1793059200000
+      }
+    },
+    {
+      "name": "retained_outstanding",
+      "closure": {
+        "state": "UNKNOWN",
+        "remaining_http": 11,
+        "hold_retained": true,
+        "logical_spent": true,
+        "unused_releases_after": null
+      },
+      "stored": {
+        "version": "pump-unassigned-candidate-hold-v1",
+        "run_id": "BL_ARTIFICIAL_17",
+        "candidate_id": "BINGX:USDT_M:ARTIFICIAL_BL_A",
+        "day": "2026-10-26",
+        "state": "UNKNOWN",
+        "created_ts": 1793021400000,
+        "original_http": 12,
+        "remaining_http": 11,
+        "consumed_http": 1,
+        "original_by_provider": {
+          "BINGX": 10,
+          "TELEGRAM": 1
+        },
+        "remaining_by_provider": {
+          "BINGX": 9,
+          "TELEGRAM": 1
+        },
+        "consumed_by_provider": {
+          "BINGX": 1,
+          "TELEGRAM": 0
+        },
+        "logical_spent": true,
+        "activation_decision_ref": "ARTIFICIAL_BL_ONLY_NOT_OWNER_ACTIVATION",
+        "native_evidence_ref": "ARTIFICIAL_BL_NATIVE_VIEW#PUMP:AUTO:BL_ARTIFICIAL_17",
+        "native_expires_ts": 1793022300000,
+        "hold_until_ts": 1793059200000,
+        "closed_ts": 1793021400000,
+        "unused_hold_retained_until": null
+      }
+    },
+    {
+      "name": "retained_unknown_receipt",
+      "closure": {
+        "state": "UNKNOWN",
+        "remaining_http": 11,
+        "hold_retained": true,
+        "logical_spent": true,
+        "unused_releases_after": null
+      },
+      "stored": {
+        "version": "pump-unassigned-candidate-hold-v1",
+        "run_id": "BL_ARTIFICIAL_18",
+        "candidate_id": "BINGX:USDT_M:ARTIFICIAL_BL_A",
+        "day": "2026-10-26",
+        "state": "UNKNOWN",
+        "created_ts": 1793021400000,
+        "original_http": 12,
+        "remaining_http": 11,
+        "consumed_http": 1,
+        "original_by_provider": {
+          "BINGX": 10,
+          "TELEGRAM": 1
+        },
+        "remaining_by_provider": {
+          "BINGX": 9,
+          "TELEGRAM": 1
+        },
+        "consumed_by_provider": {
+          "BINGX": 1,
+          "TELEGRAM": 0
+        },
+        "logical_spent": true,
+        "activation_decision_ref": "ARTIFICIAL_BL_ONLY_NOT_OWNER_ACTIVATION",
+        "native_evidence_ref": "ARTIFICIAL_BL_NATIVE_VIEW#PUMP:AUTO:BL_ARTIFICIAL_18",
+        "native_expires_ts": 1793022300000,
+        "hold_until_ts": 1793059200000,
+        "closed_ts": 1793021400000,
+        "unused_hold_retained_until": null
+      }
+    },
+    {
+      "name": "retained_native_unknown",
+      "closure": {
+        "state": "UNKNOWN",
+        "hold_retained": true
+      },
+      "stored": {
+        "version": "pump-unassigned-candidate-hold-v1",
+        "run_id": "BL_ARTIFICIAL_19",
+        "candidate_id": "BINGX:USDT_M:ARTIFICIAL_BL_A",
+        "day": "2026-10-26",
+        "state": "OPEN",
+        "created_ts": 1793021400000,
+        "original_http": 12,
+        "remaining_http": 12,
+        "consumed_http": 0,
+        "original_by_provider": {
+          "BINGX": 10,
+          "TELEGRAM": 1
+        },
+        "remaining_by_provider": {
+          "BINGX": 10,
+          "TELEGRAM": 1
+        },
+        "consumed_by_provider": {
+          "BINGX": 0,
+          "TELEGRAM": 0
+        },
+        "logical_spent": true,
+        "activation_decision_ref": "ARTIFICIAL_BL_ONLY_NOT_OWNER_ACTIVATION",
+        "native_evidence_ref": "ARTIFICIAL_BL_NATIVE_VIEW#PUMP:AUTO:BL_ARTIFICIAL_19",
+        "native_expires_ts": 1793022300000,
+        "hold_until_ts": 1793059200000
+      }
+    }
+  ],
+  "real_HTTP": 0,
+  "MCP": 0,
+  "native_SQL": 0,
+  "TG": 0,
+  "deploy": 0,
+  "engine": 0,
+  "old_tests": 0,
+  "REV1_executed": false
+}

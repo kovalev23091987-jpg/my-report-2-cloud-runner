@@ -1,0 +1,99 @@
+{
+  "schema": "F594_RETAINED_FIRST_AND_METADATA_EVIDENCE_V1",
+  "old_project_findings": [
+    {
+      "provider": "COINVERSA_PULSE",
+      "path": "checkpoints/LIQ_ORDERLY_PUBLIC_POSITIONS_AND_STRK_NATURAL_ARCHIVE_20261012.json",
+      "sha256": "a0da864823f5f8fc3c98d1de80512d94b5607d17236d1a7cb836c94435105a1c",
+      "lines": [
+        79,
+        82
+      ],
+      "finding": "SavedFILfutureheatmapwasPro-entitlementdenied;NOT_FREE_FUTURE_MAP;notrepeated."
+    },
+    {
+      "provider": "COINFUTY",
+      "path": "current-generation/release-evidence/SOURCE_ROLE_MATRIX.md",
+      "sha256": "f5847012e56037226d2e98d4ec3fb15f3c8169f754912a561bb79ba89dfd4407",
+      "line": 58,
+      "finding": "Declaredderivativessanitycheckrole,notverifiedactivefeed."
+    },
+    {
+      "provider": "COINFUTY",
+      "path": "checkpoints/archive/source-catalog-use-before-consolidation-20261006.md",
+      "sha256": "edcfe65fd72462aaedb599b8ae5d966d7fea3a66d74e70d65abb8eecbdad279f",
+      "line": 81,
+      "finding": "Capabilityrecordwithoutproveninvocation/primaryconsumerintheoldrun."
+    },
+    {
+      "provider": "COINFUTY",
+      "path": "tools/qualify-n05-joint-flow-20261010.mjs",
+      "sha256": "21b4ad42e93ff70d4a615c00af30cf3b0061da3ae1ff52e46971577a80330269",
+      "line": 95,
+      "finding": "Noverifiedindependentfull-window signedflowroutefromroledeclaration;no test rerun."
+    },
+    {
+      "provider": "MIDASFLOW",
+      "finding": "No relevant retainedfinding in targeted broaderworkspace text search;not a claim about every archivedbinary."
+    }
+  ],
+  "primary_refs": {
+    "MidasFlow": "https://midasflow.ai/docs/api",
+    "Coinversa_README": {
+      "url": "https://github.com/Coinversaa/mcp-server/blob/HEAD/README.md",
+      "path": "README.md",
+      "git_blob": "ecb8178cdce831fa7011345ad268d061bf206c55",
+      "sha256": "3a787a22961950be343ef17d4af48168e051a2a288df15d1a6d62b62454c32b4",
+      "UTF8_bytes": 51198
+    },
+    "Coinversa_source": {
+      "url": "https://github.com/Coinversaa/mcp-server/blob/HEAD/src/coinversaServer.ts",
+      "path": "src/coinversaServer.ts",
+      "git_blob": "39b8e9e6d3699f819672671ca471e956cb9d0a30",
+      "sha256": "1f1405597ea2099551a299cf22f09d0590a2e35a08dc416458e770c89befa99f",
+      "UTF8_bytes": 189585
+    },
+    "Coinfuty": {
+      "url": "https://coinfuty.com",
+      "result": "FAILED_TOOL_ACCESS;searchnoresults;notfreeproof"
+    }
+  },
+  "metadata_only": [
+    {
+      "provider": "MIDASFLOW",
+      "tools": [
+        "account",
+        "get_whales",
+        "get_context",
+        "get_heatmap"
+      ],
+      "status": "DESCRIPTORS_READ_NO_CALL",
+      "notes": "Groupedkindroutes;get_orderbook/scoremayfoldmultiplefeeds,avoidassuming1call."
+    },
+    {
+      "provider": "COINFUTY",
+      "tools": [
+        "get_coins_markets",
+        "get_funding_rates",
+        "get_exchange_breakdown",
+        "get_price_history"
+      ],
+      "status": "DESCRIPTORS_READ_NO_CALL",
+      "notes": "Metadataclaimsfree/USD/UTC;notprimaryentitlementorquota."
+    },
+    {
+      "provider": "COINVERSA_PULSE",
+      "tools": [
+        "pulse_my_plan",
+        "list_markets",
+        "list_assets",
+        "data_coverage"
+      ],
+      "status": "DESCRIPTORS_READ_NO_CALL",
+      "notes": "data_coverageparallelfanoutnotminimalpreflight;useexactfreediscoveryhandlers."
+    }
+  ],
+  "source_code_not_executed": true,
+  "accepted_negative_tests_replayed": 0,
+  "ByK_0x_BingX_Manual_reaudited": false
+}

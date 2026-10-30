@@ -1,0 +1,301 @@
+{
+  "schema": "ANALYTICS_AA_ACTUAL_F550_SANITIZED_TRACE_V1",
+  "purpose": "ACCEPTANCE_TEST_OFFLINE_ONLY",
+  "source_original": {
+    "path": "/private/tmp/pump-f550-source-control-actual.json",
+    "sha256": "0170bba73bc1fd2d56796d2c448258f6192a8c8fb612ab438d4f3d017de60e07",
+    "bytes": 1186568,
+    "worker_body_semantic_sha256": "ee27e35c644e0afda1e719286ec531a1dc674b1470d9f2a1c7f054d4b4324fad",
+    "outer_received_ts": 1792958222570
+  },
+  "source_run_id": "pump-f550-source-feasibility-20261025-one",
+  "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+  "native_symbol": "SOL-USDT",
+  "instrument_sha256": "c2c80439f6aab0503d19d768835c8d5d52c7dff19dfb27d3d6d7826f3d450812",
+  "overview_observations": 11,
+  "exact_target_observations": 1,
+  "overview_target_instrument_identity_fields_match": true,
+  "fact_assembly": "EXACT_SAME_INSTRUMENT_OVERVIEW_PRICE_TICKER_PLUS_HISTORY_CANDLES_PLUS_OPTIONAL_FACTS_NO_VALUE_OR_CLOCK_EDITS",
+  "facts_sha256": "7b5ff78db24a86a1954c9dae58f9f8641c20ee6f329e143239920d949738103a",
+  "facts": [
+    {
+      "kind": "price",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:100028:SOL-USDT:price:5f5a6b65-b2eb-4340-9c00-8d8eb7d5b8b9",
+      "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+      "unit": "USDT_PER_BASE",
+      "status": "USABLE",
+      "origin": "OBSERVED",
+      "source": "BINGX_OFFICIAL_PUBLIC_API",
+      "venue": "BINGX",
+      "event_ts": 1792958219000,
+      "received_ts": 1792958221604,
+      "expires_ts": 1792958249000,
+      "reason": null,
+      "rows": null,
+      "sha256": "834b8897524c269d1e5420141d99242c1f6a732ba5a61bf0fbcce7be8ecdd94f"
+    },
+    {
+      "kind": "ticker_24h",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:100028:SOL-USDT:ticker_24h:5f5a6b65-b2eb-4340-9c00-8d8eb7d5b8b9",
+      "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+      "unit": "USDT_ROLLING_24H",
+      "status": "INCOMPLETE",
+      "origin": "OBSERVED",
+      "source": "BINGX_OFFICIAL_PUBLIC_API",
+      "venue": "BINGX",
+      "event_ts": 1792958219000,
+      "received_ts": 1792958221604,
+      "expires_ts": 1792958249000,
+      "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+      "rows": null,
+      "sha256": "273336f2a52d77e150315f7fbbd7d3168fedc641ee611d43fdddb591873dca39"
+    },
+    {
+      "kind": "candles",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:100028:SOL-USDT:candles:ed8d0f65-f1ea-4a1f-9ccd-c2012d10b02d",
+      "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+      "unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+      "status": "USABLE",
+      "origin": "OBSERVED",
+      "source": "BINGX_OFFICIAL_PUBLIC_API",
+      "venue": "BINGX",
+      "event_ts": 1792958160000,
+      "received_ts": 1792958219615,
+      "expires_ts": 1792958250000,
+      "reason": null,
+      "rows": 125,
+      "sha256": "9491ff737ee1713620617641cd16ad70dde3702bf8c0ddb9720027058c16a66a"
+    },
+    {
+      "kind": "trades",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:100028:SOL-USDT:trades:BINGX_BOUNDED_TRADE_ARRAY_REQUIRED",
+      "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+      "unit": null,
+      "status": "ERROR",
+      "origin": "OBSERVED",
+      "source": "BINGX_OFFICIAL_PUBLIC_API",
+      "venue": "BINGX",
+      "event_ts": null,
+      "received_ts": 1792958219208,
+      "expires_ts": null,
+      "reason": "BINGX_BOUNDED_TRADE_ARRAY_REQUIRED",
+      "rows": null,
+      "sha256": "5697fea38417a32959abc0b030c0148200ad6d73710f4f8b8a7ddce049e7d8eb"
+    },
+    {
+      "kind": "open_interest",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:100028:SOL-USDT:open_interest:OPEN_INTEREST_UNIT_UNQUALIFIED",
+      "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+      "unit": null,
+      "status": "NOT_CHECKED",
+      "origin": "OBSERVED",
+      "source": "BINGX_OFFICIAL_PUBLIC_API",
+      "venue": "BINGX",
+      "event_ts": null,
+      "received_ts": 1792958219208,
+      "expires_ts": null,
+      "reason": "OPEN_INTEREST_UNIT_UNQUALIFIED",
+      "rows": null,
+      "sha256": "1de771fe53dd136c9feaa29641d094381fb13341e7a2044edb287e0ab7fc6f18"
+    },
+    {
+      "kind": "funding",
+      "fact_id": "pump-report-sources-v1:BINGX:USDT_M:100028:SOL-USDT:funding:FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED",
+      "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+      "unit": null,
+      "status": "NOT_CHECKED",
+      "origin": "OBSERVED",
+      "source": "BINGX_OFFICIAL_PUBLIC_API",
+      "venue": "BINGX",
+      "event_ts": null,
+      "received_ts": 1792958219208,
+      "expires_ts": null,
+      "reason": "FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED",
+      "rows": null,
+      "sha256": "44fd575834d76359699f0ca3d4b6e3395f16fca78ee250639dc2b5a5db1ceef9"
+    }
+  ],
+  "missing_inputs": [
+    "orderbook",
+    "growth_24h",
+    "liquidation_map",
+    "previous_wave"
+  ],
+  "day_ticker_status": "INCOMPLETE",
+  "day_ticker_reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+  "source_units_scope": "NATIVE_QUANTITY_RELATIVE_ONLY_NO_BASE_USDT_VOLUME_OR_EXECUTION_MULTIPLIER_PROMOTION",
+  "rules_version": "pump-analytics-v4-first-qualification-20261025",
+  "profile_version": "pump-report-start-v1",
+  "original_receive": {
+    "analysis_ts": 1792958222570,
+    "analysis_sha256": "97214b3ace5a7afc03742d7181e9fc06767e69c9dc8a3f0c181c60b1047ce265",
+    "status": "REJECTED",
+    "ready": false,
+    "reasons": [
+      "MANDATORY_ORDERBOOK_NOT_USABLE",
+      "PLAN_INVALIDATED"
+    ],
+    "mandatory_data_complete": false,
+    "signal_eligible": false,
+    "plan_present": false,
+    "card_present": false,
+    "probability_value_present": false,
+    "wave_state": "CANCELLED",
+    "movement_reached": true,
+    "day_growth_diagnostic": {
+      "usable": false,
+      "reason": "DAY_FACT_UNAVAILABLE",
+      "fact_id": null
+    },
+    "growth_windows": [
+      {
+        "window_ms": 300000,
+        "value_known": true,
+        "passed": false,
+        "reason": null
+      },
+      {
+        "window_ms": 900000,
+        "value_known": true,
+        "passed": false,
+        "reason": null
+      },
+      {
+        "window_ms": 3600000,
+        "value_known": true,
+        "passed": false,
+        "reason": null
+      },
+      {
+        "window_ms": 86400000,
+        "value_known": false,
+        "passed": false,
+        "reason": "EXACT_WINDOW_UNAVAILABLE"
+      }
+    ],
+    "manual_text_sha256": "ad6a4a420a95b5577976a344c87e5b751ecbd1ec132408ae48874a8a9aa4a6ca",
+    "manual_text_utf16": 323,
+    "manual_has_no_ready_idea": true,
+    "manual_mentions_mandatory_data": true,
+    "source_freshness": {
+      "price_usable": true,
+      "candles_usable": true,
+      "price_age_ms": 3570,
+      "candle_age_ms": 62570,
+      "price_TTL_ms": 30000,
+      "candle_TTL_ms": 90000
+    }
+  },
+  "current_stale": {
+    "analysis_ts": 1792958848319,
+    "analysis_sha256": "bd1217505e49c3900aec8778479a6f15bb4ca417c29b06a46931ff8ddd20eaab",
+    "status": "WAITING",
+    "ready": false,
+    "reasons": [
+      "MANDATORY_PRICE_NOT_USABLE",
+      "MANDATORY_CANDLES_NOT_USABLE",
+      "MANDATORY_ORDERBOOK_NOT_USABLE"
+    ],
+    "mandatory_data_complete": false,
+    "signal_eligible": false,
+    "plan_present": false,
+    "card_present": false,
+    "probability_value_present": false,
+    "wave_state": null,
+    "movement_reached": false,
+    "day_growth_diagnostic": null,
+    "growth_windows": [],
+    "manual_text_sha256": "30ce26a228d8d98f930c722cbb389eefdff53d2363101884ead3db6ba380aa2b",
+    "manual_text_utf16": 131,
+    "manual_has_no_ready_idea": true,
+    "manual_mentions_mandatory_data": true,
+    "source_freshness": {
+      "price_usable": false,
+      "candles_usable": false,
+      "price_age_ms": 629319,
+      "candle_age_ms": 688319,
+      "price_TTL_ms": 30000,
+      "candle_TTL_ms": 90000
+    }
+  },
+  "original_direct_movement": {
+    "sha256": "221afdb0578f9401472f80886939ac8e226971234944641f5d84e78542e9d8f7",
+    "active": false,
+    "state": "CANCELLED",
+    "reasons": [
+      "PLAN_INVALIDATED"
+    ],
+    "current_threshold_passed": false,
+    "automatic_eligible": false,
+    "impulse_present": true,
+    "baseline_status": "FULL",
+    "baseline_windows": 12,
+    "returned_growth_windows": [
+      {
+        "window_ms": 300000,
+        "value_known": true,
+        "passed": false,
+        "reason": null
+      },
+      {
+        "window_ms": 900000,
+        "value_known": true,
+        "passed": false,
+        "reason": null
+      },
+      {
+        "window_ms": 3600000,
+        "value_known": true,
+        "passed": false,
+        "reason": null
+      },
+      {
+        "window_ms": 86400000,
+        "value_known": false,
+        "passed": false,
+        "reason": "EXACT_WINDOW_UNAVAILABLE"
+      }
+    ]
+  },
+  "current_direct_movement": "NOT_ADMITTED_FRESHNESS_PRECONDITION_FALSE_FULL_ANALYZE_PUMP_REFUSED_BEFORE_MOVEMENT",
+  "history125": {
+    "normalized_rows": 125,
+    "normalized_rows_sha256": "a5aa7f12b25ac16e741c20a15999f80d09b13f5d928316cff7a85da13399ee8b",
+    "all_closed": true,
+    "contiguous": true,
+    "first_open_ts": 1792950660000,
+    "last_close_ts": 1792958160000,
+    "span_ms": 7500000,
+    "search_endpoints": 61,
+    "baseline_windows_min": 12,
+    "baseline_windows_max": 12,
+    "all_full_60m_baselines": true,
+    "short_windows_available": [
+      {
+        "window_ms": 300000,
+        "available": true
+      },
+      {
+        "window_ms": 900000,
+        "available": true
+      },
+      {
+        "window_ms": 3600000,
+        "available": true
+      }
+    ],
+    "exact_24h_available": false
+  },
+  "limits": {
+    "no_current_book_or_day_replacement": true,
+    "no_plan_or_publication_created": true,
+    "no_saved_previous_wave_supplied": true,
+    "native_IO": 0,
+    "new_provider_calls": 0,
+    "SQL": 0,
+    "Telegram": 0,
+    "production_mutated": false,
+    "private_prices_or_full_text_exported": false,
+    "old_test_replays": 0
+  }
+}

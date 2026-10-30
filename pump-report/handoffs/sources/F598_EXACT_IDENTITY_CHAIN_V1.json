@@ -1,0 +1,60 @@
+{
+  "schema": "F598_EXACT_PERPETUAL_IDENTITY_BRIDGE_V1",
+  "status": "UNKNOWN_MISSING_ONE_PRIMARY_PRODUCT_PROJECT_EDGE",
+  "root_accepted_rule": "Unique exact same-venue pair/family can connect numeric ID to human listing; printing100877 is not required.",
+  "edges": [
+    {
+      "from": "BINGX:USDT_M:100877:HYPE-USDT",
+      "to": "BingX HYPE-USDT USDT-M perpetual in saved native catalogue",
+      "status": "PROVED_AT_CAPTURE",
+      "proof": "F598_RETAINED_NATIVE_UNIQUENESS_V1.json",
+      "uniqueness": "1 exact symbol,1 contractID,1 baseHYPE/currencyUSDT in1278 rows"
+    },
+    {
+      "from": "BingX HYPE-USDT USDT-M perpetual",
+      "to": "Hyperliquid project/native asset",
+      "status": "UNKNOWN",
+      "reason": "No new primary listing/product document returned full project identity bound to this specific perpetual pair/family."
+    },
+    {
+      "from": "BingX named Hyperliquid(HYPE) asset",
+      "to": "Hyperliquid Layer1 / app.hyperliquid.xyz",
+      "status": "PROVED_PROJECT_LEVEL_ONLY_RETAINED_F597",
+      "proof": "F597_PRIMARY_PROOFS_V1.json"
+    }
+  ],
+  "not_required": "Numeric100877 in human announcement, provided exact same-venue pair/family and full project identity are unambiguous.",
+  "not_accepted": [
+    "Symbol alone",
+    "Asset page alone",
+    "Target URL with generic content",
+    "Third-party news hosted by BingX",
+    "Coinversa aliases as independent identity"
+  ],
+  "exact_BingX100877_to_Hyperliquid": "UNKNOWN",
+  "exact_BingX100877_to_0xHYPE": "UNKNOWN",
+  "new_canonical_qualifications": 0,
+  "new_runtime_routes": 0,
+  "qualified_maps": 0,
+  "common550": {
+    "manual_coin_configurations": 0,
+    "new_per_coin_calls": 0,
+    "existing_matrix_unchanged": true,
+    "batch_join_after_accepted_primary_bridge": true
+  },
+  "minimal_remaining_evidence": "One official BingX perpetual listing/announcement or product record identifying HYPE-USDT USDT-M as Hyperliquid with full name/site/network. Native uniqueness is already proved; numeric100877 need not be repeated.",
+  "next_IO_authorized": false,
+  "preserved": {
+    "F596_geometry": "UNKNOWN_NO_INFERRED_EDGES",
+    "model_base_clock": "UNKNOWN",
+    "retained_model": "STALE_FORMAT_ONLY",
+    "0x_price_currency": "USDC_NATIVE_AXIS_INFERENCE_FOR_ROOT_REVIEW_ONLY",
+    "USD_USDT_USDC_parity": false,
+    "numeric_premium_cost": "UNKNOWN",
+    "qualification": "22/24 remaining2",
+    "LOOKUP": "12spent0left default10",
+    "LIVE68": "AUTO1/DL1_UNCHANGED",
+    "pauses": 9,
+    "OWNER_deferrals": 2
+  }
+}

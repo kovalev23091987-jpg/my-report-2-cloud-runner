@@ -1,0 +1,66 @@
+{
+  "id": "ROOT_F608_RABBITX_EXACT_PUBLIC_BATCH_2SEARCH4READ_20261026",
+  "search_max": 2,
+  "open_max": 4,
+  "search_spent": 2,
+  "open_spent": 4,
+  "state": "CLOSED_EXHAUSTED_NO_REARM",
+  "attempts": [
+    {
+      "kind": "targeted_search",
+      "q": "RabbitX official SDK API \"markets\" \"api.prod.rabbitx\" production GitHub",
+      "state": "EMPTY_RESULTS_SPENT_NO_REARM",
+      "purpose": "New exact SDK/source/version primary references; not old RabbitX docs ToC"
+    },
+    {
+      "kind": "targeted_search",
+      "q": "RabbitX API SDK production mainnet client markets configuration",
+      "domains": [
+        "github.com",
+        "docs.rabbitx.io",
+        "docs.rabbitx.com",
+        "rabbitx.io"
+      ],
+      "state": "SEARCH_SDK_REPO_FOUND_UNOFFICIAL_LABEL_NO_CURRENT_OFFICIAL_REFERENCE",
+      "purpose": "Last bounded search for primary SDK/config references after exact-string query was empty"
+    },
+    {
+      "kind": "new_primary_source_read",
+      "provider": "RABBITX_SDK",
+      "url": "https://api.github.com/repos/rabbitx-io/rabbitx-python-client",
+      "state": "SUCCESS_METADATA_EXPLICIT_UNOFFICIAL_PUSH_20250228",
+      "purpose": "Public source repository metadata/version/provenance, not provider API"
+    },
+    {
+      "kind": "new_primary_source_read",
+      "url": "https://api.github.com/repos/rabbitx-io/rabbitx-python-client/git/trees/main?recursive=1",
+      "state": "SUCCESS_PINNED_SOURCE_TREE_NO_TRUNCATION",
+      "purpose": "Pin source tree and select only config/public-market implementation files"
+    },
+    {
+      "kind": "new_primary_source_read",
+      "path": "rabbitx/const.py",
+      "blob_sha": "215fbfc596073d774ce8730ff558edce43db2682",
+      "url": "https://github.com/rabbitx-io/rabbitx-python-client/blob/main/rabbitx/const.py",
+      "state": "SUCCESS_PINNED_SOURCE_BLOB_READ",
+      "purpose": "Read pinned source only, no SDK import/execute or provider API"
+    },
+    {
+      "kind": "new_primary_source_read",
+      "path": "rabbitx/client/endpoints/market.py",
+      "blob_sha": "10e80f33b3e9e6c78fc267f78d38b5043a2893a5",
+      "url": "https://github.com/rabbitx-io/rabbitx-python-client/blob/main/rabbitx/client/endpoints/market.py",
+      "state": "SUCCESS_PINNED_SOURCE_BLOB_READ",
+      "purpose": "Read pinned source only, no SDK import/execute or provider API"
+    }
+  ],
+  "qualification_spent": 24,
+  "qualification_cap": 24,
+  "remaining": 0,
+  "new_qualification_calls": 0,
+  "old_grants_rearmed": false,
+  "primary_reads_succeeded": 4,
+  "primary_failed_reads": 0,
+  "empty_searches_spent": 1,
+  "not_repeated_F607_pages": true
+}

@@ -1,0 +1,15 @@
+--- a/current-generation/files/src/market-history-reader.mjs
++++ b/current-generation/files/src/market-history-reader.mjs
+@@ -137,5 +137,5 @@
+   const missing=TARGETS.filter(([label])=>!maps[label]?.size),fallbackStatements=missing.map(([,offset,tolerance])=>{const target=now-offset,bucket=Math.floor(target/SLOT_MS)*SLOT_MS;return db.prepare(`SELECT ts,ts_bucket,payload_json FROM scan_runs WHERE ts_bucket BETWEEN ?1 AND ?2 ORDER BY ABS(ts_bucket-?3) ASC LIMIT 1`).bind(bucket-tolerance,bucket+tolerance,bucket);});
+   let fallbackResults=[];try{if(fallbackStatements.length)fallbackResults=await db.batch(fallbackStatements);}catch{}
+-  let fallbackIndex=0;for(const [label] of TARGETS){if(maps[label]?.size)continue;const row=rowsOf(fallbackResults?.[fallbackIndex++])[0],payload=parseJson(row?.payload_json,null),map=new Map();for(const item of Array.isArray(payload?.contracts)?payload.contracts:[]){if(!Array.isArray(item))continue;const contract=normalizedContract(item[0]);if(contract)map.set(contract,{ts:finite(row?.ts),contract_code:item[0],price:finite(item[1]),turnover_24h:finite(item[2]),oi_contracts:finite(item[3]),oi_value_usdt:finite(item[4]),funding_rate:finite(item[5]),funding_interval_hours:finite(item[6]),market_age_sec:finite(item[7]),source_status:item[8]||null,prior_discovery:null,history_provenance:'SCAN_RUNS_COMPACT_V2',actual_cadence_minutes:20});}maps[label]=map;}
++  let fallbackIndex=0;for(const [label] of TARGETS){if(maps[label]?.size)continue;const row=rowsOf(fallbackResults?.[fallbackIndex++])[0],sourceTs=row?.ts,payload=Number.isSafeInteger(sourceTs)&&sourceTs>0&&sourceTs<=now?parseJson(row?.payload_json,null):null,map=new Map();for(const item of Array.isArray(payload?.contracts)?payload.contracts:[]){if(!Array.isArray(item))continue;const contract=normalizedContract(item[0]);if(contract)map.set(contract,{ts:finite(row?.ts),contract_code:item[0],price:finite(item[1]),turnover_24h:finite(item[2]),oi_contracts:finite(item[3]),oi_value_usdt:finite(item[4]),funding_rate:finite(item[5]),funding_interval_hours:finite(item[6]),market_age_sec:finite(item[7]),source_status:item[8]||null,prior_discovery:null,history_provenance:'SCAN_RUNS_COMPACT_V2',actual_cadence_minutes:20});}maps[label]=map;}
+   const snapshotsFound=Object.values(maps).filter(map=>map.size).length;return{version:MARKET_HISTORY_READER_VERSION,available:true,populated:snapshotsFound>0,snapshots_found:snapshotsFound,reason:snapshotsFound?null:'D1 is connected but no prior Stage-0 snapshots exist yet',preferred_source:'REPORT2_MARKET_SNAPSHOT_BATCH_V1',fallback_source:'SCAN_RUNS_COMPACT_V2',history_compatibility:HISTORY_COMPATIBILITY,validation_rejections:rejections,targets:maps};
+ }
+@@ -177,4 +177,5 @@
+     const payload = parseJson(scan?.payload_json,null);
+     if (!payload) { parseErrors += 1; continue; }
++    if (!Number.isSafeInteger(scan?.ts) || scan.ts <= 0 || scan.ts > end) continue;
+     const row = (Array.isArray(payload?.contracts)?payload.contracts:[]).find(item=>Array.isArray(item)&&String(item[0]??'').replace(/[-_/]/g,'').toUpperCase()===key);
+     if (!row) continue;

@@ -1,0 +1,67 @@
+{
+  "schema": "SOURCE_WORKER_SHARED_SLOT_FALLBACK_PROPOSAL_V1",
+  "working_base": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+  "status": "OFFLINE_PROPOSAL_FOR_COORDINATOR_ONLY",
+  "production_changes": false,
+  "existing_caps_changed": false,
+  "new_provider_HTTP": 0,
+  "new_SQL": 0,
+  "new_strategy_or_delivery_effect": false,
+  "confirmed_saved_gap": {
+    "original": "39133840839/12138787149, head998020c564e0ff1d81046150df00d9ca2b1aedfe",
+    "APR": "EXTERNAL_N05_FLOW reported18receipts, retained8; all route=null; total5HTTP, N05=5/N12=0 retained.",
+    "NEAR": "EXTERNAL_N05_FLOW reported15receipts, retained8; all route=null; total5HTTP, N05=3/N12=2 retained.",
+    "unavailable": ["exact N05 per-venue HTTP", "exact endpoint attempt order", "caller reserved requests versus transport", "per-market cause of zero-call KuCoin native result"],
+    "not_inferred": ["eight HTTP from eight 200 receipts", "market availability from queue membership", "provider failure from caller cap", "actual wrong saved cost", "order change from incomplete trace"]
+  },
+  "controlled_helper_gap": {
+    "file": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+    "function": "attributeSharedN05N12Http",
+    "current_behavior": "Only total and summed optional N12 count are validated after Number/default coercion. Non-N12 adapter counts, completeness, duplicates and common five-call envelope are not reconciled. null optionalN12 count becomes0; unexplained residual is assigned toN05.",
+    "new_pure_cases": ["missing N05 detail", "null N12 count", "negative N05 count", "duplicate venue", "string total", "six transport attempts"],
+    "scope_limit": "Malformed controlled inputs establish permissive diagnostic behavior. They do not establish these corruptions occurred in the captured APR/NEAR execution or that operational admission was bypassed."
+  },
+  "proposed_changes": [
+    {
+      "owner": "coordinator",
+      "file": "current-generation/files/src/external-n05-flow-collector.mjs",
+      "seam": "invoke and final result",
+      "change": "Retain explicit measured baseline_transport_HTTP from the existing optional turnover invoke, including explicit0 when not invoked. Retain existing flow_network_calls, observed_transport_HTTP and caller_reserved_requests distinctly. Never return unused grants or source/minute reservations.",
+      "extra_requests": 0,
+      "extra_SQL": 0
+    },
+    {
+      "owner": "coordinator",
+      "file": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "seam": "attributeSharedN05N12Http",
+      "change": "Require explicit nonnegative safe-integer counters, known unique route roles, sum(adapter transport)=flow transport, flow+explicit baseline=total=wrapper observed transport, total<=5 and known caller grants>=transport and<=5. Missing or inconsistent components leave splits NULL, preserve every independently known total, report UNRECONCILED. Never infer zero from null or residual from missing route detail.",
+      "reference": "reconcile-reference.mjs",
+      "reference_is_runtime_or_admission": false,
+      "legacy_detail": "Legacy projections missing the new explicit baseline remain incomplete; do not manufacture a backfilled proof. Existing accepted saved split retains its historical scope.",
+      "extra_requests": 0,
+      "extra_SQL": 0
+    },
+    {
+      "owner": "coordinator",
+      "file": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "seam": "source_checks compact result for EXTERNAL_N05_FLOW",
+      "change": "Preserve bounded per-adapter original venue/status/observed transport/adapter-reported transport/cache status plus original market_status (at most SPOT,FUTURES). This explains zero transport without turning a caller-cap denial into provider failure. Preserve original status and useful EvidenceV2 IDs separately; do not relabel partial N05 as full because N12 sample exists.",
+      "boundedness": "Existing route registry has at most11 unique adapters. Copy only a fixed scalar allowlist and bounded market summaries, not arbitrary rest objects, catalogues, bodies or URLs.",
+      "extra_requests": 0,
+      "extra_SQL": 0
+    },
+    {
+      "owner": "coordinator",
+      "file": "current-generation/files/src/external-n05-flow-collector.mjs",
+      "seam": "shared transport wrapper, prospective only",
+      "change": "If exact endpoint order is needed, retain the actually observed fetch index, current route ID, safe endpoint ID, original received clock and actual_http. New request-time instrumentation may observe existing calls but must not reconstruct an old order from flattened/cache receipts. Keep denied grants distinct from attempts and preserve original source/body clocks. No fresh clocks at presentation.",
+      "bound": "At most5 actual shared transport events under unchanged admission. Denial/cache summary bounded per known adapter; any overflow explicit, never silently declared complete.",
+      "secrets_or_raw_URL_exported": false,
+      "extra_requests": 0,
+      "extra_SQL": 0
+    }
+  ],
+  "source_order_decision": "No new reorder. Current saved queue remains evidence of collector order only. APR Gate shared identity missing and KuCoin cap are original limits, not a license for sixth call. NEAR useful Binance/Poloniex full4h and OKX bounded sample remain different roles/windows. Reorder only after a complete exact-asset role-specific observed utility/cost proof under existing rules.",
+  "coordination": "N12 raw membership/rendered eligibility/accounting review469 and origin fix290e5224 belong to coordinator and third worker. This package does not edit or repeat them.",
+  "next_required_validation": "Coordinator reviews narrow shared delta and adds only new malformed/unknown/baseline/trace cases with connected integration. Worker23pure reference controls are proposal checks, not production qualification or native whole-day cost proof."
+}

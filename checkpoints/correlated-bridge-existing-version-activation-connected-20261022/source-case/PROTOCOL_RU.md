@@ -1,0 +1,15 @@
+ROOT-derived qualification copy. Frozen original remains in checkpoints/source-worker-correlated-bridge-paid-compatibility-20261022. Actual central correction/targets are recorded in ../actual-stage-shape-correction.json. Author prose below is historical; current parser is6c6.
+
+# Exact two-identity Paid compatibility
+
+ROOT22Oct finite REPORT+Telegram FIRST assignment. Only this ownprefix contains TEXT proposals for existing runner/retention-bridge-provenance.mjs and BOTH actual maintenance consumers tools/run-paid-sliding-history-20261018.mjs +tools/recover-lossless-retained-history-20261014.mjs. No runtime/shared/main changes by SOURCE.
+
+Fresh93492c3efc7a65d58b492f1891142fa680013023/all4/fencefalse/V13; ownscopedCASb86bedd26686efa57fa05cdc73141f817db66fe1 owner1792686041180 expires1792690841180. Separatebranch work/report2-sources-correlated-bridge-paid-compatibility-20261022. Protocol FIRST before implementation. AuthorNode/import/syntax/tests/SQL/SQLite/semantics/gitapply/native/CF/provider/MAIN/manual/TG/retention/physicalstorageexecution0. One new callable authoredUNEXECUTED, no old12/5/7/17/35/14/12/9 or otheracceptedcaseexports/replay.
+
+API agreed BEFOREcode withTHIRD/ROOT: createRetentionSQLBridgeCompatibility({old_release_bytes,staged_receipt_bytes})→frozenSESSION.observe({call,configured_bridge_url,stage,clock}). before5GET selects exact installed old7011/06603 or realstaged86f1/c327, BOTHcurrent05120settings and their OWNimmutable etag; after4GET MUSTsamechosenidentity for this session/run. No callerboolean/generalexpectedoverride. Preserve oldsingleton/strictparse/oldverify historicalbytes. Actualtwo callers readBOTHproofs/createSESSION once and keep it throughbefore/after.
+
+New async attestRetentionSQLBridgeCompatibility({repo_root}) readsREALfilesystem two exactconsumerbytes+module+bothproofs, checks literalconsumerafterhashes andstrictproofs. THIRD hardpins actualSOURCEmoduleafterSHA beforeCF, no selfhashcycle. StatusEXACT_TWO_CONSUMERS_CODE_ACTIVE_COMPATIBILITY/logging_settings_allowed:false/admission:false. No computedprojectedlogginghash/CF/probe/source/SQL. Paid/cursor/unknownreserves/full5/full17/deferrals/quotas/sourceclocks/forms unchanged.
+
+ROOT exactcarrier clarification: Git checkpoints/report-producer-and-bridge-stage-connected-20261022/native-stage-receipt.json WHOLE SHA f010dc6368027ecc789d85d53609c96018fb7da961e9fad4a9e91e69996ac4a7. INNER nativeartifact proof.json6594B SHA85e815381e4ec8d2219928768d670b02c0c5f1e87332c89fdb6f93f8c20d2f22 is ONLY provenance inside summary, not the Git file hash. Validate summaryfullbytes plusnativeknownACK/status/before/after/staged/zero effects and innerproof/artifactafc58 digest. DoNOTexpect rawproof inrepo/CI or republish it. Rawsettings/privatecarriers remaintmp; optionaloneapprovedsettingscarrier read onlyifneeded, no blanketsearch/decrypt/extraction.
+
+Frozenownmanifest/onecomplementarypeer/PR+ALLFULLGitHubreadback/ONLYownrelease beforeexpiry. ROOTaloneintegrates/ONEnewcommon savesEACHJSONbeforeassert/next/lateFAILEDonlyrepair; no completedcomponentreplay, no activation orSENT claim fromproposal/test.

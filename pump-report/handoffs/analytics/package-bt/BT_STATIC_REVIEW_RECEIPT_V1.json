@@ -1,0 +1,130 @@
+{
+  "schema": "BT_STATIC_REVIEW_RECEIPT_V1",
+  "status": "STATIC_COMPLETE_PREPARATION_ORACLE_CLARIFICATION_NO_OPERATOR_PATCH",
+  "reviewed_utc": "2026-10-26T18:50:00.247932+00:00",
+  "source_files": [
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_NEXT_NORMAL_AUTO_ACCEPTANCE_PREPARATION.json",
+      "bytes": 4129,
+      "sha256": "47ddac17bac9576fc99c533e334fb5b31f735815557b08beecf1340866c51325"
+    },
+    {
+      "path": "pump-report/operator/candidate-bank-auto-observation-once.mjs",
+      "bytes": 9578,
+      "sha256": "8c164ee68536b08075f1989a664b696d6aaa402ccfae115adf54d8b8d192e649"
+    },
+    {
+      "path": "pump-report/operator/saved-auto-observation.mjs",
+      "bytes": 5494,
+      "sha256": "8dcb9d220360494a4aaa86d01a3c3870458d376ecfbc5480a9db84825e352a74"
+    },
+    {
+      "path": "pump-report/operator/saved-auto-candidate-observation.mjs",
+      "bytes": 3072,
+      "sha256": "a3465f62d65e93524f9b49758993df33d1a1eea6b0896784a4622ca85c96f893"
+    },
+    {
+      "path": "pump-report/runtime/native-budget.mjs",
+      "bytes": 8632,
+      "sha256": "df3e992b184be68caf286beacb19a0d7054eb31968fe1974ccd210d0182e53b0"
+    },
+    {
+      "path": "pump-report/runtime/store.mjs",
+      "bytes": 10994,
+      "sha256": "86186271e6568c860f4127bf520a4428709a7353616bfb27f198513b2e1c0acf"
+    },
+    {
+      "path": "pump-report/runtime/candidate-diagnostics.mjs",
+      "bytes": 3644,
+      "sha256": "c0d9cb420b8761338083ef9ad4c9d2d727972aa7ee9e602ac6d0587e7166ca9e"
+    },
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "bytes": 25059,
+      "sha256": "8b157fc79a3a7d2208293c8fe12a09f7e1c499c99f94b5e0c302bb0fb659aee2"
+    },
+    {
+      "path": "pump-report/runtime/telegram-send.mjs",
+      "bytes": 1838,
+      "sha256": "be08fedc089455dc4d100428a7a6ff8b2fdbb6e364b2fdb2472c6f4403298d56"
+    }
+  ],
+  "proposal_only": true,
+  "findings": [
+    {
+      "id": "BT1",
+      "type": "INTERPRETATION_COMPOSITION_GAP",
+      "lines": {
+        "saved-auto-observation.mjs": [
+          [
+            12,
+            30
+          ],
+          [
+            31,
+            53
+          ]
+        ],
+        "saved-auto-candidate-observation.mjs": [
+          [
+            16,
+            30
+          ]
+        ]
+      },
+      "required": "Joint acceptance requires same run_id+analysis_key+instrument; independently validated card is delivery proof only for its own run."
+    },
+    {
+      "id": "BT2",
+      "type": "PREPARATION_SCOPE_CLARIFICATION",
+      "maximum_selected_originals_when_both_readers": 2,
+      "original_PK_queries": 2,
+      "selected_card": 1,
+      "card_page": 20,
+      "whole550_or_day": false
+    }
+  ],
+  "native_query_static_bound": {
+    "reserve_and_readback": 2,
+    "card_observer_max": 5,
+    "candidate_original": 1,
+    "resources": 1,
+    "finalize_and_readback": 2,
+    "total": 11,
+    "hard_wrapper": 16,
+    "headroom_not_new_admission": 5,
+    "outcome_enabled": false,
+    "rows_read_envelope_unchanged": 500,
+    "rows_written_envelope_unchanged": 30,
+    "actual_billed_rows": "NOT_OBSERVED_STATIC_ONLY"
+  },
+  "BS_MOCK_current_native_acceptance": false,
+  "other_pin_current_proof": false,
+  "samepin_other_run_latest_candidate_proof_without_jointbinding": false,
+  "currentpin_valid_card_own_delivery_proof_scope": 1,
+  "diagnostic_limits": {
+    "decision_steps": 4,
+    "leaders_each": 5,
+    "leader_scope": "QUEUE_ORDER_BEFORE_SOURCE_ELIGIBILITY",
+    "selected_is_not_READY_or_budget_admission": true,
+    "null_is_not_empty": true
+  },
+  "Node": 0,
+  "engine": 0,
+  "tests": 0,
+  "sourceHTTP": 0,
+  "nativeSQL": 0,
+  "Telegram": 0,
+  "build": 0,
+  "deploy": 0,
+  "ROOT_files_changed": false,
+  "new_reader_or_test_prepared": false,
+  "new_native_admission": false,
+  "acceptance_prerequisites": [
+    "evidence.state=FINALIZED and native_receipt.state=FINALIZED, actualusage unknown_ops=0 and inside unchanged16/500/30",
+    "Current exact71 original.evidence_class=OBSERVED, modeAUTO and purposePRODUCTION in bothanalysis andinput",
+    "Actual cardreceipt text/recipient/id/HTTPclock binding, never stateSENT boolean alone",
+    "Joint latestcandidate/card equality byrun_id+analysis_key+instrument",
+    "If no expected ordinaryevent/asof bound, call it latestSAVED run atobservation, not newcurrentday event"
+  ]
+}

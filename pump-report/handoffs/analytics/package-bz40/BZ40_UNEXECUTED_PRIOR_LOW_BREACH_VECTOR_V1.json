@@ -1,0 +1,70 @@
+{
+  "schema": "BZ40_UNEXECUTED_PRIOR_LOW_BREACH_VECTOR_V1",
+  "status": "EXPLICIT_ARTIFICIAL_UNEXECUTED",
+  "scope": "Obstacle-classification-stage counterexample, not a fully qualified market/engine fixture",
+  "time_units": "ordered symbolic candle-close slots, original event/known ordering preserved",
+  "pivots": [
+    {
+      "kind": "LOW",
+      "price": 100,
+      "event_slot": 1,
+      "known_slot": 3
+    },
+    {
+      "kind": "LOW",
+      "price": 95,
+      "event_slot": 5,
+      "known_slot": 7
+    },
+    {
+      "kind": "HIGH",
+      "price": 110,
+      "event_slot": 6,
+      "known_slot": 8
+    },
+    {
+      "kind": "LOW",
+      "price": 105,
+      "event_slot": 9,
+      "known_slot": 11
+    }
+  ],
+  "analysis_slot": 12,
+  "current_price": 106,
+  "closed_path_points": [
+    {
+      "close_slot": 5,
+      "low": 95
+    },
+    {
+      "close_slot": 11,
+      "low": 105
+    },
+    {
+      "close_slot": 12,
+      "low": 106
+    }
+  ],
+  "path_precondition": "Supply full contiguous closed rows in ROOT controlled fixture; no extra source qualification implied by this short descriptor",
+  "why_old_failed": "LOW95 known7 is not yet known before HIGH event6, and its event5 is before HIGH. The old pair picks prior100 and subsequent105, sees105>=100 and intact(after), but forgets prior100 was broken at event5.",
+  "expected_checks": {
+    "prior_selected_price": 100,
+    "subsequent_selected_price": 105,
+    "intact_before": false,
+    "intact_after": true,
+    "old_minor_boolean": true,
+    "corrected_minor_boolean": false,
+    "classification": "MATERIAL_LOWER_LOW_OR_REBREACH",
+    "no_far_target_from_false_minor": true,
+    "nearer_target_or_refusal": "ROOT whole-plan outcome, not predicted here"
+  },
+  "Node": 0,
+  "imports": 0,
+  "engine": 0,
+  "tests": 0,
+  "builds": 0,
+  "native": 0,
+  "Cloudflare": 0,
+  "market": 0,
+  "Telegram": 0
+}

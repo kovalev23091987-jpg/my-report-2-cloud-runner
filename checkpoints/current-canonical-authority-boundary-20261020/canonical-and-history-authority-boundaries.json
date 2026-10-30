@@ -1,0 +1,190 @@
+{
+  "schema": "NEW_STATIC_BUDGET_AUTHORITY_COUNTEREXAMPLE_EXACT_PRESERVATION_V1",
+  "reviewed_draft_sha256": "8d66b10a85092a51b5f8389b6f6c81cefbc62999c552856b37ea3db00e706735",
+  "reviewed_draft": {
+    "schema": "NEW_STATIC_CURRENT_CANONICAL_PUSHDOWN_AND_GATE_AUTHORITY_BOUNDARY_V1",
+    "code_base": "7c4f5812f2e8cf9dd741379b0a013d57504ba9c4",
+    "source_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+    "classification": "NEW_STATIC_PAPER_COUNTEREXAMPLE_UNEXECUTED_NOT_NATIVE_CAUSE",
+    "current_query": {
+      "projection": "All11 existing projectedcolumns used by consumer/authority",
+      "table_before_adapter": "canonical_publication_shadow",
+      "where": "run_id=?1 AND contract_code IN(boundcontracts)",
+      "order": "created_ts DESC, publication_id ASC",
+      "limit": 6,
+      "limit_scope": "GLOBAL_COMBINED_RETAINED_VIEW",
+      "consumer": "rawcontract+wave filter then ambiguity before JSON authority",
+      "authority_follows": [
+        "snapshot",
+        "observed",
+        "created",
+        "canonicalJSON",
+        "direction",
+        "state",
+        "fingerprint"
+      ],
+      "saved_DDL_unique": [
+        "contract_code",
+        "run_id",
+        "snapshot_id",
+        "observed_ts",
+        "analytical_fingerprint"
+      ],
+      "unique_run_contract_wave": false
+    },
+    "new_counterexample": {
+      "id": "CURRENT_CANONICAL_STATE_PUSHDOWN_ERASES_AMBIGUITY",
+      "rejected_hypothetical_optimization": "Push canonical_state IN(publishable) into existing current canonical query",
+      "handoff": "ONE completed current H(A,R,W), current early/no removal, allothergates closed",
+      "retained_rows": [
+        {
+          "publication_id": "Pgood",
+          "contract": "A",
+          "run": "R",
+          "wave": "W",
+          "state": "OBSERVE",
+          "direction": "LONG",
+          "score": 83,
+          "snapshot_observed_fingerprint": "DISTINCT_GOOD",
+          "source_roles": "CLOSED",
+          "location": "archive-only permitted"
+        },
+        {
+          "publication_id": "Pother",
+          "contract": "A",
+          "run": "R",
+          "wave": "W",
+          "state": "REJECTED",
+          "direction": null,
+          "snapshot_observed_fingerprint": "DISTINCT_OTHER",
+          "location": "hot permitted"
+        }
+      ],
+      "both_created_le_fixednow_and_inside_original_GLOBAL6": true,
+      "old": "returns2; AMBIGUOUS_CURRENT_RUN_CANONICAL beforeauthority, no publication",
+      "filtered": "Pother removed; one Pgood may closeauthority/newlifecycle",
+      "conclusion": "Notsemanticallyequivalent; do notpushstatepredicate toSQL",
+      "is_observed_native_failure_cause": false,
+      "semantic_executions": 0
+    },
+    "retained_authority": {
+      "adapter_rewrites_before_transport": "FROM/JOIN to report2_canonical_retained_v1",
+      "view": "hot UNION ALL archive WHERE NOT EXISTS hot same publication_id",
+      "different_publication_ids_remain_both": true,
+      "public_and_exact_private_locator_restore": "afterwholebatch reply beforeJSconsumer underinheritedhash/binding/rowbound/admission",
+      "not_equivalent": [
+        "hot-only",
+        "per-branchLIMIT",
+        "prefiltered-hot anticheck",
+        "SQLJSON overlocators",
+        "latermanual authorityreuse"
+      ],
+      "unused_projected_column_found": false
+    },
+    "actual_saved_cost_boundary": {
+      "runs": [
+        39261413199,
+        39267344117
+      ],
+      "actual_lifecycle_rows_read": 182,
+      "actual_lifecycle_rows_written": 0,
+      "queries": 5,
+      "unknown_ops": 0,
+      "current_canonical_rows_read": 67,
+      "current_canonical_returned_rows": 2,
+      "INFO_bytes_each": 3113,
+      "INFO_sha_prefixes": [
+        "74530791",
+        "3a2b1af7"
+      ],
+      "SQL_params_and_result_values_exported": false,
+      "raw2row_bodies_or_handoff_bindings_retained": false,
+      "native_plan_scan_attribution_or_equivalent_saving": null,
+      "cannot_infer_65_extra_rows_or_cause_of_182": true,
+      "budget_path_returns_before_perhandoff_loop": true
+    },
+    "gate_HISTORY": {
+      "namespace": "GATE_PUBLIC_STATISTICS",
+      "minute_cap": 6,
+      "units_cached": 1,
+      "units_uncached": 2,
+      "reservation_id": "run_id:GATE:symbol",
+      "not_namespaces": [
+        "Gateassetbinding4",
+        "Gateflow12"
+      ],
+      "direct_sameID_legacyrepeat_possible_by_code": "cachedidentitybeforeFIRSTcall bothunits1; inflightuncached2/2 separatemodel",
+      "ordinary_duplicate_observed": false,
+      "existing_outer_guard": "FULL_DEEP:runId:contract hot40 rejectsduplicate; selectedDeep sequential",
+      "mutable_liquidationRiskByContract_map": "completed context-dependent consumer result, not atomictransport ownership",
+      "missing_authority": "NEW_INSERT/IDENTICAL transportowner or exactsame-run dispatch/wholegrant/params receipt",
+      "unsafe_shortcuts": [
+        "returnmutablecachedconsumerresult",
+        "inflight-only promise ascompleteholding",
+        "refreshoriginalsourceclocks",
+        "relabelerror/unknownaszerocost",
+        "nonce/newID",
+        "extraadmitdoublecount"
+      ],
+      "ready_safe_patch": false
+    },
+    "approved_runtime_change": null,
+    "new_SQL_schema_reader_index_helper": 0,
+    "new_Node_SQL_provider_MAIN_Telegram": 0,
+    "old561_562_583_or_common_replayed": 0,
+    "native_admission_Telegram_or_epoch_ACK_closed": false
+  },
+  "independent_common_STATIC_peer": {
+    "schema": "ONE_COMMON_STATIC_CURRENT_AUTHORITY_BOUNDARY_PEER_V1",
+    "reviewer_thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "draft_bytes": 4949,
+    "draft_sha256": "8d66b10a85092a51b5f8389b6f6c81cefbc62999c552856b37ea3db00e706735",
+    "fresh_main": "d2d1c2b3bbdec92246b5b688c01dbcba8c84e1db",
+    "source_code_7c4_to_d2d_byte_equal": true,
+    "all4_equal": true,
+    "blocking_findings": [],
+    "classification": "STATIC_PAPER_UNEXECUTED_WITH_LIMITS",
+    "saved_DDL_path": "audit-fixes/t00/fixtures/d1-schema.json",
+    "saved_DDL_bytes": 309898,
+    "saved_DDL_sha256": "dd9856e3b46ba04495f9e35e3b903bafa2bb525981a49036f6269247bb04fc5a",
+    "INFO_sha256": [
+      "74530791318342b97e6509786491e5185268d051ce1ef442456bab0168442490",
+      "3a2b1af7369e56887c9dc4701c8c37f9a2f1fdd0cb4616d9c2d4af5e8c962694"
+    ],
+    "query_and_ambiguity_lines": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs:283,309-311",
+    "saved_schema_allows_two_distinct_snapshot_rows_same_run_contract_wave": true,
+    "state_pushdown_changes_ambiguity_before_authority": true,
+    "retained_combined_global_limit6_and_hot_antijoin_semantics_preserved_by_old_query": true,
+    "native_cause_of_182_or_read_savings_established": false,
+    "Gate_HISTORY_boundary_consistent": true,
+    "runtime_patch_or_helper_proposed": false,
+    "semantic_executions": 0,
+    "Node_SQL_tests_provider_native_MAIN_Telegram": 0,
+    "files_or_newlease_mutations": 0,
+    "old561_562_583_common_replayed": 0,
+    "limits": [
+      "Pgood MAY close authority only with consistent clock/snapshot/roles/score>=70 and downstream gates; not guaranteedSENT/dispatch.",
+      "SavedDDL is historical, actualnativeplan/raw2rowbodies/costUNKNOWN. Native67R2returned doesnotidentify65extra rows or observed182cause.",
+      "Direct Gate same-ID repeat is code reachability, not actualordinaryduplicate: FULL_DEEP40 rejectsduplicate. No transportowner demonstrated fromIDENTICAL readback."
+    ]
+  },
+  "code_pins_exact_current_main": {
+    "audit-fixes/t00/fixtures/d1-schema.json": "dd9856e3b46ba04495f9e35e3b903bafa2bb525981a49036f6269247bb04fc5a",
+    "current-generation/files/runner-main.mjs": "53cd3f8d5cf060a11fad8a343a546736b1db97d36eb1588b810ced2cc2602b85",
+    "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs": "26e1067c127ae78a3bf4930d1d8b55abc0141343ff274024595833a8db22c569",
+    "current-generation/files/src/canonical-lifecycle-authority.mjs": "f98a9d994ade8b54c59fe49da20c19d86ea1e816543e01e35cd302313ff53530",
+    "current-generation/files/src/retained-history.mjs": "85c73d45bb78a49600b1dda6fd7ad2a15a7e42180eeffa97c8378848d73a64db",
+    "runner/retained-history.mjs": "5f7f4a493d2e83b9e1bee343e3bd088687866ad8909de25448dac7afb62b8a6a",
+    "current-generation/files/src/private-canonical-history.mjs": "f842926da4bc53e22e41c900c56a71b640654f6b0f064435a7bdccddd709c033",
+    "runner/private-canonical-history.mjs": "b1837bbd65e4160d5707b2b9af22ef4414b242e109fa68b586f649e860e638c3",
+    "runner/report2-d1-adapter.mjs": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614",
+    "current-generation/files/src/gate-liquidation-history.mjs": "f1a2e455b65a0420b1080fff01ecc085727dbbd3bb1b4b3d24ee2cab3085ab8d",
+    "current-generation/files/src/worker.js": "e80352300ea533ce25d8eeb934e7057d51da1600d021c3dda5702721a16d3e17",
+    "runner/runner-main.mjs": "cb69a3aa253cfbcbafc7eab48a00d9ae8131b94717467a0aa51c3e53936e042b",
+    "current-generation/files/src/provider-minute-ledger.mjs": "cbc4ee5440d3f3e1da1bf1cde34a1f809b2fe87d366b8f34a2e3aa6a9be275f3"
+  },
+  "semantic_executions": 0,
+  "runtime_tests_or_native_calls": 0,
+  "no_runtime_proposal_accepted": true,
+  "previous_qualified_point": "checkpoints/ACTIVE105_PROVIDER_VISIBILITY_AND_CLOSED_GEOMETRY_HANDOFF_20261020.json"
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "PUMP_ANALYTICS_PACKAGE_A_OFFLINE_QUALIFICATION_V1",
+  "evidence_class": "ARTIFICIAL_ONLY",
+  "contract_version": "pump-report-contract-v1",
+  "rules_version": "pump-analytics-v1-tz2-20261025",
+  "profile_version": "pump-report-start-v1",
+  "profile_status": "PROPOSED_ENGINEERING_PROFILE_NOT_PROFIT_VALIDATED",
+  "base_main": "6db9bd7a606a419637a8bf34f84258f4df68c132",
+  "local_checkout_head": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
+  "code_head": null,
+  "code_is_local_uncommitted": true,
+  "tests": {
+    "pass": 44,
+    "fail": 0,
+    "log": "pump-report/handoffs/analytics/affected-tests.txt"
+  },
+  "files": [
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "bytes": 10939,
+      "sha256": "6e714ff4ba1706bade91986136ab60ff1cc4c1c072505ebcd27cda25f19dbd28"
+    },
+    {
+      "path": "pump-report/analytics/liquidity.mjs",
+      "bytes": 3326,
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a"
+    },
+    {
+      "path": "pump-report/analytics/math.mjs",
+      "bytes": 2845,
+      "sha256": "c55657a5ed3e65e69394ff187d5d0a1e56962cebee833cdd1a6e950a6f0712fc"
+    },
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "bytes": 12539,
+      "sha256": "062541016a791993cc8790878c0e7af76bf52a99f8889347c1f7995efc41b5b7"
+    },
+    {
+      "path": "pump-report/analytics/outcome.mjs",
+      "bytes": 6328,
+      "sha256": "25d97c8812367b96aae73ef3128362c18f34abdc6e2a3fcab87edf1ab0863ec6"
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "bytes": 7668,
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/README_RU.md",
+      "bytes": 10758,
+      "sha256": "f67f57330159e920d3c8dc4731dd98fbfe25ccfcbf21e8a218ecacc222273941"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/affected-tests.txt",
+      "bytes": 4222,
+      "sha256": "a6af41fe134d64d0eb6968ecdb27e7d3a96efbe828c8e40d8beaee85841b01e9"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/authority.json",
+      "bytes": 3404,
+      "sha256": "bc7934f12578d4562e828bd995f65607cdc952f8bffa4bc29925340123d7a6e6"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/card-with-map.txt",
+      "bytes": 1264,
+      "sha256": "9cc67b1e47ee4e0badc39661e7a1f292112fe57eb957d17165062b18cc1b0d7c"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/card-without-map.txt",
+      "bytes": 1075,
+      "sha256": "1bb0d3419504681ed515a95057d939215e200cab4ee10f643da100211cdcf2b8"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/examples.json",
+      "bytes": 231584,
+      "sha256": "251f0f5e9f28655b8c30699734d4274cdbfa6dfab9c586be1c0a39b69dcfd07a"
+    },
+    {
+      "path": "pump-report/tests/analytics/analysis.test.mjs",
+      "bytes": 9954,
+      "sha256": "71a52ef374f0e7cab784ed6704a0111eec23f22b3b657aaf2880af818d303d9e"
+    },
+    {
+      "path": "pump-report/tests/analytics/fixtures.mjs",
+      "bytes": 2854,
+      "sha256": "b8f48cac69d813a3ba025cf364145b96db4d7449914f5ba119ad9bb89c898fed"
+    },
+    {
+      "path": "pump-report/tests/analytics/liquidity-zones.test.mjs",
+      "bytes": 4940,
+      "sha256": "807c08f4effddbbaa6f6e598dd17bc78500f14694c2f3be919866d94fdeb5efc"
+    },
+    {
+      "path": "pump-report/tests/analytics/outcome.test.mjs",
+      "bytes": 5393,
+      "sha256": "8be1712e49a3f4622b793fc48f65af4efc3f16ad5b18825f6c6992aac8fa2b71"
+    }
+  ],
+  "shared_read_only_inputs": [
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "sha256": "7abdc44914c754f5edc1fd1ddacdee0fe407109211581b2534b361faa144ec51"
+    },
+    {
+      "path": "pump-report/CONTRACT_RU.md",
+      "sha256": "aa5788d8704ccc0ed1ad8f522b5dd854739240fb0d5ba94746ec947d8d378aa1"
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "sha256": "b9f6aa60ce56c8cfd1b2166fb6a86cdc289ffb36d624b73817acf1885d5604bb"
+    }
+  ],
+  "API": [
+    "analyzePump(input, profile=START_PROFILE)",
+    "evaluateOutcome({signal,price_points=[],candles=[],as_of_ts})"
+  ],
+  "real_provider_proof": false,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "old_suite_replayed": false,
+  "remaining": [
+    "ROOT integration with SOURCE actual normalized facts and persistent previous_wave",
+    "Real independently justified BingX scenario",
+    "Same saved text and confirmed Telegram message_id/readback",
+    "Subsequent real outcome history",
+    "Probability calibration and source utility in later package"
+  ]
+}

@@ -1,0 +1,27 @@
+--- a/.github/workflows/current-bridge-module-inspection-20261016.yml
++++ b/.github/workflows/current-bridge-module-inspection-20261016.yml
+@@ -5,6 +5,7 @@
+       expected_main: {type: string, required: true}
+       owner: {type: string, required: true}
+       connected_run: {type: string, required: true}
++      automatic_main_run: {type: string, required: false, default: ""}
+       read_only: {type: boolean, default: false}
+       execute_counter_repair: {type: boolean, default: false}
+       execute_correlated_cost_release: {type: boolean, default: false}
+@@ -23,6 +24,8 @@
+     timeout-minutes: 5
+     steps:
+       - uses: actions/checkout@v4
++        with:
++          fetch-depth: ${{ inputs.execute_correlated_existing_activation && 8 || 1 }}
+       - uses: actions/setup-node@v4
+         with:
+           node-version: '24'
+@@ -113,6 +116,7 @@
+           EXPECTED_MAIN: ${{ inputs.expected_main }}
+           BORROW_EXISTING_OWNER: ${{ inputs.owner }}
+           CONNECTED_RUN: ${{ inputs.connected_run }}
++          AUTOMATIC_MAIN_RUN: ${{ inputs.automatic_main_run }}
+           EXECUTE_CORRELATED_EXISTING_ACTIVATION: ${{ inputs.execute_correlated_existing_activation }}
+         run: node tools/rollout-correlated-sql-bridge-20261022.mjs
+       - name: Upload existing-version activation proof

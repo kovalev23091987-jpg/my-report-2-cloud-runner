@@ -1,0 +1,29 @@
+✔ K16 Blockscout keeps exact-token transfers as provisional investigation context (3.051077ms)
+✔ K16 Blockscout requires exact supported EVM identity and a free key before transport (0.738813ms)
+✔ K16 Blockscout reserves one request and thirty credits, sends key only in authorization header and caches (3.030499ms)
+✔ K16 Blockscout rejects responses without auditable remaining-credit header (1.386475ms)
+✔ K16 Blockscout credit ledger is atomic, idempotent and fails closed at its internal cap (1.374413ms)
+✔ main exact-route 404 backoff saves repeated requests and credits without a closed source check (4.30725ms)
+✔ failure backoff stays scoped to one chain/address and fresh manual analysis bypasses it (2.902482ms)
+✔ liquidation/default path keeps prior attempts and transient or unaudited replies never create backoff (10.259907ms)
+✔ malformed/future failure entries cannot suppress a request (1.246886ms)
+✔ indexed events require original timestamp: no missing-clock substitution or future-clock clamping (0.702395ms)
+✔ Base/Polygon free entitlement skips before D1/admission and leaves the next primary route available (24.904449ms)
+✔ an old normalization version cannot freshen a missing clock from its cached result (2.308308ms)
+✔ known exhausted request/credit pools do not occupy the shared caller admission (1.272343ms)
+✔ verified current primary allows cached index hints but spends no fresh request or credits (1.068765ms)
+✔ candidate boundary excludes foreign and missing market bindings even on a cache hit (2.028528ms)
+✔ complementary role collectors share a fixed envelope and reuse valid caches when it is exhausted (25.753586ms)
+✔ known provider quota denial leaves the local envelope for another useful role (0.566362ms)
+✔ unknown durable reservation after an exception cannot free capacity (0.45203ms)
+✔ transport counts attempts even when a collector throws after a failed request (0.353417ms)
+✔ a later collector cannot spend an earlier unknown reservation (0.609191ms)
+✔ main skips only fresh index discovery after valid exact current finalized RPC; failure and LIQ retain the index route (2.662726ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 208.744352

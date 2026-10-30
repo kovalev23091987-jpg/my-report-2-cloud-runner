@@ -1,0 +1,537 @@
+{
+  "schema": "F622_MAX3_FREE_ROUTES_FINITE_DECISION_V1",
+  "status": "THREE_RANKED_ROUTES_TWO_EXISTING_BINGX_ONE_CONCRETE_HL_HOLD",
+  "authority": {
+    "authority_main": "c6b02c58c16d203ff09d458a2bffff3afc4c438a",
+    "initial_main": "2e5c8842e32fe56358cb067839156c0f2a6ebe0f",
+    "lease": {
+      "schema": "REPORT2_OFFLINE_SOURCE_WORKER_LEASE_V1",
+      "owner": "CODEX:SOURCES:01a171fd:1793088119000",
+      "thread_id": "01a171fd-51b6-79a1-82f4-3dc4532aee24",
+      "acquired_ts": 1793088119000,
+      "expires_ts": 1793089319000,
+      "expected_main": "c6b02c58c16d203ff09d458a2bffff3afc4c438a",
+      "released": false,
+      "root_lease_owner": "CODEX:PUMP_QAIN_FINISH_20261027:1793086804126",
+      "root_expires_ts": 1793091604126,
+      "guard_git_blobs": {
+        "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+        "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "986f4309b532b76551195ff04cfcde384525ef7f",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "24b6a94c9b6f9ae2dc55f7559c29e0566ac662bb",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "475c5e111cc9fb05eea87359e937c45b6397546a",
+        "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "7f3dbc5c36b0d69e2cfe1c33b58f73d48a3d1c70",
+        "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "435414ceff9e91907c6d5da2ababe64638cd9561",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+        "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+        "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+        "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "66a4a35f236a88ae8d9407a6c547922ebeac0684",
+        "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "d6969c796ee0010c7f0699e35e850dc1bd25bd25",
+        "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
+        "pump-report/CONTRACT_RU.md": "ba478eaae100074f8e92dce050b721bed49ac7ed",
+        "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
+        "checkpoints/pump-report-20261025/OWNER_UNIFIED_LAUNCH_AND_SOURCES_AMENDMENTS.json": "7500f72e1610fbe5b5ecd2db764dc5b5850d95fb",
+        "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json": "96f5022f74e45eefc056628aaf0d95df13426894"
+      },
+      "all4_FULL_equal": true,
+      "register_FULL_chars": 1042198,
+      "previous_release": "d55cd5a967c2493d04a02ddbb6f9a32b20ad85ff",
+      "scope": "F622 finite useful retained-only selection max3 best-ready free futureliquidation/OI/trades/funding routes. Own handoffs/sources/F622* exact existingconnection/tool/API, retained exact550coverage vsNOTCHECKED,unit/model/sourceclocks/gaps,percandidate1check lower/upperdailyHTTP/credits/reserve and one concrete ROOTqualificationdecision. No repeated550audit/searchknownsites/no newAPI/providerHTTP/Node/nativeSQL/TG/keys/paid/source25/build/deploy/runtimechange. Existing SOURCE24spent0left,allcapsunknownsmanual3reserves9pauses2OWNERdeferrals retained; metadata notliveconnectionproof. Freshmainrebindifneeded noexpiryextension; timelyownreleaseFULL.",
+      "rebound_at_utc": "2026-10-27 08:07:21 UTC",
+      "expiry_extended": false
+    },
+    "own_FULL": {
+      "commit": "374b16fac4628d9c35ab34338c0e203ff9a9fae4",
+      "exact_server_bytes": true,
+      "head_matches": true,
+      "utc": "2026-10-27 08:02:25 UTC"
+    },
+    "rebind_FULL": {
+      "commit": "76d7ee82a674e293c13d5bbacc800e610abee996",
+      "head_matches": true,
+      "exact_server_bytes": true,
+      "utc": "2026-10-27 08:07:27 UTC"
+    },
+    "code": [
+      {
+        "path": "pump-report/sources/index.mjs",
+        "git_blob": "6d0d92eea33cee376c5566c663c096341c2dc1d5"
+      },
+      {
+        "path": "pump-report/sources/bingx.mjs",
+        "git_blob": "9c406a87ee75cda9c00b3f8600d95ab4246bcff8"
+      },
+      {
+        "path": "pump-report/sources/recent-trades.mjs",
+        "git_blob": "5b3810fdcb69a16969168b3ee91f06ebab44146a"
+      },
+      {
+        "path": "pump-report/sources/funding-qualification.mjs",
+        "git_blob": "46b0fd193b8c605373c9fd424ad7f3782b4dad50"
+      },
+      {
+        "path": "pump-report/registry/funding-quote-profile.mjs",
+        "git_blob": "699dbbbe36b8e4d66386e69a6ec9dd5c32714c54"
+      },
+      {
+        "path": "pump-report/runtime/production-policy.mjs",
+        "git_blob": "04a7df6d90d7eda4efc90bbb6b77dbde125badd9"
+      },
+      {
+        "path": "pump-report/runtime/provider-policy.mjs",
+        "git_blob": "7270572633e57245c4b18ece98b7750172b919e2"
+      },
+      {
+        "path": "pump-report/profile/start-v1.mjs",
+        "git_blob": "e92ead1f1eb5fc05eeb2181c0280d262da7b90de"
+      }
+    ],
+    "prepared_funding": {
+      "installed": true,
+      "code_main": "ae71eeaf6eb494bf32d90f268c36aac950e7066b",
+      "implementation_sha256": "4472ae4d3b38105ab5e85756d523a8cda5b7ceff462aa94ab4934ef08b11feab",
+      "offline_profile_bindings": 550,
+      "new_fresh_funding_market_facts": 0,
+      "unit_consumer_basis_closed": true,
+      "vendor_guarantee": false,
+      "final_card_qualified_fact_only": true,
+      "optional_upper2_unchanged": true
+    }
+  },
+  "selected_routes": [
+    {
+      "provider": "BINGX",
+      "family": "USDT_M",
+      "venue": "BINGX",
+      "market_type": "PERPETUAL",
+      "quote": "USDT",
+      "settle": "USDT",
+      "connection": "Existing Worker createPumpSources -> getOptional -> createRequestBroker -> existing BINGX public GET transport; no new MCP/key/account",
+      "selected550_native_identity_at_F619_capture": 550,
+      "identity_scope": "SAME_VENUE_EXACT_NATIVE_TUPLES_NOT_EXTERNAL_CANONICAL_JOIN",
+      "actual_fresh_route_coverage_550": "NOT_CHECKED",
+      "new_fresh_facts_by_F622": 0,
+      "unsupported_rows": 0,
+      "HTTP": {
+        "successful_uncached_check_lower": 1,
+        "successful_uncached_check_upper": 1,
+        "with_gate_cache_or_denial_lower": 0,
+        "with_gate_cache_or_denial_upper": 1,
+        "automatic_retries": 0,
+        "cash_cost_retained": "PUBLIC_NO_AUTH_FREE_NO_PAID_PLAN_SELECTED",
+        "new_daily_quota_granted": false
+      },
+      "source_policy_caps": {
+        "minute": 10,
+        "second": 1,
+        "day": 900,
+        "month": 27900
+      },
+      "optional_total_upper_shared_with_other_selected_route": 2,
+      "not_independent_provider_confirmation": true,
+      "rank": 1,
+      "id": "BINGX_RECENT_TRADES_QUOTE_NOTIONAL",
+      "block": "TRADES",
+      "decision": "SELECT_EXISTING_ROUTE_FOR_REUSE_NEXT_NORMAL_CANDIDATE_FACT_CHECK",
+      "method": "GET",
+      "url": "https://open-api.bingx.com/openApi/swap/v2/quote/trades",
+      "query_template": {
+        "symbol": "EXACT_SELECTED_NATIVE_SYMBOL",
+        "limit": 100
+      },
+      "runtime_args": {
+        "requested_kinds": [
+          "trades"
+        ],
+        "deadline_ts": "EXISTING_SHARED_MANDATORY_BOUNDED_OPTIONAL_DEADLINE"
+      },
+      "parser": "pump-report/sources/recent-trades.mjs:parseRecentTrades",
+      "consumer": "pump-report/analytics/context.mjs -> bounded trade sample context",
+      "units": {
+        "price": "USDT_PER_NATIVE_BASE",
+        "amount_field": "quoteQty",
+        "notional": "USDT_QUOTE_NOTIONAL",
+        "qty_base": "UNKNOWN_NOT_USED",
+        "side": "isBuyerMaker true=>SELL false=>BUY; buyerMaker alias rejected",
+        "id": "id or ROOT-reviewed fillId; conflicts/duplicates preserved before consumer dedup"
+      },
+      "clock": {
+        "field": "row.time",
+        "unit": "UNIX_MS",
+        "TTL_ms": 30000,
+        "received_is_event": false
+      },
+      "model_kind": "OBSERVED_RECENT_TRADE_SAMPLE_NOT_MODEL_OR_FULL_FLOW",
+      "coverage": {
+        "identity": 550,
+        "saved_usable_examples": [
+          "BINGX:USDT_M:101207:DOOD-USDT",
+          "BINGX:USDT_M:101418:AIN-USDT"
+        ],
+        "examples_not_exhaustive_total": true,
+        "response_rows_bound": 1000,
+        "requested_limit": 100,
+        "full_window_or_full_market_coverage_proven": false,
+        "all550_current_availability": "NOT_CHECKED"
+      },
+      "gaps": [
+        "Current received sample only qualifies its exact candidate and time; no whole550 API availability claim.",
+        "Returned1000 to limit100 must remain bounded; no absorption/full-window conclusion.",
+        "Optional stage may skip on deadline/budget; mandatory READY is not blocked."
+      ],
+      "proofs": [
+        "F588_DOOD_SAVED_OPTIONAL_SAFE_METADATA_V1.json",
+        "F621_AIN_CLOCK_EVIDENCE_V1.json",
+        "T3_RECENT_TRADES_PRIMARY_PROOFS_V1.json",
+        "F555_FILLID_ROOT_REVIEW_ACCEPTED_V1.json"
+      ]
+    },
+    {
+      "provider": "BINGX",
+      "family": "USDT_M",
+      "venue": "BINGX",
+      "market_type": "PERPETUAL",
+      "quote": "USDT",
+      "settle": "USDT",
+      "connection": "Existing Worker createPumpSources -> getOptional -> createRequestBroker -> existing BINGX public GET transport; no new MCP/key/account",
+      "selected550_native_identity_at_F619_capture": 550,
+      "identity_scope": "SAME_VENUE_EXACT_NATIVE_TUPLES_NOT_EXTERNAL_CANONICAL_JOIN",
+      "actual_fresh_route_coverage_550": "NOT_CHECKED",
+      "new_fresh_facts_by_F622": 0,
+      "unsupported_rows": 0,
+      "HTTP": {
+        "successful_uncached_check_lower": 1,
+        "successful_uncached_check_upper": 1,
+        "with_gate_cache_or_denial_lower": 0,
+        "with_gate_cache_or_denial_upper": 1,
+        "automatic_retries": 0,
+        "cash_cost_retained": "PUBLIC_NO_AUTH_FREE_NO_PAID_PLAN_SELECTED",
+        "new_daily_quota_granted": false
+      },
+      "source_policy_caps": {
+        "minute": 10,
+        "second": 1,
+        "day": 900,
+        "month": 27900
+      },
+      "optional_total_upper_shared_with_other_selected_route": 2,
+      "not_independent_provider_confirmation": true,
+      "rank": 2,
+      "id": "BINGX_FUNDING_RATE_QUOTE",
+      "block": "FUNDING",
+      "decision": "SELECT_EXISTING_ROUTE_CONDITIONAL_ON_HONEST_QUOTE_CLOCK_AND_PERIOD",
+      "method": "GET",
+      "url": "https://open-api.bingx.com/openApi/swap/v2/quote/premiumIndex",
+      "query_template": {
+        "symbol": "EXACT_SELECTED_NATIVE_SYMBOL"
+      },
+      "runtime_args": {
+        "requested_kinds": [
+          "funding"
+        ],
+        "deadline_ts": "SAME_EXISTING_SHARED_OPTIONAL_DEADLINE"
+      },
+      "parser": "pump-report/sources/bingx.mjs:parseFunding + funding-qualification.mjs:qualifyBingxFundingQuote",
+      "consumer": "Qualified optional funding context only, never standalone direction",
+      "units": {
+        "raw_field": "lastFundingRate",
+        "raw_scale": "RATE_FRACTION",
+        "display_percent": "raw*100 only for display",
+        "actual_period": "fundingIntervalHours from SAME_RESPONSE_ROW; no8h default",
+        "proof_level": "ADAPTER_BASED_INFERENCE_PINNED_CCXT_NOT_INDEPENDENT_VENDOR_GUARANTEE"
+      },
+      "clock": {
+        "field": "updateTime",
+        "meaning": "RATE_QUOTE_SNAPSHOT_NOT_PAYMENT_EVENT",
+        "TTL_ms": 300000,
+        "nextFundingTime": "FUTURE_SCHEDULE_NOT_ASOF",
+        "received_is_event": false
+      },
+      "model_kind": "OBSERVED_RATE_QUOTE_NOT_FUTURE_LIQUIDATION_MODEL",
+      "coverage": {
+        "identity": 550,
+        "offline_profile_bindings": 550,
+        "profile_installed_in_saved_authority": true,
+        "actual_fresh550": "NOT_CHECKED",
+        "saved_AIN": "STALE event19:00MSK received19:42:07.441MSK26Oct; must remain STALE",
+        "old_DOOD": "NOT_CHECKED before profile qualification, not usable funding proof"
+      },
+      "gaps": [
+        "Actual row must carry valid period+original quote clock; stale quote does not become current on new receipt.",
+        "AIN proves response format and correct STALE behavior, not fresh funding availability.",
+        "Do not repeat a known stale quote just to obtain a later received_ts.",
+        "Bulk premiumIndex without symbol is a separate old unimplemented proposal, not selected or new permission."
+      ],
+      "proofs": [
+        "F593_F588_COMPATIBLE_CONSUMER_FUNDING_PROFILE_V1.json",
+        "F621_AIN_CLOCK_EVIDENCE_V1.json",
+        "pump-report/registry/funding-quote-profile.mjs",
+        "fresh_all4.prepared_funding"
+      ]
+    },
+    {
+      "rank": 3,
+      "id": "HYPERLIQUID_ONE_RETAINED_SOL_ACCOUNT_STATE",
+      "block": "FUTURE_LIQUIDATION_OBSERVED_POSITIONS",
+      "decision": "RANKED_THIRD_PRIORITY_EXTERNAL_FREE_CANDIDATE_HOLD_BEFORE_IO",
+      "provider": "HYPERLIQUID",
+      "family": "CORE_FIRST_DEX_ONLY",
+      "model_kind": "OBSERVED_ACCOUNT_CONDITIONAL_LIQUIDATION_THRESHOLD_NOT_FULL_MARKET_MODEL",
+      "connection": "Existing F556 producer in getLiquidations supports qualified read-only POST route; production policy currently does not activate HL",
+      "method": "POST",
+      "url": "https://api.hyperliquid.xyz/info",
+      "json_template": {
+        "type": "clearinghouseState",
+        "user": "ONE_EXACT_ROOT_ADMITTED_RETAINED_ADDRESS_NOT_EXPORTED"
+      },
+      "request_bounds": {
+        "accounts": 1,
+        "HTTP_max": 1,
+        "retries": 0,
+        "pagination": 0,
+        "new_wallet_discovery": 0,
+        "request_bytes_max": 4096,
+        "response_bytes_max": 2000000,
+        "timeout_ms": 10000
+      },
+      "target": {
+        "instrument_id": "BINGX:USDT_M:100028:SOL-USDT",
+        "native_symbol": "SOL-USDT",
+        "native_HL_coin": "SOL",
+        "canonical_bridge": "UNKNOWN_DO_NOT_BIND_BY_TICKER"
+      },
+      "opaque_account_ref": "checkpoints/OFFICIAL_TRADE_NATIVE_DISCOVERY_CAPABILITY_20261007.json:native_samples[0]",
+      "free": "Retained public anonymous read-only info method; no new key or paid plan. Actual current allowance/remaining unknown.",
+      "coverage": {
+        "qualified_current": 0,
+        "canonical_overlap_proven": 0,
+        "retained_SOL_name_hint": 1,
+        "maximum_exact_instruments_from_one_qualified_packet": 1,
+        "remaining549": "NOT_CHECKED_NOT_UNSUPPORTED",
+        "whole550_provider_presence": "NOT_CHECKED_NO_COMPLETE_TYPED_CATALOGUE"
+      },
+      "units": {
+        "szi": "SIGNED_NATIVE_UNDERLYING_SPOT_UNITS positiveLONG negativeSHORT by retained official SDK chain",
+        "first_dex_SOL_quote": "USDT denomination by official contract-spec conditional exact native listing, collateralUSDC distinct",
+        "liquidationPx": "CURRENT_ACCOUNT_CROSS_MARGIN_CONDITIONAL_MARK_BASIS_THRESHOLD",
+        "positionValue_currency": "UNKNOWN_OPTIONAL_MAGNITUDE_NULL",
+        "native_price_to_executable_BingX_price": "NOT_QUALIFIED_NO_PARITY_OR_BASIS_ASSUMPTION"
+      },
+      "clock": {
+        "payload.time": "UNIX_MS_ACCOUNT_STATE_NOT_PER_POSITION_GENERATION",
+        "state_TTL_ms": 120000,
+        "separate_HL_mark_metric_event_ts": "UNKNOWN",
+        "received_is_event": false,
+        "zone_expiry": "Only after qualified basis: min(nativeexpiry,mappingexpiry,mappingevent+priceTTL30s); otherwise context/HOLD per ROOT review"
+      },
+      "gaps": [
+        "Exact BingX SOL native100028 -> HL native market/project entity bridge not yet closed.",
+        "Separate mark/basis freshness and precise BingX price conversion unqualified; no executable BingX levels.",
+        "Native size/sign/spec documentary progress does not close current live provider admission or account-wide allowance.",
+        "positionValue currency is optional UNKNOWN; do not invent USD magnitude or compute size*liquidationPx."
+      ],
+      "HTTP": {
+        "source_state_successful_uncached_lower": 1,
+        "source_state_successful_uncached_upper": 1,
+        "with_valid_cache_or_no_eligible_account_lower": 0,
+        "upper": 1,
+        "already_reserved_candidate_optional_map_slot_upper": 1,
+        "new_above_candidate12": 0,
+        "full_converted_zone_total_HTTP_upper": "UNQUALIFIED_UNTIL_PRICE_BASIS_ROUTE_CLOSED",
+        "native_RPC_weight_retained": 2,
+        "weight_is_current_quota_guarantee": false,
+        "cash_cost_retained": "0_PUBLIC_ANONYMOUS",
+        "proposed_oneoff_daily_state_HTTP_ceiling": 1,
+        "automatic_daily_subscription": 0
+      },
+      "native_envelope": "Historical F583 design16SQL5000R300W is NOT a current grant or measured cost; ROOT fresh preflight required.",
+      "next_admission": "Only after exact identity and allowed native-context/basis semantics are accepted: one bounded existing-account state packet, no new account search; if prerequisites remain UNKNOWN do not call. Source24spentno25 remains.",
+      "proofs": [
+        "F583_ONE_EXTRA_ROUTE_PROPOSAL_V1.json",
+        "F585_PRIMARY_SEMANTICS_V1.json",
+        "F562_SOURCE_SELECTION_MATRIX_V1.json"
+      ]
+    }
+  ],
+  "selected_count": 3,
+  "max_requested": 3,
+  "new_external_route_ready_for_finite_native_qualification": 0,
+  "future_liquidation_qualified_routes": 0,
+  "OI_qualification_ready_routes": 0,
+  "held_routes": [
+    {
+      "id": "BYKARANTELI_FUTURE_MODEL",
+      "existing_connection": "mcp__codex_apps__bykaranteli_get_liqmap; existing Worker server binding presence retained, validity UNKNOWN",
+      "exact_API": "GET https://bykaranteli.com/api/liqmap/public?symbol={EXACT_PROVIDER_MAP_ID}, existing program Bearer key only",
+      "free": "Retained verified-account free quota30/min15000/month; current access/remaining UNKNOWN",
+      "coverage550": "NO_EXACT_CANONICAL_JOIN; all550 NOT_CHECKED; provider potential201 is not overlap",
+      "blockers": [
+        "Historical exact MCP_UNKNOWN_TOOL after refresh; F609 has no concrete new metadata delta.",
+        "No complete exact map catalogue/canonical bindings, actual model/input clocks or route retry/HTTP upper."
+      ],
+      "cost": "MCP physicalHTTP upper UNKNOWN; do not grant finite numeric0. REST retry0 could be1 only after separate current access and actual authorization.",
+      "proof": "F609_HANDOFF_RU.md"
+    },
+    {
+      "id": "0XARCHIVE_HYPE_PROJECTED_LEVELS",
+      "existing_connection": "mcp__codex_apps__0xarchive2_get_liquidation_levels",
+      "exact_args_retained": {
+        "coin": "HYPE",
+        "range_pct": 50,
+        "buckets": 100
+      },
+      "free": "Free plan credits retained, but method premium entitlement/numeric cost UNKNOWN",
+      "coverage550": {
+        "native_catalog_rows": 234,
+        "raw_name_overlap": 176,
+        "raw_active_overlap": 162,
+        "raw_inactive_overlap": 14,
+        "raw_absent": 374,
+        "canonical_UNKNOWN": 550,
+        "qualified_maps": 0
+      },
+      "blockers": [
+        "Premium cost/hosted HTTP bound and actual remaining unknown.",
+        "Exact BingX perpetual to project/native entity bridge still UNKNOWN after F598.",
+        "Model base clock and exact bucket edges not proved; price currency derived native-axis inference only."
+      ],
+      "cost": "Per-call premium credits UNKNOWN; daily credits C*UNKNOWN; not1credit and not50000free map calls.",
+      "proof": "F592_INPUT_PROOFS_AND_COUNTS_V1.json;F596;F597;F598"
+    },
+    {
+      "id": "COINVERSA_FREE_MARKET_OVERVIEW_OI_FUNDING",
+      "existing_connection": "mcp__codex_apps__coinversa_pulse_list_markets args{useToonFormat:false}; existing OAuth, no new credentials",
+      "exact_API": "GET https://api.coinversa.ai/api/public/v1/pulse/market-overview",
+      "free": "Actual Free plan30/min1000/day; monthly_raw0 semantics UNKNOWN",
+      "coverage550": {
+        "markets50of294_raw_matches": 46,
+        "asset_groups25of434_raw_candidates": 8,
+        "union_raw_candidates": 51,
+        "absent_from_partial_pages": 499,
+        "canonical_UNKNOWN": 550,
+        "qualified": 0
+      },
+      "blockers": [
+        "Installed tools have no offset/limit despite backend hints; no repeat-first-page pseudo-pagination.",
+        "Native metric event clocks/funding actual period/OI units unknown.",
+        "Hosted retry/physical HTTP upper UNKNOWN; economic exposure taxonomy does not close BingX identity."
+      ],
+      "cost": "Documented plain method1API read; hosted physical HTTP upper UNKNOWN, public stdio up to3 attempts does not prove hosted bound.",
+      "proof": "F595_V2_ASSET_PAGE_ACTUAL_AND_COMBINED_LIMITS_V1.json"
+    },
+    {
+      "id": "BINGX_OI",
+      "existing_connection": "Existing createPumpSources getOptional open_interest, GET /openApi/swap/v2/quote/openInterest",
+      "coverage550": "Exact same-venue identities550; usable OI unit qualification NOT_CHECKED/UNKNOWN550",
+      "blockers": [
+        "Exact native OI unit/counting semantics not qualified; current parser gate skips rather than fetching guesses."
+      ],
+      "cost": "0while gate closed; after proof max1within sameoptional2, not an extra third slot.",
+      "proof": "F562_SOURCE_SELECTION_MATRIX_V1.json;F588_DOOD_SAVED_OPTIONAL_SAFE_METADATA_V1.json"
+    },
+    {
+      "id": "ORDERLY_PUBLIC_POSITIONS",
+      "existing_connection": "Legacy direct transport POST https://api.orderly.org/v1/public/query; new Worker broker integration not connected",
+      "coverage550": "Saved raw market-name hints36; canonical/qualified0; full550 NOT_CHECKED",
+      "blockers": [
+        "Stable position output ID, raw notional unit, independent exact asset identity still UNKNOWN.",
+        "Server response ts/max age bound5000ms is not a proved exact generation clock."
+      ],
+      "cost": "Retained bounded first page1HTTP20weight; no auto-pagination; current remaining/day cap UNKNOWN.",
+      "proof": "F562_SOURCE_SELECTION_MATRIX_V1.json;F567_ORDERLY_PRIMARY_DELTA_AND_GAPS_V1.json"
+    },
+    {
+      "id": "TOOBIT_OI_FUNDING",
+      "existing_connection": "GET https://api.toobit.com/api/v1/futures/fundingRate or openInterest as documented in F601",
+      "coverage550": "Retained696closed rows,452raw name candidates/98NOT_CHECKED; canonicalUNKNOWN550",
+      "blockers": [
+        "Funding numeric scale/source quote clock/endpoint weight unresolved.",
+        "OI coin unit documented but source clock/counting/weight unresolved."
+      ],
+      "cost": "REQUEST_WEIGHT per route UNKNOWN; catalogue neighbor weight1 cannot be copied.",
+      "proof": "F601_FUNDING_OI_PROFILE_V1.json"
+    },
+    {
+      "id": "MIDASFLOW_REALIZED_LIQUIDATIONS",
+      "existing_connection": "mcp__codex_apps__midasflow_get_whales {kind:liquidations,exchange:all,symbol:\"\",window:60}",
+      "coverage550": "UNKNOWN; no complete exact catalogue/join",
+      "blockers": [
+        "Free realized prints are not future liquidation map.",
+        "Free funding/OI not proved; documented funding/OI PRO, future heatmap VIP.",
+        "Per-event unit/currency/clock and hosted HTTP fanout unproved."
+      ],
+      "cost": "Retained realized route1weighted unit/daycap200; hosted HTTP upper unknown. Not selected as requested future model.",
+      "proof": "F594_THREE_PROVIDER_COMPARISON_V1.json"
+    }
+  ],
+  "coverage_basis": "Reuse retained exact550 membership and provider-specific already saved matrices. No new550 join/audit or percoin manual configurations. Vendor catalogue presence/name match is separate from canonical identity and fresh fact coverage.",
+  "current_usage": "These2 routes are already existing production optional composition, not newly connected routes or newly granted quota.",
+  "new_execution": {
+    "source_HTTP": 0,
+    "Node": 0,
+    "engine": 0,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "new_keys": 0,
+    "paid": 0,
+    "runtime_changes": 0,
+    "qualification25": 0
+  },
+  "caps_preserved": {
+    "source_qualification": "24spent0remaining_no25",
+    "manual_checks": 3,
+    "CORE_last_accepted": 10,
+    "units9": "UNKNOWN",
+    "futuremaps": 0,
+    "all_old_spend_unknowns_reserves_9pauses_2OWNERdeferrals": true
+  },
+  "reusable_existing_production_routes": 2,
+  "priority_external_HOLD_routes": 1,
+  "completion_authority": {
+    "main": "28bfd5cb7096be3746f5869681d2cb3f42fce1bb",
+    "lease": {
+      "schema": "REPORT2_OFFLINE_SOURCE_WORKER_LEASE_V1",
+      "owner": "CODEX:SOURCES:01a171fd:1793088119000",
+      "thread_id": "01a171fd-51b6-79a1-82f4-3dc4532aee24",
+      "acquired_ts": 1793088119000,
+      "expires_ts": 1793089319000,
+      "expected_main": "28bfd5cb7096be3746f5869681d2cb3f42fce1bb",
+      "released": false,
+      "root_lease_owner": "CODEX:PUMP_QAIN_FINISH_20261027:1793086804126",
+      "root_expires_ts": 1793091604126,
+      "guard_git_blobs": {
+        "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+        "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "0215be1984246f2b0ec663865b8103591c479add",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "68eaefbfdab9b98be813036641d1b9871cba7cb5",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "5e4572d06981e79424766f50d6b41150fe32b704",
+        "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "0de8f549d454c2d9a40a0792f71c7f0cffce039e",
+        "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "435414ceff9e91907c6d5da2ababe64638cd9561",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+        "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+        "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+        "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "929f49f5be92fb5e9b17bc0030307aa9a4d05003",
+        "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "af8db439b028bcd8671ecab171897813d36f0760",
+        "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
+        "pump-report/CONTRACT_RU.md": "ba478eaae100074f8e92dce050b721bed49ac7ed",
+        "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
+        "checkpoints/pump-report-20261025/OWNER_UNIFIED_LAUNCH_AND_SOURCES_AMENDMENTS.json": "7500f72e1610fbe5b5ecd2db764dc5b5850d95fb",
+        "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json": "96f5022f74e45eefc056628aaf0d95df13426894"
+      },
+      "all4_FULL_equal": true,
+      "register_FULL_chars": 1041163,
+      "previous_release": "d55cd5a967c2493d04a02ddbb6f9a32b20ad85ff",
+      "scope": "F622 finite useful retained-only selection max3 best-ready free futureliquidation/OI/trades/funding routes. Own handoffs/sources/F622* exact existingconnection/tool/API, retained exact550coverage vsNOTCHECKED,unit/model/sourceclocks/gaps,percandidate1check lower/upperdailyHTTP/credits/reserve and one concrete ROOTqualificationdecision. No repeated550audit/searchknownsites/no newAPI/providerHTTP/Node/nativeSQL/TG/keys/paid/source25/build/deploy/runtimechange. Existing SOURCE24spent0left,allcapsunknownsmanual3reserves9pauses2OWNERdeferrals retained; metadata notliveconnectionproof. Freshmainrebindifneeded noexpiryextension; timelyownreleaseFULL.",
+      "rebound_at_utc": "2026-10-27 08:11:50 UTC",
+      "expiry_extended": false
+    },
+    "rebind_FULL": {
+      "commit": "e63d9cb830df24793cff309af033d898bbb87f70",
+      "head_matches": true,
+      "exact_server_bytes": true,
+      "utc": "2026-10-27 08:11:57 UTC"
+    },
+    "all4_FULL_equal": true,
+    "root_status": "LIVE72_C176_PUBLICATION_CRITICAL_PATH_FIX_AUTO_DELIVERY_ON_GENUINE_AUTO_SENT_OPEN"
+  }
+}

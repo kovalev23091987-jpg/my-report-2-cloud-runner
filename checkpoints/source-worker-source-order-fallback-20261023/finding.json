@@ -1,0 +1,31 @@
+{
+  "schema": "BITGET_KNOWN_LATE_METADATA_REFUSAL_FINDING_V1",
+  "status": "NEW_REACHABLE_STATIC_PRODUCER_CONSUMER_COUNTEREXAMPLE_NOT_NATIVE_INCIDENT",
+  "task": "SOURCE_PRIORITIES_WEEKLY_HTX",
+  "fixedbase": "4969da83d00e47c00e48d91ad898e4c1575c1f92",
+  "target": "current-generation/files/src/bitget-flow-collector.mjs",
+  "before": {
+    "bytes": 8651,
+    "sha256": "218421d5860f1c8f522880e22e6fb068c24b4c87537328b9dbfee8084dd5dffe"
+  },
+  "after": {
+    "bytes": 9684,
+    "sha256": "fbcc54614caea627547a886ca03b6cac1b384234dbf0e1fa194f0778fa17d893"
+  },
+  "chain": [
+    "existing exact verified identity",
+    "cached METADATA:coins and METADATA:spot with original clocks",
+    "complete known HTTP refusal of METADATA:futures",
+    "existing FLOW:<exact-contract>:SPOT:<same-current-minute-end> cache",
+    "actual Bitget reconciler and N12 bounded normalizer",
+    "actual collectN05VenueRoutes shared-five caller",
+    "actual availableFlowContext and source health observations"
+  ],
+  "counterexample": "With a valid current exact SPOT retained four-hour payload and its own exact coins/instrument metadata, a complete known FUTURES metadata HTTP503 causes the original metadata loop to return before any SPOT flow-cache read. FUTURES listing is not part of exact SPOT identity. This is not a claim that an observed historical report had this failure.",
+  "minimal_proposal": "Permit only a completed known last-FUTURES non200 HTTP refusal, with bounded fully received hashed body and native usage still closed, to reach the existing SPOT cache. Keep metadata order. Cache miss/stale/future-clock cannot acquire new flow HTTP. Wrong current identity/foreign trade/window still goes through existing strict validators. Shared coins/SPOT metadata failure, incomplete body, uncertain transport, schema error, internal denial and unknown preserve original general refusal. Check native unknown again immediately after the added fallback cache await.",
+  "provider_HTTP_added": 0,
+  "reason_no_HTTP_added": "The old metadata sequence is unchanged and the late-refusal path forbids acquireBitgetFourHourFlow. It adds at most the one existing exact SPOT cache SELECT, not a provider request. This DB read is subject to existing admitted500R22W source-health envelope and native closed-state checks; no measured native cost or CPU/latency saving is claimed.",
+  "data_boundary": "Original stored SPOT payload, exact identity, market, USDT units, upstream, closed window, observed/source clocks and known refusal accounting retained. N05 single-venue evidence and N12 sample keep coverage0/score0/entryfalse; no consensus/current105/SENT/native authorization.",
+  "author_execution": "Node/import/syntax/tests/appsemantics/SQL/SQLite/gitapply/provider/CF/MAIN/manual/TG/dispatch0",
+  "whole_project_complete": false
+}

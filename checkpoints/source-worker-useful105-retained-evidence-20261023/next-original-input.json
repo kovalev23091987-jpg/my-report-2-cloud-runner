@@ -1,0 +1,30 @@
+{
+  "schema": "USEFUL105_ONE_NECESSARY_ORIGINAL_INPUT_V1",
+  "fact_ref": "CONSUMED:169",
+  "original": {
+    "path": "checkpoints/active105-reliability-20261015/natural-38707417112/report2-run-result.json.gz",
+    "member": null,
+    "json_pointer": "/candidates/0/block_rendered_results/context_receipts/1",
+    "raw_sha256": "20a8b5bd04ee5b4efbaab7ad484761cab18f5523f025233e65d6ae5a9c67333d",
+    "head": "56f9265508c5ee7e737e34f7b46c2c0f9e3618cd",
+    "cloud_run": 38707417112,
+    "run_id": "1792053688543-1792053704847",
+    "publication_id": "PUB:229ec5c80bf4fae38547b1319d1c16320d394ad0",
+    "snapshot_id": "S392:RLC-USDT:1792053873959",
+    "observed_ts": 1792053873959
+  },
+  "evidence_ids": [
+    "EV2:2264f5fb4bf32135ea872e71126669ea7a0ac77ee656770212f1bad7c53632fd"
+  ],
+  "source_ts": 1792053779496,
+  "observed_ts": 1792053826423,
+  "physical_roots": [
+    "BITGET_BOUNDED_TRADE_SAMPLE:RLC-USDT:SPOT:1494547363558838272"
+  ],
+  "required_input": "The already retained original normalized EvidenceV2 row and its original producer receipt/body for the exact listed evidence ID, bound to the same publication/run/snapshot. Preserve original raw hash, exact asset/venue/SPOT/quote/unit/window/source and first-known clocks. No new market query, recalculation, time rebinding or synthetic source row. If the original was not retained, record unavailable; do not manufacture it.",
+  "why_needed": "Manual consumer receipt is literally present but its evidence ID is absent from every source_check in that same saved candidate. Without the exact original producer envelope, source-to-consumer binding/unit/window cannot be independently closed. This is one concrete evidence gap, not a proven runtime loss or a mandate to repeat an old audit.",
+  "closes_only": "One retained RLC N12 source-to-consumer boundary. Does not establish simultaneous/current105 coverage or qualify all other source raw bodies.",
+  "root_exclusive_read_selection_and_admission": true,
+  "SOURCE_new_SQL_HTTP_MAIN_TG_or_private_extraction": 0,
+  "patch_or_callable_created": false
+}

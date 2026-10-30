@@ -1,0 +1,170 @@
+{
+  "schema": "pump-protected-reference-projection-v2-20261025",
+  "scope": "SUPPLIED_ORIGINALS_ONLY_NOT_GLOBAL_REFERENCE_CLOSURE",
+  "edges": [
+    {
+      "from": "SUPPLIED_ORIGINAL",
+      "to": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "kind": "ORIGINAL_ANALYSIS_INPUT",
+      "protected": true
+    },
+    {
+      "from": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "to": "ARTIFICIAL:price:1800000000000",
+      "kind": "INTRA_ORIGINAL_FACT",
+      "protected": true
+    },
+    {
+      "from": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "to": "ARTIFICIAL_ONLY",
+      "kind": "UNRESOLVED_EXTERNAL_ORIGINAL",
+      "protected": true
+    },
+    {
+      "from": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "to": "ARTIFICIAL:candles:1800000000000",
+      "kind": "INTRA_ORIGINAL_FACT",
+      "protected": true
+    },
+    {
+      "from": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "to": "ARTIFICIAL:orderbook:1800000000000",
+      "kind": "INTRA_ORIGINAL_FACT",
+      "protected": true
+    },
+    {
+      "from": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "to": "ARTIFICIAL:trades:1800000000000",
+      "kind": "INTRA_ORIGINAL_FACT",
+      "protected": true
+    },
+    {
+      "from": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "to": "ARTIFICIAL:candles:1800000000000",
+      "kind": "ORIGINAL_PLAN_BASIS_FACT",
+      "protected": true
+    },
+    {
+      "from": "SUPPLIED_CARD",
+      "to": "pump:card:ARTIFICIAL_V_CARD",
+      "kind": "DELIVERY_OR_AUDIT_ORIGINAL",
+      "protected": true
+    },
+    {
+      "from": "pump:card:ARTIFICIAL_V_CARD",
+      "to": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "pump:card:ARTIFICIAL_V_CARD",
+      "to": "pump:card:ARTIFICIAL_V_CARD#receipt",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "pump:journal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "to": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "pump:journal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "to": "pump:analysis:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "pump:journal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "to": "pump:card:ARTIFICIAL_V_CARD",
+      "kind": "PUBLICATION_ORIGINAL",
+      "protected": true
+    },
+    {
+      "from": "pump:journal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "to": "pump:card:ARTIFICIAL_V_CARD#receipt",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "SUPPLIED_SIGNAL",
+      "to": "pump:signal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "kind": "ORIGINAL_SIGNAL",
+      "protected": true
+    },
+    {
+      "from": "pump:signal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "to": "pump:analysis:c20ab61c82be3e6e34ec4ba26a48cd3bac087bed23ab7b95eab4cc8d45cfe8f5",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "pump:signal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "to": "pump:outcome:pump:signal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "kind": "PER_WAVE_NUMERIC_LABELS",
+      "protected": true
+    },
+    {
+      "from": "pump:summary-ordered-head:v1",
+      "to": "pump:summary-record:ARTIFICIAL_V",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "SUPPLIED_SUMMARY_ORDERED_ITEM",
+      "to": "pump:summary-record:ARTIFICIAL_V",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "SUPPLIED_SUMMARY_MEMBERSHIP",
+      "to": "pump:summary-record:ARTIFICIAL_V",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "SUPPLIED_SUMMARY_RECORD",
+      "to": "pump:summary-record:ARTIFICIAL_V",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "pump:summary-record:ARTIFICIAL_V",
+      "to": "pump:signal:ARTIFICIAL:BINGX:TEST-USDT:PUMP:ARTIFICIAL:BINGX:TEST-USDT:1799999100000",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "pump:summary-record:ARTIFICIAL_V",
+      "to": "pump:card:ARTIFICIAL_V_CARD#receipt",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    },
+    {
+      "from": "EXTERNAL_AUDIT_OR_MODEL",
+      "to": "ARTIFICIAL_EXTERNAL_UNRESOLVED",
+      "kind": "UNRESOLVED_EXTERNAL_ORIGINAL",
+      "protected": true
+    },
+    {
+      "from": "OWNER_PROTECTED_ORIGINAL",
+      "to": "pump:card:ARTIFICIAL_OWNER_PROTECTED",
+      "kind": "STATE_OR_RECEIPT_REFERENCE",
+      "protected": true
+    }
+  ],
+  "reasons": [
+    "REFERENCE_CLOSURE_NOT_ESTABLISHED",
+    "EXTERNAL_REFERENCE_RESOLUTION_NOT_IMPLEMENTED",
+    "CURSOR_IS_NOT_GC_WATERMARK",
+    "OWNER_PROTECTED_ACCEPTANCE_ORIGINAL",
+    "UNSETTLED_OR_POSSIBLE_SEND",
+    "UNRESOLVED_POSSIBLE_SEND",
+    "PENDING_SUMMARY_ALLOCATION",
+    "OWNER_PROTECTED_ORIGINAL"
+  ],
+  "inventory_complete_for_global_cleanup": false,
+  "delete_allowed": false,
+  "approved_delete_ttl_ms": null,
+  "archive_reader_verified": false
+}

@@ -1,0 +1,1350 @@
+{
+  "schema": "REPORT2_FULL_COMPLETION_ACCOUNTING_V1",
+  "head": "59e8d8ebe7118005d3fd0ac8ee4a971f61efe6f1",
+  "cloud_run": "39261413199",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "run_id": "1792416935259-1792416944638",
+  "source": "schedule",
+  "started_ts": 1792416935259,
+  "recorded_ts": 1792417046700,
+  "canonical_status": "CLOSED",
+  "candidate_count": 2,
+  "reservation_id": "R2RUN:1792416935259:c22cfcfe6fa3d49f",
+  "reservation": {
+    "ok": true,
+    "status": "CLOSED_BURST",
+    "runs_per_day": 47,
+    "rows_read": 54000,
+    "rows_written": 840,
+    "daily_reserved_if_all_runs": {
+      "rows_read": 3499996,
+      "rows_written": 69983
+    },
+    "daily_limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    },
+    "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+    "nominal_rows_read": 74468,
+    "nominal_rows_written": 1489
+  },
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-19",
+      "run_count": 222,
+      "reserved_rows_read": 1435900,
+      "reserved_rows_written": 25592,
+      "measured_rows_read": 906219,
+      "measured_rows_written": 10183,
+      "unknown_ops": 0,
+      "unfinished_count": 0,
+      "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+      "raw_reserved_rows_read": 1435900,
+      "raw_reserved_rows_written": 25592,
+      "adaptive_effective_rows_read": 1435900,
+      "adaptive_effective_rows_written": 25592,
+      "unfinished_reservations_charged_by_own_ledger_caps": true,
+      "no_completed_reservation_refund": true
+    },
+    "next_reservation": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "projected_reserved": {
+      "rows_read": 1489900,
+      "rows_written": 26432
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "ledger_finalization": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "R2RUN:1792416935259:c22cfcfe6fa3d49f",
+    "source_run_id": "1792416935259-1792416944638",
+    "measured_rows_read": 39239,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 447,
+    "measured_requests_accounted": 631,
+    "unknown_ops": 0
+  },
+  "usage_before_finalization": {
+    "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+    "measured_rows_read": 39239,
+    "measured_rows_written": 446,
+    "measured_requests": 630,
+    "unknown_ops": 0,
+    "run_burst_cap": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "run_headroom": {
+      "rows_read": 14761,
+      "rows_written": 394
+    },
+    "runs_per_day": 47,
+    "maximum_reserved_daily_rows_read": 2538000,
+    "maximum_reserved_daily_rows_written": 39480,
+    "naive_projected_daily_rows_read": 1844233,
+    "naive_projected_daily_rows_written": 20962,
+    "safety_budget_daily_rows_read": 3500000,
+    "safety_budget_daily_rows_written": 70000,
+    "daily_admission_status": "CLOSED",
+    "top_targets": [
+      {
+        "target": "batch:liquidation_cluster_state",
+        "requests": 4,
+        "rows_read": 18692,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:opportunity_shadow_outcome",
+        "requests": 2,
+        "rows_read": 6574,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:liquidation_events",
+        "requests": 1,
+        "rows_read": 3065,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:v3_early_candidate_wave",
+        "requests": 7,
+        "rows_read": 2551,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:opportunity_shadow_event",
+        "requests": 2,
+        "rows_read": 2068,
+        "rows_written": 9,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:report2_market_snapshot_batch_v1",
+        "requests": 63,
+        "rows_read": 1644,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:report2_liq_source_allowance_shadow",
+        "requests": 20,
+        "rows_read": 959,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      {
+        "target": "first:sqlite_master",
+        "requests": 1,
+        "rows_read": 404,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:fast_move_watch_state",
+        "requests": 3,
+        "rows_read": 351,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      {
+        "target": "run:report2_command_v2",
+        "requests": 2,
+        "rows_read": 328,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:opportunity_shadow_event",
+        "requests": 2,
+        "rows_read": 252,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:report2_market_snapshot_batch_v1",
+        "requests": 5,
+        "rows_read": 242,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    ]
+  },
+  "usage_after_analytics_lease_release": {
+    "requests": 633,
+    "rows_read": 39242,
+    "rows_written": 448,
+    "unknown_ops": 0,
+    "targets": {
+      "batch:OTHER": {
+        "requests": 29,
+        "rows_read": 4,
+        "rows_written": 30,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 26,
+        "rows_read": 2,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "run:report2_runtime_lease_v1": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_runtime_lease_v1": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_command_v2": {
+        "requests": 2,
+        "rows_read": 328,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_command_v2": {
+        "requests": 1,
+        "rows_read": 163,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_scheduler_job_ownership_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_maintenance_cadence_shadow": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_maintenance_cadence_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 223,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 90,
+        "rows_read": 56,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 18,
+        "rows_read": 14,
+        "rows_written": 22,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_signal_outcomes": {
+        "requests": 1,
+        "rows_read": 179,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_predictive_health": {
+        "requests": 2,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_global_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_global_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 20,
+        "rows_read": 959,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "run:report2_candidate_task_v2": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_task_v2": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_market_snapshot_batch_v1": {
+        "requests": 5,
+        "rows_read": 242,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:scan_runs": {
+        "requests": 1,
+        "rows_read": 5,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:scan_runs": {
+        "requests": 4,
+        "rows_read": 184,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_early_candidate_wave": {
+        "requests": 7,
+        "rows_read": 2551,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "all:report2_market_snapshot_batch_v1": {
+        "requests": 63,
+        "rows_read": 1644,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_market_microstructure_1m": {
+        "requests": 1,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_early_candidate_wave": {
+        "requests": 6,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_early_feature_snapshot": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "batch:full_evidence_shadow_log": {
+        "requests": 3,
+        "rows_read": 2,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "first:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_recheck_task_shadow": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_watch_state": {
+        "requests": 3,
+        "rows_read": 351,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_recheck_queue": {
+        "requests": 1,
+        "rows_read": 7,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:fast_move_recheck_queue": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:fast_move_watch_state": {
+        "requests": 1,
+        "rows_read": 24,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "all:deep_check_scheduler_state": {
+        "requests": 1,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_monthly_usage": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_monthly_usage": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_source_cache": {
+        "requests": 4,
+        "rows_read": 24,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_health_observation": {
+        "requests": 28,
+        "rows_read": 159,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 25,
+        "rows_read": 22,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 55,
+        "rows_read": 104,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 30,
+        "rows_read": 15,
+        "rows_written": 15,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 15,
+        "rows_read": 15,
+        "rows_written": 30,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 15,
+        "rows_read": 15,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 16,
+        "rows_read": 44,
+        "rows_written": 64,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_health_observation": {
+        "requests": 12,
+        "rows_read": 0,
+        "rows_written": 36,
+        "unknown_ops": 0
+      },
+      "first:sqlite_master": {
+        "requests": 1,
+        "rows_read": 404,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_role_observation": {
+        "requests": 1,
+        "rows_read": 16,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "run:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:report2_liquidation_source_health": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_liquidation_source_health": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "run:report2_liquidation_role_observation": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "run:json_each": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_shadow_observation": {
+        "requests": 3,
+        "rows_read": 8,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_cluster_state": {
+        "requests": 4,
+        "rows_read": 18692,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_cross_exchange_risk_cache": {
+        "requests": 2,
+        "rows_read": 9,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_cross_exchange_catalog": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_cex_venue_cache": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_volume_profile_cache": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_outcome": {
+        "requests": 2,
+        "rows_read": 6574,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 252,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_outcome": {
+        "requests": 3,
+        "rows_read": 180,
+        "rows_written": 62,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_funnel": {
+        "requests": 3,
+        "rows_read": 4,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 2068,
+        "rows_written": 9,
+        "unknown_ops": 0
+      },
+      "batch:shadow_decision_log": {
+        "requests": 3,
+        "rows_read": 15,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:multi_wave_campaign_shadow": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:full_evidence_shadow_log": {
+        "requests": 4,
+        "rows_read": 16,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:OTHER": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "batch:deep_check_run_log": {
+        "requests": 2,
+        "rows_read": 7,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:report2_coinalyze_catalog": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_gate_contract_identity": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_cross_exchange_risk_cache": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:report2_liq_cex_venue_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:cron_runs": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:scan_runs": {
+        "requests": 1,
+        "rows_read": 156,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_events": {
+        "requests": 1,
+        "rows_read": 3065,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_realized_liquidation_aggregate": {
+        "requests": 8,
+        "rows_read": 8,
+        "rows_written": 24,
+        "unknown_ops": 0
+      },
+      "batch:v3_realized_liquidation_density_5m": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "first:final_decision_integration_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:final_decision_integration_shadow": {
+        "requests": 1,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_user_lifecycle_shadow": {
+        "requests": 1,
+        "rows_read": 28,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:canonical_publication_shadow": {
+        "requests": 1,
+        "rows_read": 67,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_pipeline_health_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_pipeline_health_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "all:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 77,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 2,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 1,
+        "rows_read": 67,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A2": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A3": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A4": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "existing_run_budget_context": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792416935259-1792416944638",
+    "recorded_ts": 1792417046699,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 22,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 106,
+      "reported_remaining_slots": 58,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 633,
+        "rows_read": 39242,
+        "rows_written": 448,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 14758,
+        "rows_written": 392
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-19",
+      "reported_unknown_ops": 0,
+      "reserved_rows_read": 1435900,
+      "reserved_rows_written": 25592,
+      "reconciliation": null
+    },
+    "native_liquidation_service": {
+      "scope": "EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB",
+      "reserved_http": 4,
+      "gross_reserved_http": null,
+      "claimed_http": null,
+      "actual_http": 4,
+      "max_http_per_run": 4
+    },
+    "technical_provider_receipt_observations": {
+      "schema": "EXISTING_PROVIDER_LEDGER_OBSERVATIONS_V1",
+      "run_id": "1792416935259-1792416944638",
+      "basis": "PROJECT_LOCAL_SOURCE_LEDGER_NOT_PROVIDER_ACCOUNT_BALANCE",
+      "status": "CAPTURED_EARLIER_QUERY_CUTS",
+      "events": [
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "EXACT_CATEGORY_DIRECTORY",
+          "phase": "DAY_PREFLIGHT_ROW",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:97a3d42172cce4417a4187152024b8f9272438780b8a8efc048f5677ff1cda50",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792416962663,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416963538,
+          "provider": null,
+          "row_presence": "RETURNED",
+          "reported_used_units": 59,
+          "configured_cap": 224,
+          "reported_own_reserved_units": null,
+          "minute_bucket": null,
+          "returned_allowed": null,
+          "returned_status": null,
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "EXACT_CATEGORY_DIRECTORY",
+          "phase": "MINUTE_PREFLIGHT_ROW",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:97a3d42172cce4417a4187152024b8f9272438780b8a8efc048f5677ff1cda50",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792416962663,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416963672,
+          "provider": "COINGECKO",
+          "row_presence": "RETURNED",
+          "reported_used_units": 0,
+          "configured_cap": 9,
+          "reported_own_reserved_units": null,
+          "minute_bucket": null,
+          "returned_allowed": null,
+          "returned_status": null,
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "EXACT_CATEGORY_DIRECTORY",
+          "phase": "DAY_RESERVATION_REPLY",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:97a3d42172cce4417a4187152024b8f9272438780b8a8efc048f5677ff1cda50",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792416962663,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416963947,
+          "provider": null,
+          "row_presence": null,
+          "reported_used_units": null,
+          "configured_cap": 224,
+          "reported_own_reserved_units": 1,
+          "minute_bucket": null,
+          "returned_allowed": true,
+          "returned_status": "RESERVED",
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "EXACT_CATEGORY_DIRECTORY",
+          "phase": "MINUTE_RESERVATION_REPLY",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:97a3d42172cce4417a4187152024b8f9272438780b8a8efc048f5677ff1cda50",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792416962663,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416964331,
+          "provider": "COINGECKO",
+          "row_presence": null,
+          "reported_used_units": 1,
+          "configured_cap": 9,
+          "reported_own_reserved_units": 1,
+          "minute_bucket": 1792416960000,
+          "returned_allowed": true,
+          "returned_status": "RESERVED_OR_IDENTICAL",
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "CATEGORY_QUOTES",
+          "phase": "DAY_PREFLIGHT_ROW",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:f1b13f0adc4ba1b3aa82811b80c49b067b572cb5b322c8ae8795f48870f33861",
+          "attempt_sequence": 1,
+          "query_window_end_ts": 1792416962663,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416964873,
+          "provider": null,
+          "row_presence": "RETURNED",
+          "reported_used_units": 60,
+          "configured_cap": 224,
+          "reported_own_reserved_units": null,
+          "minute_bucket": null,
+          "returned_allowed": null,
+          "returned_status": null,
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "CATEGORY_QUOTES",
+          "phase": "MINUTE_PREFLIGHT_ROW",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:f1b13f0adc4ba1b3aa82811b80c49b067b572cb5b322c8ae8795f48870f33861",
+          "attempt_sequence": 1,
+          "query_window_end_ts": 1792416962663,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416965003,
+          "provider": "COINGECKO",
+          "row_presence": "RETURNED",
+          "reported_used_units": 1,
+          "configured_cap": 9,
+          "reported_own_reserved_units": null,
+          "minute_bucket": null,
+          "returned_allowed": null,
+          "returned_status": null,
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "CATEGORY_QUOTES",
+          "phase": "DAY_RESERVATION_REPLY",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:f1b13f0adc4ba1b3aa82811b80c49b067b572cb5b322c8ae8795f48870f33861",
+          "attempt_sequence": 1,
+          "query_window_end_ts": 1792416962663,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416965268,
+          "provider": null,
+          "row_presence": null,
+          "reported_used_units": null,
+          "configured_cap": 224,
+          "reported_own_reserved_units": 1,
+          "minute_bucket": null,
+          "returned_allowed": true,
+          "returned_status": "RESERVED",
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "CATEGORY_QUOTES",
+          "phase": "MINUTE_RESERVATION_REPLY",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:f1b13f0adc4ba1b3aa82811b80c49b067b572cb5b322c8ae8795f48870f33861",
+          "attempt_sequence": 1,
+          "query_window_end_ts": 1792416962663,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416965654,
+          "provider": "COINGECKO",
+          "row_presence": null,
+          "reported_used_units": 2,
+          "configured_cap": 9,
+          "reported_own_reserved_units": 1,
+          "minute_bucket": 1792416960000,
+          "returned_allowed": true,
+          "returned_status": "RESERVED_OR_IDENTICAL",
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINPAPRIKA_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "FREE_AGGREGATED_QUOTES",
+          "phase": "DAY_PREFLIGHT_ROW",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:bdde0d3e41a928a1ea758826e56afedf7388a4f4af7664ed26ce9ff171fb62f0",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792416981059,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416981292,
+          "provider": null,
+          "row_presence": "RETURNED",
+          "reported_used_units": 36,
+          "configured_cap": 512,
+          "reported_own_reserved_units": null,
+          "minute_bucket": null,
+          "returned_allowed": null,
+          "returned_status": null,
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINPAPRIKA_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "ZEC-USDT",
+          "route": "FREE_AGGREGATED_QUOTES",
+          "phase": "DAY_RESERVATION_REPLY",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:bdde0d3e41a928a1ea758826e56afedf7388a4f4af7664ed26ce9ff171fb62f0",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792416981059,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792416981577,
+          "provider": null,
+          "row_presence": null,
+          "reported_used_units": null,
+          "configured_cap": 512,
+          "reported_own_reserved_units": 1,
+          "minute_bucket": null,
+          "returned_allowed": true,
+          "returned_status": "RESERVED",
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "BTW-USDT",
+          "route": "CATEGORY_QUOTES",
+          "phase": "DAY_PREFLIGHT_ROW",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:200bae11d9b8e7d8df54c5bacb4f984abe2aeda32a0fe11b47b3afde13445255",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792417010883,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792417025224,
+          "provider": null,
+          "row_presence": "RETURNED",
+          "reported_used_units": 61,
+          "configured_cap": 224,
+          "reported_own_reserved_units": null,
+          "minute_bucket": null,
+          "returned_allowed": null,
+          "returned_status": null,
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "BTW-USDT",
+          "route": "CATEGORY_QUOTES",
+          "phase": "MINUTE_PREFLIGHT_ROW",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:200bae11d9b8e7d8df54c5bacb4f984abe2aeda32a0fe11b47b3afde13445255",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792417010883,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792417025340,
+          "provider": "COINGECKO",
+          "row_presence": "RETURNED",
+          "reported_used_units": 2,
+          "configured_cap": 9,
+          "reported_own_reserved_units": null,
+          "minute_bucket": null,
+          "returned_allowed": null,
+          "returned_status": null,
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "BTW-USDT",
+          "route": "CATEGORY_QUOTES",
+          "phase": "DAY_RESERVATION_REPLY",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:200bae11d9b8e7d8df54c5bacb4f984abe2aeda32a0fe11b47b3afde13445255",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792417010883,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792417025637,
+          "provider": null,
+          "row_presence": null,
+          "reported_used_units": null,
+          "configured_cap": 224,
+          "reported_own_reserved_units": 1,
+          "minute_bucket": null,
+          "returned_allowed": true,
+          "returned_status": "RESERVED",
+          "native_usage_guard_passed": true
+        },
+        {
+          "source": "COINGECKO_SECTOR",
+          "run_id": "1792416935259-1792416944638",
+          "contract": "BTW-USDT",
+          "route": "CATEGORY_QUOTES",
+          "phase": "MINUTE_RESERVATION_REPLY",
+          "reference_key": "REFERENCE:provider-reference-cache-v1-20261004:200bae11d9b8e7d8df54c5bacb4f984abe2aeda32a0fe11b47b3afde13445255",
+          "attempt_sequence": 0,
+          "query_window_end_ts": 1792417010883,
+          "day_utc": "2026-10-19",
+          "captured_ts": 1792417026027,
+          "provider": "COINGECKO",
+          "row_presence": null,
+          "reported_used_units": 3,
+          "configured_cap": 9,
+          "reported_own_reserved_units": 1,
+          "minute_bucket": 1792416960000,
+          "returned_allowed": true,
+          "returned_status": "RESERVED_OR_IDENTICAL",
+          "native_usage_guard_passed": true
+        }
+      ],
+      "invalid_observations": 0,
+      "overflow_observations": 0,
+      "foreign_run_omitted": 0,
+      "all_run_observations_complete": false,
+      "query_cuts_are_distinct": true,
+      "reservation_replies_are_helper_returns_not_raw_SQL_body": true,
+      "provider_account_balances": null,
+      "month_headroom": null,
+      "manual_held_reserve": null,
+      "native_unknown_ops_at_individual_query": null,
+      "future_work_admitted": false,
+      "whole_day_closed": false,
+      "serialized_copy_is_not_a_proof_token": true,
+      "additional_SQL": 0,
+      "additional_source_HTTP": 0
+    },
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "analytics_lease": {
+    "finished": true,
+    "status": "RELEASED"
+  },
+  "statistics": {
+    "maintenance": {
+      "schema": "LOW_PRIORITY_MAINTENANCE_CADENCE_RECEIPT_V1",
+      "source": "schedule",
+      "unified_enabled": true,
+      "scheduled_minute_utc": 35,
+      "low_priority_cadence_due": false,
+      "claim": {
+        "status": "NOT_DUE",
+        "claimed": false,
+        "due": false,
+        "job_key": null,
+        "interval_ms": null,
+        "last_success_ts": 1792414643686,
+        "next_due_ts": 1792418243686,
+        "lease_owner": null,
+        "lease_started_ts": null,
+        "lease_expires_ts": null
+      },
+      "completion": null,
+      "projection_SQL_added": 0,
+      "projection_HTTP_added": 0
+    },
+    "block_weights": {
+      "status": "DEFERRED_LOW_PRIORITY_CADENCE",
+      "sourceHTTP": 0
+    },
+    "discovery_recall": {
+      "status": "DEFERRED_LOW_PRIORITY_CADENCE",
+      "scheduled_minute_utc": 35,
+      "shadow_only": true,
+      "auto_send": false
+    },
+    "prospective_gate": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "current_usage": {
+        "rows_read": 39239,
+        "rows_written": 446,
+        "requests": 630,
+        "unknown_ops": 0
+      },
+      "extra": {
+        "rows_read": 3000,
+        "rows_written": 9
+      },
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "remaining": {
+        "rows_read": 14761,
+        "rows_written": 394
+      }
+    },
+    "prospective": {
+      "version": "r8-20-prospective-v8-fail-closed-readiness-integrity-20261010",
+      "mode": "SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",
+      "status": "DEFERRED_LOW_PRIORITY_CADENCE",
+      "scheduled_minute_utc": 35,
+      "calibration_only": true,
+      "live_probability": null,
+      "validated_signal": false,
+      "trading_execution": false
+    }
+  },
+  "delivery": {
+    "version": "post-v7-bound-telegram-delivery-v5-finalize-invisible-removal-20260928",
+    "mode": "CANONICAL_BOUND_DELIVERY",
+    "network_send": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "original_terminal": {
+      "status": "NO_ELIGIBLE_ORIGINAL_TERMINAL",
+      "queued": false
+    },
+    "reconciliation": {
+      "status": "CLOSED",
+      "processed": 0,
+      "capacity_deferred": 0,
+      "source_run_id": "1792416935259-1792416944638",
+      "executor_run_id": "1792416935259-1792416944638",
+      "results": []
+    },
+    "lifecycle": [
+      {
+        "key": "ZEC-USDT|LONG|EDW:ZEC-USDT:1791710630650:G8|OBSERVE|v3-telegram-shadow-r6",
+        "status": "FAILED_RETRYABLE",
+        "reason": "NOT_CLOSED",
+        "sent": false,
+        "bound_refusal": null
+      }
+    ],
+    "health": [],
+    "sent": 0,
+    "usage_delta": {
+      "rows_read": 93,
+      "rows_written": 2,
+      "requests": 6,
+      "unknown_ops": 0
+    },
+    "secrets_logged": false
+  },
+  "telegram_network_enabled": true,
+  "scope": "FULL_ANALYTICS_AFTER_LEDGER_FINALIZATION_AND_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+  "statement_journals_recorded": false,
+  "whole_day_closed": false,
+  "reservations_refunded": false,
+  "additional_SQL": 0,
+  "additional_source_HTTP": 0,
+  "contains_SQL_params_or_results": false,
+  "secret_values_stored": false
+}

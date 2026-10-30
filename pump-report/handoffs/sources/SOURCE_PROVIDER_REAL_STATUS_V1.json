@@ -1,0 +1,226 @@
+{
+  "schema": "PUMP_SOURCE_PROVIDER_REAL_STATUS_V1",
+  "as_of": "2026-10-25T15:45:19.718Z",
+  "six_TZ_blocks": [
+    {
+      "block": "F1_PRICE_VOLUME_MOVEMENT",
+      "source": "BINGX",
+      "methods": [
+        "getOverview",
+        "getCore",
+        "getDayGrowth"
+      ],
+      "status": "PARTIAL",
+      "units": "LAST USDT/base; OHLC USDT; candle native quantity UNKNOWN absolute unit, same-source ratio only; day price-only 1440 grid",
+      "clocks": "native event/received/expiry retained;30s price/90s candle, exact saved profile; historical BTC capture now stale",
+      "coverage": "Bulk route is not per-instrument qualification; only BTC actual core/day, owner excluded"
+    },
+    {
+      "block": "F2_EXECUTED_BUYS_SELLS",
+      "source": "BINGX proposed",
+      "methods": [
+        "getOptional -> NOT_CHECKED"
+      ],
+      "status": "UNIMPLEMENTED",
+      "units": null,
+      "clocks": null,
+      "coverage": "0 qualified connected instruments; candle/book cannot prove trade direction or absorption"
+    },
+    {
+      "block": "F3_LIQUIDITY_EXECUTION",
+      "source": "BINGX",
+      "methods": [
+        "getCore orderbook"
+      ],
+      "status": "PARTIAL",
+      "units": "USDT price + independently documented bidsCoin/asksCoin base amount",
+      "clocks": "native T/received/expiry;15s book in saved profile",
+      "coverage": "One actual BTC bounded1000bid+1000ask, stale; not full book census/fill guarantee or persistence"
+    },
+    {
+      "block": "F4_FUTURES_CONTEXT",
+      "source": "BINGX proposed",
+      "methods": [
+        "parseOpenInterest",
+        "parseFunding",
+        "getOptional"
+      ],
+      "status": "BLOCKED",
+      "units": "OI unknown; funding actual period and source event clock unqualified",
+      "clocks": "updateTime explicitly not funding rate event clock",
+      "coverage": "0 connected qualified OI/funding entries in13 registry; conditional parsers are code only"
+    },
+    {
+      "block": "F5_RELATIVE_MARKET_STRENGTH",
+      "source": "benchmarks and Bybit/Bitget proposed",
+      "methods": [
+        "getOptional market_context NOT_CHECKED"
+      ],
+      "status": "UNIMPLEMENTED",
+      "units": null,
+      "clocks": null,
+      "coverage": "0 qualified benchmark/cross-venue adapters; raw bulk coins not independent benchmark fact"
+    },
+    {
+      "block": "F6_POTENTIAL_LIQUIDATION_MAP",
+      "source": "Swole model candidate; Orderly/HL observed positions candidates",
+      "methods": [
+        "getLiquidations",
+        "normalizeSwoleMap"
+      ],
+      "status": "BLOCKED",
+      "units": "Model relative intensity only after scale proof; no absolute USD qualification",
+      "clocks": "as_of numericms-compatible, original283191ms age at capture; now stale, vendor unit independently unknown",
+      "coverage": "One actual BTC4bins unqualified,0usable; all other coins notchecked, no-map remains optional"
+    }
+  ],
+  "providers": [
+    {
+      "provider": "BINGX_WEB_METADATA",
+      "runtime": "HTTP200_BUSINESS100003_NO_ROWS",
+      "access": "Exactly1ROOTGET spent, error time message; no successful metadata dataset",
+      "free_paid": "Not established: HTTP reachability is not anonymous successful data/free quota",
+      "gaps": [
+        "correct request clock/header contract",
+        "positive type enum",
+        "native contract bridge"
+      ],
+      "proof": [
+        "METADATA_NATIVE_NEGATIVE",
+        "ONE_GET"
+      ]
+    },
+    {
+      "provider": "BINGX",
+      "runtime": "PARTIAL_BOUNDED_ACTUAL_BTC_CORE_DAY",
+      "access": "Public bounded original runtime checks successful for some endpoints;2initial charged UNKNOWN remain",
+      "free_paid": "No purchase; exact external free quota/weights not established by successful call",
+      "gaps": [
+        "trade adapter",
+        "OI unit",
+        "funding event clock/period",
+        "whole positive crypto universe",
+        "native current eligible coin"
+      ],
+      "proof": [
+        "NATIVE_RELATIVE",
+        "DAY_NATIVE",
+        "MATRIX"
+      ]
+    },
+    {
+      "provider": "SWOLECHARTS",
+      "runtime": "ACTUAL_ONE_REPLY_UNQUALIFIED",
+      "access": "One ROOTGETHTTP200; four bins; no qualified usable map",
+      "free_paid": "Docs describe public/free/no SLA; exact endpoint quota not independently proven; runtime one reply is not universal quota",
+      "gaps": [
+        "selector identity",
+        "native quote/venue/market",
+        "scale_id",
+        "fresh independent basis",
+        "provider protected six-manual reserve"
+      ],
+      "proof": [
+        "MAP_NATIVE",
+        "DOCS"
+      ]
+    },
+    {
+      "provider": "ORDERLY",
+      "runtime": "NOT_CONNECTED_POST_BODY_CONTRACT",
+      "access": "Documentation only, no source adapter or native request",
+      "free_paid": "Not established from working app",
+      "gaps": [
+        "POST broker contract",
+        "exact route/body",
+        "position units",
+        "pagination",
+        "asset/basis",
+        "coverage/costs"
+      ],
+      "proof": [
+        "DOCS"
+      ]
+    },
+    {
+      "provider": "HYPERLIQUID",
+      "runtime": "NOT_CONNECTED_POST_BODY_CONTRACT",
+      "access": "Documentation only, no current position adapter or account sample",
+      "free_paid": "Not established from working app",
+      "gaps": [
+        "POST broker contract",
+        "account selection/sample limits",
+        "position unit/clocks",
+        "same asset/venue basis",
+        "costs"
+      ],
+      "proof": [
+        "DOCS"
+      ]
+    },
+    {
+      "provider": "BYBIT",
+      "runtime": "NOT_CONNECTED_CONTEXT",
+      "access": "No current context adapter",
+      "free_paid": "Not established from working app",
+      "gaps": [
+        "useful fact",
+        "qualified route/policy/asset",
+        "units/time/cost"
+      ],
+      "proof": [
+        "DOCS"
+      ]
+    },
+    {
+      "provider": "BITGET",
+      "runtime": "NOT_CONNECTED_CONTEXT",
+      "access": "No current context adapter",
+      "free_paid": "Not established from working app",
+      "gaps": [
+        "useful fact",
+        "qualified route/policy/asset",
+        "units/time/cost"
+      ],
+      "proof": [
+        "DOCS"
+      ]
+    },
+    {
+      "provider": "COINGECKO_DEMO",
+      "runtime": "NOT_CONNECTED_SAVED_CANONICAL_DICTIONARY",
+      "access": "No current native-contract bridge; optional identity source only",
+      "free_paid": "Demo eligibility/key/quota/current app access not established here",
+      "gaps": [
+        "canonical identity/contract bridge",
+        "cached dictionary",
+        "actual quota/cost"
+      ],
+      "proof": [
+        "DOCS",
+        "MATRIX"
+      ]
+    },
+    {
+      "provider": "EXISTING_ADDITIONAL_CONNECTIONS",
+      "runtime": "NOT_AUTOMATIC_RUNTIME_ADMISSION",
+      "access": "Installed connector/capability is not connected source fact",
+      "free_paid": "Unknown until exact free runtime access/expiry/utility measured",
+      "gaps": [
+        "missing useful fact",
+        "primary-provider dedup",
+        "exact runtime access",
+        "source clocks/units",
+        "cost/reserves"
+      ],
+      "proof": [
+        "DOCS"
+      ]
+    }
+  ],
+  "bulk_route_availability_is_per_instrument_coverage": false,
+  "full_crypto_N": null,
+  "no_paid_or_interactive_only_provider_admitted": true,
+  "additional_IO_by_SOURCE": 0,
+  "latest_ROOT_metadata_attempts": 1
+}

@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import fs from 'node:fs';import {pathToFileURL} from 'node:url';
+import {activeSourceSamples,sampleParams} from './n10-full-cache-inputs.mjs';
 const moduleURL=n=>process.env.REPORT2_TEST_RUNTIME?pathToFileURL(`${process.env.REPORT2_TEST_RUNTIME}/src/${n}`):new URL(`../files/src/${n}`,import.meta.url);
 const {collectN05VenueRoutes}=await import(moduleURL('external-n05-flow-collector.mjs'));
 const {collectEvidenceRouteBlock}=await import(moduleURL('candidate-evidence-v2-runtime.mjs'));
@@ -70,10 +71,9 @@ test('common dispatcher stops cross-block transport after unknown native usage a
  assert.equal(r.results.CHAIN_EVENTS.evidence[0],fact);assert.equal(late,0);assert.equal(r.results.SECTOR_COINGECKO.status,'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE');assert.equal(r.results.BLUESKY.status,'BLOCK_PAUSED_BY_OWNER');assert.equal(db.unknown,1);assert.equal(r.network_calls,0);
 });
 test('N10 real existing candle reader and report consumer retain original same-window fact after later N05 adapter throws',async()=>{
- const sample=JSON.parse(fs.readFileSync(new URL('./fixtures/n10-reused-original-15m-samples.json',import.meta.url))).find(r=>r.venue==='BINANCE'),h=sample.htx_window,c=sample.component,first=sample.bars[0].split('|').map(Number),start=h.window_end_ts-240*60000;
- const bar=(ts,o,hi,lo,cl,activity,end)=>[ts,String(o),String(hi),String(lo),String(cl),String(activity),end,'0',activity],raw=Array.from({length:225},(_,i)=>bar(start+i*60000,first[1],first[1],first[1],first[1],0,start+i*60000+59999));raw.push(...sample.bars.map(s=>bar(...s.split('|').map(Number))));
+ const full=activeSourceSamples.find(s=>s.venue==='BINANCE'),x=sampleParams(full),sample={...full,now:x.now,cache_observed_ts:x.cache.observed_ts,cache_expires_ts:x.cache.expires_ts},h=x.htx_window,c=x.component;
  const result=await collectN05VenueRoutes(params({contract:sample.contract}),[['BINANCE',async()=>({status:'CLOSED',components:[c],network_calls:0})],['BITGET',async()=>{throw Error('late failure');}]],async()=>({network_calls:0,status:'NO_BASELINE'}));let reads=0;
- const db={prepare(){return{bind(){return{first:async()=>{reads++;return{observed_ts:sample.cache_observed_ts,expires_ts:sample.cache_expires_ts,payload_json:JSON.stringify({observed_ts:sample.cache_observed_ts,candles:raw})};}};}};}};
+ const db={prepare(){return{bind(){return{first:async()=>{reads++;return{observed_ts:sample.cache_observed_ts,expires_ts:sample.cache_expires_ts,payload_json:JSON.stringify(x.cache.payload)};}};}};}};
  const out=await loadN10ReusedVenuePaths({db,contract:sample.contract,flow_result:result,primary_receipt:{check_completed:true,receipts:[{actual_price_windows:[{...h,label:'15m'}]}]},now:sample.now});
  assert.equal(out.evidence.length,1);assert.equal(reads,1);assert.equal(out.provider_http,0);assert.equal(verifyN10ReusedVenuePathEvidence(out.evidence[0],{now:sample.now}),true);assert.equal(out.evidence[0].source_ts,h.window_end_ts);assert.equal(out.evidence[0].source_cache_observed_ts,sample.cache_observed_ts);assert.equal(consumeBlockResultContext({contract:sample.contract,evidence:out.evidence,now:sample.now}).facts.length,1);assert.equal(out.evidence[0].coverage_fraction,0);assert.equal(out.evidence[0].entry_authorized_by_context,false);
 });

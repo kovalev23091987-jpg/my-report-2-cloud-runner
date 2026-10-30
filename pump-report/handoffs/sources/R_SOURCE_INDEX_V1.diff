@@ -1,0 +1,62 @@
+--- a/pump-report/sources/index.mjs
++++ b/pump-report/sources/index.mjs
+@@ -4,10 +4,12 @@
+   parsePrice, parseCandles, parseOrderbook, parseOpenInterest, parseFunding} from './bingx.mjs';
+ import {verifiedSwoleRoute, normalizeSwoleMap} from './liquidations.mjs';
+ import {createDayGrowthLoader} from './day-growth.mjs';
++import {createRelativeContextLoader} from './relative-context.mjs';
+ 
+ export const SOURCE_VERSION = 'pump-report-sources-v1';
+ export const SOURCE_HTTP_PLAN = Object.freeze({catalog: 1, overview_bulk: 1, core: 3,
+   core_price_fallback_max: 1, optional_open_interest: 1, optional_funding: 1,
++  optional_relative_context_benchmarks_max: 2, optional_total_max: 2,
+   selected_delivery_refresh_max: 2, outcome_history_per_window_max: 1, day_growth_per_window_max: 1,
+   liquidation_swole_per_candidate: 1, automatic_retries: 0, SQL_owned_by_sources: 0,
+   actual_provider_and_SQL_cost: null, six_manual_checks_reserved: false});
+@@ -296,17 +298,33 @@
+     } catch (error) { return finish(failed(entry, 'candles', error), {purpose: 'HISTORICAL_OUTCOME', complete: false,
+       start_ts, end_ts, reason: safeCode(error), evidence_ref: response?.receipt_id ?? null}); }
+   }
+-  async function getOptional({instrument} = {}) {
++  let relativeContextLoader = null;
++  async function getOptional({instrument, facts: existing_facts = {}} = {}) {
+     const entry = resolve(instrument), facts = {trades: absent(entry, 'trades', 'BINGX_TRADE_ROUTE_NOT_QUALIFIED', 'NOT_CHECKED'),
+       market_context: absent(entry, 'market_context', 'OPTIONAL_CONTEXT_ROUTE_NOT_CONFIGURED', 'NOT_CHECKED')};
++    const limit = Number.isSafeInteger(profile.optional_http_upper_bound) && profile.optional_http_upper_bound >= 0
++      ? Math.min(2, profile.optional_http_upper_bound) : 0;
++    relativeContextLoader ??= createRelativeContextLoader({broker, clock, profile,
++      resolveBenchmark: role => [...registry.values()].find(item => item.instrument.base === role
++        && item.instrument.native_symbol === role + '-USDT')});
++    const context = await relativeContextLoader.getRelativeContext({entry, candidate_facts: existing_facts, max_requests: limit});
++    facts.market_context = context.fact;
++    let used = context.requests_reserved;
+     for (const [kind, parse] of [['open_interest', parseOpenInterest], ['funding', parseFunding]]) {
+       const qualification = entry.qualifications[kind];
+       const usableQualification = proof(qualification) && (kind === 'open_interest'
+         ? ['CONTRACTS', 'BASE_ASSET', 'USDT'].includes(qualification.unit)
+         : text(qualification.rate_clock_field) && qualification.rate_clock_field !== 'updateTime');
++      if (used >= limit) {
++        facts[kind] = absent(entry, kind, 'NOT_CHECKED_BUDGET', 'NOT_CHECKED');
++        facts[kind].coverage = {checked: false, budget_status: 'NOT_CHECKED_BUDGET',
++          qualification_status: usableQualification ? 'QUALIFIED' : 'UNQUALIFIED'};
++        continue;
++      }
+       if (!usableQualification) { facts[kind] = absent(entry, kind,
+         kind === 'open_interest' ? 'OPEN_INTEREST_UNIT_UNQUALIFIED' : 'FUNDING_RATE_SOURCE_CLOCK_UNQUALIFIED', 'NOT_CHECKED'); continue; }
+       try {
++        used++;
+         const response = await request(kind, {instrument, ttl_ms: profile.freshness_ms[kind]});
+         const parsed = decode(response, () => parse(response.data, instrument, entry.qualifications[kind]));
+         facts[kind] = fact(entry, kind, parsed.value, kind === 'funding' ? 'RATE_FRACTION_PER_ACTUAL_PERIOD' : parsed.unit,
+@@ -316,7 +334,10 @@
+       } catch (error) { facts[kind] = failed(entry, kind, error); }
+     }
+     const coverage = Object.fromEntries(Object.entries(facts).map(([kind, value]) => [kind, {status: value.status, reason: value.reason}]));
+-    note(instrument, 'optional', coverage); return {facts, coverage};
++    const http_plan = {upper_bound: limit, broker_calls_scheduled: used,
++      benchmark_calls_scheduled: context.requests_reserved, remaining: limit - used,
++      actual_cost_authority: 'ROOT_BROKER', candidate_redownloaded_for_context: false};
++    note(instrument, 'optional', {...coverage, http_plan}); return {facts, coverage, http_plan};
+   }
+   async function getLiquidations({instrument, reference_price, deadline_ts} = {}) {
+     const entry = resolve(instrument), at = now(), deadline = Math.min(timestamp(deadline_ts) ?? at + profile.liquidation_deadline_ms, at + profile.liquidation_deadline_ms);

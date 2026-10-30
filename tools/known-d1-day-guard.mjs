@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {isDeepStrictEqual} from 'node:util';
 import {pathToFileURL} from 'node:url';
+import {loadVerifiedNativeDayReconciliation} from '../runner/verified-native-day-reconciliation.mjs';
 
 export function evaluateKnownD1DayGuard({proof,retainedAudit,retainedSource,archive_digest,now_ts,generation}={}){
  const required=reason=>({blocked:false,status:'NATIVE_ADMISSION_REQUIRED',reason,sourceHTTP:0,D1:0,Telegram:0});
@@ -24,16 +25,31 @@ export function buildKnownDayRefusalOutput({guard,head,run_id,generation,now_ts,
  return {schema:'my-report-2-canonical-run-output-v1',generation,head,source,run_id:String(run_id),status:'NOT_CLOSED',reason,candidates:[],pre_analysis_failure:{schema:'PRE_ANALYSIS_FAILURE_RECEIPT_V1',stage:'RETAINED_D1_UNKNOWN_COST_DAY_GUARD',status:guard.status,reason,head,source_run_id:String(run_id),task_id:null,trigger_only:false,started_ts:now_ts,failed_ts:now_ts,market_conditions_evaluated:false,full_analysis_completed:false,entry_authorized:false,task_writes:0,source_clock_refreshed:false,d1_attempt_usage:{attempted_statements:0,measured_rows_read_subtotal:0,measured_rows_written_subtotal:0,unknown_operations:0,row_totals_closed:true,total_rows_read:0,total_rows_written:0},daily_usage_scope:'RETAINED_ORIGINAL_NATIVE_DAILY_AGGREGATE;NO_CURRENT_NATIVE_READ',native_daily_aggregate:guard.native_daily_aggregate,retained_refusal_source:guard.original_refusal,native_admission_rechecked:false,next_day_requires_native_measured_admission:true},generated_at:new Date(now_ts).toISOString(),secrets_included:false,alternative_manual_recalculation:false};
 }
 
+// Prefer the latest retained independent audit. An expired, malformed or
+// mismatched pointer never carries a previous UTC day's refusal forward.
+// Original October9 evidence remains readable for its own historical day.
+export function loadKnownD1DayGuard({root,now_ts,generation}={}){
+ const base=path.resolve(root||'.');let guard={blocked:false,status:'NATIVE_ADMISSION_REQUIRED',reason:'NO_VERIFIED_LOCAL_REFUSAL',sourceHTTP:0,D1:0,Telegram:0};
+ for(const pointer of ['checkpoints/LATEST_VERIFIED_UNKNOWN_D1_DAY_REFUSAL.json','checkpoints/ACTUAL_AUTOMATIC_PRODUCTION_ARTIFACT_AUDIT_20261009.json']){
+  try{
+   const proof=JSON.parse(fs.readFileSync(path.join(base,pointer))),p=path.resolve(base,proof.retained);
+   if(!p.startsWith(path.join(base,'checkpoints')+path.sep))throw Error('EXACT_RETAINED_CHECKPOINT_REQUIRED');
+   const b=fs.readFileSync(p);if(b.length>4*1024*1024)throw Error('BOUNDED_RETAINED_AUDIT_REQUIRED');
+   const read=n=>JSON.parse(execFileSync('unzip',['-p',p,n],{maxBuffer:1024*1024}).toString());
+   guard=evaluateKnownD1DayGuard({proof,retainedAudit:read('automatic-delivery-audit.json'),retainedSource:read('source-artifact.json'),archive_digest:'sha256:'+createHash('sha256').update(b).digest('hex'),now_ts,generation});
+   if(guard.blocked){
+    const reconciliation=loadVerifiedNativeDayReconciliation({root:base,now_ts,generation});
+    if(reconciliation&&guard.day_utc===reconciliation.day_utc&&guard.native_daily_aggregate?.unknown_operations===reconciliation.historical_unknown_operations)return{blocked:false,status:'NATIVE_ADMISSION_REQUIRED_AFTER_VERIFIED_AGGREGATE_RECONCILIATION',reason:'FRESH_NATIVE_LEDGER_WITNESS_STILL_REQUIRED',proof_pointer:pointer,reconciliation,historical_unknown_operations_retained:guard.native_daily_aggregate.unknown_operations,original_refusal:guard.original_refusal,sourceHTTP:0,D1:0,Telegram:0};
+    return{...guard,proof_pointer:pointer};
+   }
+  }catch{}
+ }
+ return guard;
+}
+
 if(import.meta.url===pathToFileURL(process.argv[1]||'').href){
  const root=path.resolve(process.argv[2]||'.'),now_ts=Date.now(),generation=process.env.REPORT2_CURRENT_GENERATION;
- let guard={blocked:false,status:'NATIVE_ADMISSION_REQUIRED',reason:'NO_VERIFIED_LOCAL_REFUSAL',sourceHTTP:0,D1:0,Telegram:0};
- try{
-  const proof=JSON.parse(fs.readFileSync(path.join(root,'checkpoints/ACTUAL_AUTOMATIC_PRODUCTION_ARTIFACT_AUDIT_20261009.json'))),p=path.resolve(root,proof.retained);
-  if(!p.startsWith(path.join(root,'checkpoints')+path.sep))throw Error('EXACT_RETAINED_CHECKPOINT_REQUIRED');
-  const b=fs.readFileSync(p);if(b.length>4*1024*1024)throw Error('BOUNDED_RETAINED_AUDIT_REQUIRED');
-  const read=n=>JSON.parse(execFileSync('unzip',['-p',p,n],{maxBuffer:1024*1024}).toString());
-  guard=evaluateKnownD1DayGuard({proof,retainedAudit:read('automatic-delivery-audit.json'),retainedSource:read('source-artifact.json'),archive_digest:'sha256:'+createHash('sha256').update(b).digest('hex'),now_ts,generation});
- }catch{}
+ let guard=loadKnownD1DayGuard({root,now_ts,generation});
  if(!guard.blocked){const recent=loadRetainedWriteFailureGuard({root,now_ts,generation});if(recent.blocked)guard=recent;}
  if(guard.blocked){fs.mkdirSync(path.join(root,'runtime'),{recursive:true});fs.writeFileSync(path.join(root,'runtime/report2-run-result.json'),JSON.stringify((guard.kind==='RETAINED_NATIVE_WRITE_FAILURE'?buildRetainedWriteFailureOutput:buildKnownDayRefusalOutput)({guard,head:process.env.GITHUB_SHA,run_id:process.env.GITHUB_RUN_ID,generation,now_ts}),null,2)+'\n');}
  if(process.env.GITHUB_OUTPUT)fs.appendFileSync(process.env.GITHUB_OUTPUT,`blocked=${guard.blocked}\n`);

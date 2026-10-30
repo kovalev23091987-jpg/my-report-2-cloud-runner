@@ -1,0 +1,401 @@
+{
+  "schema": "SOURCE_WORKER_N10_CACHED_FLOW_REDERIVATION_V1",
+  "recorded_utc": "2026-10-18T11:13:05.955398+00:00",
+  "parent_main": "56c1cd905a3ca0c2407358a0357d243af8b9ff9c",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "Before new N10 reuse, rederive the already-obtained complete N05 flow from cache and its original identity metadata/trades/candles; match component window/clocks/counts/quote volumes, carry compact integrity binding. No acquisition.",
+  "new_cases": 58,
+  "tests": {
+    "baseline58": {
+      "path": "checkpoints/source-worker-n10-raw-component-binding-20261018/baseline58.tap.gz",
+      "raw_sha256": "31a03f5d6ef3776d19fa993815c00276fcbe9aec92dbdead9dd0b689c0cf2f7b",
+      "gzip_sha256": "3d835c52837c4f3bb359f018ab4e78d086ed39828d41264d57c0f48b4487ec09",
+      "counts": {
+        "tests": 58,
+        "pass": 11,
+        "fail": 47
+      }
+    },
+    "proposed-related100": {
+      "path": "checkpoints/source-worker-n10-raw-component-binding-20261018/proposed-related100.tap.gz",
+      "raw_sha256": "6d0fcda08d2f086a435a8ee069a96b461e0d2de95008d7d81914e30d62c30f9b",
+      "gzip_sha256": "8178c34c7f02e6d8577986e641aeea2d2479886a4763723c13441dd1e7a7ee47",
+      "counts": {
+        "tests": 100,
+        "pass": 100,
+        "fail": 0
+      }
+    },
+    "output-freeze12": {
+      "path": "checkpoints/source-worker-n10-raw-component-binding-20261018/output-freeze12.tap.gz",
+      "raw_sha256": "5bfc0693d8bd571440caf8d9443e73ca84bf9d8703ed8110cac149043d07dd3c",
+      "gzip_sha256": "6b1d6ed615298cc9abf32884b923b746320b02e6b03a8040e01a42d951a8a1ac",
+      "counts": {
+        "tests": 12,
+        "pass": 12,
+        "fail": 0
+      }
+    }
+  },
+  "source_inputs": {
+    "checkpoints/n05-native-qualification-38052957545/native-summary.json": {
+      "file_sha256": "7361f30c49b902dce556a6bbb6df97ac920ae3df52cdc4c40fade4946a1e3d0a",
+      "kind": "saved_provenance_summary_not_source_wire"
+    },
+    "checkpoints/n05-large-qualification-38063816181/large-summary.json": {
+      "file_sha256": "d001784fef0a8967599490a0d2c4a1d6e027b445a057865045cf6dd39561d3c9",
+      "kind": "saved_provenance_summary_not_source_wire"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/catalog-summary.json": {
+      "file_sha256": "5245240408a64398f8e4ccd429d15b50c1f93f6dc8d9a02ea6ee70f777a7ef53",
+      "kind": "saved_provenance_summary_not_source_wire"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-ALL-CURRENCY-IDENTITY.json.gz": {
+      "file_sha256": "b74ef586f4951455382b336b1abe998df295ce54ff10643e503f9b0f157c9b8b",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "c66180ff0c9665e6e4b7b304031652a8bc1b5a4a7a202900dd3410cac7d8d50b",
+      "raw_bytes": 2128050
+    },
+    "checkpoints/n05-actual-qualification-38049404414/catalog-GATE-SPOT.json.gz": {
+      "file_sha256": "14541e76582798fcf3f0ea10aca92fb3677e04786e2ab9c2b2a7657e44fee110",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "4e625fb2d29f837f055ebcc8b914be7b69f97e4c597f2ad3dfa779bc418e6a8f",
+      "raw_bytes": 1127317
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-PEOPLE-CANDLES.json.gz": {
+      "file_sha256": "f3b4d1c99ff8db71feb541f5b5d77ea7a0279a1a516e375e2d9baeb527c917c4",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "d1ab0d86376dc71a5e36b21ecdc09795539c6ddeeaca041687485cd543bdc6d7",
+      "raw_bytes": 22174
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-PEOPLE-PAGE-1.json.gz": {
+      "file_sha256": "2151c43f1aa4b3436adb26d6fea66b728031a52ed264a4d7931a33fbd4db7c30",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "d23048cd12557ed81683218f81be92d9e8240e33e25fbef79d3175740828dca5",
+      "raw_bytes": 12042
+    },
+    "checkpoints/n05-native-qualification-38052957545/BINANCE-SMALL-CATALOG.json.gz": {
+      "file_sha256": "542b4cea4fd801e96352ac0d93a0fb2e735da2ba250a9a19ccb6d1d7798a9923",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "d78a84616b9a9d4c313a60c818b7f141130ed495b3a21090d4327272821145fe",
+      "raw_bytes": 2495842
+    },
+    "checkpoints/n05-large-qualification-38063816181/BINANCE-BTC-NATIVE-240.json.gz": {
+      "file_sha256": "30c3ff92960f8601d460771431faf9719c36f8f2def695bde291d252cc57862f",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "c1e6a5d983252bc374c45c3d7dd19d3bd5b0d3f66d106bb6d2a5206ad8a1762a",
+      "raw_bytes": 40240
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29",
+      "raw_bytes": 1041432
+    },
+    "checkpoints/n05-poloniex-qualification-38069554249/poloniex-summary.json": {
+      "file_sha256": "8e377d0881fbfcb5418bb147dcd378038593d6b92b90fc34a01abe416c0c063d",
+      "kind": "saved_provenance_summary_not_source_wire"
+    },
+    "checkpoints/n05-poloniex-qualification-38069554249/POLONIEX-EXACT-ASSETS.json.gz": {
+      "file_sha256": "a225d6f415138c0b737f3cbadc1b0d298c821f35ad212858f7d02297314a4de4",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "23462bb8608b48d601bbcedd8a2be50ec6cfff41a8b2af5d184a9b00af0b32de",
+      "raw_bytes": 682729
+    },
+    "checkpoints/n05-poloniex-qualification-38069554249/POLONIEX-SPOT-MARKETS.json.gz": {
+      "file_sha256": "3e7680e9894ca3cb5741cfb586050f59b19b58d4a404745c5f3543303782fd5a",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "e82313fc3856db985d7abbc1d159504567fb17ad77d67c18eabb65b3c36dda21",
+      "raw_bytes": 501297
+    },
+    "checkpoints/n05-poloniex-qualification-38069554249/POLONIEX-AAVE-NATIVE-240.json.gz": {
+      "file_sha256": "377216058061c30b76f1a8b9be8dc410781f5da66aebde5768c6eb35cfeb47e0",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "99a6f4cd106f0378899225dc75979489c26a11aa9bbf8f3f3ab708e94be67d85",
+      "raw_bytes": 34622
+    },
+    "checkpoints/n05-poloniex-qualification-38069554249/POLONIEX-BOME-NATIVE-240.json.gz": {
+      "file_sha256": "e2a6d911ab8be1b16d4a7cd1d015a2ab3e63824b14201c00f76d7a7b1ed78f01",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "cb9856f65528ab62615b1c6b8dae0afd977453e37d9c829fe92afd67640cf778",
+      "raw_bytes": 31921
+    },
+    "checkpoints/n05-window-qualification-38050596507/window-summary.json": {
+      "file_sha256": "ff2a07083b4ac1f11d86d555b0d52d2fe95bd51f1d27f4274742ec9d6060959b",
+      "kind": "saved_provenance_summary_not_source_wire"
+    },
+    "checkpoints/n05-window-qualification-38050596507/BITGET-SPOT-SUSHI-candles-0.json.gz": {
+      "file_sha256": "c2302a1ffec5882b9def957d5af54e9fad3468e014ee46c966c0c7f615c368cc",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "37711c1d790e4fdfd171f7140ff623f631b67ead4603ee341afe5c86ce7aa03b",
+      "raw_bytes": 16644
+    },
+    "checkpoints/n05-window-qualification-38050596507/BITGET-SPOT-SUSHI-fills-0.json.gz": {
+      "file_sha256": "2aeda2e8f10a215e9aac788a7942d27285ba31525f8a2a28568f29063a5f21e4",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "abaab8bf5582c161211aff0c567c29e75e26d796b29e1e9bd718822bf024332b",
+      "raw_bytes": 7702
+    },
+    "checkpoints/n05-window-qualification-38050596507/BITGET-SPOT-BANK-candles-0.json.gz": {
+      "file_sha256": "1359e38bc687b7352d87a83cb150b6c5b40f002b42b6e8fbb3659c2423a346b8",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "c990f190e2cb64acdbf4f3f1963266ff9717c9091d0a354ae6b6aa9c4c66732f",
+      "raw_bytes": 17700
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-BITGET.json.gz": {
+      "file_sha256": "32a75aacfa48bf2fe7401b606413a0ad39100da8e98becf8fdf3055c14cf1611",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "d5530a98a07933e035c08ef2a74c3f4fa76a853e726e0b58fae6d31a775e652a",
+      "raw_bytes": 2468645
+    },
+    "checkpoints/n05-actual-qualification-38049404414/catalog-BITGET-SPOT.json.gz": {
+      "file_sha256": "ea648da32f536084d9eb24f879acd07856d0af1b338d54a7964d974ff7e4f6c8",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "6f49cbb3edecc3e3b7e945650a66dac1f77ff587ccf6c27c5edcfd3b157e99b2",
+      "raw_bytes": 1590568
+    },
+    "checkpoints/n05-large-qualification-38063816181/BINANCE-ETH-NATIVE-240.json.gz": {
+      "file_sha256": "793025bc95246e7a3c16a534f8993ae215bc8de56c2457fff6e2b2531c79a6ed",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "b1a0ef4314119eab9e13cda497525ebb9f20f9291086e8053455c32b435cedea",
+      "raw_bytes": 39529
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-SUSHI-CANDLES.json.gz": {
+      "file_sha256": "dd25f87594843ca05792cb2f268ed21a2554bb388491f84ac3b5269a042e2b48",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "9e3c3cc79120ed8b8a4ee025026933601bd0e5422f665a4dc521c130a6f6f8d4",
+      "raw_bytes": 19487
+    },
+    "checkpoints/n05-window-qualification-38050596507/BITGET-SPOT-BANK-fills-0.json.gz": {
+      "file_sha256": "7c8cc80761afbe4700db8ecabcf9ad4fa42c795dcdaf266c7b5042f9664e8d21",
+      "kind": "saved_source_wire_archive",
+      "raw_sha256": "0898c56f6678cfba99f5adcaf5bf7a30023c01a7d1c4d23fd48a8b5168d7b5dc",
+      "raw_bytes": 16702
+    },
+    "checkpoints/btw-preserved-block-result-input-20261004.json": {
+      "file_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8",
+      "kind": "controlled_renderer_or_legacy_projection"
+    },
+    "current-generation/tests/fixtures/n10-reused-original-15m-samples.json": {
+      "file_sha256": "052de7726e587b1f0239a58335913fe0f1c552f0d9ba620fca085523b0b2c3b3",
+      "kind": "controlled_renderer_or_legacy_projection"
+    }
+  },
+  "implementation_files": {
+    "current-generation/files/src/htx-technical-structure.mjs": "6868f49ac8ce7d7201f3eb40964368350bee0e09848dd86e1ae630618f4c92cc",
+    "current-generation/tests/n10-full-cache-inputs.mjs": "1e17befb2c9f425563681866d2f0defe441ab3ab176a2b1e54600baed63894b9",
+    "current-generation/tests/n10-raw-component-binding.test.mjs": "866d24bdcd10c6d1adbfd42b5a28b993500338ef330185a4ddbb915e419dd832"
+  },
+  "concrete_counterexamples": [
+    "Actual saved ETH240candles under a BTC component with identical window produced BTC-labelled price path. Gate PEOPLE/SUSHI and Poloniex AAVE/BOME body swaps similarly passed before full-flow replay.",
+    "Changed qualified component count/buy/sell or absent original metadata/trade pages still authorized a price path from unbound cache.",
+    "Newly derived rows need a typed compact contract/venue/SPOT/USDT/window/original observation/expiry/component+selectedbars+parsedcache integrity binding."
+  ],
+  "producer_behavior": [
+    "Use existing native normalizers/reconciler for Binance,Poloniex,Gate,Bitget; reject mismatch before emitting new15m price path.",
+    "No new provider calls or SQL; unchanged at most4existing indexed cache reads, useful-first prefilter/dedup/order and native-unknown stop.",
+    "Original five-minute source cache expiry, observation and first-known clocks retained; no window refresh.",
+    "New policy requires binding; historical old policy keeps its existing15bar geometry/hash verification for saved report compatibility.",
+    "Only normalizer/schema/metadata changed; price comparison text, neutral-flat logic, weights,entry,target,limits and forms unchanged."
+  ],
+  "rendered_cases": [
+    {
+      "sample": "BINANCE BTC original",
+      "controlled_bitget": false,
+      "htx_anchor": "EXPLICIT_FLAT_CONTROL_NOT_ORIGINAL_FUTURES",
+      "contract": "BTC-USDT",
+      "source_ts": 1791646140000,
+      "first_known_ts": 1791646209357,
+      "observed_ts": 1791646209357,
+      "expires_at": 1791646440000,
+      "source_cache_binding": {
+        "schema": "N10_REDERIVED_N05_CACHE_BINDING_V1",
+        "contract": "BTC-USDT",
+        "venue": "BINANCE",
+        "market": "SPOT",
+        "quote": "USDT",
+        "window_start_ts": 1791631740000,
+        "window_end_ts": 1791646140000,
+        "observed_ts": 1791646209357,
+        "expires_ts": 1791646440000,
+        "flow_component_sha256": "a784d06934774c21263a11ee87b78d3178accc01f6c7826604d6e52b910017b0",
+        "selected_price_bars_sha256": "5049908aa2bf38c2a4cae7c2daedacd2805373a4ea72e53082fc99d094a817c3",
+        "cache_payload_sha256": "7e357f87487d1c5b162e56ad69fe5b97b8dbebc8ec40967e8b3c45bdf23778c2"
+      },
+      "source_HTTP": 0,
+      "native_SQL": 0,
+      "current_coverage": false,
+      "delivery_proven": false
+    },
+    {
+      "sample": "GATE PEOPLE original",
+      "controlled_bitget": false,
+      "htx_anchor": "EXPLICIT_FLAT_CONTROL_NOT_ORIGINAL_FUTURES",
+      "contract": "PEOPLE-USDT",
+      "source_ts": 1791636120000,
+      "first_known_ts": 1791636240904,
+      "observed_ts": 1791636240904,
+      "expires_at": 1791636420000,
+      "source_cache_binding": {
+        "schema": "N10_REDERIVED_N05_CACHE_BINDING_V1",
+        "contract": "PEOPLE-USDT",
+        "venue": "GATE",
+        "market": "SPOT",
+        "quote": "USDT",
+        "window_start_ts": 1791621720000,
+        "window_end_ts": 1791636120000,
+        "observed_ts": 1791636240904,
+        "expires_ts": 1791636420000,
+        "flow_component_sha256": "d2c35752b27cd300ff4b1823c07a86a84960aecbb46565c789534304976adbde",
+        "selected_price_bars_sha256": "c262e8b89a6a9ccc45a82cc9ca985a9497e5c40742513492487a92345c9261ee",
+        "cache_payload_sha256": "0cc846e7cf745c34253a825b056a12aaa08bf43f94d1178e7e22851750be8177"
+      },
+      "source_HTTP": 0,
+      "native_SQL": 0,
+      "current_coverage": false,
+      "delivery_proven": false
+    },
+    {
+      "sample": "POLONIEX AAVE original",
+      "controlled_bitget": false,
+      "htx_anchor": "EXPLICIT_FLAT_CONTROL_NOT_ORIGINAL_FUTURES",
+      "contract": "AAVE-USDT",
+      "source_ts": 1791651240000,
+      "first_known_ts": 1791651280814,
+      "observed_ts": 1791651280814,
+      "expires_at": 1791651540000,
+      "source_cache_binding": {
+        "schema": "N10_REDERIVED_N05_CACHE_BINDING_V1",
+        "contract": "AAVE-USDT",
+        "venue": "POLONIEX",
+        "market": "SPOT",
+        "quote": "USDT",
+        "window_start_ts": 1791636840000,
+        "window_end_ts": 1791651240000,
+        "observed_ts": 1791651280814,
+        "expires_ts": 1791651540000,
+        "flow_component_sha256": "2a20c1558a228cebeb6fffe12ff38e18020c5dc087adf854dca6dc4cb5bee52b",
+        "selected_price_bars_sha256": "111529413e589be3961e022ad719f45008b9438a8098b6438c1e3aa787acc44c",
+        "cache_payload_sha256": "23b611e05535c60505cf17776e5de20883b1986bda07ea7c2f5f10460e9f8fe9"
+      },
+      "source_HTTP": 0,
+      "native_SQL": 0,
+      "current_coverage": false,
+      "delivery_proven": false
+    },
+    {
+      "sample": "BITGET controlled retained SUSHI page clock",
+      "controlled_bitget": true,
+      "htx_anchor": "EXPLICIT_FLAT_CONTROL_NOT_ORIGINAL_FUTURES",
+      "contract": "SUSHI-USDT",
+      "source_ts": 1791633780000,
+      "first_known_ts": 1791633833648,
+      "observed_ts": 1791633833648,
+      "expires_at": 1791634080000,
+      "source_cache_binding": {
+        "schema": "N10_REDERIVED_N05_CACHE_BINDING_V1",
+        "contract": "SUSHI-USDT",
+        "venue": "BITGET",
+        "market": "SPOT",
+        "quote": "USDT",
+        "window_start_ts": 1791619380000,
+        "window_end_ts": 1791633780000,
+        "observed_ts": 1791633833648,
+        "expires_ts": 1791634080000,
+        "flow_component_sha256": "9df0e69c37dadd6197e09edb667247eb1e65573cc8ddbaf00a055d8402829c33",
+        "selected_price_bars_sha256": "2e47461c462626d7c18bc9f3038986c8263eb7b13a29ff2ef88bef7407398f18",
+        "cache_payload_sha256": "e94a688cbf5a2eb82a12660e84380b175db4ec087f691de756475d80fd15da4e"
+      },
+      "source_HTTP": 0,
+      "native_SQL": 0,
+      "current_coverage": false,
+      "delivery_proven": false
+    }
+  ],
+  "data_boundaries": {
+    "full_saved_external_cache_positive_cases": [
+      "BINANCE BTC",
+      "GATE PEOPLE",
+      "POLONIEX AAVE"
+    ],
+    "all_HTX_comparison_anchors": "Explicit flat controls, not newly acquired futures observations or independent HTX/spot agreement.",
+    "actual_Bitget_SUSHI_BANK_recent_activity": 0,
+    "actual_Bitget_current_15m_fact": false,
+    "positive_Bitget_control": "Retained SUSHI page with one explicitly moved event clock and recomputed native candle volumes; original metadata/identity retained. No provider acquisition/current qualification.",
+    "legacy_controls": {
+      "path": "checkpoints/source-worker-n10-raw-component-binding-20261018/legacy-schema-controls.json.gz",
+      "gzip_sha256": "95b87bb267009eeb8d8b3b899b9dfe80817d32af0d2eb98056b9b519c1d57c92",
+      "raw_sha256": "0b36ac79c37bd970b87f2ab76561b688ffe675d6dadca018b3989671bea07be0",
+      "old_N10_module_sha256": "6cb3f4bc562d66effc10b1ec0946fdb3587147a6459565a5a0135762093db4bf",
+      "old_projection_fixture_sha256": "052de7726e587b1f0239a58335913fe0f1c552f0d9ba620fca085523b0b2c3b3",
+      "prefix225bars_controlled": true,
+      "full_original_cache_claim": false
+    }
+  },
+  "trust_boundary": [
+    "Full-flow replay links current parsed candles/trades and identity metadata to previously qualified N05 counts/quote volumes/clock tuple.",
+    "Compact digests record parsed-cache integrity and selected bars; they are not independent authentication of missing original wire or protection against deliberate coordinated re-signing of fabricated records.",
+    "No new claim that candle OHLC is independently reconstructed from every trade or that all original provider body bytes are stored in compact row."
+  ],
+  "shared_proposals": {
+    "shared-tests.proposed.patch": {
+      "path": "checkpoints/source-worker-n10-raw-component-binding-20261018/shared-tests.proposed.patch",
+      "sha256": "488d7b16b009665f12682ff2a89fa85c9c1f179a924270f5d195fecd124d05f1"
+    },
+    "shared-CI.proposed.patch": {
+      "path": "checkpoints/source-worker-n10-raw-component-binding-20261018/shared-CI.proposed.patch",
+      "sha256": "f71e5bdf7f9a3ed04f9da5f6dedfe91ca7f31646a4d867b104fa763b883cc722"
+    }
+  },
+  "shared_fixture_proposal_semantics": [
+    "Three existing test builders replace225padded cache scaffolds with complete saved BTC/AAVE cache fixtures and an explicit fully reconciled Bitget control; old projected JSON remains byte-identical.",
+    "Flat Poloniex controls also recompute base amounts/VWAP consistently with unchanged quote totals, rather than presenting invalid native candles as usable.",
+    "Proposed tests retain7reuse+25windowclock+10queue assertions and are tested together with58new cases:100PASS.",
+    "No actual shared test/workflow edits; coordinator applies exact proposal to current integration branch."
+  ],
+  "output_contract": {
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "golden_fixture_bytes_unchanged": true,
+    "goldens": {
+      "current-generation/tests/fixtures/output-contract/long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
+      "current-generation/tests/fixtures/output-contract/short-wait-coin.json": "8151567e17668baf3869780644216292bff5a3d6704dcc36c8d6f3ff81c6d665",
+      "current-generation/tests/fixtures/output-contract/long-entry-full.json": "1d1d61ba2332e5b330b9fc2c17fe9f8ff7954f023a02387bf8fb6781b3c007f3",
+      "current-generation/tests/fixtures/output-contract/short-entry-coin.json": "f91398c11b6544afc4d3e955b71e61d5ad50880ea7911bb58326a6378bf0645d",
+      "current-generation/tests/fixtures/output-contract/long-removed-full.json": "cc58cef16c931daec831234808ff080c33b6140860db84e75d193d6e085d364f",
+      "current-generation/tests/fixtures/output-contract/short-removed-coin.json": "36fa5aa33a30202981ea812fd57f7d88589f26d7392ed18257bc0c17ee11d901",
+      "current-generation/tests/fixtures/output-contract/pump-liquidation-only.json": "add2e33d053fad5a7a8cb37fff29cb8b51d79a058ccfc231401200a13ea31b12",
+      "current-generation/tests/fixtures/output-contract/missing-data.json": "14c7851efc2bffb9318142d8d0ba81ceb8a4d9a326ea10fe57ed9fe766179371"
+    },
+    "manifest_module_hash_maintenance_required": false,
+    "reason": "N10 source is not a declared effective module in the freeze manifest; no manifest/golden edit performed.",
+    "manual_V5_N10_context": true,
+    "approved_brief_N10_omission_preserved": true
+  },
+  "own_lease": {
+    "commit": "907ce757d42a2fb6a2511c178a46501638085c35",
+    "owner": "CODEX:SOURCES:01a14e11:1792320671553",
+    "expires_ts": 1792325471553,
+    "exact_readback": true
+  },
+  "limits": {
+    "source_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "additional_normal_path_SQL_or_HTTP": 0,
+    "normal_path_added_work": "Bounded local replay/hash of already selected existing source cache; no native CPU/throughput claim.",
+    "current105_full_or_SENT": false,
+    "strategy_weights_forms_pauses_caps_unknown_spent_reserves_unchanged": true
+  },
+  "acceptance_limits": [
+    "Offline saved external originals plus explicit controlled anchors/event clock, not current coin coverage or new source qualification.",
+    "Manual/V5 context and approved brief omission tested; no actual delivery, full105 completion or trading decision proof.",
+    "Cloud assembled/main/natural acceptance remains with coordinator.",
+    "Source branch shared test builders need the precise proposal applied before their old padded producer fixtures can pass the new full-cache guard."
+  ],
+  "exact_next_action": "Coordinator integrate frozen N10 source+new helper/tests+shared test/CI proposals. Worker immediately prepare only-new-source-packets coverage/consumer/order/fallback and configured day/month/minute/manual-reserve delta; no accepted73/21/105 census regeneration or idle wait."
+}

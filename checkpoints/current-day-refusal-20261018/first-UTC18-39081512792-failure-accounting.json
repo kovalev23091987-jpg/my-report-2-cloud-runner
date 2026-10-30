@@ -1,0 +1,1085 @@
+{
+  "status": "FAILED_RUN_NATIVE_USAGE_FINALIZED",
+  "reservation_id": "R2RUN:1792281986592:65a2f7d46b6acfcc",
+  "unknown_ops_preserved": 15,
+  "receipt": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "R2RUN:1792281986592:65a2f7d46b6acfcc",
+    "source_run_id": "39081512792",
+    "measured_rows_read": 30745,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 110,
+    "measured_requests_accounted": 255,
+    "unknown_ops": 15
+  },
+  "usage_before": {
+    "requests": 254,
+    "rows_read": 30745,
+    "rows_written": 109,
+    "unknown_ops": 15,
+    "targets": {
+      "batch:OTHER": {
+        "requests": 25,
+        "rows_read": 4,
+        "rows_written": 26,
+        "unknown_ops": 1
+      },
+      "run:OTHER": {
+        "requests": 27,
+        "rows_read": 1,
+        "rows_written": 9,
+        "unknown_ops": 0
+      },
+      "run:report2_runtime_lease_v1": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_runtime_lease_v1": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_command_v2": {
+        "requests": 2,
+        "rows_read": 328,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_command_v2": {
+        "requests": 1,
+        "rows_read": 163,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_scheduler_job_ownership_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_maintenance_cadence_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_maintenance_cadence_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 5,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 1
+      },
+      "all:report2_liquidation_signal_outcomes": {
+        "requests": 1,
+        "rows_read": 168,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_predictive_health": {
+        "requests": 2,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_global_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_global_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 16,
+        "rows_read": 875,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_candidate_task_v2": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_task_v2": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_market_snapshot_batch_v1": {
+        "requests": 5,
+        "rows_read": 143,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:scan_runs": {
+        "requests": 6,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_early_candidate_wave": {
+        "requests": 3,
+        "rows_read": 1394,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_market_snapshot_batch_v1": {
+        "requests": 51,
+        "rows_read": 1266,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_recheck_task_shadow": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_watch_state": {
+        "requests": 2,
+        "rows_read": 337,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:fast_move_watch_state": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:fast_move_watch_event": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:deep_check_scheduler_state": {
+        "requests": 1,
+        "rows_read": 8,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_early_candidate_wave": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_monthly_usage": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_monthly_usage": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_source_cache": {
+        "requests": 4,
+        "rows_read": 18,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_shadow_observation": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_cluster_state": {
+        "requests": 4,
+        "rows_read": 18692,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_coinalyze_catalog": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_gate_contract_identity": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_cross_exchange_risk_cache": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_cross_exchange_catalog": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_cex_venue_cache": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_liq_cex_venue_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_volume_profile_cache": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_outcome": {
+        "requests": 2,
+        "rows_read": 6604,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 92,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 2
+      },
+      "batch:opportunity_shadow_outcome": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 4
+      },
+      "batch:opportunity_shadow_funnel": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 2
+      },
+      "batch:shadow_decision_log": {
+        "requests": 2,
+        "rows_read": 32,
+        "rows_written": 8,
+        "unknown_ops": 1
+      },
+      "first:multi_wave_campaign_shadow": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 2
+      },
+      "first:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 2
+      },
+      "batch:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "batch:deep_check_run_log": {
+        "requests": 2,
+        "rows_read": 64,
+        "rows_written": 16,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:sqlite_master": {
+        "requests": 1,
+        "rows_read": 404,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_role_observation": {
+        "requests": 1,
+        "rows_read": 8,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:cron_runs": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A2": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A3": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A4": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    },
+    "unmeasured_receipts": [
+      {
+        "operation": "run",
+        "target": "report2_evidence_source_cache",
+        "sql_kind": "INSERT",
+        "sql_sha256": "5daf30940f7494c53dd173bf78ed1fa79dd2381a18d42ab6bd13a1e7bc6ea2f8",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282009662,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_event",
+        "sql_kind": "INSERT",
+        "sql_sha256": "30a77ed201e113e0e9e88acdc7b6ccd5404c0780adb6e6ee495be658137df9cb",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282016784,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_outcome",
+        "sql_kind": "INSERT",
+        "sql_sha256": "8d58d76d30e2a87ca04c68db55431b54ff4a8cd657535a62bcbf845d7bce82b0",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282016784,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_outcome",
+        "sql_kind": "INSERT",
+        "sql_sha256": "7bd101106e0817ba1382d349fe4800626283e1467b563e45da9f779ccb051041",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282016784,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_funnel",
+        "sql_kind": "INSERT",
+        "sql_sha256": "b07caf61ab2b03fc0b31926f6d7afd812b587e66c61365a38340a2e9028dbfc4",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282016784,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "OTHER",
+        "sql_kind": "INSERT",
+        "sql_sha256": "60edf45d489b876cc6a77c26fca1c7aeb13347f6ccc2401a53591a14c03c2729",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282017186,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "shadow_decision_log",
+        "sql_kind": "DELETE",
+        "sql_sha256": "d79eb76413bbe9afdbd35e5c02e15462d35f63e83b57b3a99a5cf4a02bc168eb",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282017186,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "full_evidence_shadow_log",
+        "sql_kind": "INSERT",
+        "sql_sha256": "d07a8ee537fe06ec160baa684af937cec5876287200b761350cb5e97031a4809",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282017543,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "run",
+        "target": "canonical_publication_shadow",
+        "sql_kind": "INSERT",
+        "sql_sha256": "21b0a056c0c11b1572e36578b2caa5268a3a5b3ca340280df3d9e24451903408",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282018289,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_event",
+        "sql_kind": "INSERT",
+        "sql_sha256": "30a77ed201e113e0e9e88acdc7b6ccd5404c0780adb6e6ee495be658137df9cb",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282029045,
+        "params_or_SQL_text_exported": false
+      }
+    ]
+  },
+  "usage_after": {
+    "requests": 255,
+    "rows_read": 30746,
+    "rows_written": 110,
+    "unknown_ops": 15,
+    "targets": {
+      "batch:OTHER": {
+        "requests": 25,
+        "rows_read": 4,
+        "rows_written": 26,
+        "unknown_ops": 1
+      },
+      "run:OTHER": {
+        "requests": 27,
+        "rows_read": 1,
+        "rows_written": 9,
+        "unknown_ops": 0
+      },
+      "run:report2_runtime_lease_v1": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_runtime_lease_v1": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_command_v2": {
+        "requests": 2,
+        "rows_read": 328,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_command_v2": {
+        "requests": 1,
+        "rows_read": 163,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_scheduler_job_ownership_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_maintenance_cadence_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_maintenance_cadence_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 5,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 1
+      },
+      "all:report2_liquidation_signal_outcomes": {
+        "requests": 1,
+        "rows_read": 168,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_predictive_health": {
+        "requests": 2,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_global_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_global_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 16,
+        "rows_read": 875,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_candidate_task_v2": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_task_v2": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_market_snapshot_batch_v1": {
+        "requests": 5,
+        "rows_read": 143,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:scan_runs": {
+        "requests": 6,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_early_candidate_wave": {
+        "requests": 3,
+        "rows_read": 1394,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_market_snapshot_batch_v1": {
+        "requests": 51,
+        "rows_read": 1266,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_recheck_task_shadow": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_watch_state": {
+        "requests": 2,
+        "rows_read": 337,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:fast_move_watch_state": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:fast_move_watch_event": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:deep_check_scheduler_state": {
+        "requests": 1,
+        "rows_read": 8,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_early_candidate_wave": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_monthly_usage": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_monthly_usage": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_source_cache": {
+        "requests": 4,
+        "rows_read": 18,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_shadow_observation": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_cluster_state": {
+        "requests": 4,
+        "rows_read": 18692,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_coinalyze_catalog": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_gate_contract_identity": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_cross_exchange_risk_cache": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_cross_exchange_catalog": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_cex_venue_cache": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_liq_cex_venue_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_volume_profile_cache": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_outcome": {
+        "requests": 2,
+        "rows_read": 6604,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 92,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 2
+      },
+      "batch:opportunity_shadow_outcome": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 4
+      },
+      "batch:opportunity_shadow_funnel": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 2
+      },
+      "batch:shadow_decision_log": {
+        "requests": 2,
+        "rows_read": 32,
+        "rows_written": 8,
+        "unknown_ops": 1
+      },
+      "first:multi_wave_campaign_shadow": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 2
+      },
+      "first:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 2
+      },
+      "batch:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "batch:deep_check_run_log": {
+        "requests": 2,
+        "rows_read": 64,
+        "rows_written": 16,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:sqlite_master": {
+        "requests": 1,
+        "rows_read": 404,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_role_observation": {
+        "requests": 1,
+        "rows_read": 8,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:cron_runs": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A2": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A3": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A4": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    },
+    "unmeasured_receipts": [
+      {
+        "operation": "run",
+        "target": "report2_evidence_source_cache",
+        "sql_kind": "INSERT",
+        "sql_sha256": "5daf30940f7494c53dd173bf78ed1fa79dd2381a18d42ab6bd13a1e7bc6ea2f8",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282009662,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_event",
+        "sql_kind": "INSERT",
+        "sql_sha256": "30a77ed201e113e0e9e88acdc7b6ccd5404c0780adb6e6ee495be658137df9cb",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282016784,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_outcome",
+        "sql_kind": "INSERT",
+        "sql_sha256": "8d58d76d30e2a87ca04c68db55431b54ff4a8cd657535a62bcbf845d7bce82b0",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282016784,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_outcome",
+        "sql_kind": "INSERT",
+        "sql_sha256": "7bd101106e0817ba1382d349fe4800626283e1467b563e45da9f779ccb051041",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282016784,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_funnel",
+        "sql_kind": "INSERT",
+        "sql_sha256": "b07caf61ab2b03fc0b31926f6d7afd812b587e66c61365a38340a2e9028dbfc4",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282016784,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "OTHER",
+        "sql_kind": "INSERT",
+        "sql_sha256": "60edf45d489b876cc6a77c26fca1c7aeb13347f6ccc2401a53591a14c03c2729",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282017186,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "shadow_decision_log",
+        "sql_kind": "DELETE",
+        "sql_sha256": "d79eb76413bbe9afdbd35e5c02e15462d35f63e83b57b3a99a5cf4a02bc168eb",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282017186,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "full_evidence_shadow_log",
+        "sql_kind": "INSERT",
+        "sql_sha256": "d07a8ee537fe06ec160baa684af937cec5876287200b761350cb5e97031a4809",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282017543,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "run",
+        "target": "canonical_publication_shadow",
+        "sql_kind": "INSERT",
+        "sql_sha256": "21b0a056c0c11b1572e36578b2caa5268a3a5b3ca340280df3d9e24451903408",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282018289,
+        "params_or_SQL_text_exported": false
+      },
+      {
+        "operation": "batch",
+        "target": "opportunity_shadow_event",
+        "sql_kind": "INSERT",
+        "sql_sha256": "30a77ed201e113e0e9e88acdc7b6ccd5404c0780adb6e6ee495be658137df9cb",
+        "http_status": 500,
+        "failure_class": "BRIDGE_RESPONSE_NOT_CLOSED",
+        "observed_ts": 1792282029045,
+        "params_or_SQL_text_exported": false
+      }
+    ]
+  },
+  "new_SQL_attempts": 1,
+  "reservation_never_reduced": true
+}

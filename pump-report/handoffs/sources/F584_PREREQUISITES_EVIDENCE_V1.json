@@ -1,0 +1,109 @@
+{
+  "schema": "F584_PREREQUISITES_EVIDENCE_V1",
+  "authority_main": "101313e398a2914ee7059a31ef5b5029d7118afb",
+  "original_TZ_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "producer": {
+    "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+    "git_blob": "47f044d8eec5ab52e2cb6a4f2ceb95af4a873e13",
+    "sha256": "e3070458333381de055f237f22aaab5b0150290d031f862adcdd69392b027b65",
+    "local_matches_exactmain": true
+  },
+  "ROOT_doc": {
+    "source": "ROOT direct handoff successful separatewebdocsread",
+    "successful_at_utc": "2026-10-26T08:49:00Z",
+    "url": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+    "new_ROOT_doc_attempts": 1,
+    "SOURCE_repeat_requests": 0,
+    "market_HTTP": 0,
+    "facts": [
+      "meta/dexdefaultemptyfirstperpdex",
+      "metaAndAssetCtxs universe+contexts+collateralToken",
+      "assetPositions[].position with siblingtype:oneWay",
+      "clearinghouseState user42hex/dexdefaultfirst",
+      "position example includescoin/entryPx/leverage/liquidationPx/positionValue/szi",
+      "time top-level only"
+    ],
+    "unproven": [
+      "SOLprojectidentity",
+      "liqPx/positionValue currency",
+      "szi unit/sign semantics"
+    ],
+    "not_qualified_route": true
+  },
+  "retained_metadata": {
+    "perp_catalog_gzip_sha256": "f83b1027dd9424fe454d8bc08d4704d7cf178ee61deaaf903a2a03576f53ac08",
+    "spot_catalog_gzip_sha256": "bae90a8fbf2a6acea0317d9c195d525fc1a283d6f6ff03409f40a8cca08923a6",
+    "account_proof_sha256": "771264214be141b4aa85a1238cd47214fc36d9f3b71f487f3b96d7a52404035a",
+    "native_state_sha256": "0cb5f075b84f1a32c4f6b39619ea0aaaa4430b81b838a7f3099c09d5d081770d",
+    "current_market_recollection": 0,
+    "raw_position_or_price_exported": false
+  },
+  "items": [
+    {
+      "point": "BingX identity",
+      "status": "CLOSED_WITHIN_BINGX_ONLY",
+      "evidence": "Exactmain registry nativeID100028;SOL-USDT;BINGX_UNDERLYING:SOL;USDT_M PERPETUAL quote/settleUSDT",
+      "limits": "canonical_cross_venue_identity_qualified=false;no multiplier/tick/step inferred"
+    },
+    {
+      "point": "Finiteaccount",
+      "status": "CLOSED_FOR_DESIGN_ONLY",
+      "evidence": "ROOT explicitly admits retained native_samples[0] fordesign;publicaddress provenance+hash inenvelope",
+      "limits": "No provider/whole/nativepermission;old7Octstateexpired;no claimcurrentSOLposition"
+    },
+    {
+      "point": "Request/response shape",
+      "status": "CLOSED_DOCUMENTARY",
+      "evidence": "ROOT successfulsameofficialpage08:49UTC;POST/info clearinghouseState,user42hex,dexemptyfirstperpdex;assetPositions[].position andsiblingtype:oneWay",
+      "limits": "F583 oneWay.position prose waswrong;no codebug—thecurrentproduceruses r.position/r.type correctly"
+    },
+    {
+      "point": "HLnativeSOL listing",
+      "status": "RETAINED_METADATA_ONLY",
+      "evidence": "Savedperpmeta universe[5].name=SOL,szDecimals2,maxLeverage20,marginTableId54",
+      "limits": "Index5 ishistoricalarrayposition,notprovenstablemarketID;szDecimals≠contractsize;notprojectidentity"
+    },
+    {
+      "point": "Collateralcurrency",
+      "status": "CLOSED_FOR_RETAINED_METADATA_RELATION_ONLY",
+      "evidence": "Perpmeta collateralToken0;retainedspotmeta tokenindex0 nameUSDC,isCanonicaltrue,tokenId0x6d1e7cde53ba9467b783cb7c530ce054",
+      "limits": "Not proofSOLprojectorliqPx/positionValuecurrency,notUSDC=USDT;evmContract notSOLidentity"
+    },
+    {
+      "point": "SameunderlyingSOL",
+      "status": "UNKNOWN",
+      "evidence": null,
+      "limits": "TwoSOLnamesnotcanonicaljoin;needindependentHLunderlyingproject/network→exactBingXidentity;no fakecanonicalflag"
+    },
+    {
+      "point": "szi unit/sign",
+      "status": "UNKNOWN",
+      "evidence": "Pageexampleandretainedparserfields only;ROOTconfirmsnodirectsemanticexplanation",
+      "limits": "PositiveLONG/negativeSHORT remainsunqualified;native_size_unit UNKNOWN_NATIVE_POSITION_SIZE;don'tderiveBASE"
+    },
+    {
+      "point": "liquidationPx/positionValue",
+      "status": "FIELDS_CLOSED_SEMANTICS_PARTIAL_CURRENCY_UNKNOWN",
+      "evidence": "Accountsummaryresponsefieldsandobservedpositioncontext",
+      "limits": "No currencies fromrawUsd/collateral/numericexample;positionValue notsize×liqPx;nullnotzero"
+    },
+    {
+      "point": "Clock",
+      "status": "FIELD_CLOSED_CURRENT_FRESHNESS_NOT_CHECKED",
+      "evidence": "Top-levelpayload.time only;existingproducerexpects Unixms via13digitrange;retainedactualsource_ts1791368838198/receive1791368838665",
+      "limits": "Docpasseddoesnotdescribeperpositionupdatetime;13digitexample aloneisnotexplicitprotocolunitproof. Newactualstate mustchecknativeclockbound;receiptneverrefreshestime."
+    },
+    {
+      "point": "Pricebasis/FX",
+      "status": "UNKNOWN",
+      "evidence": "F556 priceMapping checks independentlysuppliedmapping only;doesnotreadpricereferenceorFX",
+      "limits": "No multiplier1,USDCUSDT1,positionValue/szi impliedprice,arbitrarycontemporaneousratio orcurrentmarketquoteasautomaticliqconversion"
+    },
+    {
+      "point": "Consumerroute",
+      "status": "CONNECTED_BUT_UNQUALIFIED",
+      "evidence": "getLiquidations→collectHyperliquidPositions→normalizeHyperliquidAccount→selectZones existingF556",
+      "limits": "All550 qualifiedroutecoverage0;canonical/semantics/quote/mappingblockerspreventpreciseBingXzone"
+    }
+  ]
+}

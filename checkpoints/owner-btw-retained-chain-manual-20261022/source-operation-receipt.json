@@ -1,0 +1,213 @@
+{
+  "schema": "BTW_RETAINED_CHAIN_MANUAL_HASH_STATUS_RECEIPT_V1",
+  "recorded_utc": "2026-10-22T08:18:06.335140+00:00",
+  "owner_scope": "Only retained LIQ chain, BTW only; explicit human manual request",
+  "source_main": "addb4ea19c9418841b12006ead039c8fa6eb12d0",
+  "current_source_pins_sha256": "b02e05dd074f6cdd2b99c552878cfb94fa95177e31ae4dfc30db912be734f700",
+  "source_pin_count": 10,
+  "direct_public_attempts": [
+    {
+      "attempt": 1,
+      "url": "https://api.hyperliquid.xyz/info",
+      "method": "POST",
+      "kind": "native",
+      "started_ts": 1792656857150,
+      "completed_ts": 1792656867698,
+      "error": "TypeError: fetch failed"
+    },
+    {
+      "attempt": 2,
+      "url": "https://mainnet.zklighter.elliot.ai/api/v1/orderBooks",
+      "method": "GET",
+      "kind": "native",
+      "started_ts": 1792656867698,
+      "http_status": 200,
+      "source_date": "Thu, 22 Oct 2026 08:14:28 GMT",
+      "completed_ts": 1792656868643,
+      "bytes": 191573,
+      "sha256": "4be5fd2d0fc7345480132d57f50f9214b07dfeec88cd4cc8d7b460b2cec43e4c"
+    },
+    {
+      "attempt": 3,
+      "url": "https://arbitrum.gmxapi.io/v1/risk-oracle/markets",
+      "method": "GET",
+      "kind": "native",
+      "started_ts": 1792656868645,
+      "http_status": 200,
+      "source_date": "Thu, 22 Oct 2026 08:14:29 GMT",
+      "completed_ts": 1792656870071,
+      "bytes": 10720,
+      "sha256": "9b40367419e5ccbbf8bffb177926247be6c2fba11b7ebe1ad1bbbbef432a0c85"
+    },
+    {
+      "attempt": 4,
+      "url": "https://backend-arbitrum.gains.trade/trading-variables",
+      "method": "GET",
+      "kind": "native",
+      "started_ts": 1792656870072,
+      "http_status": 200,
+      "source_date": "Thu, 22 Oct 2026 08:14:30 GMT",
+      "completed_ts": 1792656870893,
+      "bytes": 2983404,
+      "sha256": "4d47e5d10ff66c21ccf80d08af584c84e264cf99acf7cc53caa8da7eaf2bf6d8"
+    },
+    {
+      "attempt": 5,
+      "url": "https://api.hbdm.com/linear-swap-ex/market/detail/merged?contract_code=BTW-USDT",
+      "method": "GET",
+      "kind": "reference",
+      "started_ts": 1792656870918,
+      "http_status": 200,
+      "source_date": "Thu, 22 Oct 2026 08:14:32 GMT",
+      "completed_ts": 1792656872709,
+      "bytes": 301,
+      "sha256": "642cf40d5636dba3c715ac1188f4d963870df39b1309ca069db6e8d3f09d5f4f"
+    },
+    {
+      "attempt": 6,
+      "url": "https://swolecharts.com/api/liquidation-levels/BTW",
+      "method": "GET",
+      "kind": "supplement",
+      "started_ts": 1792656872712,
+      "http_status": 200,
+      "source_date": "Thu, 22 Oct 2026 08:14:33 GMT",
+      "completed_ts": 1792656873421,
+      "bytes": 1441,
+      "sha256": "fb82f0ac198ce8a461126e2d86455301110f6fac49ad336b9e58d40581c700fb"
+    },
+    {
+      "attempt": 7,
+      "url": "https://api.coinboss.com/api/liq-levels?symbol=BTW",
+      "method": "GET",
+      "kind": "supplement",
+      "started_ts": 1792656873423,
+      "http_status": 404,
+      "source_date": "Thu, 22 Oct 2026 08:14:34 GMT",
+      "completed_ts": 1792656874126,
+      "bytes": 35,
+      "sha256": "8d0735be1c3c60163e091353ac429174b23957f63e2032902e81e5bf1605536e"
+    }
+  ],
+  "direct_public_HTTP_attempts": 7,
+  "native_public_catalog_attempts": 4,
+  "supplement_attempts": 2,
+  "connector_logical_attempts": 2,
+  "connector_internal_HTTP_attempts": null,
+  "no_claim_complete_network_billing_reconciliation": true,
+  "logical_future_reserved_slots": 8,
+  "shared_future_cap_unchanged": 8,
+  "manual_cap_unchanged": 24,
+  "stages": [
+    {
+      "source": "HYPERLIQUID_NATIVE",
+      "status": "CATALOG_NOT_CLOSED",
+      "reason": "TypeError: fetch failed",
+      "position_levels": 0
+    },
+    {
+      "source": "LIGHTER_NATIVE",
+      "status": "NO_EXACT_MARKET_IN_CURRENT_CATALOG",
+      "market_count": 246,
+      "exact_market_matches": 0,
+      "position_levels": 0,
+      "receipt_sha256": "4be5fd2d0fc7345480132d57f50f9214b07dfeec88cd4cc8d7b460b2cec43e4c",
+      "observed_ts": 1792656868643,
+      "fresh_numeric_positions_confirmed": false
+    },
+    {
+      "source": "GMX_NATIVE",
+      "status": "NO_EXACT_MARKET_IN_CURRENT_CATALOG",
+      "market_count": 117,
+      "exact_market_matches": 0,
+      "position_levels": 0,
+      "receipt_sha256": "9b40367419e5ccbbf8bffb177926247be6c2fba11b7ebe1ad1bbbbef432a0c85",
+      "observed_ts": 1792656870071,
+      "fresh_numeric_positions_confirmed": false
+    },
+    {
+      "source": "GTRADE_NATIVE",
+      "status": "GTRADE_SYMBOL_UNSUPPORTED",
+      "exact_market_supported": false,
+      "market_count": 493,
+      "source_clock_raw": "2026-10-22T08:13:53.783Z",
+      "position_levels": 0,
+      "receipt_sha256": "4d47e5d10ff66c21ccf80d08af584c84e264cf99acf7cc53caa8da7eaf2bf6d8",
+      "observed_ts": 1792656870893,
+      "fresh_numeric_positions_confirmed": false
+    },
+    {
+      "source": "ORDERLY_PUBLIC_POSITIONS",
+      "status": "EXACT_MARKET_UNVERIFIED",
+      "reason": "NOT_IN_VERIFIED_HTX_ORDERLY_INTERSECTION",
+      "network_calls": 0,
+      "position_levels": 0
+    },
+    {
+      "source": "SWOLECHARTS_MODEL",
+      "status": "CLOSED",
+      "model_zones": 6,
+      "source_ts": 1792656795464
+    },
+    {
+      "source": "COINBOSS_MODEL",
+      "status": "SOURCE_HTTP_ERROR",
+      "model_zones": 0
+    },
+    {
+      "source": "BYK_TRACKED_HL_BANDS",
+      "status": "PREREQUISITE_OR_CREDIT_ADMISSION_NOT_CLOSED",
+      "network_calls": 0,
+      "independent_primary_source": false
+    },
+    {
+      "source": "OXARCHIVE_HL_BUCKETS",
+      "status": "PREREQUISITE_OR_CREDIT_ADMISSION_NOT_CLOSED",
+      "network_calls": 0,
+      "independent_primary_source": false
+    },
+    {
+      "source": "DYDX_PINNED_NATIVE",
+      "status": "NOT_RUN_NO_ADMITTED_STRUCTURAL_ACCOUNT_HINT",
+      "network_calls": 0,
+      "reason": "No current verified BTW native account/pinned-chain receipt supplied; unchanged native4 allocation spent on current direct catalog checks. Not a claim BTW absent at dYdX."
+    }
+  ],
+  "ByK_connector": {
+    "status": "REAUTHENTICATION_REQUIRED",
+    "error_code": "UNAUTHORIZED",
+    "attempted_once": true,
+    "alternate_connection_route_or_credentials_not_attempted": true,
+    "receipt_sha256": "b4d7826b62495215c09522b3d936bf562fdf51976fafc077d67a2343eab7b976"
+  },
+  "CoinLobster": {
+    "status": "LIVE_HEADLINE_ONLY_NO_NUMERIC_LEVELS",
+    "source_ts": 1792656551459,
+    "full_answer_in_seconds": 1800,
+    "access_note": "Without an account the full answer is 30 minutes old and none is stored for this question yet, so this is the live headline. The full answer is ready in about 30 minutes. Sign in free for live answers: https://coinlobster.com/connect?utm_source=mcp&utm_medium=liq_zones&utm_campaign=delayed",
+    "wait_poll_or_second_request": false,
+    "receipt_sha256": "c90c7c4154a8e0cc7f18c55ddb787f89f2904dd3ba64485b1899422e2c7ae66d"
+  },
+  "numeric_level_result": {
+    "source": "SWOLECHARTS_CEX_MODEL",
+    "source_ts": 1792656795464,
+    "source_original_primary_bands": 6,
+    "owner_display_groups": 5,
+    "single_source_only": true,
+    "observed_open_positions_confirmed": false,
+    "nested_MaxPain_duplicate_amount_not_added": true,
+    "old_snapshot_not_mixed": true,
+    "quote": "USD",
+    "HTX_reference_quote": "USDT",
+    "model_reference_price_divergence_pct": 2.450843420016202,
+    "decision_target_eligible": false,
+    "raw_prices_levels_provider_payloads_private_fragments_SQL_in_Git": false
+  },
+  "native_D1_day_unknown_preserved": 1,
+  "D1_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "local_HTX_model": false,
+  "native_manual_report_recovered": false,
+  "runtime_or_workflow_changed": false,
+  "accepted_tests_or_cases_replayed": 0
+}

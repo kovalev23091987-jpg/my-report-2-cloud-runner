@@ -1,0 +1,277 @@
+{
+  "schema": "PUMP_ANALYTICS_T_QUOTE_NOTIONAL_QUALIFICATION_V1",
+  "status": "FROZEN_FOR_ROOT_T3_CONSUMER_INTEGRATION",
+  "ROOT_integrates": true,
+  "base_exact_ROOT_contract_ref": "0e6ecbe973f2b44c1ba80736fdaaf7e35a2ba736",
+  "patch_and_test_main": "3871bac5adcd6e6030b87e20c43c0e932c886d6d",
+  "freeze_authority_main": "3871bac5adcd6e6030b87e20c43c0e932c886d6d",
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "plan_frozen_before_patch": {
+    "path": "pump-report/handoffs/analytics/package-t/PLAN_RU.md",
+    "sha256": "25a2f819bafbcd8ff346d98e1145f9991ef95c13e91fa0003218a935b3eb4424"
+  },
+  "ROOT_contract": {
+    "path": "pump-report/contracts/index.mjs",
+    "version": "pump-report-contract-v1.2-quote-notional",
+    "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08",
+    "git_blob": "e1fdc83afdf72b803806370d32f8d42c92630cd6",
+    "base_unit": "USDT_PRICE_BASE_QUANTITY",
+    "quote_unit": "USDT_PRICE_QUOTE_NOTIONAL",
+    "modified": false
+  },
+  "new_unique_cases": 4,
+  "initial_pass": 4,
+  "initial_fail": 0,
+  "final_pass": 4,
+  "final_fail": 0,
+  "skip": 0,
+  "test_runs": 1,
+  "old_P_Q_R_S_test_batteries_replayed": false,
+  "T03_named_variants": 12,
+  "T03_variant_names": [
+    "tied-first-endpoint",
+    "no-time-span",
+    "quote-missing-notional",
+    "base-missing-base",
+    "wrong-unit",
+    "quote-null",
+    "quote-negative",
+    "future-receipt",
+    "stale-source",
+    "incomplete",
+    "estimated",
+    "quote-sum-overflow"
+  ],
+  "command": "node --import /private/tmp/pump-e-native-http-forbidden.mjs --test --test-reporter=tap pump-report/tests/analytics/trade-quote-notional.test.mjs",
+  "TAP_sha256": "1de1a916327121840bb48fd19d571571b831190993f11b02389b79acef4400d3",
+  "rules_version": "pump-analytics-v4-first-qualification-20261025",
+  "BASE_branch_entire_output_before_oracle_deep_equal": true,
+  "quote_amount_source": "DIRECT_POSITIVE_FINITE_notional_quote_USDT",
+  "BASE_quantity_qualified_for_quote": false,
+  "quote_divided_by_price": false,
+  "same_selected_unit_qualified_unique_sample_for_sums_and_price_response": true,
+  "stable_ID_conflicts_resolved_before_invalid_row_filter": true,
+  "partial_returned_counts_and_provider_coverage_preserved": true,
+  "tied_endpoint_or_no_span_return_null_reason": true,
+  "price_response_algorithm_byte_exact": true,
+  "full_market_causation_absorption_claimed": false,
+  "extra_BASE_field_does_not_change_quote_amount": true,
+  "no_cross_form_amount_fallback": true,
+  "core_engine_fields_compared_to_before_index": true,
+  "plan_readiness_rules_min10_BTCETH_P0t0_target_wave_clocks_changed": false,
+  "benchmark_or_market_context_restored": false,
+  "MODE_TEST_growth_future_event_plan_map_invalidation_Unicode_preserved": true,
+  "connected_card_utf16": 867,
+  "changed_production_files": [
+    "pump-report/analytics/context.mjs"
+  ],
+  "changed_test": "pump-report/tests/analytics/trade-quote-notional.test.mjs",
+  "required_test_only_oracles": [
+    "pump-report/handoffs/analytics/package-t/baseline/context.before.mjs",
+    "pump-report/handoffs/analytics/package-t/baseline/index.before.mjs"
+  ],
+  "readonly_dependencies": [
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "bytes": 16189,
+      "sha256": "e25dedc87048dc4fcbabc3b43c3bf6b7bd056e8102fca1e6c65834e48eee3ebd",
+      "git_blob": "9aa007c126dc2c56237069b02138ed25a507fbca",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/presentation.mjs",
+      "bytes": 7271,
+      "sha256": "4db478513ec9c927c92bea68e2a799a3dd3dfaaad122403d1f733378a4a180b4",
+      "git_blob": "9f846d672cbea94d489065fabcb8fe2938f28922",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/manual-text.mjs",
+      "bytes": 6616,
+      "sha256": "fdeaa3599d6d7096753ab9230ea0e760d73d678d9577c6d4fff98679d7d57892",
+      "git_blob": "c1bc9fe411179059fa269a0dc4f6684405d456fc",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/day-growth.mjs",
+      "bytes": 3782,
+      "sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1",
+      "git_blob": "af726423c9fdc355a77a09d3613f044d5f5cd20d",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/liquidity.mjs",
+      "bytes": 3326,
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a",
+      "git_blob": "560ca16d61f7c7a0ca2b9a8a3e275252a074b356",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/math.mjs",
+      "bytes": 4477,
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "git_blob": "84d526f14c505e23aa5cb72a7d3fdca7d14081b4",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "bytes": 17043,
+      "sha256": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0",
+      "git_blob": "2f1e17256280ca1f143390f85f8f7d9201915389",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/outcome.mjs",
+      "bytes": 9914,
+      "sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753",
+      "git_blob": "2abb12048aa0b909aec2e87cd843c77e2c345d58",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "bytes": 7668,
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+      "git_blob": "02542b09ff5f157d701c79489369bce68456ca41",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 6230,
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08",
+      "git_blob": "e1fdc83afdf72b803806370d32f8d42c92630cd6",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "bytes": 1774,
+      "sha256": "8e7100655d96a9b550e8a8c6debdfb9164280259394823e5c596d70c847d16ce",
+      "git_blob": "ec96d96656025dffbdffd4d296689d55ca2002b8",
+      "remote_exact": true
+    },
+    {
+      "path": "pump-report/tests/analytics/fixtures.mjs",
+      "bytes": 2854,
+      "sha256": "b8f48cac69d813a3ba025cf364145b96db4d7449914f5ba119ad9bb89c898fed",
+      "git_blob": "ea7a0aedbe6cac487850808f70834cca157ee7a5",
+      "remote_exact": true
+    }
+  ],
+  "S28_and_S_map_preserved": true,
+  "feature_retention_delta": {
+    "path": "pump-report/handoffs/analytics/package-t/feature-retention-delta.json",
+    "sha256": "80f73e9110fc3fc9fc04f1509b839e56d5ae2147d8eb6092e9ee0d804fd7b46f",
+    "old_feature_v1_modified": false,
+    "new_TTL_or_reserve_granted": false
+  },
+  "SOURCE_recent_route_maker_quantity_native_qualification_claimed": false,
+  "historicalTrades_quoteQty_Turnover_qualified": false,
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "cron": 0,
+  "index_presentation_movement_outcome_shared_contract_profile_runtime_source_changes": false,
+  "data_deleted": 0,
+  "original240_rewritten": false,
+  "nine_pauses_two_OWNERdeferrals_caps_unknowns_reserves_preserved": true,
+  "new_chats_subagents_automations": 0,
+  "production_native_acceptance_claimed": false,
+  "own_lease": "T own33min acquired17:51:51UTC expires18:24:51UTC; timely onlyown release immediately after freeze with FULL file/ref readback; no new autonomous scope.",
+  "files": [
+    {
+      "path": "pump-report/analytics/context.mjs",
+      "bytes": 9360,
+      "sha256": "6b63bf171033e945fd5f2f58c5a144209f83f9973b87d30077f9e1bb1c111673"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/PLAN_RU.md",
+      "bytes": 3508,
+      "sha256": "25a2f819bafbcd8ff346d98e1145f9991ef95c13e91fa0003218a935b3eb4424"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/README_RU.md",
+      "bytes": 5070,
+      "sha256": "1fd36b06b3f6cfda78753d0d43121b6106fa2469dc3de46e34c7f8ca43c81bde"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/authority.json",
+      "bytes": 5761,
+      "sha256": "7093cab4c80acf351c7141976667fa2e9a072855be0491e81d09193bac409ca0"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/baseline/context.before.mjs",
+      "bytes": 8942,
+      "sha256": "e8debb726aa8175e9a6dfc1b4aaa0c32df5355b9d6518bbf129d4a564f2ed30a"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/baseline/index.before.mjs",
+      "bytes": 16189,
+      "sha256": "e25dedc87048dc4fcbabc3b43c3bf6b7bd056e8102fca1e6c65834e48eee3ebd"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/connected-quote-card.json",
+      "bytes": 25915,
+      "sha256": "9fc42faad50fcf04f0f30918e5992f41d5ba51bd07277e0d5d3bf77554614cf9"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/connected-quote-card.txt",
+      "bytes": 1440,
+      "sha256": "1251417e914b5abb0b1868e5fe717c9068e1ff91a79d143c3c31a2f266acaed9"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/context.diff",
+      "bytes": 4487,
+      "sha256": "a01b84833abdfe6339a1a70319da92dec233b307c43a53debb86b73b4a31e2ec"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/feature-retention-delta.json",
+      "bytes": 3209,
+      "sha256": "80f73e9110fc3fc9fc04f1509b839e56d5ae2147d8eb6092e9ee0d804fd7b46f"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/integrity.json",
+      "bytes": 8419,
+      "sha256": "757d188f373452c5919a6eaa37087c89a28f6dd2e225990964952899f03562a3"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/prior-plan-contract.json",
+      "bytes": 380,
+      "sha256": "cd5552a565e2ff8a2a68ecab57a61f1af056654a3bf77cdbb8b475506449703b"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/quote-null-reasons.json",
+      "bytes": 3088,
+      "sha256": "ca23f61bcb31a742f41be08f02a93880e2c028c968ffbe47cad55a59c41fc063"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/quote-partial-conflict.json",
+      "bytes": 1711,
+      "sha256": "db0eba828d0895b602153ca78dd8fe2a5e26350cbb5339a73fb33d45c7bf7bf5"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/readonly-dependencies.json",
+      "bytes": 3231,
+      "sha256": "00b9b2123382676323a09cb05a60db12b8cc2464c5457e0a2dae87da4b91f98b"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/test-graph.json",
+      "bytes": 3094,
+      "sha256": "d75d6d8de7d6489e285346751cc1da3f4505d2a0078b5220f410106d13e6afbf"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/test-results.tap",
+      "bytes": 1362,
+      "sha256": "1de1a916327121840bb48fd19d571571b831190993f11b02389b79acef4400d3"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-t/two-unit-semantics.json",
+      "bytes": 4108,
+      "sha256": "640686f0a3ab34b330a4ac1f454cb5b71119015cec653bcb5b0f58a187da6c1c"
+    },
+    {
+      "path": "pump-report/tests/analytics/trade-quote-notional.test.mjs",
+      "bytes": 10910,
+      "sha256": "7390b8ebfa025ad05c50badd581366e80fbc023b44d51de4d1b343c3cbef20e5"
+    }
+  ]
+}

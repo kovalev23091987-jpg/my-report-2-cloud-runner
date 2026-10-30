@@ -1,0 +1,91 @@
+{
+  "schema": "BZ45_FROZEN_IMPLEMENTATION_V1",
+  "status": "FROZEN_UNEXECUTED_NOT_BUILT_NOT_DEPLOYED",
+  "authority_main": "1d251f6a2a659de675425c7c65dd4753891306b2",
+  "owner_approval_sha256": "aecc21c65cdee86de5fa801dd81ccf777f98101920a704330487f18866e6d377",
+  "owner_proposal_sha256": "cefdd197fe60c8ab80926084a11a20db6812f3d70ff03ebfb0c08586b237b504",
+  "product_and_factory_files": {
+    "pump-report/analytics/movement.mjs": {
+      "sha256": "98915f77b2d5f970554ce89d7684b7692ed5069c764f377f53308b6202d0dc3c",
+      "bytes": 40849
+    },
+    "pump-report/analytics/cold-first-structural-base.mjs": {
+      "sha256": "1df8de4604e761355171027b4854758a7f2d8474f9bd1963fd8813dbb02af567",
+      "bytes": 9943
+    },
+    "pump-report/analytics/post-breach-wave.mjs": {
+      "sha256": "cf300f76ac6cd555982735183ee71f24c6aafaf3559df1c0bbd35c9015c396ee",
+      "bytes": 4998
+    },
+    "pump-report/analytics/index.mjs": {
+      "sha256": "f1aaf18e882a6c8829104f0370abd842c3438d45e71d6ce945bffabbb5384186",
+      "bytes": 18169
+    },
+    "pump-report/tests/analytics/package-bz45/post-breach-vector-factories.mjs": {
+      "sha256": "ea6a9830fed3a3edb058474cb373039914ceb71958015f33dca274fbb2ee1fe8",
+      "bytes": 7663
+    }
+  },
+  "ROOT_dependency_files_readonly": {
+    "pump-report/contracts/wave-lifetime.mjs": "58535ee9f19bb35546edc3b9f07d9105e99faa91e9781909c0f123496a0b8f43",
+    "pump-report/contracts/index.mjs": "3e354d19bef8d860bccbe97991100a4b5d45a933f8316195c9193a2845418b8d",
+    "pump-report/runtime/candidate-priority.mjs": "dc9d97ee27ae234c4d7998d7c3ad1aab93ea0ccc87ddb5dec328d667d264c4f0"
+  },
+  "legacy_baseline": {
+    "movement_sha256": "589abe087ccf60192625a8ab15f685d1b992190c8c148ffce5d8259e505e6453",
+    "index_sha256": "fa0a1e13fcad7201d2083bc536da048a3addcb645828d7a15e01438c373d7ddb"
+  },
+  "static_text_identity_checks": {
+    "movement_constructPlan_and_target_suffix_byte_identical": true,
+    "index_only_RULES_VERSION_changed": true
+  },
+  "rules_version": "pump-analytics-v8-post-breach-20261029",
+  "new_wave_marker": "POST_BREACH_NEW_WAVE_V1",
+  "factory_exports": [
+    "createPostBreachVectors({profile}) -> [{id,input,rows,price,expected,...}]",
+    "postBreachVectorFactories(profile) -> lazy make/continueWith descriptors"
+  ],
+  "vector_count": 14,
+  "vector_names": [
+    "known_closed_cause_and_late_receipt",
+    "partial_closed_path_uses_conservative_boundary",
+    "qualified_incomplete_prefix_does_not_block_complete_required_path",
+    "expired_old_wave_keeps_original_expiry_cutoff",
+    "later_first_observation_does_not_give_extra_lifetime",
+    "continuation_keeps_identity_origin_anchor_and_expiry",
+    "legacy_without_closed_cause_remains_conservative",
+    "distinct_identity_and_previous_object_immutability",
+    "active_to_cancel_has_no_same_call_rearm",
+    "broken_new_seed_is_not_rescued_by_cold_base",
+    "cause_fact_identity_mismatch_no_event_rearm",
+    "future_proof_receipt_is_not_known",
+    "partial_new_lifetime_marker_cannot_reset_as_legacy",
+    "invalid_anchor_on_new_previous_cannot_reset"
+  ],
+  "vector_status": "UNEXECUTED",
+  "new_activity": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "strategy_reanalysis": 0,
+    "tests": 0,
+    "builds": 0,
+    "SQL": 0,
+    "native": 0,
+    "Cloudflare": 0,
+    "provider": 0,
+    "Telegram": 0,
+    "ROOT_files_edited": 0,
+    "raw_originals_mutated": 0
+  },
+  "not_proven": [
+    "JavaScript syntax/runtime PASS",
+    "Source review acceptance",
+    "actualIDOL READY",
+    "genuine AUTO SENT",
+    "native retained-wave persistence",
+    "combined artifact/module bytes",
+    "deployment"
+  ],
+  "next_ROOT_work": "One separately admitted connected affected qualification including readonly SOURCE review, new pure vectors/guards/queue, max3 fullengine and build/mock under ROOT admissions; no old accepted suite replay."
+}

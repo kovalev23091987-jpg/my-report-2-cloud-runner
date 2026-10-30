@@ -1,0 +1,13 @@
+# Отдельная новая волна после пробоя — проект общего формата
+
+Статус: DRAFT / UNEXECUTED / NOT INSTALLED. Основание — прямое одобрение владельца ROOT_OWNER_POST_BREACH_DISTINCT_WAVE_APPROVAL.json; исходное ТЗ0674… сохраняется. Новый контракт pump-report-contract-v1.4-post-breach-lifetime; INPUT/ANALYSIS schemaV1 сохраняются.
+
+Старые волны без обоих новых полей используют прежнее expires_ts=created_ts+wave_max_age_ms. Новая post-breach волна имеет lifetime_anchor_ts=impulse.end_ts и объект post_breach_rearm.version=POST_BREACH_NEW_WAVE_V1. created_ts остаётся фактическим временем нового решения; expires_ts=lifetime_anchor_ts+4ч. Повторные проверки сохраняют созданную identity, anchor и expiry. Истёкший seed не получает новый срок от позднего обнаружения.
+
+post_breach_rearm хранит prior_wave_id, prior_cancelled_ts, terminal_event_ts, proof_received_ts, rearm_decided_ts, cause_fact_id, cause_evidence_ref, breach_open_ts, breach_close_ts, breach_low, protected_base, cause_path_start_ts. terminal_event_ts равен закрытию доказанной свечи пробоя, а не точному неизвестному моменту пересечения внутри свечи. proof_received_ts относится к фактическому текущему получению использованного доказательства; prior_cancelled_ts сохраняет прежнее решение и может быть раньше нового proof_received_ts. Знание более ранним числом не утверждается. rearm_decided_ts=created_ts. Отдельный новый seed целиком после закрытого пробоя; старый CANCELLED объект и его оригиналы не изменяются.
+
+waveLifetimeValid проверяет только типы и геометрию часов/expiry/seed/proof-полей. Аналитика отдельно доказывает текущую identity, пригодность источника, точную свечу, полную непрерывную траекторию от известной старой базы, соответствие actual rows и собственную квалификацию нового seed. Наличие объекта с правильными полями само по себе не является доказательством рынка или READY. Частично заданные/неверные новые markers не получают legacy fallback. EXPIRED сохраняет прежнюю границу.
+
+Очередь хранит wave_lifetime_kind и wave_lifetime_anchor_ts. Для legacy/NONE оба явно null, чтобы удалить прежние anchored metadata при смене волны. Старые queue-v1 строки без этих полей сохраняют прежние условия. Полный proof не копируется в лёгкую очередь. При неверных metadata состояние UNKNOWN, без выдуманного продления. Свежая цена и membership старого active-array не продлевают срок.
+
+Рост20%/24ч или10%/5/15/60мин, объём2, ликвидность700–3000, самостоятельный план/минимум10% полной позиции, optionalкарта, manual3 и все provider/native caps/unknowns/issued holds остаются прежними. Окно поиска240мин и lifetime4ч не увеличиваются. Код ещё должен пройти одну связанную affected-квалификацию; эта публикация не разрешает nativeSQL/рынок/Telegram/установку.

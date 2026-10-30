@@ -1,0 +1,31 @@
+--- X-proposal.mjs
++++ X2-approved.mjs
+@@ -132,8 +132,8 @@
+     readiness_status:'SEPARATE_RESOURCE_ADMITTED_COHORT_AUDIT_REQUIRED',limitations:['Materialized counts require atomic aggregate+wave commit','Exact counters for frozen normalized append-only journal records; protocol conflicts stop reconciliation','When maturity_current=false mature/pending counters need explicit due transitions','No raw observations removed; no full-history read on query','No probability, calibration, profit or native storage capacity proven']};
+ }
+ 
+-// PROPOSED X: append to materialized-summary.mjs only after ROOT storage
+-// agreement. Old exports/states remain unchanged; this is a fresh namespace.
++// X2: ROOT-approved V3 storage contract. Old exports/states remain unchanged;
++// actual ROOT storage/queue/runtime admission is separate from this kernel.
+ export const MATERIALIZED_V3_VERSION='pump-materialized-summary-v3-external-replay-20261025';
+ const receiptSchemaV3='pump-materialized-record-receipt-v3-20261025';
+ const bindingSchemaV3='pump-materialized-instrument-binding-v3-20261025';
+@@ -211,12 +211,13 @@
+   contextV3(aggregate,null,as_of_ts,{allow_pending:true});
+   const view=readMaterializedSummary(shadowV3(aggregate,null).aggregate,{as_of_ts});
+   const b=maturity_boundary,empty=aggregate.counters.pending_waves===0;
+-  const bound=b&&b.materialization_id===aggregate.materialization_id&&b.aggregate_revision===aggregate.revision&&b.as_of_ts===as_of_ts&&b.complete===true&&text(b.source_ref)&&Number.isSafeInteger(b.due_count)&&b.due_count>=0;
+-  const due=empty?0:bound?b.due_count:null,current=!aggregate.maturity_pending&&due===0;
++  const bound=b&&b.materialization_id===aggregate.materialization_id&&b.aggregate_revision===aggregate.revision&&b.as_of_ts===as_of_ts&&b.complete===true&&b.has_more!==true&&text(b.source_ref)&&Number.isSafeInteger(b.due_count)&&b.due_count>=0;
++  const conflict=bound&&b.due_count>aggregate.counters.pending_waves;
++  const due=conflict||b!==null&&!bound?null:empty?0:bound?b.due_count:null,current=!aggregate.maturity_pending&&due===0;
+   return {...view,schema:'PUMP_MATERIALIZED_SUMMARY_V3',version:MATERIALIZED_V3_VERSION,
+-    source_cursor:aggregate.source_cursor,status:aggregate.maturity_pending?'MATURITY_QUEUE_SYNC_REQUIRED':due===null?'MATURITY_BOUNDARY_REQUIRED':due?'MATURITY_UPDATES_REQUIRED':'CURRENT',
++    source_cursor:aggregate.source_cursor,status:aggregate.maturity_pending?'MATURITY_QUEUE_SYNC_REQUIRED':conflict?'MATURITY_BOUNDARY_CONFLICT':due===null?'MATURITY_BOUNDARY_REQUIRED':due?'MATURITY_UPDATES_REQUIRED':'CURRENT',
+     maturity_current:current,pending_clock_transitions:due,maturity_intent_pending:Boolean(aggregate.maturity_pending),
+-    maturity_boundary_ref:bound?b.source_ref:null,external_replay_receipts:true,scalar_cohort_counters:true,
++    maturity_boundary_ref:bound&&!conflict?b.source_ref:null,external_replay_receipts:true,scalar_cohort_counters:true,
+     originals_required:true,delete_allowed:false,approved_delete_ttl_ms:null,
+     limitations:[...view.limitations,'V3 requires exact ROOT record receipt/instrument binding readback and atomic source-cursor+wave+aggregate commit','Queue intent blocks new folds until actual persisted queue reference is acknowledged','CURRENT with pending waves requires a current complete ROOT maturity-queue boundary; caller flags are not native admission','Old v2 originals/digests remain historical; no cleanup or capacity test performed']};
+ }

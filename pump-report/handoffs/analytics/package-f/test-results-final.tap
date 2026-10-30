@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: F01 clean temporal train and holdout partitions never enable publication or estimate probability
+ok 1 - F01 clean temporal train and holdout partitions never enable publication or estimate probability
+  ---
+  duration_ms: 13.015334
+  type: 'test'
+  ...
+# Subtest: F02 labels whose four-hour horizon crosses split are purged, including early known hits
+ok 2 - F02 labels whose four-hour horizon crosses split are purged, including early known hits
+  ---
+  duration_ms: 0.692791
+  type: 'test'
+  ...
+# Subtest: F03 an ended horizon with label received after split is not usable for training
+ok 3 - F03 an ended horizon with label received after split is not usable for training
+  ---
+  duration_ms: 0.303542
+  type: 'test'
+  ...
+# Subtest: F04 a wave update crossing the split remains in the original partition once
+ok 4 - F04 a wave update crossing the split remains in the original partition once
+  ---
+  duration_ms: 0.572083
+  type: 'test'
+  ...
+# Subtest: F05 post hoc split declaration is blocked even when a partition could be formed
+ok 5 - F05 post hoc split declaration is blocked even when a partition could be formed
+  ---
+  duration_ms: 0.419875
+  type: 'test'
+  ...
+# Subtest: F06 future received/known features cannot become original inputs
+ok 6 - F06 future received/known features cannot become original inputs
+  ---
+  duration_ms: 0.276334
+  type: 'test'
+  ...
+# Subtest: F07 outcome or arbitrary post-outcome feature names are excluded despite plausible clocks
+ok 7 - F07 outcome or arbitrary post-outcome feature names are excluded despite plausible clocks
+  ---
+  duration_ms: 0.2495
+  type: 'test'
+  ...
+# Subtest: F08 null requires a reason but zero is retained as an observed value
+ok 8 - F08 null requires a reason but zero is retained as an observed value
+  ---
+  duration_ms: 0.594417
+  type: 'test'
+  ...
+# Subtest: F09 duplicate feature names and unknown feature schema fail input qualification
+ok 9 - F09 duplicate feature names and unknown feature schema fail input qualification
+  ---
+  duration_ms: 0.213458
+  type: 'test'
+  ...
+# Subtest: F10 changing an original feature snapshot or analysis digest on an update is quarantined
+ok 10 - F10 changing an original feature snapshot or analysis digest on an update is quarantined
+  ---
+  duration_ms: 0.353625
+  type: 'test'
+  ...
+# Subtest: F11 mode, map, delivery, rules, profile and implementation remain distinct cohorts
+ok 11 - F11 mode, map, delivery, rules, profile and implementation remain distinct cohorts
+  ---
+  duration_ms: 1.4645
+  type: 'test'
+  ...
+# Subtest: F12 late forecasts, training labels from the future and map-cohort transfers are rejected
+ok 12 - F12 late forecasts, training labels from the future and map-cohort transfers are rejected
+  ---
+  duration_ms: 0.158541
+  type: 'test'
+  ...
+# Subtest: F13 a holdout forecast trained past the frozen split cannot pass as out-of-time validation
+ok 13 - F13 a holdout forecast trained past the frozen split cannot pass as out-of-time validation
+  ---
+  duration_ms: 0.135042
+  type: 'test'
+  ...
+# Subtest: F14 mature UNKNOWN and not-yet-mature HIT remain outside train and mature holdout labels
+ok 14 - F14 mature UNKNOWN and not-yet-mature HIT remain outside train and mature holdout labels
+  ---
+  duration_ms: 0.136708
+  type: 'test'
+  ...
+# Subtest: F15 future records are excluded and contradictory immutable origins cannot form a clean cohort
+ok 15 - F15 future records are excluded and contradictory immutable origins cannot form a clean cohort
+  ---
+  duration_ms: 0.18625
+  type: 'test'
+  ...
+# Subtest: F16 OBSERVED labels and claimed hashes alone never authenticate native provenance
+ok 16 - F16 OBSERVED labels and claimed hashes alone never authenticate native provenance
+  ---
+  duration_ms: 0.189292
+  type: 'test'
+  ...
+# Subtest: F17 input and feature bounds prevent unbounded offline audit work
+ok 17 - F17 input and feature bounds prevent unbounded offline audit work
+  ---
+  duration_ms: 0.555209
+  type: 'test'
+  ...
+# Subtest: F18 missing snapshots and forecasts in retained records stay missing, never backfilled
+ok 18 - F18 missing snapshots and forecasts in retained records stay missing, never backfilled
+  ---
+  duration_ms: 0.131709
+  type: 'test'
+  ...
+# Subtest: F19 retained map/no-map snapshots compare behavior on one wave without causal or numerical claims
+ok 19 - F19 retained map/no-map snapshots compare behavior on one wave without causal or numerical claims
+  ---
+  duration_ms: 6.368167
+  type: 'test'
+  ...
+# Subtest: F20 adding a map obtained after the original report fails paired comparison
+ok 20 - F20 adding a map obtained after the original report fails paired comparison
+  ---
+  duration_ms: 2.128625
+  type: 'test'
+  ...
+# Subtest: F21 map comparisons cannot silently change mandatory facts, P0 or rules
+ok 21 - F21 map comparisons cannot silently change mandatory facts, P0 or rules
+  ---
+  duration_ms: 2.244833
+  type: 'test'
+  ...
+# Subtest: F22 repeated map comparisons are not independent wins and conflicting pair IDs are censored
+ok 22 - F22 repeated map comparisons are not independent wins and conflicting pair IDs are censored
+  ---
+  duration_ms: 7.953083
+  type: 'test'
+  ...
+# Subtest: F23 paired input without original raw clocks or exact implementation binding stays unqualified
+ok 23 - F23 paired input without original raw clocks or exact implementation binding stays unqualified
+  ---
+  duration_ms: 1.536083
+  type: 'test'
+  ...
+# Subtest: F24 audits are pure and deterministic for shuffled independent rows
+ok 24 - F24 audits are pure and deterministic for shuffled independent rows
+  ---
+  duration_ms: 3.707459
+  type: 'test'
+  ...
+# Subtest: F25 feature units/domains and declared map cohort cannot be silently changed
+ok 25 - F25 feature units/domains and declared map cohort cannot be silently changed
+  ---
+  duration_ms: 0.382334
+  type: 'test'
+  ...
+# Subtest: F26 identical no-map snapshots cannot be labeled as a map-benefit experiment
+ok 26 - F26 identical no-map snapshots cannot be labeled as a map-benefit experiment
+  ---
+  duration_ms: 1.936
+  type: 'test'
+  ...
+# Subtest: F27 unresolved publication and unbound training manifests prevent clean calibration partitions
+ok 27 - F27 unresolved publication and unbound training manifests prevent clean calibration partitions
+  ---
+  duration_ms: 0.17925
+  type: 'test'
+  ...
+# Subtest: F28 engineering floors are inherited from TZ/summary and cannot be met by pooling distinct map cohorts
+ok 28 - F28 engineering floors are inherited from TZ/summary and cannot be met by pooling distinct map cohorts
+  ---
+  duration_ms: 0.296291
+  type: 'test'
+  ...
+# Subtest: F29 raw drafts cannot enter calibration without a frozen original or terminal UNSENT admission
+ok 29 - F29 raw drafts cannot enter calibration without a frozen original or terminal UNSENT admission
+  ---
+  duration_ms: 0.471583
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 96.724125

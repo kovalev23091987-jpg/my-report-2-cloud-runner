@@ -1,0 +1,20 @@
+--- a/pump-report/runtime/outcome-journal.mjs
++++ b/pump-report/runtime/outcome-journal.mjs
+@@ -61,6 +61,17 @@
+     const journal=await store.get(key);if(!journal)return null;
+     const selected=selectOutcomeAnchor({...journal,as_of_ts:clock()});
+     if(!selected.eligible){if(selected.status==='QUARANTINED')await store.set('pump:quarantine:'+key,selected);return selected;}
++    // PROPOSED ROOT FIX: persist first UNSENT expiry closure before its first
++    // frozen anchor/summary. Never retro-pin an already frozen old original.
++    if(selected.publication?.state==='UNSENT'&&!journal.frozen_anchor&&!journal.terminal){
++      const recorded_ts=clock();
++      await store.atomic(key,current=>{
++        if(!current)throw Error('UNSENT_ORIGINAL_JOURNAL_REQUIRED');
++        if(current.terminal||current.frozen_anchor)return {state:current,result:false};
++        if(current.wave_expires_ts!==journal.wave_expires_ts||!Number.isSafeInteger(current.wave_expires_ts)||current.wave_expires_ts<0||recorded_ts<current.wave_expires_ts)throw Error('UNSENT_EXPIRY_TERMINAL_CLOCK_UNBOUND');
++        return {state:{...current,terminal:{state:'EXPIRED',event_ts:current.wave_expires_ts,recorded_ts,evidence_ref:key+'#terminal'}},result:true};
++      });
++    }
+     const saved=await store.get(selected.anchor.analysis_id);if(!saved?.analysis||await textHash(JSON.stringify(saved.analysis))!==selected.anchor.analysis_sha256)throw Error('ANCHOR_SAVED_BYTES_READBACK_FAILED');
+     await store.atomic(key,j=>{if(j.frozen_anchor&&!equal(j.frozen_anchor,selected.anchor))throw Error('FROZEN_ANCHOR_CONFLICT');return {state:{...j,frozen_anchor:selected.anchor},result:true};});
+     const a=saved.analysis,o=selected.summary_origin,publication=selected.publication;

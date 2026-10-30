@@ -1,0 +1,55 @@
+{
+  "schema": "F598_RETAINED_NATIVE_UNIQUENESS_V1",
+  "method": "Targeted exact lookup/count in saved immutable catalogue; no new collection.",
+  "original": {
+    "path": "/private/tmp/pump-report-native-catalog-corrected.json",
+    "sha256": "7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5",
+    "bytes": 606669,
+    "wrapper_received_ts": 1792931871994,
+    "source_received_ts": 1792931870932,
+    "raw_sha256": "06bd46c7b6f1d2f97efd9fd8176e6a4db9baeb73093975be423bb3ad61379a8c"
+  },
+  "source_provenance": {
+    "provider": "BINGX",
+    "endpoint": "/openApi/swap/v2/quote/contracts",
+    "captured_through": "Previously admitted source-probe wrapper",
+    "F552": "pump-report/handoffs/sources/F552_PROPOSED_NATIVE_BINDINGS_550_V1.json",
+    "F552_sha256": "a1d1d8b96f6cf7106ba4224e1fbf4fe52059f4448cc4667e0332976b692eb66c",
+    "proposal_path": "root.proposals[251]",
+    "catalogue_hash_matches_F552_proof": true,
+    "ROOT_review": "checkpoints/pump-report-20261025/ROOT_F552_PER_TUPLE_NATIVE_REVIEW.json",
+    "ROOT_review_sha256": "44be40c249c04f1f0fceca4ad8a344e054595f5c0a05b1c6b5905b66984fc4e1",
+    "decision_sha256": "a8955b01e9618d8a3af16f440a6b4d490dd672c699efa24e6ce425035cbb27fa",
+    "samevenue_review": "ROOT_REVIEWED_NATIVE_SCOPE_PRICE_RELATIVE_ONLY",
+    "not_crossvenue_project_proof": true
+  },
+  "counts": {
+    "rows": 1278,
+    "exact_symbol_HYPE_USDT": 1,
+    "contractId100877": 1,
+    "baseHYPE_currencyUSDT": 1
+  },
+  "tuple": {
+    "instrument_id": "BINGX:USDT_M:100877:HYPE-USDT",
+    "native_contract_id": "100877",
+    "symbol": "HYPE-USDT",
+    "asset": "HYPE",
+    "currency": "USDT",
+    "market_type": "PERPETUAL",
+    "family": "BINGX_USDT_M"
+  },
+  "targeted_row_path": "root.body.response.data.data[259]",
+  "targeted_static_fields": {
+    "contractId": "100877",
+    "symbol": "HYPE-USDT",
+    "asset": "HYPE",
+    "currency": "USDT",
+    "displayName": "HYPE-USDT",
+    "status": 1,
+    "launchTime": 1734607800000
+  },
+  "finding": "Unique exact tuple-to-pair link is proved in this saved table; no project identity inferred.",
+  "membership": "HISTORICAL_CAPTURE_ONLY_NOT_CURRENT",
+  "size_as_multiplier": false,
+  "new_market_or_metadata_IO": 0
+}

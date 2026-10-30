@@ -1,0 +1,240 @@
+{
+  "schema": "ROOT_BZ6_HISTORICAL_COHORT_ACCEPTANCE_V1",
+  "status": "PASS_HISTORICAL_NOT_CURRENT_SENT",
+  "authority_main": "50fb41a454dda45f64887aead4139d4e5b9f0a72",
+  "root_owner": "CODEX:PUMP_SOURCES_AND_AUTO_20261027:1793090202170",
+  "manifest_sha256": "d090b1926de2850d999134ed338ecd8fcf882b083450ef7c46fcd6964c24ee55",
+  "private_result_sha256": "5fb7bda674b1a0117e272386888c971191446ef414baad4e5992a2f780d8e109",
+  "source_graph_sha256": "b9d5587fe15bff419033720a11aa53d43a67265ec8379e247e429497e7c9cd08",
+  "rules_version": "pump-analytics-v5-cold-structural-20261027",
+  "cases": [
+    {
+      "case_id": "DOOD241",
+      "evidence_class": "SAVED_ORIGINAL",
+      "baseline": {
+        "rules_version": "pump-analytics-v4-first-qualification-20261025",
+        "ready": true,
+        "state": "RESUMING",
+        "reasons": [],
+        "automatic_eligible": true,
+        "plan_minimum": 13.205812028692264,
+        "structural_candidate": false
+      },
+      "prototype": {
+        "rules_version": "pump-analytics-v5-cold-structural-20261027",
+        "ready": true,
+        "state": "RESUMING",
+        "reasons": [],
+        "automatic_eligible": true,
+        "plan_minimum": 13.205812028692264,
+        "structural_candidate": false
+      }
+    },
+    {
+      "case_id": "AIN_HISTORICAL_READY",
+      "evidence_class": "SAVED_ORIGINAL",
+      "baseline": {
+        "rules_version": "pump-analytics-v4-first-qualification-20261025",
+        "ready": true,
+        "state": "SHARP_PULLBACK_UNCONFIRMED",
+        "reasons": [],
+        "automatic_eligible": true,
+        "plan_minimum": 11.490592574901148,
+        "structural_candidate": false
+      },
+      "prototype": {
+        "rules_version": "pump-analytics-v5-cold-structural-20261027",
+        "ready": true,
+        "state": "SHARP_PULLBACK_UNCONFIRMED",
+        "reasons": [],
+        "automatic_eligible": true,
+        "plan_minimum": 11.490592574901148,
+        "structural_candidate": false
+      }
+    },
+    {
+      "case_id": "Q_COLD",
+      "evidence_class": "SAVED_ORIGINAL",
+      "baseline": {
+        "rules_version": "pump-analytics-v4-first-qualification-20261025",
+        "ready": false,
+        "state": "CANCELLED",
+        "reasons": [
+          "PLAN_INVALIDATED"
+        ],
+        "automatic_eligible": false,
+        "plan_minimum": null,
+        "structural_candidate": false
+      },
+      "prototype": {
+        "rules_version": "pump-analytics-v5-cold-structural-20261027",
+        "ready": true,
+        "state": "CALM_PULLBACK",
+        "reasons": [],
+        "automatic_eligible": true,
+        "plan_minimum": 11.26669629531596,
+        "structural_candidate": true
+      }
+    },
+    {
+      "case_id": "AIN_CURRENT_NOTREADY",
+      "evidence_class": "SAVED_ORIGINAL",
+      "baseline": {
+        "rules_version": "pump-analytics-v4-first-qualification-20261025",
+        "ready": false,
+        "state": "CALM_PULLBACK",
+        "reasons": [
+          "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
+        ],
+        "automatic_eligible": true,
+        "plan_minimum": null,
+        "structural_candidate": false
+      },
+      "prototype": {
+        "rules_version": "pump-analytics-v5-cold-structural-20261027",
+        "ready": false,
+        "state": "CALM_PULLBACK",
+        "reasons": [
+          "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
+        ],
+        "automatic_eligible": true,
+        "plan_minimum": null,
+        "structural_candidate": false
+      }
+    },
+    {
+      "case_id": "ARTIFICIAL_DISTINCT_NEW_SEED_AFTER_CANCELLED",
+      "evidence_class": "ARTIFICIAL_PREVIOUS_WAVE_ONLY",
+      "baseline_replayed": false,
+      "prototype": {
+        "rules_version": "pump-analytics-v5-cold-structural-20261027",
+        "ready": true,
+        "state": "CALM_PULLBACK",
+        "reasons": [],
+        "automatic_eligible": true,
+        "plan_minimum": 11.26669629531596,
+        "structural_candidate": true
+      },
+      "old_wave_preserved": true
+    },
+    {
+      "case_id": "ARTIFICIAL_SAME_CANCELLED_SEED",
+      "evidence_class": "ARTIFICIAL_PREVIOUS_WAVE_ONLY",
+      "baseline_replayed": false,
+      "prototype": {
+        "rules_version": "pump-analytics-v5-cold-structural-20261027",
+        "ready": false,
+        "state": "CANCELLED",
+        "reasons": [
+          "PLAN_INVALIDATED"
+        ],
+        "automatic_eligible": false,
+        "plan_minimum": null,
+        "structural_candidate": false
+      },
+      "old_wave_preserved": true
+    }
+  ],
+  "guards": [
+    {
+      "name": "VERIFIED_NULL_CANDIDATE",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "STRUCTURAL_CANDIDATE",
+      "reason": null
+    },
+    {
+      "name": "UNKNOWN_PREVIOUS_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "FIRST_CONSTRUCTION_OR_DISTINCT_POST_TERMINAL_SEED_REQUIRED"
+    },
+    {
+      "name": "RETAINED_ACTIVE_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "FIRST_CONSTRUCTION_OR_DISTINCT_POST_TERMINAL_SEED_REQUIRED"
+    },
+    {
+      "name": "SAME_CANCELLED_SEED_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "FIRST_CONSTRUCTION_OR_DISTINCT_POST_TERMINAL_SEED_REQUIRED"
+    },
+    {
+      "name": "FOREIGN_PREVIOUS_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "FIRST_CONSTRUCTION_OR_DISTINCT_POST_TERMINAL_SEED_REQUIRED"
+    },
+    {
+      "name": "DISTINCT_NEW_SEED_AFTER_EXPIRY",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "STRUCTURAL_CANDIDATE",
+      "reason": null
+    },
+    {
+      "name": "SEED_BEFORE_EXPIRY_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "FIRST_CONSTRUCTION_OR_DISTINCT_POST_TERMINAL_SEED_REQUIRED"
+    },
+    {
+      "name": "FUTURE_EXPIRED_LABEL_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "FIRST_CONSTRUCTION_OR_DISTINCT_POST_TERMINAL_SEED_REQUIRED"
+    },
+    {
+      "name": "FUTURE_BASE_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "CONFIRMED_POST_BREACH_BASE_REQUIRED"
+    },
+    {
+      "name": "UNCONFIRMED_BASE_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "CONFIRMED_POST_BREACH_BASE_REQUIRED"
+    },
+    {
+      "name": "CLOSED_PATH_GAP_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "COLD_PATH_INCOMPLETE"
+    },
+    {
+      "name": "FIRST_BASE_REBREACH_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "FIRST_BASE_REBREACHED_NO_REANCHOR"
+    },
+    {
+      "name": "PREKNOWN_SUPPORT_REQUIRED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "PREKNOWN_RECLAIM_PIVOT_REQUIRED"
+    },
+    {
+      "name": "NO_MANDATORY_CLOSED_RECLAIM_GATE",
+      "evidence_class": "ARTIFICIAL_HELPER_INPUT",
+      "status": "STRUCTURAL_CANDIDATE",
+      "reason": null
+    },
+    {
+      "name": "FUTURE_SOURCE_CLOCK_REFUSED",
+      "evidence_class": "OFFLINE_HELPER_GUARD",
+      "status": "NOT_APPLICABLE",
+      "reason": "COLD_SOURCE_CLOCKS_UNQUALIFIED"
+    }
+  ],
+  "real_engine_calls": 6,
+  "pure_helper_calls": 15,
+  "baseline_replayed": false,
+  "market_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "production_writes": 0,
+  "deployed": false,
+  "source_clocks_T0_and_original_inputs_unchanged": true,
+  "old_terminal_wave_not_reset": true
+}

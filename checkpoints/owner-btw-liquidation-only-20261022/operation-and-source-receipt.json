@@ -1,0 +1,112 @@
+{
+  "schema": "OWNER_BTW_LIQ_ONLY_NATIVE_REFUSAL_AND_PUBLIC_SOURCE_RECEIPT_V1",
+  "recorded_utc": "2026-10-22T07:54:03.799865+00:00",
+  "native_attempt": {
+    "run": 39741670107,
+    "head": "49b085f8f736586801e5b26111a7dd3539a534ba",
+    "mode": "LIQUIDATION_ONLY",
+    "contract": "BTW-USDT",
+    "status": "NOT_CLOSED",
+    "reason": "D1_DAILY_ADMISSION_NOT_CLOSED",
+    "preaction_status": "UNMEASURED_FINALIZED_USAGE",
+    "provider_HTTP": 0,
+    "Telegram": 0,
+    "MAIN": 0,
+    "actual_attempt_usage": {
+      "attempted_statements": 19,
+      "measured_rows_read_subtotal": 178,
+      "measured_rows_written_subtotal": 2,
+      "unknown_operations": 0,
+      "row_totals_closed": true,
+      "total_rows_read": 178,
+      "total_rows_written": 2
+    },
+    "native_daily_aggregate_at_cut": {
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-22",
+      "run_count": 7,
+      "reserved_rows_read": 58800,
+      "reserved_rows_written": 1032,
+      "measured_rows_read": 35280,
+      "measured_rows_written": 253,
+      "unknown_operations": 1,
+      "unfinished_reservations": 0
+    },
+    "manual_queue_separate_usage": {
+      "requests": 3,
+      "rows_read": 2,
+      "rows_written": 2,
+      "unknown_ops": 0,
+      "targets": {
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_command_v2": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "first:report2_command_v2": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "cost_scopes_not_summed_or_refunded": true,
+    "unknown_operation_first_cause_or_causal_commit": null,
+    "command_id_sha256": "8630a0556198f3810a9cb92cc35d020d8cf37c9070767b9efa415d8e3fbf23ca",
+    "command_retried": false,
+    "raw_payload_logs_SQL_in_Git": false
+  },
+  "native_artifact": {
+    "id": 12409009620,
+    "ZIP_bytes": 4867,
+    "members": 8,
+    "digest": "sha256:faefb9a93c24f58544f2e6c9b5debe963e1bc3b2dbe54d0fbd4ae88049556ecf",
+    "whole_ZIP_verified": true
+  },
+  "public_source_only": {
+    "D1_SQL": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "local_HTX_model": false,
+    "actual_GET_attempts": 3,
+    "reference": {
+      "source": "HTX",
+      "contract": "BTW-USDT",
+      "source_ts": 1792654999604,
+      "raw_sha256": "3249e8c55037eb557ce30e6be61b2e723c4f11e822acec5802668e6b6b6d0e44"
+    },
+    "external_model": {
+      "source": "SWOLECHARTS_CEX_MODEL",
+      "source_ts": 1792654985198,
+      "model_version": "est-1.0+hl-2026-09-27",
+      "returned_primary_zones": 5,
+      "factual_open_positions_confirmed": false,
+      "decision_target_eligible": false,
+      "raw_sha256": "c1f00e0014679fddeb12b1e3ef8aa1e9cc50964b21cfa230fb7ddfb08cb3c463",
+      "amount_semantics": "MODELED_BIN_INTENSITY_NOT_OBSERVED_OPEN_POSITION",
+      "extra_model_bands_and_totals_retained_only_locally": true
+    },
+    "CoinBoss_HTTP": 404,
+    "Orderly_exact_market": "UNVERIFIED; 0HTTP",
+    "native_day_gate_waived": false,
+    "native_LIQ_report_restored": false,
+    "raw_responses_prices_levels_SQL_private_fragments_in_Git": false
+  },
+  "operation_branch": {
+    "archive_head": "2362c5fe21e24020d4fe4a07a375e0db346fac2d",
+    "workflow_restored_byteexact": true,
+    "live_guard_removed": true,
+    "production_runtime_changed": false,
+    "temporary_job_merged_to_main": false,
+    "completed_old_cases_replayed": 0
+  },
+  "previous_606_code_acceptance_unchanged": "checkpoints/ACTIVE105_ANOMALY_INITIAL_INGRESS_PARENT_HANDOFF_20261022.json"
+}

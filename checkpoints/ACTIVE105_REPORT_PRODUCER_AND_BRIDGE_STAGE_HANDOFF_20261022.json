@@ -1,0 +1,363 @@
+{
+  "schema": "ACTIVE105_REPORT_PRODUCER_AND_BRIDGE_STAGE_HANDOFF_20261022_V1",
+  "recorded_utc": "2026-10-22T16:12:34.778547+00:00",
+  "runtime_main": "7fc1de9b64646c87f9dac5e9e5a65a40476e603f",
+  "PR": 621,
+  "frozen_head": "d6ad4ee77a7009c18db52165aacf52b7a07e6a8f",
+  "changed_files_exact": 48,
+  "authority_roots_unchanged_at_runtime_merge": 9,
+  "common": {
+    "schema": "FIRST_ORDINARY_CALLER_BRIDGE_STAGE_CODE_QUALIFICATION_V1",
+    "run_id": 39808818327,
+    "head": "df28ec92dfcea32ca31ebf13ec58cd18a1372222",
+    "actual_reporter": "NODE_SPEC",
+    "actual_SPEC_pass": 1,
+    "actual_SPEC_fail": 0,
+    "Node": "v24.21.0",
+    "CONTROLLED_groups": 12,
+    "artifact": {
+      "id": 12438139860,
+      "bytes": 125827,
+      "digest": "sha256:7caca0283c5a3a59fb6bb779eacc75b785f8d538f9a100fb2c56b482f8e9150d",
+      "members": 10,
+      "whole_ZIP_verified": true
+    },
+    "actual_components": {
+      "ordinary-caller-component.json": {
+        "bytes": 4380,
+        "sha256": "0214b5e5af67d5cd8c934427d78f5b32c3ee0565596eef372c1964d7204dd92e",
+        "controlled_groups": 5
+      },
+      "stage-only-component.json": {
+        "bytes": 2776,
+        "sha256": "5d7c0dc34e25a41742074d16e119164606c668a32101c2cd103e10c554c03881",
+        "controlled_groups": 7
+      }
+    },
+    "baseline_binding": {
+      "current_before_files": 618,
+      "candidate_files": 618,
+      "non_targets_equal": 617,
+      "current_before_inventory_sha256": "f635163c6cb4d5e4704fa3f97b4421d65aa6889b71e5e87c4903d5aaebec2463",
+      "candidate_inventory_sha256": "61c0db2a16487fed0fd7774701a6232e7c61a3ee74b603755500905b36c1fbc3",
+      "actual_complete_assembled_pair": true,
+      "old_tests_reexecuted": false
+    },
+    "source_pins": 1046,
+    "runtime_pins": 265,
+    "old_components_replayed": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "old_unknown_recovered": false,
+    "native_log_delivery_or_future_reconciliation_qualified": false,
+    "native_rollout_performed": false,
+    "baseline_cleanup_removed": true
+  },
+  "actual_automatic_MAIN": {
+    "run": 39810191333,
+    "name": "LIQ assembled spot and 105 admission offline",
+    "event": "push",
+    "head": "7fc1de9b64646c87f9dac5e9e5a65a40476e603f",
+    "conclusion": "success",
+    "artifacts": [
+      {
+        "id": 12440575711,
+        "bytes": 292431,
+        "digest": "sha256:792ed026e13f63e602502cd5db9e25b81ad10636c1eeef042d698805b210677f",
+        "members": 44
+      }
+    ],
+    "SPEC_files": [
+      {
+        "file": "active-source-finalist-and-markets.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 29,
+        "pass": 29,
+        "fail": 0
+      },
+      {
+        "file": "active-source-headroom.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 403,
+        "pass": 403,
+        "fail": 0
+      },
+      {
+        "file": "cold-archive.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 242,
+        "pass": 242,
+        "fail": 0
+      },
+      {
+        "file": "exact-asset-role-and-collector-audit.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 28,
+        "pass": 28,
+        "fail": 0
+      },
+      {
+        "file": "hourly-native-usage.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 41,
+        "pass": 41,
+        "fail": 0
+      },
+      {
+        "file": "index-useful-only.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 21,
+        "pass": 21,
+        "fail": 0
+      },
+      {
+        "file": "native-identity-source-handoff.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 39,
+        "pass": 39,
+        "fail": 0
+      },
+      {
+        "file": "native-sector-provider-binding.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 260,
+        "pass": 260,
+        "fail": 0
+      },
+      {
+        "file": "native-transport-fallback.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 7,
+        "pass": 7,
+        "fail": 0
+      },
+      {
+        "file": "native-useful-budget.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 19,
+        "pass": 19,
+        "fail": 0
+      },
+      {
+        "file": "new-liq-research-admission.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 6,
+        "pass": 6,
+        "fail": 0
+      },
+      {
+        "file": "native-useful-runtime.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 24,
+        "pass": 24,
+        "fail": 0
+      },
+      {
+        "file": "private-forecast-consumer.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 10,
+        "pass": 10,
+        "fail": 0
+      },
+      {
+        "file": "private-price-connected.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 154,
+        "pass": 154,
+        "fail": 0
+      },
+      {
+        "file": "private-reader-runtime.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 38,
+        "pass": 38,
+        "fail": 0
+      },
+      {
+        "file": "public-venue-health-priority.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 281,
+        "pass": 281,
+        "fail": 0
+      },
+      {
+        "file": "retained-write-failure-guard.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 110,
+        "pass": 110,
+        "fail": 0
+      },
+      {
+        "file": "scheduled-evidence-budget.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 3,
+        "pass": 3,
+        "fail": 0
+      },
+      {
+        "file": "source-health-priority.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 17,
+        "pass": 17,
+        "fail": 0
+      },
+      {
+        "file": "target.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 223,
+        "pass": 223,
+        "fail": 0
+      },
+      {
+        "file": "weekly-htx-synchronized-plan.tap",
+        "actual_reporter": "NODE_SPEC",
+        "tests": 129,
+        "pass": 129,
+        "fail": 0
+      }
+    ],
+    "tests": 2084,
+    "pass": 2084,
+    "fail": 0,
+    "automatic": true,
+    "manually_reexecuted": false
+  },
+  "targets": {
+    "current-generation/files/runner-main.mjs": {
+      "bytes": 184717,
+      "sha256": "db6b33383233cb1f594aac0f9072a812bf822d8479c2415fc5bb82d4d43f2dd3"
+    },
+    "tools/rollout-correlated-sql-bridge-20261022.mjs": {
+      "bytes": 38349,
+      "sha256": "191152b2f7d2c45a78c6755599cf07325dff3ad43c0550ab127015944b5f5a7d"
+    },
+    ".github/workflows/current-bridge-module-inspection-20261016.yml": {
+      "bytes": 5653,
+      "sha256": "993c5412bd7af78fbc6a0770cb2ed82ce625f2ee73eb00848a6655fb505aa489"
+    }
+  },
+  "actual_ordinary_producer_correlation_option_enabled_in_code": true,
+  "actual_new_natural_shared_ID_proven": false,
+  "runtime_change": "ONLYrunner5833→db6b nativeQueryReceipts:true in existing DATA_DB constructor. Existing SDKcab59/journaldc009/fatalartifactpath unchanged; no newSQL/HTTP/exporter/caps/forms/clocks. RepoCLI old16040prefix+exactstagecore2f515+actualnetwork55fa+exclusiveentry; defaultfalse existingworkflowstage mode, noactivation/logpatch/SQL.",
+  "native_stage": {
+    "schema": "ACTUAL_NATIVE_BRIDGE_STAGE_ONLY_RECEIPT_V1",
+    "run": 39810975433,
+    "head": "7fc1de9b64646c87f9dac5e9e5a65a40476e603f",
+    "conclusion": "success",
+    "artifact": {
+      "id": 12440596410,
+      "bytes": 2151,
+      "digest": "sha256:afc58f96b07f5b272d8833307c467e4185b1ff09bd72a49f71613ece41fdd25f",
+      "members": 1,
+      "whole_ZIP_verified": true
+    },
+    "proof": {
+      "bytes": 6594,
+      "sha256": "85e815381e4ec8d2219928768d670b02c0c5f1e87332c89fdb6f93f8c20d2f22"
+    },
+    "status": "STAGED_OWN_VERSION_VERIFIED_ACTIVE_UNCHANGED",
+    "reason": null,
+    "stage_phase": null,
+    "cloudflare_HTTP": 21,
+    "github_HTTP": 29,
+    "actual_upload_HTTP_attempts": 1,
+    "known_upload_ack": true,
+    "ownership_verified": true,
+    "active_preservation_verified": true,
+    "before": {
+      "version_id": "7011c257-4bdc-4244-a858-42c30e8532ab",
+      "deployment_id": "8cd9ba38-b819-49ce-9ff2-e1e7f3e8541b",
+      "module_sha256": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf",
+      "settings_sha256": "05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded",
+      "crons_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "runtime_sha256": "cf3bca9e631f2fa26b3bb242b9784c8ea557bf8ed64d00fdc87bf6c9d64b144a",
+      "binding_names": [
+        "DATA_DB",
+        "REPORT2_CLOUD_BRIDGE_TOKEN",
+        "REPORT2_DENO_BRIDGE_TOKEN"
+      ],
+      "latest_uploaded_version": "7011c257-4bdc-4244-a858-42c30e8532ab",
+      "immutable_script_etag": "faf47729620694c0e12f5c439fd5f22a15d42dbee42bc66625ff9c7e57ad8836"
+    },
+    "after": {
+      "version_id": "7011c257-4bdc-4244-a858-42c30e8532ab",
+      "deployment_id": "8cd9ba38-b819-49ce-9ff2-e1e7f3e8541b",
+      "module_sha256": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf",
+      "settings_sha256": "05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded",
+      "crons_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "runtime_sha256": "cf3bca9e631f2fa26b3bb242b9784c8ea557bf8ed64d00fdc87bf6c9d64b144a",
+      "binding_names": [
+        "DATA_DB",
+        "REPORT2_CLOUD_BRIDGE_TOKEN",
+        "REPORT2_DENO_BRIDGE_TOKEN"
+      ],
+      "latest_uploaded_version": "86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e",
+      "immutable_script_etag": "faf47729620694c0e12f5c439fd5f22a15d42dbee42bc66625ff9c7e57ad8836"
+    },
+    "staged": {
+      "version_id": "86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e",
+      "module_sha256": "c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063",
+      "module_readback_basis": "EXACT_LATEST_UPLOAD_SOURCE_BYTES",
+      "immutable_script_etag": "ac9d474832fa5a166a92032b19f42ee85bd4fb91b5066fd75da1877a8f051e29",
+      "settings_sha256": "05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded",
+      "runtime_sha256": "cf3bca9e631f2fa26b3bb242b9784c8ea557bf8ed64d00fdc87bf6c9d64b144a",
+      "binding_names": [
+        "DATA_DB",
+        "REPORT2_CLOUD_BRIDGE_TOKEN",
+        "REPORT2_DENO_BRIDGE_TOKEN"
+      ],
+      "metadata_sha256": "fe19ce689a62ee5fcb9c510e8ea3fd3d5b8d383d9b59fb18fa601f1ec9a1801c",
+      "created_on_ts": 1792685174332,
+      "created_clock_status": "WITHIN_CLIENT_OBSERVATION_WINDOW",
+      "observed_ts": 1792685178824,
+      "clock_is_ownership_or_billing_proof": false,
+      "ownership_basis": "KNOWN_UPLOAD_ACK_PLUS_EXACT_NATIVE_READBACK"
+    },
+    "native_SQL": 0,
+    "Worker_invocations": 0,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "activation_attempts": 0,
+    "settings_mutations": 0,
+    "delete_attempts": 0,
+    "old_unknown_recovered": false,
+    "current_Telegram_restored": false,
+    "source_body_or_secret_exported": false,
+    "local_intent_crash_durability_qualified": false,
+    "request_metadata_hash_is_not_multipart_wire_hash": true
+  },
+  "old_Paid_proof_changed": false,
+  "old_UTC22_unknown1_recovered": false,
+  "day_hold_removed": false,
+  "current_Telegram_restored": false,
+  "native_anomaly_policy": null,
+  "native_anomaly_schema_installed": false,
+  "independent105_connected": false,
+  "production_pending_journal_or_fs_durability_qualified": false,
+  "originals": {
+    "619": {
+      "frozen_head": "fe3c990050c6d155b11616e84df7da9aa1f2bcc8",
+      "files": 9,
+      "byte_exact": true
+    },
+    "620": {
+      "frozen_head": "75a6969b0d18ca96611174d04a7f92a0d1622a84",
+      "files": 13,
+      "byte_exact": true
+    }
+  },
+  "next_queue": "checkpoints/report-producer-and-bridge-stage-connected-20261022/next-worker-queues.json",
+  "receipt": "checkpoints/report-producer-and-bridge-stage-connected-20261022/merge-and-checks-receipt.json",
+  "all_five_directions_OPEN": true,
+  "full17_plan": "checkpoints/three-chat-finish-plan-20261020/plan.json",
+  "full_project_complete": false,
+  "owner_deferrals_unchanged": [
+    "ENTRY followup/recheck/cadence/TTL/anchors research patch tests native taskreaders acceptance",
+    "physicalstorage threshold-expiry/readback/throughput/sustainablecapacity tests"
+  ],
+  "only_current_own_released": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792681161607",
+  "current_finish_priority": "REPORT_AND_TELEGRAM_SAME_RUN_DELIVERY"
+}

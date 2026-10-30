@@ -1,0 +1,11 @@
+--- a/pump-report/sources/index.mjs
++++ b/pump-report/sources/index.mjs
+@@ -298,7 +298,7 @@
+   }
+   async function getOptional({instrument} = {}) {
+     const entry = resolve(instrument), facts = {trades: absent(entry, 'trades', 'BINGX_TRADE_ROUTE_NOT_QUALIFIED', 'NOT_CHECKED'),
+-      market_context: absent(entry, 'market_context', 'OPTIONAL_CONTEXT_ROUTE_NOT_CONFIGURED', 'NOT_CHECKED')};
++      market_context: absent(entry, 'market_context', 'OWNER_NO_BTC_ETH_CONTEXT', 'NOT_CHECKED')};
+     for (const [kind, parse] of [['open_interest', parseOpenInterest], ['funding', parseFunding]]) {
+       const qualification = entry.qualifications[kind];
+       const usableQualification = proof(qualification) && (kind === 'open_interest'

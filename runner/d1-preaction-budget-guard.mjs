@@ -1,3 +1,4 @@
+import {nativeReconciliationQueryBinding,bindNativeDayReconciliation,nativeDayUnknownCostIndependentlyClosed} from './native-day-reconciliation-tokens.mjs';
 const SCHEMA = 'report2-d1-reservation-budget-v2';
 
 function nonNegInt(value) {
@@ -49,21 +50,32 @@ export function parseDailyUsageAggregate(row, expectedDay) {
   return {ok:true,status:'DAY_USAGE_CLOSED',day_utc:day,run_count:count,...values};
 }
 
-export async function loadDailyUsageAggregate(db, now=Date.now()) {
+export async function loadDailyUsageAggregate(db, now=Date.now(), {reconciliation=null}={}) {
   if(!db?.prepare) throw new Error('D1_DB_REQUIRED');
   const day=utcDay(now);
-  const row=await db.prepare(`
+  const source=nativeReconciliationQueryBinding(reconciliation,now);
+  // The exceptional historical witness is read by the existing indexed day
+  // scan. Ordinary days keep the exact SQL and no extra query is introduced.
+  const witness=source?`,MAX(CASE WHEN reservation_id=?2 THEN json_object('reservation_id',reservation_id,'day_utc',day_utc,'source_run_id',source_run_id,'state',state,'started_ts',started_ts,'completed_ts',completed_ts,'reserve_rows_read',reserve_rows_read,'reserve_rows_written',reserve_rows_written,'measured_rows_read',measured_rows_read,'measured_rows_written',measured_rows_written,'measured_requests',measured_requests,'unknown_ops',unknown_ops) ELSE NULL END) AS reconciliation_source_row`:'';
+  const statement=db.prepare(`
     SELECT COUNT(*) AS run_count,
            SUM(MAX(reserve_rows_read,COALESCE(measured_rows_read,0)+CASE WHEN state='FINALIZED' THEN 1 ELSE 0 END)) AS reserved_rows_read,
            SUM(MAX(reserve_rows_written,COALESCE(measured_rows_written,0))) AS reserved_rows_written,
            SUM(CASE WHEN state='FINALIZED' THEN measured_rows_read ELSE 0 END) AS measured_rows_read,
            SUM(CASE WHEN state='FINALIZED' THEN measured_rows_written ELSE 0 END) AS measured_rows_written,
            SUM(CASE WHEN state='FINALIZED' THEN COALESCE(unknown_ops,1) ELSE 0 END) AS unknown_ops,
-           SUM(CASE WHEN state='RESERVED' THEN 1 ELSE 0 END) AS unfinished_count
+           SUM(CASE WHEN state='RESERVED' THEN 1 ELSE 0 END) AS unfinished_count${witness}
     FROM report2_runner_budget_ledger_shadow
     WHERE day_utc=?1
-  `).bind(day).first();
-  return parseDailyUsageAggregate(row,day);
+  `);
+  const row=await(source?statement.bind(day,source):statement.bind(day)).first();
+  const daily=parseDailyUsageAggregate(row,day);
+  if(source){
+    const receipt=bindNativeDayReconciliation({handle:reconciliation,daily,source_row:row?.reconciliation_source_row,current_usage:db.usageSnapshot?.()});
+    if(receipt)daily.native_cost_reconciliation=receipt;
+    else if(daily.ok){daily.ok=false;daily.status='VERIFIED_NATIVE_RECONCILIATION_WITNESS_NOT_CLOSED';}
+  }
+  return daily;
 }
 
 export async function reserveRunBudget(db,{reservationId,now=Date.now(),reservation}={}){
@@ -92,7 +104,7 @@ export function evaluateDailyReservationBudget({daily,nextReservation=null,maxDa
   if(!daily?.ok) return {...base,status:daily?.status||'DAY_USAGE_NOT_CLOSED',daily:daily??null};
   const maxR=posInt(maxDailyReads),maxW=posInt(maxDailyWrites);
   if(maxR===null||maxW===null) return {...base,status:'LIMITS_INVALID',daily};
-  if(daily.unknown_ops>0) return {...base,status:'UNMEASURED_FINALIZED_USAGE',daily};
+  if(daily.unknown_ops>0&&!nativeDayUnknownCostIndependentlyClosed(daily)) return {...base,status:'UNMEASURED_FINALIZED_USAGE',daily};
   const addR=nextReservation===null?0:posInt(nextReservation?.rows_read);
   const addW=nextReservation===null?0:posInt(nextReservation?.rows_written);
   if(addR===null||addW===null) return {...base,status:'NEXT_RESERVATION_INVALID',daily};

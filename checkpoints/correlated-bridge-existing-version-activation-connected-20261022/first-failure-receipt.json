@@ -1,0 +1,27 @@
+{
+  "schema": "ACTUAL_SAVED_STAGE_SHAPE_CORRECTION_PLAN_V1",
+  "failed_run": 39918812667,
+  "artifact": 12485513885,
+  "artifact_digest": "sha256:8a50f093ab935f4aaa5fabef0475b64db62601e55ab76021302b8b84e391f146",
+  "completed_source_groups": 0,
+  "third_semantic_execution": 0,
+  "problem": "Actual immutable public stage summary has no staged.crons_sha256; before/after global script cron hashes are present and exact. Proposed parser wrongly demanded absent staged field.",
+  "public_summary_sha256": "f010dc6368027ecc789d85d53609c96018fb7da961e9fad4a9e91e69996ac4a7",
+  "before_module_sha256": "f25b2e35e30a6457e5322b72b069c904c3bc2ce9de1956eb292d6238036f79c2",
+  "after_module_sha256": "6c6dd7294e4c8c235ffe29121faa359e40a4307dbbfd78762624569b3f257045",
+  "correction": {
+    "old_exact_clause": "oldKeys.some(k=>j.staged?.[k]!==p[k])",
+    "new_exact_clause": "oldKeys.filter(k=>k!=='crons_sha256').some(k=>j.staged?.[k]!==p[k])||Object.hasOwn(j.staged,'crons_sha256')",
+    "old_prefix6143_unchanged": true,
+    "before_after_cron_checks_unchanged": true,
+    "future_native_staged_and_current_cron_reads_unchanged": true,
+    "absent_historical_staged_cron_NOT_invented": true
+  },
+  "central_only_rebindings": [
+    "CLI_SOURCE_module_hardpin",
+    "derived_source_case_PREFIX_target_manifest_module_bytes",
+    "derived_third_case_PREFIX_source_binding_CLI_target_manifest"
+  ],
+  "frozen_622_623_unchanged": true,
+  "old_components_replayed": 0
+}

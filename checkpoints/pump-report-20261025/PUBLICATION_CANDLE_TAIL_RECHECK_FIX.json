@@ -1,0 +1,8 @@
+{
+  "schema": "PUMP_PUBLICATION_CANDLE_TAIL_RECHECK_FIX_V1",
+  "defect": "The analytics engine can qualify a fresh contiguous tail from INCOMPLETE older history, but generic factUsable previously rejected all INCOMPLETE candles during publication.",
+  "fix": "Refresh only price/book under DELIVERY purpose, then use the same analytics engine to qualify retained candle clocks/units/tail/independent plan; reject expired/unqualified candles and changed plans.",
+  "new_affected3PASS": true,
+  "native_IO": 0,
+  "strategy_thresholds_changed": false
+}

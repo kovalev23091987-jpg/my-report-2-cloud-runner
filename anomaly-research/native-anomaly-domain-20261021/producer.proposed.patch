@@ -1,0 +1,34 @@
+--- a/current-generation/files/src/htx-signed-tape.mjs
++++ b/current-generation/files/src/htx-signed-tape.mjs
+@@ -60,6 +60,14 @@
+    }
+   }
+   prior[type].body_knowledge={body_completed_ts:complete,body_text_utf8_bytes:bytes,body_text_sha256:digest,hash_scope:'SHA256_UTF8_RESPONSE_TEXT',hash_status:status};
++  // A completed bounded text must parse to this exact capture, not merely share its contract/clock.
++  const minuteCapture=captured.get(contract)?.minutes;let captured_payload_sha256=null;
++  if(stage==='COMPLETED'&&status==='TEXT_HASH_RECORDED'&&complete!==null&&minuteCapture&&minuteCapture.observed_ts>=complete)try{
++   const capturedHash=hash(minuteCapture.payload);
++   if(hash(JSON.parse(body_text))===capturedHash)captured_payload_sha256=capturedHash;
++  }catch{}
++  if(captured_payload_sha256!==null)minuteCapture.anomaly_body_receipt={...prior[type],captured_payload_sha256,raw_body_sha256:null};
++
+  }
+  retainBounded(requestReceipts,contract,prior);
+ }
+@@ -72,6 +80,16 @@
+  if(!captured.has(contract)&&captured.size>=8)captured.delete(captured.keys().next().value);
+  const row=captured.get(contract)||{};row[type]={payload,observed_ts};captured.set(contract,row);
+ }
++
++// Read-only same-process source seam. No fetch, SQL, new clock, epoch or native grant.
++export function capturedHtxAnomalyBasis({contract,now}={}){
++ const row=captured.get(contract),m=row?.minutes,meta=row?.metadata,r=m?.anomaly_body_receipt,k=r?.body_knowledge;
++ if(!isExactHtxUsdtSwapKey(contract)||!Number.isSafeInteger(now)||!m||!meta||r?.stage!=='COMPLETED'||k?.hash_status!=='TEXT_HASH_RECORDED'||r.captured_payload_sha256!==hash(m.payload))return null;
++ if(![m.payload?.ts,m.observed_ts,meta.payload?.ts,meta.observed_ts,r.started_ts,r.received_ts,k.body_completed_ts].every(v=>Number.isSafeInteger(v)&&v>0&&v<=now)||m.payload.ts>m.observed_ts||meta.payload.ts>meta.observed_ts||r.started_ts>r.received_ts||r.received_ts>k.body_completed_ts||k.body_completed_ts>m.observed_ts||now-m.payload.ts>TTL||now-meta.payload.ts>TTL)return null;
++ if(m.payload?.status!=='ok'||m.payload?.ch!==`market.${contract}.kline.1min`||!Array.isArray(m.payload.data)||m.payload.data.length>2000||meta.payload?.status!=='ok'||!Array.isArray(meta.payload.data))return null;
++ return{schema:'CAPTURED_HTX_ANOMALY_BASIS_V1',contract,metadata:meta.payload,metadata_observed_ts:meta.observed_ts,minutes:m.payload,minutes_observed_ts:m.observed_ts,body_receipt:r,material_available_ts:Math.max(meta.observed_ts,m.observed_ts,k.body_completed_ts),native_first_knowledge_qualified:false,native_epoch_qualified:false,native_admission_qualified:false,provider_HTTP:0,SQL:0};
++}
++
+ export function validateSignedMinute(minute,{contract,contract_size}={}){
+  if(minute?.contract!==contract||minute.contract_size!==contract_size||!Number.isSafeInteger(minute.start_ts)||minute.start_ts%MIN||!Number.isSafeInteger(minute.factual_count)||minute.factual_count<0||!Array.isArray(minute.fills)||minute.fills.length!==minute.factual_count||new Set(minute.fills.map(r=>r.id)).size!==minute.fills.length)return false;
+  const fills=minute.fills;if(fills.some(r=>typeof r.id!=='string'||!/^\d+$/.test(r.id)||!r.id||!Number.isSafeInteger(r.ts)||r.ts<minute.start_ts||r.ts>=minute.start_ts+MIN||!['buy','sell'].includes(r.side)||n(r.price)===null||r.price<=0||n(r.contracts)===null||r.contracts<=0||n(r.quote_usdt)===null||r.quote_usdt<=0||!close(r.quote_usdt,r.price*r.contracts*contract_size)))return false;

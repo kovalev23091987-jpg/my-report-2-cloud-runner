@@ -1,0 +1,150 @@
+{
+  "schema": "DOCUMENTARY_TREE_COMMIT_SHORT_REF_CAS_V1",
+  "verdict": "YES_DOCUMENTED_CONDITIONAL_FIVE_HTTP_NOT_RUNTIME_QUALIFIED",
+  "checked_at_UTC": "2026-10-18T21:15:30.632851+00:00",
+  "fresh_main": "21f5af021232b90d30add34641940e1137f52bc7",
+  "GraphQL": {
+    "documentation": "https://docs.github.com/en/graphql/reference/git#updaterefs",
+    "UpdateRefsInput": {
+      "repositoryId": "ID!",
+      "refUpdates": "[RefUpdate!]!",
+      "clientMutationId": "String"
+    },
+    "RefUpdate": {
+      "name": "GitRefname!",
+      "beforeOid": "GitObjectID",
+      "afterOid": "GitObjectID!",
+      "force": "Boolean"
+    },
+    "beforeOid_optional_in_API_but_required_by_candidate": true,
+    "beforeOid_semantics": "Ref must equal supplied expected OID before update",
+    "atomic_updates_documented": true,
+    "candidate_refs": 1,
+    "candidate_ref_name": "refs/heads/main",
+    "force": false,
+    "zero_OIDs_allowed_by_candidate": false,
+    "response_fields": [
+      "clientMutationId"
+    ],
+    "clientMutationId_is_not_deduplication_proof": true,
+    "ordinary_force_false_updateRef_is_exact_CAS": false
+  },
+  "REST_tree": {
+    "documentation": "https://docs.github.com/en/rest/git/trees?apiVersion=2022-11-28#create-a-tree",
+    "route": "POST /repos/{owner}/{repo}/git/trees",
+    "body_keys": [
+      "base_tree",
+      "tree"
+    ],
+    "tree_items": 4,
+    "entry_keys": [
+      "path",
+      "mode",
+      "type",
+      "content"
+    ],
+    "mode": "100644",
+    "type": "blob",
+    "content": "string, full prepared file text",
+    "base_tree": "root tree OID of exact expected commit h; not commit h itself",
+    "both_sha_and_content_allowed": false,
+    "extra_createBlob_requests_required": 0,
+    "permissions_documented": "Contents repository write"
+  },
+  "REST_commit": {
+    "documentation": "https://docs.github.com/en/rest/git/commits?apiVersion=2022-11-28#create-a-commit",
+    "route": "POST /repos/{owner}/{repo}/git/commits",
+    "body_keys": [
+      "message",
+      "tree",
+      "parents"
+    ],
+    "parents": [
+      "h"
+    ],
+    "missing_or_empty_parents_allowed_by_candidate": false,
+    "commit_c_known_before_ref_CAS": true,
+    "permissions_documented": "Contents repository write",
+    "automatic_GitHub_signing_guaranteed_by_this_REST_documentation": false
+  },
+  "first_snapshot_required_metadata": [
+    "repository.id",
+    "main ref OID equals h",
+    "immutable commit h root tree OID",
+    "four SHA-pinned root Blobs",
+    "SHA-pinned fence",
+    "SHA-pinned generation",
+    "AGENTS if needed"
+  ],
+  "success_path_HTTP": {
+    "known_head_snapshot": 1,
+    "REST_tree": 1,
+    "REST_commit": 1,
+    "short_GraphQL_ref_CAS": 1,
+    "exact_immutable_and_current_ref_readback": 1,
+    "total": 5
+  },
+  "control_arithmetic": {
+    "known_head_borrowed_cursor": 5,
+    "borrowed_cleanup_reserve_unchanged": 5,
+    "known_head_self_cursor_plus_release": 10,
+    "self_cleanup_reserve_unchanged": 10,
+    "unknown_head_extra_GET_per_operation": 1,
+    "unknown_head_borrowed_cursor": 6,
+    "unknown_head_self_cursor_plus_release": 12,
+    "unknown_head_variant_fits_existing_cleanup": false,
+    "max_control_HTTP": 40,
+    "pending_postflight_HTTP": 4,
+    "native_before_modify_guard_HTTP": 3,
+    "max_native_batches_unchanged": 6,
+    "reserves_lowered": false,
+    "new_native_batches_added": false,
+    "retry_or_extra_tree_walk_grant": false
+  },
+  "caller_required_change_proposal_only": "Pass latest expected h explicitly through acquire/cursor/release; cursor-promoted head must replace stale receipt.head. No implementation in this package.",
+  "unknown_ACK_boundary": "Since c is known before CAS, planned final readback can resolve ref==c if exact; second unknown/moved/foreign/expired stops without assuming release/closure.",
+  "qualifications_not_performed": [
+    "installed GITHUB_TOKEN exact query/updateRefs permissions",
+    "main branch rules/REST commit signature acceptance",
+    "four-inline-content actual request body acceptance and byte exact encoding",
+    "nontruncated six/seven Blob snapshots and readbacks",
+    "actual five-call transport count/latency/headers",
+    "every failure-path/control40 closure"
+  ],
+  "additional_official_sources": [
+    {
+      "url": "https://docs.github.com/en/graphql/reference/commits",
+      "fact": "Commit.tree exposes root Tree in pinned snapshot"
+    },
+    {
+      "url": "https://docs.github.com/en/enterprise-cloud@latest/apps/creating-github-apps/registering-a-github-app/choosing-permissions-for-a-github-app#choosing-permissions-for-graphql-api-access",
+      "fact": "GraphQL app permissions require query/mutation-specific testing"
+    },
+    {
+      "url": "https://docs.github.com/en/rest/about-the-rest-api/api-versions",
+      "fact": "2022-11-28 remains supported at reading; no version upgrade proposed"
+    }
+  ],
+  "tests_or_application_execution": 0,
+  "project_GraphQL_tree_commit_ref_probe": 0,
+  "provider_acquisition": 0,
+  "native_SQL": 0,
+  "workflow_dispatch": 0,
+  "deploy": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "own_lease_maintenance_is_separate": true,
+  "runtime_shared_mutation": false,
+  "prior496_source_audit_or_old_job_repeated": false,
+  "version_specific_official_OpenAPI": {
+    "path": "official-openapi-fields.json",
+    "source_url": "https://raw.githubusercontent.com/github/rest-api-description/755ee33b4a81d51f6f07a902cce26cbec3b822f2/descriptions/api.github.com/api.github.com.2022-11-28.json",
+    "repository_commit": "755ee33b4a81d51f6f07a902cce26cbec3b822f2",
+    "full_document_bytes": 13429427,
+    "full_document_sha256": "309e30296b212d220ed143beeba216dbb0df11915daf79ee2ed01e06c6c9a586",
+    "file_version": "api.github.com.2022-11-28.json",
+    "document_info_version": "1.1.4",
+    "selected_fields_exact": true,
+    "four_inline_entries_supported_by_schema": true
+  }
+}

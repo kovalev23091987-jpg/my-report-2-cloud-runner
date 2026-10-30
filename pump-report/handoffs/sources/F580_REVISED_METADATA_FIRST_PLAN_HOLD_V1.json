@@ -1,0 +1,46 @@
+{
+  "schema": "F580_REVISED_METADATA_FIRST_PLAN_HOLD_V1",
+  "status": "HOLD_NOT_EXECUTABLE_NO_ACTUAL_ADMISSION_RECOMMENDATION",
+  "supersedes_recommendation_only": "F579 conditional getTicker->funding; frozen F579 bytes not changed.",
+  "independent_prerequisites": [
+    "Direct primary API serializer ratio/percent-point mapping, not model formula/sample magnitudes.",
+    "Canonical underlying4STOCK identity tied to BingX and edgeX via same unambiguous network/project/token ID; one cited edgeX address plus BingX ticker notice insufficient.",
+    "Current metadata mainnet environment, exact unique native contract/coin ID graph and explicit crypto/family/quote/settle/status qualification; missing fields stay NULL/hold.",
+    "V2 quota/whole-budget positive admission; no V1 carry or new caps."
+  ],
+  "eventual_cold_lower_bound_only": [
+    {
+      "step": 1,
+      "method": "GET",
+      "url": "https://edgex-prod-v2.edgex.exchange/api/v2/public/meta/getMetaData",
+      "role": "Before funding, resolve approved native contract IDs to coin graph/environment/trade flags. No ticker shortcut; reject ambiguous/missing eligibility.",
+      "not_admitted": true
+    },
+    {
+      "step": 2,
+      "method": "GET",
+      "url": "https://edgex-prod-v2.edgex.exchange/api/v2/public/funding/getFundingRatePage",
+      "params": {
+        "contractId": "ONLY independently canonical+eligible current edgeX ID from step1",
+        "size": 2,
+        "filterSettlementFundingRate": true,
+        "offsetData": ""
+      },
+      "role": "Only after all independent prerequisites and exact native admission; source calculation clock ms distinct from raw settlement clock/receive time.",
+      "not_admitted": true
+    }
+  ],
+  "warm_lower_bound": "1funding GET only if exact current identity/metadata eligibility/serializer/period are already proven; no warm cache assumption today.",
+  "logical_lower_bound_cold": 2,
+  "complete_eligibility_and_physical_route_cost": null,
+  "endpoint_weights": null,
+  "provider_V2_quota": null,
+  "actual_HTTP": 0,
+  "actual_metadata_reads": 0,
+  "budget_reserved": 0,
+  "native_cap_grant": 0,
+  "stop_conditions": "No requests while serializer/canonical/settle/classification gaps persist. A sample cannot prove its own units or asset identity. Never fix these gaps with getTicker, price similarity, prefixes, quote=settle, collateral bridges or backend2^32 scaling.",
+  "quote_boundary": "Published edgeX4STOCKUSDC remains foreign venue context; no USDT renaming or production binding.",
+  "no_new_gates_or_runtime_changes": true,
+  "unused_docs1_not_refund_or_next_grant": true
+}

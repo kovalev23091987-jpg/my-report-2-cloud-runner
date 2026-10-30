@@ -1,0 +1,74 @@
+{
+  "schema": "F600_BYTE_EXACT_OFFLINE_VALIDATION_V1",
+  "status": "PASS",
+  "checks": {
+    "all_JSON_parse": true,
+    "raw_hash_size_exact": true,
+    "whole_document_stays_truncated": true,
+    "only_closed_original_objects": true,
+    "all1234_original_object_bounds_hash_projection_valid": true,
+    "object_bounds_nonoverlapping_within_arrays": true,
+    "four_closed_shallow_arrays_valid": true,
+    "contracts0_to695_only": true,
+    "incomplete696_not_used": true,
+    "USDTM_format_counts_exact": true,
+    "one_selected550_join": true,
+    "raw452_remainder98": true,
+    "every_raw_candidate_exact_closed_USDTM_reference": true,
+    "no_canonical_CORE_map_UNSUPPORTED_claims": true,
+    "coins_unobserved_not_absent": true,
+    "latest_actual23_remains1": true,
+    "HOLD_no_next_call": true,
+    "conditional_DOCS_not_activated": true,
+    "F599_all9_frozen_files_unchanged": true,
+    "raw_unchanged_after_validation": true
+  },
+  "closed_array_bounds_hashes": [
+    {
+      "path": [
+        "$",
+        "brokerFilters"
+      ],
+      "byte_start": 63,
+      "byte_end_exclusive": 65,
+      "literal_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "elements": 0
+    },
+    {
+      "path": [
+        "$",
+        "symbols"
+      ],
+      "byte_start": 76,
+      "byte_end_exclusive": 525703,
+      "literal_sha256": "ae474b70110d49090cd4b4c24a080fcdae746969ebb4027e6afb7bf12ca65c11",
+      "elements": 536
+    },
+    {
+      "path": [
+        "$",
+        "rateLimits"
+      ],
+      "byte_start": 525717,
+      "byte_end_exclusive": 525902,
+      "literal_sha256": "ca0cc68b3a0ee7a6d24d5a910f071b89f75d5640c71b3035eac7ca98da135063",
+      "elements": 2
+    },
+    {
+      "path": [
+        "$",
+        "options"
+      ],
+      "byte_start": 525913,
+      "byte_end_exclusive": 525915,
+      "literal_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "elements": 0
+    }
+  ],
+  "validated_original_objects": 1234,
+  "raw_prefix_bytes": 2097129,
+  "raw_prefix_sha256": "4cff48bfb114e262312e21e3c86da26b7da3378534f9e14de2068be5b803087c",
+  "product_tests": 0,
+  "new_SOURCE_API_HTTP": 0,
+  "scope": "Offline byte/hash/JSON slice validation only; no reconstruction or product execution"
+}

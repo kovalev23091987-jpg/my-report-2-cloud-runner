@@ -1,0 +1,76 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+const PREFIX='checkpoints/source-worker-correlated-bridge-paid-compatibility-20261022',NOW=1792687200000;
+const sha=b=>createHash('sha256').update(b).digest('hex'),json=p=>JSON.parse(fs.readFileSync(p,'utf8'));
+async function load({repo_root}){
+ const repo=fs.realpathSync(repo_root);assert.notEqual(path.basename(repo),'src');const pkg=path.join(repo,PREFIX),binding=json(path.join(pkg,'target-bindings.json')),deps=json(path.join(pkg,'dependencies.json'));
+ for(const p of json(path.join(pkg,'manifest.json')).payloads){const b=fs.readFileSync(path.join(pkg,p.path));assert.equal(b.length,p.bytes);assert.equal(sha(b),p.sha256);}
+ const sources={};for(const [p,v]of Object.entries(binding.targets)){const b=fs.readFileSync(path.join(repo,p));assert.equal(b.length,v.after_bytes);assert.equal(sha(b),v.after_sha256);assert.deepEqual(b,fs.readFileSync(path.join(pkg,v.proposed)));sources[p]=b.toString();}
+ for(const [p,h]of Object.entries(deps.repo_pins))assert.equal(sha(fs.readFileSync(path.join(repo,p))),h);
+ const moduleSource=sources['runner/retention-bridge-provenance.mjs'],modulePin=binding.targets['runner/retention-bridge-provenance.mjs'];assert.equal(sha(Buffer.from(moduleSource).subarray(0,binding.module_old_prefix_bytes)),modulePin.before_sha256,'ENTIRE_OLD_MODULE_PREFIX_BYTE_EXACT');
+ const factory=moduleSource.slice(moduleSource.indexOf(binding.factory_start),moduleSource.indexOf(binding.factory_end));assert.equal(Buffer.byteLength(factory),binding.factory_bytes);assert.equal(sha(factory),binding.factory_sha256);
+ const paid=sources['tools/run-paid-sliding-history-20261018.mjs'],observe=paid.slice(paid.indexOf(binding.paid_observe_start),paid.indexOf(binding.paid_observe_end,paid.indexOf(binding.paid_observe_start)));assert.equal(sha(observe),binding.paid_observe_sha256);
+ const loss=sources['tools/recover-lossless-retained-history-20261014.mjs'];for(const x of [binding.lossless_assignment,binding.lossless_before,binding.lossless_after])assert.equal(loss.split(x).length,2);
+ // All source/proof/manifest pins precede application imports. Never import maintenance scripts.
+ const api=await import(pathToFileURL(path.join(repo,'runner/retention-bridge-provenance.mjs')).href),rollout=await import(pathToFileURL(path.join(repo,'runner/htx-coordinated-rollout.mjs')).href),inspect=await import(pathToFileURL(path.join(repo,'runner/installed-bridge-module-inspection.mjs')).href);
+ const oldRaw=fs.readFileSync(path.join(repo,api.RETENTION_SQL_BRIDGE_PROOF.path)),newRaw=fs.readFileSync(path.join(repo,api.CORRELATED_RETENTION_SQL_BRIDGE_PROOF.path));
+ const old=api.parseRetentionSQLBridgeProof(oldRaw),next=api.parseCorrelatedRetentionSQLBridgeProof(newRaw),nativeSummary=JSON.parse(newRaw);
+ assert.equal(sha(newRaw),binding.actual_public_stage_summary_sha256);assert.equal(nativeSummary.proof.sha256,binding.actual_inner_proof_SHA_not_repo_file);
+ return{repo,pkg,binding,api,rollout,inspect,factory,observe,oldRaw,newRaw,old,next,nativeSummary,bindingResult:{actual_three_targets:binding.targets,old6143_module_prefix_preserved:true,all_source_closure_pins_before_imports:true,whole_public_receipt_f010_not_inner85e815:true,maintenance_scripts_imported_or_called:false,old_case_import_or_call:0}};
+}
+// One new callable; no registration or autorun. No SQL/retention/CF execution.
+export async function runCorrelatedBridgePaidCompatibilityConnected(args){
+ const savedFetch=globalThis.fetch,groups=[];let api,temporary=null,unexpected=0;globalThis.fetch=async()=>{unexpected++;throw Error('UNEXPECTED_NATIVE_NETWORK_DENIED');};
+ const add=(name,variants=1,extra={})=>groups.push({name,variants,status:'NEW_PAID_COMPATIBILITY_CONTROLLED_ASSERTIONS_COMPLETED',...extra});
+ try{
+  api=await load(args);const A=api.api,raws={[api.old.path]:api.oldRaw,[api.next.path]:api.newRaw},modulePath='runner/retention-bridge-provenance.mjs',consumerPaths=['tools/run-paid-sliding-history-20261018.mjs','tools/recover-lossless-retained-history-20261014.mjs'];
+  const attested=await A.attestRetentionSQLBridgeCompatibility({repo_root:api.repo});assert.equal(attested.status,'EXACT_TWO_CONSUMERS_CODE_ACTIVE_COMPATIBILITY');assert.equal(attested.compatibility_module_sha256,api.binding.targets[modulePath].after_sha256);for(const p of consumerPaths)assert.equal(attested.consumer_sha256[p],api.binding.targets[p].after_sha256);assert.equal(attested.stage_receipt_sha256,sha(api.newRaw));assert.equal(attested.inner_stage_proof_sha256,api.nativeSummary.proof.sha256);assert.equal(attested.logging_settings_allowed,false);assert.equal(attested.admission,false);assert.equal(attested.Cloudflare_GET,0);assert.equal(attested.SQL,0);
+  add('ACTUAL_FILESYSTEM_ATTEST_TWO_REAL_CONSUMERS_MODULE_AND_DISTINCT_RECEIPT_PINS');
+  function fixture(version=api.next,mode={}){
+   const runtime={compatibility_date:'2026-10-22',compatibility_flags:[],usage_model:'standard',limits:{}},bindings=[{name:'DATA_DB',type:'d1',id:'057a2847-2cc4-4e52-8534-1be1596d21d5'},{name:'REPORT2_CLOUD_BRIDGE_TOKEN',type:'secret_text'},{name:'REPORT2_DENO_BRIDGE_TOKEN',type:'secret_text'}];
+   let active=version,after=false;const calls=[],settings={bindings,observability:{enabled:false},CONTROLLED_only:'SYNTHETIC_NOT_NATIVE_05120'},names=api.nativeSummary.staged.binding_names;
+   const v=()=>({id:active.version_id,resources:{script_runtime:mode.runtimeDrift&&after?{...runtime,changed:true}:runtime,bindings:mode.bindingDrift&&after?bindings.slice(0,2):bindings,script:{etag:mode.mixedEtag&&after?api.old.immutable_script_etag:active.immutable_script_etag}}});
+   const expectedSettings=api.rollout.workerSettingsFingerprint(api.rollout.selectedVersionSettings(settings,v())),expectedRuntime=api.rollout.rolloutDigest(runtime);
+   // EXACT actual factory BODY; only these two expected fingerprints are CONTROLLED dependencies.
+   // Actual parsers/immutable proof constants and all comparison/hash functions remain real.
+   const controlledFactory=Function('parseRetentionSQLBridgeProof','parseCorrelatedRetentionSQLBridgeProof','SQL_BRIDGE_SCRIPT','exactConfiguredSQLBridgeURL','singleActiveVersion','selectedVersionSettings','workerSettingsFingerprint','rolloutDigest','PAID_BRIDGE_SETTINGS_SHA256','PAID_BRIDGE_RUNTIME_SHA256','PAID_BRIDGE_NAMES',api.factory.replace('export function','function')+'\nreturn createRetentionSQLBridgeCompatibility;')(A.parseRetentionSQLBridgeProof,A.parseCorrelatedRetentionSQLBridgeProof,api.inspect.SQL_BRIDGE_SCRIPT,api.inspect.exactConfiguredSQLBridgeURL,api.rollout.singleActiveVersion,api.rollout.selectedVersionSettings,api.rollout.workerSettingsFingerprint,api.rollout.rolloutDigest,expectedSettings,expectedRuntime,names);
+   const call=async(name,suffix)=>{assert.equal(name,api.inspect.SQL_BRIDGE_SCRIPT);calls.push(suffix);if(suffix==='/subdomain')return{subdomain:'controlled'};if(suffix==='/deployments')return{deployments:[{id:mode.deploymentDrift&&after?'11111111-1111-4111-8111-111111111111':api.nativeSummary.before.deployment_id,strategy:'percentage',versions:[{version_id:active.version_id,percentage:100}]}]};if(suffix==='/settings')return mode.loggingDrift&&after?{...settings,observability:{enabled:true,logs:{enabled:true}}}:settings;if(suffix==='/schedules')return mode.cronDrift&&after?[{cron:'* * * * *'}]:[];if(suffix==='/versions/'+active.version_id)return v();throw Error('CONTROLLED_UNEXPECTED_METADATA_ROUTE');};
+   return{controlledFactory,call,calls,url:'https://my-report-2-d1-bridge.controlled.workers.dev/d1',clock:()=>NOW,beginAfter(next=active){after=true;active=next;},expectedSettings,expectedRuntime};
+  }
+  let f=fixture();await assert.rejects(A.verifyRetentionSQLBridge({proof:api.old,call:f.call,configured_bridge_url:f.url,stage:'before_SQL',clock:f.clock}),/RETENTION_SQL_BRIDGE_VERSION_CHANGED/);assert.equal(f.calls.length,4);
+  f=fixture();const production=A.createRetentionSQLBridgeCompatibility({old_release_bytes:api.oldRaw,staged_receipt_bytes:api.newRaw});await assert.rejects(production.observe({call:f.call,configured_bridge_url:f.url,stage:'before_SQL',clock:f.clock}),/RETENTION_COMPATIBILITY_EXACT_SETTINGS_RUNTIME_BINDING_REQUIRED/);assert.equal(f.calls.length,5);assert.equal(Object.isFrozen(production),true);
+  add('CONCRETE_OLD_CALLER_REJECTS_C327_AND_REAL_NEW_POLICY_REFUSES_SYNTHETIC_PREIMAGE',2);
+  function consumer(kind,f){
+   const reads=[],fsProxy={readFile:async p=>{assert.ok(Object.hasOwn(raws,p));reads.push(p);return raws[p];}},processProxy={env:{REPORT2_D1_BRIDGE_URL:f.url}};
+   if(kind==='paid'){
+    const observe=Function('fs','RETENTION_SQL_BRIDGE_PROOF','CORRELATED_RETENTION_SQL_BRIDGE_PROOF','createRetentionSQLBridgeCompatibility','process','cf','let bridgeCompatibility;'+api.observe+'\nreturn observe;')(fsProxy,api.old,api.next,f.controlledFactory,processProxy,async route=>{const prefix='/workers/scripts/'+api.inspect.SQL_BRIDGE_SCRIPT,suffix=route==='/workers/subdomain'?'/subdomain':route.startsWith(prefix)?route.slice(prefix.length):'REFUSE';return{result:await f.call(api.inspect.SQL_BRIDGE_SCRIPT,suffix)};});
+    return{before:()=>observe('before_SQL'),after:()=>observe('after_SQL'),reads};
+   }
+   const b=api.binding,methods=Function('fs','RETENTION_SQL_BRIDGE_PROOF','CORRELATED_RETENTION_SQL_BRIDGE_PROOF','createRetentionSQLBridgeCompatibility','process','bridge_control','let bridge_proof,bridge_postflight_pending=false;const out={};return{before:async()=>{'+b.lossless_assignment+b.lossless_before+'return out.SQL_bridge_before;},after:async()=>{'+b.lossless_after+'return out.SQL_bridge_after;}};')(fsProxy,api.old,api.next,f.controlledFactory,processProxy,f.call);return{...methods,reads};
+  }
+  for(const kind of ['paid','lossless'])for(const identity of [api.old,api.next]){f=fixture(identity);const c=consumer(kind,f),before=await c.before();assert.equal(before.version_id,identity.version_id);assert.equal(before.module_sha256,identity.module_sha256);assert.equal(before.Cloudflare_GET,5);assert.equal(f.calls.length,5);f.beginAfter();const after=await c.after();assert.equal(after.version_id,before.version_id);assert.equal(after.deployment_id,before.deployment_id);assert.equal(after.Cloudflare_GET,4);assert.equal(after.logging_settings_allowed,false);assert.equal(after.admission,false);assert.equal(f.calls.length,9);assert.equal(c.reads.length,2);assert.deepEqual([...c.reads].sort(),Object.keys(raws).sort());}
+  add('BOTH_ACTUAL_CONSUMER_LINKAGES_KEEP_ONE_SESSION_OLD_OR_NEW_BEFORE5_AFTER4',4);
+  for(const kind of ['paid','lossless']){f=fixture(api.old);const c=consumer(kind,f);await c.before();f.beginAfter(api.next);await assert.rejects(c.after(),/RETENTION_COMPATIBILITY_SELECTED_IDENTITY_CHANGED/);assert.equal(f.calls.length,8);assert.equal(c.reads.length,2);}
+  add('NEW_COUNTEREXAMPLE_BOTH_ALLOWED_BUT_OLD_TO_NEW_DURING_MAINTENANCE_REFUSED',2);
+  for(const mode of [{mixedEtag:true},{runtimeDrift:true},{bindingDrift:true},{loggingDrift:true},{cronDrift:true},{deploymentDrift:true}]){f=fixture(api.next,mode);const c=consumer('paid',f);await c.before();f.beginAfter();await assert.rejects(c.after());assert.ok(f.calls.length<=9);assert.equal(c.reads.length,2);}
+  add('EXACT_NEW_ID_WITH_OLD_ETAG_LOGGING_RUNTIME_BINDINGS_CRON_OR_DEPLOYMENT_DRIFT_REFUSED',6);
+  f=fixture();let session=f.controlledFactory({old_release_bytes:api.oldRaw,staged_receipt_bytes:api.newRaw});await assert.rejects(session.observe({call:f.call,stage:'after_SQL',clock:f.clock}),/EXACT_STAGE_SEQUENCE/);assert.equal(f.calls.length,0);await session.observe({call:f.call,configured_bridge_url:f.url,stage:'before_SQL',clock:f.clock});await assert.rejects(session.observe({call:f.call,configured_bridge_url:f.url,stage:'before_SQL',clock:f.clock}),/EXACT_STAGE_SEQUENCE/);assert.equal(f.calls.length,5);f.beginAfter();await session.observe({call:f.call,stage:'after_SQL',clock:f.clock});await assert.rejects(session.observe({call:f.call,stage:'after_SQL',clock:f.clock}),/EXACT_STAGE_SEQUENCE/);assert.equal(f.calls.length,9);
+  for(const [oldRaw,newRaw]of [[Buffer.concat([api.oldRaw,Buffer.from('\n')]),api.newRaw],[api.oldRaw,Buffer.concat([api.newRaw,Buffer.from('\n')])]])assert.throws(()=>A.createRetentionSQLBridgeCompatibility({old_release_bytes:oldRaw,staged_receipt_bytes:newRaw}));
+  add('SESSION_SEQUENCE_REUSE_AND_NONEXACT_PROOF_BYTES_FAIL_WITHOUT_EXTRA_GET',5);
+  temporary=fs.mkdtempSync(path.join(os.tmpdir(),'report2-two-consumer-compatibility-'));const copyPaths=[modulePath,...consumerPaths,api.old.path,api.next.path];for(const p of copyPaths){fs.mkdirSync(path.dirname(path.join(temporary,p)),{recursive:true});fs.copyFileSync(path.join(api.repo,p),path.join(temporary,p));}
+  assert.equal((await A.attestRetentionSQLBridgeCompatibility({repo_root:temporary})).compatibility_module_sha256,attested.compatibility_module_sha256);
+  for(const p of consumerPaths){const full=path.join(temporary,p),original=fs.readFileSync(full);fs.appendFileSync(full,'\n// CONTROLLED_TAMPER\n');await assert.rejects(A.attestRetentionSQLBridgeCompatibility({repo_root:temporary}),/ACTUAL_CONSUMER_MISMATCH/);fs.writeFileSync(full,original);}
+  fs.appendFileSync(path.join(temporary,modulePath),'\n// CONTROLLED_DIFFERENT_MODULE\n');const changed=await A.attestRetentionSQLBridgeCompatibility({repo_root:temporary});assert.notEqual(changed.compatibility_module_sha256,attested.compatibility_module_sha256,'THIRD_MUST_HARDPIN_MODULE_SHA_STATUS_IS_NOT_ADMISSION');
+  add('REAL_FILESYSTEM_CONSUMER_TAMPER_REFUSED_MODULE_DIGEST_REQUIRES_THIRD_HARDPIN',3);
+  assert.equal(A.parseRetentionSQLBridgeProof(api.oldRaw),A.RETENTION_SQL_BRIDGE_PROOF);await assert.rejects(A.verifyRetentionSQLBridge({proof:{...api.old},call:()=>{throw Error('MUST_NOT_IO');},stage:'before_SQL'}),/EXACT_RETENTION_BRIDGE_PROVENANCE_REQUIRED/);assert.equal(unexpected,0);
+  add('OLD_SINGLETON_STRICT_PARSE_AND_PRODUCTION_VERIFY_GUARD_UNCHANGED');
+  // Count checked after adding the final new structural group.
+  assert.equal(groups.length,8);
+  return{schema:'CORRELATED_BRIDGE_PAID_COMPATIBILITY_CONNECTED_V1',status:'NEW_TWO_CONSUMER_COMPATIBILITY_CONTROLLED_COMPLETED',controlled_groups:groups.length,nested_variants:groups.reduce((n,g)=>n+g.variants,0),groups,binding:api.bindingResult,actual_filesystem_attestation:true,actual_consumers_extracted_not_full_script_run:true,actual_production_export_refuses_synthetic_preimage:true,positive_exact_factory_BODY_with_explicit_fixture_settings_and_runtime_fingerprints:true,production_expected_override:false,CONTROLLED_not_native_Paid_preimage:true,successful_metadata_GETs_before:5,successful_metadata_GETs_after:4,additional_HTTP_or_SQL:0,native_CF:0,native_SQL:0,provider_HTTP:0,retention_executed:false,physical_storage_test:false,MAIN:0,Telegram:0,logging_settings_allowed:false,admission:false,old_unknown_recovered:false,old_components_replayed:0,author_semantics:0};
+ }catch(error){error.completed_new_paid_compatibility_groups=groups;throw error;}
+ finally{try{if(temporary)fs.rmSync(temporary,{recursive:true,force:true});}finally{globalThis.fetch=savedFetch;}}
+}

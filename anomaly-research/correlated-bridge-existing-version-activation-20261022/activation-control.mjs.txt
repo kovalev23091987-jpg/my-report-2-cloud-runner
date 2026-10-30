@@ -1,0 +1,120 @@
+// PROPOSED append to the existing CLI. Author execution: ZERO.
+// SOURCE binding is a frozen literal in source-binding.mjs.txt, never a caller option.
+import activationPath from 'node:path';
+import {attestRetentionSQLBridgeCompatibility,observeRetentionSQLBridge} from '../runner/retention-bridge-provenance.mjs';
+const EXISTING_ACTIVATION_IDENTITIES=Object.freeze({
+ old_version:'7011c257-4bdc-4244-a858-42c30e8532ab',old_deployment:'8cd9ba38-b819-49ce-9ff2-e1e7f3e8541b',old_module:'06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf',old_etag:'faf47729620694c0e12f5c439fd5f22a15d42dbee42bc66625ff9c7e57ad8836',
+ new_version:'86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e',new_module:'c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063',new_etag:'ac9d474832fa5a166a92032b19f42ee85bd4fb91b5066fd75da1877a8f051e29',
+ settings:'05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded',crons:'4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945',runtime:'cf3bca9e631f2fa26b3bb242b9784c8ea557bf8ed64d00fdc87bf6c9d64b144a',
+ binding_names:Object.freeze(['DATA_DB','REPORT2_CLOUD_BRIDGE_TOKEN','REPORT2_DENO_BRIDGE_TOKEN']),stage_summary:'f010dc6368027ecc789d85d53609c96018fb7da961e9fad4a9e91e69996ac4a7'
+});
+export async function activateExistingCorrelatedBridge({plan,repo_root,adapter,guard,save,clock=Date.now}={}){
+ const I=EXISTING_ACTIVATION_IDENTITIES,B=EXISTING_ACTIVATION_SOURCE_BINDING;
+ const id=x=>typeof x==='string'&&/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(x),hex=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x),time=x=>Number.isSafeInteger(x)&&x>=1e12&&x<=8640000000000000;
+ const fail=code=>{throw Object.assign(Error(code),{activation_code:code});};
+ const p={schema:'EXISTING_CORRELATED_BRIDGE_ACTIVATION_V1',status:'EXISTING_ACTIVATION_NOT_STARTED',head:null,owner:null,operation_id:null,compatibility:null,before:null,prospective_logging_settings:null,staged:null,pre_activation:null,intent:null,activation_attempts:0,known_activation_ACK:false,activation_ownership_verified:false,after:null,unknown_ACK_observation:null,rollback_attempts:0,rollback:null,reason:null,proof_persisted:false,upload_attempts:0,settings_mutations:0,delete_attempts:0,native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0,logging_settings_changed:false,old_unknown_recovered:false,day_hold_removed:false,global_crash_durable_once_qualified:false,transient_changes_excluded:false};
+ let previous=null,phase='PLAN',attempted=false,known=false,postVerified=false,finalGuardAttempted=false;
+ const now=()=>{let n;try{n=clock();}catch{fail('EXISTING_ACTIVATION_CLOCK_REQUIRED');}if(!time(n)||previous!==null&&n<previous)fail('EXISTING_ACTIVATION_CLOCK_REQUIRED');previous=n;return n;};
+ const persist=async()=>{try{const c=structuredClone({...p,proof_persisted:true});if(Buffer.byteLength(JSON.stringify(c))>24576)throw Error('BOUND');await save(c);p.proof_persisted=true;}catch{p.proof_persisted=false;fail('EXISTING_ACTIVATION_SAVE_NOT_CLOSED');}};
+ const boundary=async(label,minimum_CF,minimum_GH,final_fresh=false)=>{phase=label;if(final_fresh)finalGuardAttempted=true;const min_headroom_ms=Math.max(30000,(minimum_CF+minimum_GH)*2000+30000);if(plan.lease_expires_ts-now()<min_headroom_ms)fail('EXISTING_ACTIVATION_SCOPE_OR_TAIL_REQUIRED');try{await guard({phase:label,minimum_CF,minimum_GH,min_headroom_ms,final_fresh});}catch{fail('EXISTING_ACTIVATION_SCOPE_OR_TAIL_REQUIRED');}if(plan.lease_expires_ts-now()<min_headroom_ms)fail('EXISTING_ACTIVATION_SCOPE_OR_TAIL_REQUIRED');};
+ const safe=x=>{
+  if(!x||!id(x.version_id)||!id(x.deployment_id)||!['settings_sha256','crons_sha256','runtime_sha256','immutable_script_etag'].every(k=>hex(x[k]))||x.module_sha256!==null&&!hex(x.module_sha256)||x.latest_uploaded_version!==null&&!id(x.latest_uploaded_version)||!Array.isArray(x.binding_names)||x.binding_names.length!==3||x.binding_names.some(n=>typeof n!=='string'||n.length>64))fail('EXISTING_ACTIVATION_SAFE_METADATA_REQUIRED');
+  return Object.fromEntries(['version_id','deployment_id','module_sha256','module_readback_basis','settings_sha256','crons_sha256','runtime_sha256','immutable_script_etag','latest_uploaded_version','binding_names'].map(k=>[k,k==='binding_names'?[...x[k]].sort():k==='module_readback_basis'?(['SAME_IMMUTABLE_VERSION_AND_ETAG_AS_PRIOR_EXACT_NATIVE_MODULE','SAME_IMMUTABLE_VERSION_AND_ETAG_AS_PREACTIVATION_NATIVE_SOURCE','EXACT_LATEST_UPLOAD_SOURCE_BYTES','UNKNOWN_VERSION_NO_MODULE_CLAIM'].includes(x[k])?x[k]:null):x[k]]));
+ };
+ const matches=(x,kind,latest=true)=>x?.version_id===I[kind+'_version']&&x.module_sha256===I[kind+'_module']&&x.immutable_script_etag===I[kind+'_etag']&&x.settings_sha256===I.settings&&x.crons_sha256===I.crons&&x.runtime_sha256===I.runtime&&rolloutDigest(x.binding_names)===rolloutDigest(I.binding_names)&&(!latest||x.latest_uploaded_version===I.new_version);
+ const ack=(x,target)=>{if(!id(x?.deployment_id)||x.version_id!==target||x.response_basis!=='EXACT_OWN_POST_DEPLOYMENTS_RESPONSE')return null;return{deployment_id:x.deployment_id,version_id:x.version_id,response_basis:x.response_basis};};
+ const reason=e=>typeof e?.activation_code==='string'&&/^EXISTING_ACTIVATION_[A-Z0-9_]+$/.test(e.activation_code)?e.activation_code:'EXISTING_ACTIVATION_CONTROL_NOT_CLOSED';
+ async function conditionalRollback(){
+  p.rollback={status:'OWN_ROLLBACK_NOT_STARTED',ownership_verified:false};
+  try{
+   await boundary('ROLLBACK_PRECHECK',11,12);const current=safe(await adapter.readActive());p.rollback.precheck=current;
+   if(!matches(current,'new')||current.deployment_id!==p.activation_ack.deployment_id){p.status='EXISTING_ACTIVATION_FOREIGN_CHANGE_STOP';p.rollback.status='FOREIGN_OR_CHANGED_STATE_NOT_OVERWRITTEN';return;}
+   p.rollback.intent={target_version:I.old_version,only_own_deployment:p.activation_ack.deployment_id,owner:p.owner,head:p.head,operation_id:p.operation_id,saved_before_transport_ts:now()};await persist();
+   await boundary('ROLLBACK_DEPLOY',6,7);p.rollback_attempts=1;let r=null;
+   try{r=ack(await adapter.deploy({action:'ROLLBACK_OWN',version_id:I.old_version,intent:structuredClone(p.rollback.intent)}),I.old_version);}catch{p.rollback.ACK_unknown=true;}
+   if(!r)p.rollback.ACK_unknown=true;else p.rollback.ack=r;
+   await boundary('ROLLBACK_READBACK',5,6);p.rollback.after=safe(await adapter.readActive());
+   if(!r){p.status='EXISTING_ACTIVATION_ROLLBACK_ACK_UNKNOWN_STOP';p.rollback.status='ROLLBACK_ACK_UNKNOWN_NO_RETRY';p.rollback.old_version_observed=matches(p.rollback.after,'old');return;}
+   if(!matches(p.rollback.after,'old')||p.rollback.after.deployment_id!==r.deployment_id){p.status='EXISTING_ACTIVATION_ROLLBACK_NOT_CLOSED';p.rollback.status='EXACT_ROLLBACK_READBACK_NOT_CLOSED';return;}
+   p.rollback.status='EXACT_OWN_OLD_VERSION_RESTORED';p.rollback.ownership_verified=true;p.status='EXISTING_ACTIVATION_OWN_ROLLBACK_VERIFIED';
+  }catch(e){p.rollback.reason=reason(e);p.rollback.status=p.rollback_attempts?'ROLLBACK_NOT_CLOSED_STOP':'ROLLBACK_GUARD_OR_OBSERVATION_STOP';p.status=p.rollback.ACK_unknown?'EXISTING_ACTIVATION_ROLLBACK_ACK_UNKNOWN_STOP':'EXISTING_ACTIVATION_KNOWN_ACK_NOT_CLOSED';}
+ }
+ try{
+  const start=now();
+  if(!plan||!/^[a-f0-9]{40}$/.test(plan.head||'')||!/^CODEX:ACTIVE105_SOURCE_RELIABILITY:\d{13}$/.test(plan.owner||'')||!/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(plan.operation_id||'')||!time(plan.lease_expires_ts)||plan.lease_expires_ts-start>90*60000||plan.lease_expires_ts-start<600000||typeof repo_root!=='string'||typeof guard!=='function'||typeof save!=='function'||!['before','readStaged','recheckBefore','deploy','readActive'].every(k=>typeof adapter?.[k]==='function'))fail('EXISTING_ACTIVATION_PLAN_REQUIRED');
+  Object.assign(p,{head:plan.head,owner:plan.owner,operation_id:plan.operation_id,started_ts:start});
+  // This real filesystem attestation executes before any adapter/CF call.
+  phase='REAL_SOURCE_COMPATIBILITY';const root=await fs.realpath(repo_root),moduleBytes=await fs.readFile(activationPath.join(root,B.module_path));
+  if(rolloutDigest(moduleBytes)!==B.module_sha256)fail('EXISTING_ACTIVATION_SOURCE_MODULE_PIN_CHANGED');
+  const a=await attestRetentionSQLBridgeCompatibility({repo_root:root});
+  if(a?.status!=='EXACT_TWO_CONSUMERS_CODE_ACTIVE_COMPATIBILITY'||a.compatibility_module_sha256!==B.module_sha256||rolloutDigest(a.consumer_sha256)!==rolloutDigest(B.consumer_sha256)||a.stage_receipt_sha256!==I.stage_summary||a.logging_settings_allowed!==false||a.admission!==false||a.old_identity?.version_id!==I.old_version||a.old_identity?.module_sha256!==I.old_module||a.new_identity?.version_id!==I.new_version||a.new_identity?.module_sha256!==I.new_module)fail('EXISTING_ACTIVATION_SOURCE_COMPATIBILITY_NOT_CLOSED');
+  p.compatibility={status:a.status,compatibility_module_sha256:a.compatibility_module_sha256,consumer_sha256:structuredClone(a.consumer_sha256),stage_receipt_sha256:a.stage_receipt_sha256,logging_settings_allowed:false,admission:false};
+  await boundary('BEFORE_METADATA',33,34);const before=await adapter.before();p.before=safe(before);if(!matches(p.before,'old',false)||p.before.deployment_id!==I.old_deployment)fail('EXISTING_ACTIVATION_OLD_PAID_METADATA_REQUIRED');
+  const projected=before.prospective_logging_settings;
+  if(projected?.selected_version===p.before.version_id&&projected.baseline_settings_sha256===p.before.settings_sha256&&hex(projected.prospective_settings_sha256)&&projected.projected_not_native_poststate===true&&projected.logging_settings_admitted===false)p.prospective_logging_settings={selected_version:p.before.version_id,baseline_settings_sha256:p.before.settings_sha256,prospective_settings_sha256:projected.prospective_settings_sha256,projected_not_native_poststate:true,logging_settings_admitted:false};
+  else p.prospective_logging_projection_unavailable=true;
+  await boundary('READ_STAGED',28,29);const staged=await adapter.readStaged();
+  if(!staged||staged.version_id!==I.new_version||staged.latest_uploaded_version!==I.new_version||staged.module_sha256!==I.new_module||staged.module_readback_basis!=='EXACT_LATEST_UPLOAD_SOURCE_BYTES'||staged.immutable_script_etag!==I.new_etag||staged.settings_sha256!==I.settings||staged.runtime_sha256!==I.runtime||staged.crons_sha256!==I.crons||rolloutDigest(staged.binding_names)!==rolloutDigest(I.binding_names))fail('EXISTING_ACTIVATION_STAGED_SOURCE_NOT_CLOSED');
+  p.staged={version_id:I.new_version,latest_uploaded_version:I.new_version,module_sha256:I.new_module,module_readback_basis:staged.module_readback_basis,immutable_script_etag:I.new_etag,settings_sha256:I.settings,runtime_sha256:I.runtime,crons_sha256:I.crons,binding_names:[...I.binding_names],ownership_basis:'PRIOR_KNOWN_UPLOAD_ACK_AND_EXACT_NATIVE_STAGE_SUMMARY',stage_summary_sha256:I.stage_summary};
+  await boundary('PRE_ACTIVATION',22,23);p.pre_activation=safe(await adapter.recheckBefore());
+  if(!matches(p.pre_activation,'old')||p.pre_activation.deployment_id!==p.before.deployment_id)fail('EXISTING_ACTIVATION_PRESTATE_MOVED');
+  p.intent={target_version:I.new_version,module_sha256:I.new_module,source_stage_summary_sha256:I.stage_summary,expected_previous_deployment:p.before.deployment_id,owner:p.owner,head:p.head,operation_id:p.operation_id,saved_before_transport_ts:now(),retry_unknown:false};p.status='EXISTING_ACTIVATION_DEPLOY_INTENT';await persist();
+  await boundary('DEPLOY_EXISTING',17,18);attempted=true;p.activation_attempts=1;let response=null;
+  try{response=ack(await adapter.deploy({action:'ACTIVATE_EXISTING',version_id:I.new_version,intent:structuredClone(p.intent)}),I.new_version);}catch{p.activation_ACK_unknown=true;}
+  if(!response||response.deployment_id===p.before.deployment_id){
+   p.activation_ACK_unknown=true;p.status='EXISTING_ACTIVATION_ACK_UNKNOWN_STOP';
+   try{await boundary('OBSERVE_UNKNOWN_DEPLOY',5,6);p.unknown_ACK_observation=safe(await adapter.readActive());}catch{p.unknown_ACK_observation_not_closed=true;}
+  }else{
+   known=true;p.known_activation_ACK=true;p.activation_ack=response;await persist();
+   await boundary('POST_ACTIVATION',16,17);p.after=safe(await adapter.readActive());
+   if(!matches(p.after,'new')||p.after.deployment_id!==response.deployment_id)fail('EXISTING_ACTIVATION_POSTSTATE_NOT_CLOSED');
+   postVerified=true;p.activation_ownership_verified=true;p.status='EXISTING_CORRELATED_VERSION_ACTIVATED_NATIVE_METADATA_VERIFIED';
+  }
+  await boundary('FINAL',0,1,true);p.completed_ts=now();await persist();return structuredClone(p);
+ }catch(e){
+  p.reason=reason(e);p.failed_phase=phase;p.activation_ownership_verified=false;
+  if(!attempted)p.status='EXISTING_ACTIVATION_NOT_STARTED';else if(!known)p.status='EXISTING_ACTIVATION_ACK_UNKNOWN_STOP';else p.status='EXISTING_ACTIVATION_KNOWN_ACK_NOT_CLOSED';
+  if(known&&!postVerified)await conditionalRollback();
+  if(!finalGuardAttempted){try{await boundary('FINAL_UNCLOSED',0,1,true);}catch{p.final_scope_not_closed=true;}}
+  try{p.completed_ts=now();}catch{p.completed_ts=null;}
+  try{await persist();}catch{p.proof_persisted=false;}
+  return structuredClone(p);
+ }
+}
+
+export function createExistingCorrelatedActivationNativeAdapter({cf,configured_bridge_url,saveTransportIntent}={}){
+ if(typeof cf!=='function'||typeof configured_bridge_url!=='string'||typeof saveTransportIntent!=='function')throw Error('EXISTING_ACTIVATION_ADAPTER_BINDING_REQUIRED');
+ const I=EXISTING_ACTIVATION_IDENTITIES,reader=createVersionBoundWorkerReader({call:(name,route,options)=>{if(name!==SQL_BRIDGE_SCRIPT)throw Error('EXISTING_ACTIVATION_EXACT_WORKER_REQUIRED');return cf(route,options);}});
+ let capture={};
+ const call=async(name,route)=>{if(name!==SQL_BRIDGE_SCRIPT)throw Error('EXISTING_ACTIVATION_EXACT_WORKER_REQUIRED');const x=await cf(route);if(route==='/deployments')capture.d=x;else if(route==='/settings')capture.s=x;else if(route==='/schedules')capture.c=x;else if(route.startsWith('/versions/'))capture.v=x;return x;};
+ const describe=(active,settings,schedules,version,latest)=>{
+  const effective=selectedVersionSettings(settings,version),crons=(Array.isArray(schedules)?schedules:schedules?.schedules)?.map(x=>x.cron).sort();if(!Array.isArray(crons)||version.id!==active.version_id)throw Error('EXISTING_ACTIVATION_METADATA_BINDING_REQUIRED');
+  const old=version.id===I.old_version&&version.resources?.script?.etag===I.old_etag,next=version.id===I.new_version&&version.resources?.script?.etag===I.new_etag;
+  return{...active,module_sha256:old?I.old_module:next?I.new_module:null,module_readback_basis:old?'SAME_IMMUTABLE_VERSION_AND_ETAG_AS_PRIOR_EXACT_NATIVE_MODULE':next?'SAME_IMMUTABLE_VERSION_AND_ETAG_AS_PREACTIVATION_NATIVE_SOURCE':'UNKNOWN_VERSION_NO_MODULE_CLAIM',settings_sha256:workerSettingsFingerprint(effective),crons_sha256:rolloutDigest(crons),runtime_sha256:rolloutDigest(version.resources.script_runtime),binding_names:effective.bindings.map(x=>x.name).sort(),immutable_script_etag:version.resources?.script?.etag??null,latest_uploaded_version:latest};
+ };
+ async function old(stage,latest){
+  capture={};await observeRetentionSQLBridge({expected:RETENTION_SQL_BRIDGE_PROOF,call,configured_bridge_url,stage});
+  const state=describe(singleActiveVersion(capture.d),capture.s,capture.c,capture.v,latest?(await cf('/versions?per_page=1')).items?.[0]?.id:null);
+  if(stage==='before_SQL'){
+   try{const effective=selectedVersionSettings(capture.s,capture.v),observability=correlatedLogsIntent(effective);state.prospective_logging_settings={selected_version:state.version_id,baseline_settings_sha256:state.settings_sha256,prospective_settings_sha256:workerSettingsFingerprint({...effective,observability}),projected_not_native_poststate:true,logging_settings_admitted:false};}
+   catch{state.prospective_logging_settings=null;}
+  }
+  return state;
+ }
+ return{
+  before:()=>old('before_SQL',false),recheckBefore:()=>old('after_SQL',true),
+  async readStaged(){
+   const version=await cf('/versions/'+I.new_version),bytes=await reader.latestBytes(SQL_BRIDGE_SCRIPT,I.new_version),settings=await cf('/settings'),schedules=await cf('/schedules'),effective=selectedVersionSettings(settings,version),crons=(Array.isArray(schedules)?schedules:schedules?.schedules)?.map(x=>x.cron).sort();
+   if(version.id!==I.new_version||!Array.isArray(crons))throw Error('EXISTING_ACTIVATION_STAGED_METADATA_REQUIRED');
+   return{version_id:version.id,latest_uploaded_version:bytes.version_id,module_sha256:bytes.module_sha256,module_readback_basis:'EXACT_LATEST_UPLOAD_SOURCE_BYTES',immutable_script_etag:version.resources?.script?.etag??null,settings_sha256:workerSettingsFingerprint(effective),runtime_sha256:rolloutDigest(version.resources.script_runtime),crons_sha256:rolloutDigest(crons),binding_names:effective.bindings.map(x=>x.name).sort()};
+  },
+  async readActive(){const d=await cf('/deployments'),s=await cf('/settings'),c=await cf('/schedules'),active=singleActiveVersion(d),v=await cf('/versions/'+active.version_id),latest=(await cf('/versions?per_page=1')).items?.[0]?.id;return describe(active,s,c,v,latest);},
+  async deploy({action,version_id,intent}){
+   if(!['ACTIVATE_EXISTING','ROLLBACK_OWN'].includes(action)||version_id!==(action==='ACTIVATE_EXISTING'?I.new_version:I.old_version)||intent?.target_version!==version_id)throw Error('EXISTING_ACTIVATION_TRANSPORT_INTENT_REQUIRED');
+   const body={strategy:'percentage',versions:[{version_id,percentage:100}],annotations:{'workers/message':(action==='ACTIVATE_EXISTING'?'Activate existing ':'Rollback own ')+intent.operation_id}};
+   await saveTransportIntent({action,target_version:version_id,operation_id:intent.operation_id,owner:intent.owner,head:intent.head,expected_previous_deployment:intent.expected_previous_deployment??intent.only_own_deployment,request_JSON_sha256:rolloutDigest(body),transport_intent_saved_before_POST:true,annotations_NOT_ownership_proof:true});
+   const r=await cf('/deployments',{method:'POST',body}),a=singleActiveVersion({deployments:[r]});
+   if(a.version_id!==version_id)throw Error('EXISTING_ACTIVATION_TRANSPORT_ACK_UNKNOWN');return{...a,response_basis:'EXACT_OWN_POST_DEPLOYMENTS_RESPONSE'};
+  }
+ };
+}

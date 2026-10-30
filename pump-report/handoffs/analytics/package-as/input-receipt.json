@@ -1,0 +1,75 @@
+{
+  "schema": "AS_F579_SETTLED_FUNDING_INPUT_RECEIPT_V1",
+  "source_manifest": {
+    "path": "pump-report/handoffs/sources/PACKAGE_F579_NEW_OPTIONAL_PUBLIC_FEEDS_DOC_RESULT_FINAL_V1.json",
+    "sha256": "cf08104dc8cdfe6c06172183a482cd9b5c554d42eb4ccc0900bb72bf290b8fb3",
+    "matches_ROOT": true
+  },
+  "all7_payload_bytes_and_sha256_verified": [
+    {
+      "path": "pump-report/handoffs/sources/F579_BOUNDED_PRIMARY_API_DEDUP_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F579_NEW_OPTIONAL_FEEDS_DOC_ATTEMPTS_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F579_OPTIONAL_PUBLIC_FEEDS_FIELD_UNIT_TIME_COVERAGE_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F579_ONE_EDGEX_SETTLED_FUNDING_BOUNDED_ACTUAL_PROPOSAL_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F579_PRIMARY_DOC_PROVENANCE_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F579_AUTHORITY_AND_PREPARED_RELEASE_V1.json",
+      "bytes_sha_match": true
+    },
+    {
+      "path": "pump-report/handoffs/sources/F579_HANDOFF_RU.md",
+      "bytes_sha_match": true
+    }
+  ],
+  "selected_source_files": [
+    {
+      "path": "pump-report/handoffs/sources/F579_OPTIONAL_PUBLIC_FEEDS_FIELD_UNIT_TIME_COVERAGE_V1.json",
+      "sha256": "45d33c24c1498a226ddc43b41190c72ea7ab9522e856f80c0619b897f492758a"
+    },
+    {
+      "path": "pump-report/handoffs/sources/F579_ONE_EDGEX_SETTLED_FUNDING_BOUNDED_ACTUAL_PROPOSAL_V1.json",
+      "sha256": "ab7cdb8ec5be5536e3c9a59e5a94cb9696e54203d1b48187ca6288bad602248d"
+    }
+  ],
+  "reviewed_source_section": "EDGEX_V2 only; ASTER/APEX not evaluated",
+  "consumer_main": "d9e1d07a7cc31465dacadc2135be29614c73063f",
+  "consumer_files": [
+    {
+      "path": "pump-report/analytics/context.mjs",
+      "git_blob": "03870c55896aa8a0663c55f4b7cfc13d3396b87d"
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "git_blob": "e1fdc83afdf72b803806370d32f8d42c92630cd6"
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "git_blob": "e92ead1f1eb5fc05eeb2181c0280d262da7b90de"
+    }
+  ],
+  "consumer_read_scope": "Funding branch, common optional usability predicates and funding TTL/optional upper2 only; no strategy re-audit",
+  "raw_rate_serialization": "UNKNOWN_FRACTION_VS_PERCENT_NOT_ADOPTED",
+  "SOURCE_F580_read_or_duplicated": false,
+  "current_funding_TTL_ms": 300000,
+  "contract_unit_required": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+  "decision": "DO_NOT_SPEND_NEW_ACTUAL_ADMISSION_NOW",
+  "format_compatibility": "CONDITIONAL_EXISTING_SCHEMA_NO_CONTRACT_CHANGE; RAW_SCALE_UNQUALIFIED",
+  "tests_imports_web_provider_RPC_SQL_TG_Worker_observer_oldactual_strategy_recompute": 0,
+  "contract_profile_strategy_publictext_route_changes": 0,
+  "all550": "NOT_CHECKED",
+  "qualified_maps": 0
+}

@@ -1,0 +1,100 @@
+{
+  "schema": "F581_STATIC_AUTO_CANDIDATE_REVIEW_V1",
+  "verdict": "CHANGES_REQUESTED_ONE_P2",
+  "review_kind": "Static only, four exact frozen files; no code/source imports/tests/observer execute",
+  "inputs": [
+    {
+      "path": "pump-report/operator/saved-auto-candidate-observation.mjs",
+      "sha256": "93cc161e37f18ea78d91d2cb19bbca185250ececa1be86ca2589c434874cb5e7",
+      "bytes": 2876,
+      "lines": 32
+    },
+    {
+      "path": "pump-report/operator/observe-production-once.mjs",
+      "sha256": "7a40fda4c28a32e92095586e07c3f6ad13fe133af4747e3d00239a440e880574",
+      "bytes": 9507,
+      "lines": 89
+    },
+    {
+      "path": "pump-report/operator/SAVED_AUTO_OBSERVATION_RU.md",
+      "sha256": "7b255f0d4b2bd87b44f5def137465b062dcd3011b96582dbb609cdd3420b8ba8",
+      "bytes": 8063,
+      "lines": 21
+    },
+    {
+      "path": "pump-report/tests/runtime/saved-auto-candidate-observation-connected.test.mjs",
+      "sha256": "fd3e3b4570545c9a57ac5152dfa161605fabe2b0fb971fbef2774d7c446201ae",
+      "bytes": 2341,
+      "lines": 23
+    }
+  ],
+  "finding": {
+    "id": "F581_IDENTITY_NONEMPTY_GUARD",
+    "priority": 2,
+    "file": "pump-report/operator/saved-auto-candidate-observation.mjs",
+    "lines": [
+      23,
+      27
+    ],
+    "title": "Incomplete equal instruments can be bound without an instrument_id",
+    "static_counterexample": "Let both analysis.instrument and input.instrument be {base:'1INCH'} (instrument_id absent); all other pin/hash/run/AUTO/PRODUCTION/OBSERVED/ready=false/valid clock conditions valid. equal(a.instrument,i.instrument) is true and BTC/ETH exclusion passes. Bound becomes true; line29 publishes instrument_id:null.",
+    "not_executed": true,
+    "why_it_matters": "saved_original_bound claims checked input identity, yet no identifier is required. Honest NOT_READY must not turn malformed identity into verified candidate binding.",
+    "minimal_ROOT_fix": "Require nonempty valid instrument object/instrument_id/base before accepting equality; preferably use the existing canonical instrument contract without changing strategy. Keep mismatch result and at-most-one PK.",
+    "focused_followup": "One new ARTIFICIAL negative: both instruments identical but instrument_id missing/empty -> saved_original_bound false. SOURCE did not execute it.",
+    "source_edit_performed": false
+  },
+  "checked_new_chain": [
+    {
+      "check": "Latest saved run reference",
+      "result": "STATIC",
+      "evidence": "Reader10-18 uses observation.latest_run_id, run.run_id and first checked AUTO/PRODUCTION row with same run_id, validates key prefix and SHA256(JSON.stringify(selected.analysis)) before get."
+    },
+    {
+      "check": "One original and pin",
+      "result": "STATIC",
+      "evidence": "Reader20 has exactly one store.get;21 requires original implementation pin;23 compares stored analysis to checked analysis and requires OBSERVED."
+    },
+    {
+      "check": "Mode/run/time",
+      "result": "STATIC",
+      "evidence": "Reader24-27 requires both input+analysis AUTO/PRODUCTION/same run_id and same analysis_ts, boolean ready, safe nonnegative analysis/saved clocks with analysis<=saved<=observation clock. NOT_READY remains ready=false."
+    },
+    {
+      "check": "Metadata clocks preserved",
+      "result": "STATIC",
+      "evidence": "Reader29-30 copies original status/unit/reason/event/received/expiry. No clock refresh or USABLE->freshness/strategy promotion; independent_strategy_validation false."
+    },
+    {
+      "check": "Exact optional admission",
+      "result": "STATIC",
+      "evidence": "Observer28 rejects nonboolean read_latest_auto_candidate;74 calls reader only for ===true. Observer30/59/62 retain16queries/500R30W and hard API-attempt bound. Optional read adds at most1PK, no market/TG path."
+    },
+    {
+      "check": "Current artifact premise",
+      "result": "STATIC",
+      "evidence": "Observer31-38 ties admission implementation to current program artifact/pin and fresh FULL readback. Existing governor/helper behavior and prior AR/outcome audit were not reopened."
+    }
+  ],
+  "limitations": [
+    "No genuine AUTO input or native receipt examined; no all550/whole-market/READY/SENT/strategy/source freshness proof.",
+    "Hash proof covers selected/stored analysis. Exact original input facts rely on immutable-store provenance and remain inputs to later SOURCE/ANALYTICS review, not an independent input-fact hash assertion.",
+    "ROOT-reported ARTIFICIAL PASS and --describe PASS are supplied evidence only; SOURCE did not reproduce them.",
+    "No PK/SQL/market/provider/TG/Worker/SDK/observer was executed. Follow-up only with ROOT's genuine AUTO and separately positive read_latest_auto_candidate:true native admission."
+  ],
+  "actual": {
+    "source_imports": 0,
+    "tests": 0,
+    "observer_execute": 0,
+    "web": 0,
+    "native_provider_market_SQL_TG_Worker": 0,
+    "code_changes": 0,
+    "new_chats_agents_automations": 0,
+    "outgoing_messages": 0
+  },
+  "versions": {
+    "tz_v2_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+    "unified_spec_sha256": "384e038c734e02230845925fa564d46402ffc4be4555ca6345315ac5ea335048"
+  },
+  "preservation": "Old SPENT/unknowns/reserves/caps/9pauses/2OWNERdeferrals unchanged; no additional market/control/manual/Telegram run or statistics work."
+}

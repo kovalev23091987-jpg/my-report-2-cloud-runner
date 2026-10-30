@@ -1,0 +1,118 @@
+{
+  "schema": "REPORT2_PRIVATE_CANONICAL_AUTOMATIC_COPY_V1",
+  "head": "0911097a469b78a2d11e745141544fd0cf7a06a4",
+  "cloud_run": "39225792595",
+  "status": "PRIVATE_ORIGINAL_ROWS_DURABLE_VERIFIED",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "main_rows_modified": 0,
+  "private_payload_exported": false,
+  "report_effect": false,
+  "source_run_id": "1792399931640-1792399941482",
+  "selection_status": "EXACT_CLOSED_CANDIDATES",
+  "control": {
+    "main": "6f8586f02ebf5ab75bae63720b08bd1b7b3c494f",
+    "producer_head": "0911097a469b78a2d11e745141544fd0cf7a06a4",
+    "producer_in_current_main_history": true,
+    "phase": "OWNER_SEQUENTIAL_BLOCK_REQUIREMENTS_REVIEW",
+    "fence_active": false
+  },
+  "private_database": {
+    "database_id": "f66e7081-0e67-49a2-8f69-68af00cdaf92",
+    "name": "report2-free-canonical-history",
+    "location": "LEGACY",
+    "descriptor_size_is_not_measured_query_size": true
+  },
+  "archive_pool_enabled": false,
+  "admission": {
+    "allowed": true,
+    "status": "ATOMIC_SHARED_DAY_RESERVED",
+    "reservation": {
+      "rows_read": 5000,
+      "rows_written": 80
+    }
+  },
+  "records": [
+    {
+      "version": "private-canonical-lossless-gzip-v1",
+      "publication_id": "PUB:5c1c5306efca2aeba536845a4cac16a9a2269439",
+      "run_id": "1792399931640-1792399941482",
+      "snapshot_id": "S392:TIA-USDT:1792400017704",
+      "contract_code": "TIA-USDT",
+      "observed_ts": 1792400017704,
+      "analytical_fingerprint": "ce2444a204e55ecfae32d9a6d4c3428e30d2d979fcdeeb4c54e7890095cdf8ae",
+      "raw_sha256": "f786d100607e97cff416d98d45a6e5f7961ea495060cfdf6ac939f42a02ea694",
+      "gzip_sha256": "9e4a40b30a8f533b6869bf1a738f0929dcd6b0dc2eb7ff08cf671561d2fcece0",
+      "raw_bytes": 629870,
+      "gzip_bytes": 76337,
+      "stored": {
+        "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+        "retained": true,
+        "publication_id": "PUB:5c1c5306efca2aeba536845a4cac16a9a2269439",
+        "raw_sha256": "f786d100607e97cff416d98d45a6e5f7961ea495060cfdf6ac939f42a02ea694",
+        "gzip_sha256": "9e4a40b30a8f533b6869bf1a738f0929dcd6b0dc2eb7ff08cf671561d2fcece0",
+        "raw_bytes": 629870,
+        "gzip_bytes": 76337,
+        "original_observed_ts": 1792400017704,
+        "archived_ts": 1792400035785,
+        "main_deletion_authorized": false,
+        "report_or_score_effect": false
+      },
+      "archive_location": "LEGACY",
+      "private_reader_verified": true,
+      "portable_decoder_and_projected_header_verified": true,
+      "original_clocks_unchanged": true
+    },
+    {
+      "version": "private-canonical-lossless-gzip-v1",
+      "publication_id": "PUB:d9e2c0c421012b8492be231581bc8e44ca090c2e",
+      "run_id": "1792399931640-1792399941482",
+      "snapshot_id": "S392:AKE-USDT:1792399976580",
+      "contract_code": "AKE-USDT",
+      "observed_ts": 1792399976580,
+      "analytical_fingerprint": "ea2ce54c52555a70073bd6c089fe49a414fb444df07f7860fd86d7264d73940c",
+      "raw_sha256": "9f614b3c31cdaedc7ce099058f268b0f6dd4b9f7b5897b989843e5f64a156e72",
+      "gzip_sha256": "840fad649af9caa406c1bfcfa8efc4641a385579b6fc31398b3df68e64e34022",
+      "raw_bytes": 318125,
+      "gzip_bytes": 41934,
+      "stored": {
+        "status": "ARCHIVE_DURABLE_ORIGINAL_BYTES_CONFIRMED",
+        "retained": true,
+        "publication_id": "PUB:d9e2c0c421012b8492be231581bc8e44ca090c2e",
+        "raw_sha256": "9f614b3c31cdaedc7ce099058f268b0f6dd4b9f7b5897b989843e5f64a156e72",
+        "gzip_sha256": "840fad649af9caa406c1bfcfa8efc4641a385579b6fc31398b3df68e64e34022",
+        "raw_bytes": 318125,
+        "gzip_bytes": 41934,
+        "original_observed_ts": 1792399976580,
+        "archived_ts": 1792400035785,
+        "main_deletion_authorized": false,
+        "report_or_score_effect": false
+      },
+      "archive_location": "LEGACY",
+      "private_reader_verified": true,
+      "portable_decoder_and_projected_header_verified": true,
+      "original_clocks_unchanged": true
+    }
+  ],
+  "weight_effect": false,
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "CANONICAL_COLD_COPY:39225792595:1",
+    "source_run_id": "39225792595",
+    "measured_rows_read": 588,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 10,
+    "measured_requests_accounted": 14,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 14,
+    "rows_read": 589,
+    "rows_written": 10,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1792400039679
+}

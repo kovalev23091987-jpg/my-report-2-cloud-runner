@@ -1,0 +1,111 @@
+{
+  "schema": "PUMP_PRODUCTION_LAUNCH_ADMISSION_V1",
+  "status": "SPENT_CONFIRMED_NATIVE_FINALIZED",
+  "authority_main": "46076fa37297b93a6eb7cfd007f9f80bf07580f2",
+  "admitted_ts": 1792969232708,
+  "expires_ts": 1792971032708,
+  "own_lease": {
+    "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792967677593",
+    "acquired_ts": 1792967677593,
+    "expires_ts": 1792972477593,
+    "expected_main": "824f894a44b98d6bee5b0fedab12c11084859949"
+  },
+  "direct_authority_ref": "checkpoints/pump-report-20261025/ROOT_DIRECT_CONTINUING_LAUNCH_AUTHORITY.json",
+  "direct_authority_sha256": "bfd93604f511575c22d8eec87cd6d76633769bc37c30dd623eb7030a5e4b454e",
+  "artifact_sha256": "796d01a0bbac4adaf6b481f4c2847eb4fc03b0a99b69964d2364f01b3eec984d",
+  "implementation_sha256": "b784243c8865ff1567e84bc4d5be2bb4517eb0776ed8f11383095844af693b5e",
+  "artifact_manifest_ref": "checkpoints/pump-report-20261025/ROOT_PRODUCTION_LAUNCH_ARTIFACT_MANIFEST.json",
+  "deployment": {
+    "max_attempts": 1,
+    "worker": "my-report-2-hub",
+    "previous_pin": "b35a4bbaaee2d66bd9b97006f174fc4769dc2177631943ba2ec4ec7023e82d60",
+    "only_exact_code_content": true,
+    "settings_bindings_crons_unchanged": true,
+    "automatic_enabled": false,
+    "delivery_enabled": false
+  },
+  "operation": {
+    "endpoint": "https://my-report-2-hub.kovalev23091987.workers.dev/pump/manual",
+    "method": "POST",
+    "native_family": "MANUAL",
+    "run_purpose": "PRODUCTION",
+    "body": {
+      "symbol": "1INCH",
+      "request_id": "pump-first-production-manual-20261026-one",
+      "capture_id": "pump-first-production-manual-20261026-one",
+      "publish": false
+    },
+    "provider_attempts_max": 13,
+    "Telegram_attempts": 0,
+    "new_CONTROL_operations": 0,
+    "native_envelope": {
+      "rows_read": 5000,
+      "rows_written": 300,
+      "max_queries": 800
+    },
+    "server_positive_shared_native_reservation_before_any_provider": true,
+    "no_forced_READY_or_reused_stale_data": true,
+    "no_retry_after_unknown_or_fixed_attempt": true
+  },
+  "source_policy": {
+    "provider": "BINGX",
+    "daily_cap": 900,
+    "monthly_cap": 27900,
+    "per_minute": 10,
+    "per_second": 1,
+    "qualification_cap24_and_spent15_retained_not_rearmed": true,
+    "old_total_BINGX20_retained": true,
+    "old25_allprovider_and2HTTPunknown_retained": true,
+    "old_TG2_SPENT_no_new_TG_admission": true,
+    "genuine_production_uses_monotonic_day_month_not_old_qualification_grant": true
+  },
+  "protection": {
+    "manual_future_checks": 3,
+    "manual_http": {
+      "BINGX": 51,
+      "TELEGRAM": 3
+    },
+    "delivery_HTTP": 24,
+    "outcome_HTTP": 24,
+    "future_discovery_and_hourly_full_candidates": true,
+    "planned_automatic_load_fraction": 0.8,
+    "shared_SQL_hard_day": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    },
+    "old_reserved_floor_never_refunded": {
+      "rows_read": 49000,
+      "rows_written": 2940
+    }
+  },
+  "readonly_preflight": {
+    "private_sha256": "aa542e862835a00c19dccec6fc15017636858a05144a4c8c5e4a15cc419bed6b",
+    "Cloudflare_requests": 5,
+    "all3crons_empty": true,
+    "bindings19": true,
+    "native_SQL": 0,
+    "provider": 0,
+    "TG": 0
+  },
+  "queue_reconciliation": {
+    "in_progress": 0,
+    "stale_queued_ids_rejected_for_new_report": [
+      40129114072,
+      37642396120
+    ],
+    "Actions_not_reenabled": true,
+    "new_worker_scheduled_never_calls_legacy": true
+  },
+  "automatic_delivery_schedules_admitted_by_this_file": false,
+  "old9pauses2OWNERdeferrals_preserved": true,
+  "spent_proof_ref": "checkpoints/pump-report-20261025/ROOT_FIRST_PRODUCTION_MANUAL_ACTUAL.json",
+  "confirmed_operation": {
+    "providerHTTP": 5,
+    "nativeSQL": 136,
+    "rows_read": 140,
+    "rows_written": 58,
+    "unknown_ops": 0,
+    "Telegram": 0,
+    "ready": false
+  }
+}

@@ -1,0 +1,11 @@
+# Что доказано новым пакетом
+
+Уже возвращаемые локальные day/minute скаляры можно сохранить без нового SQL/HTTP/резерва. Предлагаемые пять shared-target изменений существуют только в текстpatch, production не изменён. Наблюдения проходят private synchronous callback в invocation-local capture и отдельное completion metadata поле. Source summary/return, reference cache payload и прежние reservations остаются прежними в CONTROLLED original/proposed сравнении.
+
+Новая affected проверка: сначала **14PASS/2FAIL** — оба новых cache cases остановились в **baseline fixture**, который распознавал неверный SELECT prefix. Исправлена только строка mock SQL matcher; повторены только эти два NEW cases, **2PASS/0FAIL**. Прежние14 не повторялись. Пять proposed targets и patch между попытками не менялись; source/runtime ошибка этой неудачей не установлена. Полные initial/repair TAP, initial fixture snapshot и witnesses сохранены отдельно.
+
+В controlled CG случае12SQL→12SQL/1HTTP→1HTTP, CP5SQL→5SQL/1HTTP→1HTTP. Fresh-reference-cache case14SQL→14SQL, cache payload282bytes byteexact. Это вызовы local mock DB/HTTP и не native cost. CG technical projection3217bytes, полный context4202bytes, четыре rows620/627/623/650bytes. Несколько existing artifact записей одного context создают дополнительный serialized payload; native CPU/heap/persistence/wire/daycapacity не измерены. Runtime cache-hit не даёт current budget observations, diagnostic exception не меняет source transport.
+
+Не восстановлены старые provider budgets. Historical HTX helper reply1/1/cap6 служит только exact native saved примером существующего return-типа; actual CG/CP cuts в392406 completion не сохранены. Новая capture prospective для технических полей, без prospective market/event claims. Native provider-account balance, month usage/headroom, actual manual-held reserve и новые допуски остаютсяNULL/false. Daypreflight и minutepostreserve не являются единым atomic balance cut.
+
+Самостоятельный prepaid atomicreader не построен и не запускался; rejected standalone/floor/nonce не читались. Не меняются quota plans, unknown/reserves, стратегия/score/forms/пауз/105assets. Source cache/canonical/FP не получают новую диагностику. Итоговая native/integrated acceptance остаётся у координатора, отдельный peer — у третьего.

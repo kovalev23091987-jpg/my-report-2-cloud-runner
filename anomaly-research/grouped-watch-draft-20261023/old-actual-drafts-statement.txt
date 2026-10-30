@@ -1,0 +1,1 @@
+  const drafts=Object.fromEntries(Object.entries(observed.state.outbox).map(([id,o])=>['watch:'+id,{status:'DRAFT',form_status:'NOT_APPROVED',actual_send:false,source_snapshot_id:snapshot_id,message_ru:draftNotice(observed.state,id).text,transition:clone(o.transition)}]));

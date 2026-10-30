@@ -1,0 +1,65 @@
+{
+  "schema": "SOURCE_BINGX_ACTUAL_CURRENT_CALLER_SEAMS_V1",
+  "fixed_base": "373566cf2ce65f87d2e038da2407b60abb3578fb",
+  "worker": "current-generation/files/src/worker.js",
+  "worker_sha256": "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4",
+  "real_producer": {
+    "name": "futuresSnapshot(params)",
+    "lines": [
+      1108,
+      1139,
+      1148,
+      1205,
+      1262
+    ],
+    "existing": "_fetch_json callback; six HTX info/depth/BBO/trade/OI/funding calls. HTX contract_size and trade amount/quantity ratio cannot apply to BingX."
+  },
+  "real_candle_and_oi_caller": {
+    "lines": [
+      2580,
+      2584,
+      2588,
+      2592,
+      2600,
+      2616
+    ],
+    "existing": "HTX 1600/2000 minute/other intervals + two historicalOI modes; BingX max1440/1000 and missing equivalent history must not be silent URL substitution."
+  },
+  "real_price_consumer": {
+    "module": "current-generation/files/src/market-contracts.mjs",
+    "module_sha256": "48914030991b1690c33056489a3d6fda8877eabe883556fbbbccccec84c72680",
+    "calls": [
+      16101,
+      17273,
+      17283
+    ],
+    "problem": "Existing price and receipt helpers hardcode venueHTX; MID call falls back to component timestamp if depth timestamp absent. BingX carrier must keep venue even invalid identity and cannot use receipt timestamp as source clock."
+  },
+  "proposed_actual_shape": "assembleBingxFuturesObservation emits execution_status PARTIAL + data.venue BINGX, exact instrument_identity, native-timed depth BBO where supplied, otherwise source_ts NULL; no backend/storage/network. ROOT wires its real producer and THREE shared calls, THIRD owns existing helper extension. This proposal does not replace execution gate.",
+  "collector": {
+    "path": "cloudflare/public-collector/injected-worker-tail.js",
+    "sha256": "f2f1e89753cba90aa5c89531d9b49ec2567e407dbf75a7ead02a28b3064fe863",
+    "lines": [
+      349,
+      350,
+      351,
+      352,
+      407,
+      410
+    ],
+    "problem": "HTX bulk market/OI/funding + hourly catalogue and3/4request/day-write assertions cannot model percontract BingX OI. ROOT owns redesign/admission."
+  },
+  "new_module_target_proposal": "current-generation/files/src/bingx-perpetual-market.mjs",
+  "only_author_text": "bingx-perpetual-market.mjs.txt",
+  "full_import_closure": {
+    "adapter": 0,
+    "legacy_market_contracts": 0
+  },
+  "not_verified": [
+    "Candidate THIRD consumer implementation",
+    "Combined Worker import closure",
+    "Private assembled618 runtime",
+    "Native call/SQL/latency/CPU/heap/persistence"
+  ],
+  "independent_expected_identity": "params.instrument_identity and independently bound BINGX execution gate, not copied from source price object"
+}

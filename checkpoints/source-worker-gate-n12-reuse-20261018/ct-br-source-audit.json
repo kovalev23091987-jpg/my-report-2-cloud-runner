@@ -1,0 +1,1346 @@
+{
+  "schema": "NEW_CT_BR_SOURCE_CONSUMER_AUDIT_V1",
+  "input": "Exact saved source39122290584 canonicals independently read by coordinator native39123622796; historical at original clocks, not current live facts.",
+  "native_proof_sha256": "89d380bb85e0cef9723243e3c0e70570be502d234233f1d1e4fdd8a9a8c7ed69",
+  "native_diagnosis": {
+    "cloud_run": "39123622796",
+    "head": "ce7678630aa736b466cffaba83d5aabc04e6fa21",
+    "D1": {
+      "requests": 16,
+      "rows_read": 19,
+      "rows_written": 13,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 5,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_daily": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 3,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 2,
+          "rows_read": 1,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "total_HTTP": 25,
+    "worker_native_calls": 0
+  },
+  "replay": "Local manual/V5 only on unchanged saved canonicals. Original compact receipts reused; coordinator owns actual length repair and current105 availability.",
+  "rows": [
+    {
+      "contract": "CT-USDT",
+      "native_binding": {
+        "publication_id": "PUB:b8e32fbc6dcd658c5f95e529d289047a484acf64",
+        "run_id": "1792321965799-1792321975225",
+        "snapshot_id": "S392:CT-USDT:1792322035025",
+        "analytical_fingerprint": "88f30d5f2cb1ffa9c946f1d47970fa5c28fd06b16aa4d39334b0a75334168118",
+        "observed_ts": 1792322035025,
+        "gzip_sha256": "9924a0f8005ad20e6e3de43c805460dfa7a0623a31617f955295f09d930e0dc8",
+        "raw_sha256": "607a13f9ad7ebd30eabbe16447c78ed2c9ff47daf35069faa6d398674e1e4236"
+      },
+      "state": "REJECTED",
+      "direction": null,
+      "identity": {
+        "status": "CLOSED",
+        "method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "reference": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "CLOSED",
+          "contract": "CT-USDT",
+          "currency": "CT",
+          "identity": {
+            "chain": "ethereum",
+            "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+          },
+          "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+          "network_calls": 1,
+          "cache_status": "REFRESHED",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792321999519,
+            "parsed_payload_sha256": "a15ef05d361f1beaea75e64b340c4ee382fe2d7a7549a5e68df7ea47cb70a6e0"
+          },
+          "reference_observed_ts": 1792321999519,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true
+        }
+      },
+      "supplemental_http": {
+        "scope": "EXISTING_SUPPLEMENTAL_ENVELOPE_ONLY_NOT_WHOLE_JOB",
+        "route_accounting": [
+          {
+            "route": "HTX",
+            "status": "BLOCK_PAUSED_BY_OWNER",
+            "actual_http": 0,
+            "phase_reserved": 0
+          },
+          {
+            "route": "SECTOR_COINGECKO",
+            "status": "CLOSED",
+            "actual_http": 3,
+            "reported_http": 3,
+            "phase_reserved": 3,
+            "role": "SECTOR_RELATIVE_STRENGTH_CONTEXT"
+          },
+          {
+            "route": "JOINT_FLOW",
+            "status": "CALLER_FIVE_REQUEST_CAP",
+            "actual_http": 5,
+            "reported_http": 5,
+            "phase_reserved": 8,
+            "role": "EXACT_SPOT_FUTURES_FLOW_COMPONENTS"
+          },
+          {
+            "route": "LARGE_TRADES",
+            "status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT",
+            "actual_http": 0,
+            "reported_http": 0,
+            "phase_reserved": 8,
+            "role": "ACTUAL_HTX_TRADE_CONTEXT"
+          },
+          {
+            "route": "SECTOR",
+            "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+            "actual_http": 0,
+            "reported_http": 0,
+            "phase_reserved": 8,
+            "role": "EXACT_PROVIDER_SECTOR_CONTEXT"
+          },
+          {
+            "route": "CHAIN_EVENTS",
+            "status": "CLOSED",
+            "actual_http": 3,
+            "reported_http": 3,
+            "phase_reserved": 12,
+            "role": "FINALIZED_TRANSFER_CONTEXT"
+          },
+          {
+            "route": "BLOCKSCOUT",
+            "status": "INDEX_DISCOVERY_NOT_NEEDED_CURRENT_PRIMARY_CHECKED",
+            "actual_http": 0,
+            "reported_http": 0,
+            "phase_reserved": 12,
+            "role": "INDEX_DISCOVERY"
+          }
+        ],
+        "shared_envelope": {
+          "cap": 18,
+          "reserved_attempts": 12,
+          "actual_http": 11,
+          "unknown_reservations_not_released": true
+        },
+        "reused_HTX_N12_actual_HTTP": 0
+      },
+      "block_audit": {
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 0,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          }
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 3,
+          "valid_context_facts": 3,
+          "usable_facts": 0,
+          "decision_path": "ADMITTED_CONTROL_CONTEXT",
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 3
+          }
+        },
+        "N12": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 0,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          }
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 1,
+          "decision_path": "ADMITTED_SCORE_OR_RISK_INPUT",
+          "evidence_rejection_reasons": {}
+        }
+      },
+      "source_evidence": [
+        {
+          "block_id": "N05",
+          "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+          "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+          "upstream_id": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+          "evidence_id": "EV2:b8fa570c5e885a7d9378399ee6e51c8744da9e39117c9942f72eb5773e114ebe",
+          "source_ts": 1792321920000,
+          "observed_ts": 1792321990590,
+          "first_known_ts": 1792321990590,
+          "expires_at": 1792322220000,
+          "coverage_fraction": 0,
+          "directional_strength": null
+        },
+        {
+          "block_id": "N15",
+          "metric_family": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+          "provider_id": "COINGECKO_SECTOR",
+          "upstream_id": "COINGECKO_AGGREGATED_VENUES",
+          "evidence_id": "EV2:482862fd0e26d1dd9c3907f76d44afe8427789da7869be343485058508a73157",
+          "source_ts": 1792321975000,
+          "observed_ts": 1792322006675,
+          "first_known_ts": 1792322006675,
+          "expires_at": 1792322306675,
+          "coverage_fraction": 0.75,
+          "directional_strength": -0.8115215000000001
+        },
+        {
+          "block_id": "N12",
+          "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_MULTI_MARKET",
+          "provider_id": "HTX_SPOT_FUTURES_TRADES",
+          "upstream_id": "HTX_OFFICIAL_SPOT_AND_FUTURES_RAW_FILLS",
+          "evidence_id": "EV2:8e317fcfc29bc9b340880dbab59f52a81b98c6df94a5e53b39c365a5845daec9",
+          "source_ts": 1792321985487,
+          "observed_ts": 1792322000596,
+          "first_known_ts": 1792322000596,
+          "expires_at": 1792322060596,
+          "coverage_fraction": 0,
+          "directional_strength": null
+        },
+        {
+          "block_id": "N10",
+          "metric_family": "CLOSED_CANDLE_RANGE_CONTEXT",
+          "provider_id": "PRIMARY_TECHNICAL_CONTEXT",
+          "upstream_id": "HTX_OFFICIAL_CLOSED_CANDLES",
+          "evidence_id": "EV2:631717422fd69457332876a559b6153a73a6255f55bcbae4d2e6984022ba187f",
+          "source_ts": 1792321990170,
+          "observed_ts": 1792321990398,
+          "first_known_ts": 1792321990398,
+          "expires_at": 1792322170170,
+          "coverage_fraction": 0,
+          "directional_strength": null
+        },
+        {
+          "block_id": "N10",
+          "metric_family": "CLOSED_15M_PRICE_PATH_CONTEXT",
+          "provider_id": "PRIMARY_TECHNICAL_CONTEXT",
+          "upstream_id": "HTX_OFFICIAL_CLOSED_1M_CANDLES",
+          "evidence_id": "EV2:f1f64a6c7d4f0f16be567acc12b684834bdd80d4ae34568857333b12126c1e27",
+          "source_ts": 1792321980000,
+          "observed_ts": 1792322035025,
+          "first_known_ts": 1792322035025,
+          "expires_at": 1792322160000,
+          "coverage_fraction": 0,
+          "directional_strength": null
+        },
+        {
+          "block_id": "N10",
+          "metric_family": "CLOSED_15M_HTX_SPOT_PRICE_PATH_CONTEXT",
+          "provider_id": "PRIMARY_TECHNICAL_CONTEXT",
+          "upstream_id": "HTX_OFFICIAL_SPOT_CLOSED_1M_CANDLES",
+          "evidence_id": "EV2:67fd1cb7f666ad59b7c87fd9077dc41e626daf6832d54f0e70013577f28eee7b",
+          "source_ts": 1792321980000,
+          "observed_ts": 1792322035025,
+          "first_known_ts": 1792321991092,
+          "expires_at": 1792322160000,
+          "coverage_fraction": 0,
+          "directional_strength": null
+        }
+      ],
+      "external_flow": {
+        "status": "CALLER_FIVE_REQUEST_CAP",
+        "actual_HTTP": 5,
+        "components": [
+          {
+            "version": "gate-exact-taker-flow-v1-20261010",
+            "status": "GATE_FLOW_NOT_CLOSED",
+            "check_completed": false,
+            "contract": "CT-USDT",
+            "venue": "GATE",
+            "market": "SPOT",
+            "quote": "USDT",
+            "window_start_ts": 1792307580000,
+            "window_end_ts": 1792321980000,
+            "observed_ts": 1792322015382,
+            "verified_minutes": 176,
+            "pages": 3,
+            "buy_quote": null,
+            "sell_quote": null,
+            "trade_count": 3000,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "unreconciled_minutes": [
+              1792307580000,
+              1792307640000,
+              1792307700000,
+              1792307760000,
+              1792307820000,
+              1792307880000,
+              1792307940000,
+              1792308000000,
+              1792308060000,
+              1792308120000,
+              1792308180000,
+              1792308240000,
+              1792308300000,
+              1792308360000,
+              1792308420000,
+              1792308480000,
+              1792308540000,
+              1792308600000,
+              1792308660000,
+              1792308720000,
+              1792308780000,
+              1792308840000,
+              1792308900000,
+              1792308960000,
+              1792309020000,
+              1792309080000,
+              1792309140000,
+              1792309200000,
+              1792309260000,
+              1792309320000,
+              1792309380000,
+              1792309440000,
+              1792309500000,
+              1792309560000,
+              1792309620000,
+              1792309680000,
+              1792309740000,
+              1792309800000,
+              1792309860000,
+              1792309920000,
+              1792309980000,
+              1792310040000,
+              1792310100000,
+              1792310160000,
+              1792310220000,
+              1792310280000,
+              1792310340000,
+              1792310400000,
+              1792310460000,
+              1792310520000,
+              1792310580000,
+              1792310640000,
+              1792310700000,
+              1792310760000,
+              1792310820000,
+              1792310880000,
+              1792310940000,
+              1792311000000,
+              1792311060000,
+              1792311120000,
+              1792311180000,
+              1792311240000,
+              1792311300000,
+              1792311360000
+            ],
+            "reason": "MINUTE_BASE_AND_QUOTE_VOLUME_NOT_RECONCILED",
+            "identity": {
+              "chain": "ethereum",
+              "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+            },
+            "exact_asset_binding": true,
+            "physical_root": "GATE_OFFICIAL_PUBLIC_TRADES",
+            "direction_semantics": "PAIRED_PUBLIC_REST_TAKER_SIDE",
+            "direction_reference_id": "GATE_PAIRED_PUBLIC_TAKER_V4_38064035277",
+            "raw_trade_counter_independently_verified": false,
+            "large_individual_trades_available": false,
+            "receipt_hashes": [
+              "c2e51ba0c3128ecbeabb350147fd9553441b68381e0465a95fead8ed5d39d58f",
+              "4e4cb54608e77a01efbcc0a674b633b16037106a1ae06b216b5de45bfb04d288",
+              "93ca2b0759e32aeab208ceb2eaaa2b3f52107fc3de74d554bcd5660c0d76417e",
+              "91bb5c485aff052e60ff20cb1e64c7011949f552143dd0dab43ed95f648092a4",
+              "d1891cb0049dc65eca43c30f8c39335cb7f034f5125cf383ae0114e002958203",
+              "c6d4a58f205bb19fed04b2a2f315b253dafeff422642b0d706dbea15ec395825"
+            ]
+          }
+        ],
+        "adapters": [
+          {
+            "version": "gate-flow-collector-v1-20261010",
+            "status": "GATE_FLOW_NOT_CLOSED",
+            "check_completed": false,
+            "network_calls": 4,
+            "internal_only": true,
+            "reason": "MINUTE_BASE_AND_QUOTE_VOLUME_NOT_RECONCILED",
+            "adapter_reported_network_calls": 4,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "GATE"
+          },
+          {
+            "version": "backpack-flow-collector-v1-20261010",
+            "status": "EXACT_BACKPACK_TOKEN_BINDING_REQUIRED",
+            "check_completed": false,
+            "network_calls": 1,
+            "cache_write_receipts": [
+              {
+                "asset_key": "METADATA:ASSETS",
+                "status": "CACHE_WRITE_COMPLETED",
+                "native_usage_unclosed": false
+              }
+            ],
+            "internal_only": true,
+            "adapter_reported_network_calls": 1,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BACKPACK"
+          },
+          {
+            "version": "bitget-flow-collector-v1-20261010",
+            "status": "CALLER_FIVE_REQUEST_CAP",
+            "check_completed": false,
+            "network_calls": 0,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 0,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "BITGET"
+          },
+          {
+            "version": "poloniex-native-flow-collector-v1-20261010",
+            "status": "EXACT_PRIMARY_CHAIN_ADDRESS_BINDING_REQUIRED",
+            "check_completed": false,
+            "network_calls": 0,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 0,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "POLONIEX"
+          },
+          {
+            "version": "gate-futures-trade-collector-v1-20261011",
+            "status": "CALLER_FIVE_REQUEST_CAP",
+            "check_completed": false,
+            "network_calls": 0,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 0,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS",
+            "venue": "GATE_FUTURES_N12"
+          },
+          {
+            "version": "n12-exact-public-trade-collector-v2-20261012",
+            "venue": "KUCOIN_N12_EXACT_TOKEN",
+            "status": "CALLER_FIVE_REQUEST_CAP",
+            "check_completed": false,
+            "network_calls": 0,
+            "cache_write_receipts": [],
+            "internal_only": true,
+            "adapter_reported_network_calls": 0,
+            "transport_count_basis": "OBSERVED_SHARED_FETCH_ATTEMPTS"
+          }
+        ],
+        "source_priority": {
+          "status": "CLOSED_EXACT_SOURCE_PRIORITY_HISTORY",
+          "contract": "CT-USDT",
+          "scope": "EXACT_MARKET_ALTERNATIVES_WITHIN_N05_OR_N12",
+          "original_order": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "ordered_routes": [
+            "GATE",
+            "BACKPACK",
+            "BITGET",
+            "POLONIEX",
+            "GATE_FUTURES_N12",
+            "KUCOIN_N12_EXACT_TOKEN"
+          ],
+          "source_statistics": {
+            "GATE": {
+              "source_id": "N05_PUBLIC_VENUE:GATE",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            },
+            "BACKPACK": {
+              "source_id": "N05_PUBLIC_VENUE:BACKPACK",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            },
+            "BITGET": {
+              "source_id": "N05_PUBLIC_VENUE:BITGET",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            },
+            "POLONIEX": {
+              "source_id": "N05_PUBLIC_VENUE:POLONIEX",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N05"
+            },
+            "GATE_FUTURES_N12": {
+              "source_id": "N12_PUBLIC_VENUE:GATE_FUTURES_N12",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N12"
+            },
+            "KUCOIN_N12_EXACT_TOKEN": {
+              "source_id": "N12_PUBLIC_VENUE:KUCOIN_N12_EXACT_TOKEN",
+              "observations": 0,
+              "latest_class": null,
+              "latest_observed_ts": null,
+              "useful": false,
+              "valid_rows_per_http": 0,
+              "rejected_observations": [],
+              "block_id": "N12"
+            }
+          },
+          "sourceHTTP": 0,
+          "score_changed": false,
+          "predictive_weight_changed": false,
+          "all_eligible_routes_retained": true
+        }
+      },
+      "N15": {
+        "coingecko": {
+          "status": "CLOSED",
+          "actual_HTTP": 3,
+          "summary": {
+            "coin_id": "concrete",
+            "tag_id": "decentralized-finance-defi",
+            "category_name": "Decentralized Finance (DeFi)",
+            "target_source_ts": 1792321975000,
+            "target_change_24h_pct": -9.76702,
+            "peer_median_change_24h_pct": -1.651805,
+            "relative_strength_pct_points": -8.115215000000001,
+            "eligible_peers": 50,
+            "returned_category_rows": 100,
+            "full_sector_coverage": false,
+            "source_ts": 1792321975000,
+            "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+            "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+            "direction_neutral": false,
+            "entry_eligible": false,
+            "is_htx_price": false,
+            "target_quote_route": "EXACT_ID_OUTSIDE_CATEGORY_PAGE",
+            "previous_target_source_ts": null
+          }
+        },
+        "coinpaprika": {
+          "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+          "actual_HTTP": 0
+        },
+        "consumer": {
+          "status": "CLOSED",
+          "facts": [
+            {
+              "advisory_only": true,
+              "directional_vote": false,
+              "hard_gate": false,
+              "score_contribution": 0,
+              "block_id": "N15",
+              "source": "CoinGecko",
+              "decision_block": "MARKET_STRENGTH_SPOT",
+              "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+              "label": "Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет",
+              "value": "монета -9,77%, медиана -1,65%, разница -8,12 п.п.; сводные цены площадок",
+              "unit": "",
+              "source_ts": 1792321975000,
+              "observed_ts": 1792322006675,
+              "evidence_id": "EV2:482862fd0e26d1dd9c3907f76d44afe8427789da7869be343485058508a73157",
+              "physical_root_key": "ethereum:0x0a092e544da31150b439a1aaa1a3a2214a867f46|concrete:decentralized-finance-defi:1792321975000"
+            }
+          ],
+          "blocks": {
+            "COINGECKO_SECTOR": {
+              "status": "CLOSED",
+              "block_id": "N15",
+              "relative_strength_pct_points": -8.115215000000001,
+              "eligible_peers": 50,
+              "category": "decentralized-finance-defi",
+              "source_ts": 1792321975000,
+              "advisory_only": true,
+              "directional_vote": false,
+              "hard_gate": false,
+              "score_contribution": 0
+            }
+          },
+          "advisory_only": true,
+          "directional_vote": false,
+          "hard_gate": false,
+          "score_contribution": 0
+        }
+      },
+      "N12": {
+        "status": "CLOSED_BOUNDED_MULTIMARKET_DISAGREEMENT",
+        "sample": {
+          "futures": {
+            "rows_returned": 2044,
+            "valid_recent_rows": 18,
+            "rejected_rows": 2026,
+            "large_trades_in_bounded_sample": 0,
+            "selection_min_quote_usdt": 100000,
+            "sample_limit": 2000,
+            "sample_limit_unit": "OUTER_TRADE_BATCHES",
+            "returned_batches": 2000,
+            "saturated": true,
+            "window_start": 1792321700596,
+            "window_end": 1792321989901,
+            "whole_window_coverage_proven": false,
+            "cvd_window_complete": false,
+            "quote": "USDT",
+            "direction_neutral": false,
+            "entry_eligible": false,
+            "is_htx_price": false,
+            "selected": [],
+            "observed_quote_turnover_usdt": 977.903,
+            "buy_quote_turnover_usdt": 370.6621999999999,
+            "sell_quote_turnover_usdt": 607.2408,
+            "taker_imbalance": -0.241924403545137,
+            "sample_coverage_fraction": 0.08968833333333334,
+            "largest_observed_trade_usdt": 105.451,
+            "transport_sample": [
+              {
+                "id": "1000000335325260000",
+                "price": 0.31711,
+                "amount": 18,
+                "quantity": 180,
+                "trade_turnover": 57.0798,
+                "ts": 1792292766128,
+                "direction": "sell"
+              },
+              {
+                "id": "1000000335332090000",
+                "price": 0.31708,
+                "amount": 2,
+                "quantity": 20,
+                "trade_turnover": 6.3416,
+                "ts": 1792292782622,
+                "direction": "sell"
+              }
+            ]
+          },
+          "spot": {
+            "market": "SPOT",
+            "rows_returned": 2000,
+            "valid_recent_rows": 153,
+            "rejected_rows": 1847,
+            "buy_quote_turnover_usdt": 4954.5741539499995,
+            "sell_quote_turnover_usdt": 4921.18747495,
+            "observed_quote_turnover_usdt": 9875.7616289,
+            "taker_imbalance": 0.0033806687782234382,
+            "sample_coverage_fraction": 0.09609166666666667,
+            "saturated": true,
+            "whole_window_coverage_proven": false,
+            "window_start": 1792321700596,
+            "window_end": 1792321990219
+          },
+          "agreement": false,
+          "source_skew_ms": 3605,
+          "max_joint_skew_ms": 30000,
+          "independent_venue_count": 1
+        }
+      },
+      "LIQ": {
+        "status": "CALCULATED_CONTEXT_ONLY",
+        "calculated_scenario_count": 8,
+        "displayed_zone_count": 0,
+        "factual_future_levels_status": "NO_FACTUAL_FUTURE_LEVELS",
+        "future_sources": {
+          "coverage_admission": {
+            "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+            "eligible": true,
+            "source_ids": [
+              "HYPERLIQUID_NATIVE"
+            ],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false,
+            "contract": "CT-USDT",
+            "proven_level_source_ids": [],
+            "additional_context_check_source_ids": [
+              "HYPERLIQUID_NATIVE"
+            ],
+            "structural_market_source_ids": [],
+            "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+            "fresh_live_levels_confirmed": false,
+            "receipt_only_context_score_eligible": false,
+            "receipt_only_context_target_eligible": false,
+            "leaders_may_be_replaced": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          },
+          "orderly": {
+            "source": "ORDERLY_PUBLIC_POSITIONS",
+            "status": "NOT_COLLECTED",
+            "source_ts": null,
+            "nearby_levels": 0
+          },
+          "coinboss": {
+            "source": "COINBOSS_CEX_MODEL",
+            "status": "CLOSED",
+            "reason": null,
+            "network_calls": 1,
+            "capability_receipt": null,
+            "source_ts": 1792321759890,
+            "scenario_count": 8
+          },
+          "swolecharts": {
+            "source": "SWOLECHARTS_CEX_MODEL",
+            "status": "NOT_COLLECTED",
+            "source_ts": null,
+            "scenario_count": 0
+          }
+        },
+        "coinboss_source_age_at_canonical_ms": 275135,
+        "model_is_not_open_position": true,
+        "actual_numeric_Gate_N12_current": false
+      },
+      "local_consumers": {
+        "clock": "UNCHANGED_SAVED_CANONICAL_OBSERVATION",
+        "manual_ok": true,
+        "V5_ok": false,
+        "V5_status": "DISPLAY_IDENTITY_NOT_CLOSED",
+        "V5_length": null,
+        "V5_max_length": null,
+        "manual_source_context_blocks": [
+          "N05",
+          "N12",
+          "N10",
+          "N15"
+        ],
+        "V5_source_context_blocks": [],
+        "manual_context_receipts": [
+          {
+            "block_id": "N05",
+            "evidence_id": "EV2:b8fa570c5e885a7d9378399ee6e51c8744da9e39117c9942f72eb5773e114ebe",
+            "physical_root_key": "AVAILABLE_FLOW:CT-USDT:1792307520000:1792321920000",
+            "evidence_ids": [
+              "EV2:b8fa570c5e885a7d9378399ee6e51c8744da9e39117c9942f72eb5773e114ebe"
+            ],
+            "physical_root_keys": [
+              "AVAILABLE_FLOW:CT-USDT:1792307520000:1792321920000"
+            ],
+            "source_ts": 1792321920000,
+            "observed_ts": 1792321990590,
+            "label": "Поток сделок по доступным площадкам за четыре часа",
+            "value": "HTX фьючерсы: покупки 27 715,04, продажи 31 878,39 USDT; перевес продаж 6,99%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены",
+            "source": "HTX",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N12",
+            "source_block_ids": [
+              "N12",
+              "N05"
+            ],
+            "evidence_id": "EV2:8e317fcfc29bc9b340880dbab59f52a81b98c6df94a5e53b39c365a5845daec9",
+            "physical_root_key": "HTX_SPOT_FUTURES_TRADE_SAMPLE:CT-USDT:CT-USDT:BOUNDED:1000000346685970000:HTX_SPOT_TRADE_SAMPLE:CT-USDT:540155",
+            "evidence_ids": [
+              "EV2:8e317fcfc29bc9b340880dbab59f52a81b98c6df94a5e53b39c365a5845daec9",
+              "EV2:b8fa570c5e885a7d9378399ee6e51c8744da9e39117c9942f72eb5773e114ebe"
+            ],
+            "physical_root_keys": [
+              "HTX_SPOT_FUTURES_TRADE_SAMPLE:CT-USDT:CT-USDT:BOUNDED:1000000346685970000:HTX_SPOT_TRADE_SAMPLE:CT-USDT:540155"
+            ],
+            "source_ts": 1792321985487,
+            "observed_ts": 1792322000596,
+            "label": "Направление последних сделок HTX",
+            "value": "HTX фьючерсы: 18 сделок, покупки 370,66, продажи 607,24 USDT; спот: 153 сделки, покупки 4 954,57, продажи 4 921,19 USDT; общего направления по двум рынкам нет; ограниченная выборка, не суточный поток; HTX остаётся одной биржей; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен",
+            "source": "HTX / спот и фьючерсы / HTX",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:631717422fd69457332876a559b6153a73a6255f55bcbae4d2e6984022ba187f",
+            "physical_root_key": "htx-futures:CT-USDT|CT-USDT:60min:1792321200000",
+            "evidence_ids": [
+              "EV2:631717422fd69457332876a559b6153a73a6255f55bcbae4d2e6984022ba187f"
+            ],
+            "physical_root_keys": [
+              "htx-futures:CT-USDT|CT-USDT:60min:1792321200000"
+            ],
+            "source_ts": 1792321990170,
+            "observed_ts": 1792321990398,
+            "label": "Фактический ценовой диапазон",
+            "value": "20 закрытых свечей 60min: 0,3117–0,34242 USDT, ширина 9,86%; цена последней закрытой свечи 0,31395 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно",
+            "source": "HTX / закрытые свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:f1f64a6c7d4f0f16be567acc12b684834bdd80d4ae34568857333b12126c1e27",
+            "physical_root_key": "htx-futures:CT-USDT|CT-USDT:15m:1792321980000",
+            "evidence_ids": [
+              "EV2:f1f64a6c7d4f0f16be567acc12b684834bdd80d4ae34568857333b12126c1e27"
+            ],
+            "physical_root_keys": [
+              "htx-futures:CT-USDT|CT-USDT:15m:1792321980000"
+            ],
+            "source_ts": 1792321980000,
+            "observed_ts": 1792322035025,
+            "label": "Фактический путь цены за 15 минут",
+            "value": "15 закрытых минутных свечей: 0,31361 → 0,30984 USDT (-1,2%); минимум 0,30821, максимум 0,31425 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+            "source": "HTX / закрытые минутные свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:67fd1cb7f666ad59b7c87fd9077dc41e626daf6832d54f0e70013577f28eee7b",
+            "physical_root_key": "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792321980000",
+            "evidence_ids": [
+              "EV2:67fd1cb7f666ad59b7c87fd9077dc41e626daf6832d54f0e70013577f28eee7b"
+            ],
+            "physical_root_keys": [
+              "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792321980000"
+            ],
+            "source_ts": 1792321980000,
+            "observed_ts": 1792322035025,
+            "label": "Фактический путь цены на споте за 15 минут",
+            "value": "15 закрытых минутных свечей, активных минут 15: 0,3137 → 0,3097 USDT (-1,28%); минимум 0,3077, максимум 0,3143 USDT. Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника. Цель и разрешение входа этим не подтверждены",
+            "source": "HTX / спотовые закрытые свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N15",
+            "evidence_id": "EV2:482862fd0e26d1dd9c3907f76d44afe8427789da7869be343485058508a73157",
+            "physical_root_key": "ethereum:0x0a092e544da31150b439a1aaa1a3a2214a867f46|concrete:decentralized-finance-defi:1792321975000",
+            "evidence_ids": [
+              "EV2:482862fd0e26d1dd9c3907f76d44afe8427789da7869be343485058508a73157"
+            ],
+            "physical_root_keys": [
+              "ethereum:0x0a092e544da31150b439a1aaa1a3a2214a867f46|concrete:decentralized-finance-defi:1792321975000"
+            ],
+            "source_ts": 1792321975000,
+            "observed_ts": 1792322006675,
+            "label": "Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет",
+            "value": "монета -9,77%, медиана -1,65%, разница -8,12 п.п.; сводные цены площадок",
+            "source": "CoinGecko",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "V5_context_receipts": [],
+        "available_not_rendered": [],
+        "compact_prior_saved_receipt": {
+          "status": "MESSAGE_TOO_LONG",
+          "length": 2341,
+          "max": 1600,
+          "reexecuted": false
+        },
+        "delivery_proven": false
+      },
+      "whole_job_HTTP_or_native_cost_reconstructed": false
+    },
+    {
+      "contract": "BR-USDT",
+      "native_binding": {
+        "publication_id": "PUB:402cba697c2be255c7cb8d1cb6398e8b4ee18d26",
+        "run_id": "1792321965799-1792321975225",
+        "snapshot_id": "S392:BR-USDT:1792322059116",
+        "analytical_fingerprint": "3226970e42c01490f7b2e9e3b1f537b16e187af08cb5a29a5d27274ae6bf7d9a",
+        "observed_ts": 1792322059116,
+        "gzip_sha256": "fb05cc25487c16355a93bb7094741e9d3f4f221a7e2b0bb398ee894e4ec4eb9e",
+        "raw_sha256": "708f899670c093ff7ccdddb5ddda951c588d49a021c75908dbd88076b9e46a52"
+      },
+      "state": "REJECTED",
+      "direction": null,
+      "identity": {
+        "status": "NOT_CLOSED",
+        "method": null,
+        "identity": null,
+        "reference": {
+          "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+          "status": "HTX_CURRENCY_NOT_FOUND",
+          "contract": "BR-USDT",
+          "currency": "BR",
+          "identity": null,
+          "identity_method": null,
+          "network_calls": 1,
+          "cache_status": "VALID_HTX_REFERENCE_CACHE",
+          "receipt": {
+            "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+            "http_status": 200,
+            "received_ts": 1792321999519,
+            "parsed_payload_sha256": "a15ef05d361f1beaea75e64b340c4ee382fe2d7a7549a5e68df7ea47cb70a6e0"
+          },
+          "reference_observed_ts": 1792321999519,
+          "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+          "internal_only": true,
+          "identity_fallback_status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+          "identity_fallback_receipts": [
+            {
+              "route": "HTX_MARKET_CATALOG",
+              "url": "https://api.coinpaprika.com/v1/exchanges/htx/markets",
+              "http_status": 200,
+              "status": "RECEIVED",
+              "received_ts": 1792322048702,
+              "body_sha256": "fc18a55befc2269d89c19a14f81d9723780327bf83a1b8fe58b1b2b1178e302b",
+              "actual_http": 1
+            }
+          ]
+        }
+      },
+      "supplemental_http": {
+        "scope": "EXISTING_SUPPLEMENTAL_ENVELOPE_ONLY_NOT_WHOLE_JOB",
+        "route_accounting": [
+          {
+            "route": "HTX",
+            "status": "BLOCK_PAUSED_BY_OWNER",
+            "actual_http": 0,
+            "phase_reserved": 0
+          },
+          {
+            "route": "SECTOR",
+            "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+            "actual_http": 0,
+            "reported_http": 0,
+            "phase_reserved": 0,
+            "role": "EXACT_PROVIDER_SECTOR_CONTEXT"
+          },
+          {
+            "route": "LARGE_TRADES",
+            "status": "CLOSED_BOUNDED_PARTIAL_MARKET",
+            "actual_http": 0,
+            "reported_http": 0,
+            "phase_reserved": 0,
+            "role": "ACTUAL_HTX_TRADE_CONTEXT"
+          }
+        ],
+        "shared_envelope": {
+          "cap": 18,
+          "reserved_attempts": 0,
+          "actual_http": 0,
+          "unknown_reservations_not_released": true
+        },
+        "reused_HTX_N12_actual_HTTP": 0
+      },
+      "block_audit": {
+        "N05": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 0,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          }
+        },
+        "N10": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 2,
+          "valid_context_facts": 2,
+          "usable_facts": 0,
+          "decision_path": "ADMITTED_CONTROL_CONTEXT",
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 2
+          }
+        },
+        "N12": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 1,
+          "decision_path": "ADMITTED_SCORE_OR_RISK_INPUT",
+          "evidence_rejection_reasons": {}
+        },
+        "N15": {
+          "status": "CHECKED_NO_USABLE_FACTS",
+          "checked": true,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "decision_path": "CHECKED_NEUTRAL_NO_EVENT",
+          "evidence_rejection_reasons": {}
+        }
+      },
+      "source_evidence": [
+        {
+          "block_id": "N05",
+          "metric_family": "AVAILABLE_VENUE_TAKER_FLOW_4H",
+          "provider_id": "AVAILABLE_VERIFIED_TAKER_FLOW",
+          "upstream_id": "QUALIFIED_OFFICIAL_TAKER_FLOW",
+          "evidence_id": "EV2:865b100ca1f81313f623b587b666d14b0c6ae2bdac19dfbf63314af5154f3a32",
+          "source_ts": 1792321980000,
+          "observed_ts": 1792322039717,
+          "first_known_ts": 1792322039717,
+          "expires_at": 1792322280000,
+          "coverage_fraction": 0,
+          "directional_strength": null
+        },
+        {
+          "block_id": "N12",
+          "metric_family": "ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE",
+          "provider_id": "HTX_LARGE_TRADES",
+          "upstream_id": "HTX_PUBLIC_FUTURES_TRADES",
+          "evidence_id": "EV2:ef9e87d6ec220e84347fce59e9587c793e7d7a175c8fa9df3e09a9509fa10d7d",
+          "source_ts": 1792322021104,
+          "observed_ts": 1792322049908,
+          "first_known_ts": 1792322049908,
+          "expires_at": 1792322109908,
+          "coverage_fraction": 0.08562800000000001,
+          "directional_strength": -0.8590654035623592
+        },
+        {
+          "block_id": "N10",
+          "metric_family": "CLOSED_CANDLE_RANGE_CONTEXT",
+          "provider_id": "PRIMARY_TECHNICAL_CONTEXT",
+          "upstream_id": "HTX_OFFICIAL_CLOSED_CANDLES",
+          "evidence_id": "EV2:811cacd27f01be664578530043c1c78404037d002178ebea197ca6793e7fca77",
+          "source_ts": 1792322039205,
+          "observed_ts": 1792322039641,
+          "first_known_ts": 1792322039641,
+          "expires_at": 1792322219205,
+          "coverage_fraction": 0,
+          "directional_strength": null
+        },
+        {
+          "block_id": "N10",
+          "metric_family": "CLOSED_15M_PRICE_PATH_CONTEXT",
+          "provider_id": "PRIMARY_TECHNICAL_CONTEXT",
+          "upstream_id": "HTX_OFFICIAL_CLOSED_1M_CANDLES",
+          "evidence_id": "EV2:09493be9d58e0496417005fd57420d0ee23d631b20e8fc1c516ee5e98df05d8e",
+          "source_ts": 1792321980000,
+          "observed_ts": 1792322059116,
+          "first_known_ts": 1792322059116,
+          "expires_at": 1792322160000,
+          "coverage_fraction": 0,
+          "directional_strength": null
+        }
+      ],
+      "external_flow": {
+        "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+        "actual_HTTP": 0,
+        "components": []
+      },
+      "N15": {
+        "coingecko": {
+          "status": "EXACT_SECTOR_REGISTRY_REQUIRED",
+          "actual_HTTP": 0
+        },
+        "coinpaprika": {
+          "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+          "actual_HTTP": 0
+        },
+        "consumer": {
+          "status": "NOT_CLOSED",
+          "facts": [],
+          "blocks": {},
+          "advisory_only": true,
+          "directional_vote": false,
+          "hard_gate": false,
+          "score_contribution": 0
+        }
+      },
+      "N12": {
+        "status": "CLOSED_BOUNDED_PARTIAL_MARKET",
+        "sample": {
+          "futures": {
+            "rows_returned": 2085,
+            "valid_recent_rows": 19,
+            "rejected_rows": 2066,
+            "large_trades_in_bounded_sample": 0,
+            "selection_min_quote_usdt": 100000,
+            "sample_limit": 2000,
+            "sample_limit_unit": "OUTER_TRADE_BATCHES",
+            "returned_batches": 2000,
+            "saturated": true,
+            "window_start": 1792321749908,
+            "window_end": 1792322039086,
+            "whole_window_coverage_proven": false,
+            "cvd_window_complete": false,
+            "quote": "USDT",
+            "direction_neutral": false,
+            "entry_eligible": false,
+            "is_htx_price": false,
+            "selected": [],
+            "observed_quote_turnover_usdt": 1080.6961800000001,
+            "buy_quote_turnover_usdt": 76.15374,
+            "sell_quote_turnover_usdt": 1004.54244,
+            "taker_imbalance": -0.8590654035623592,
+            "sample_coverage_fraction": 0.08562800000000001,
+            "largest_observed_trade_usdt": 110.91888,
+            "transport_sample": [
+              {
+                "id": "1000000974380390000",
+                "price": 0.4264,
+                "amount": 310,
+                "quantity": 310,
+                "trade_turnover": 132.184,
+                "ts": 1792294029419,
+                "direction": "sell"
+              },
+              {
+                "id": "1000000974380400000",
+                "price": 0.4264,
+                "amount": 310,
+                "quantity": 310,
+                "trade_turnover": 132.184,
+                "ts": 1792294029419,
+                "direction": "sell"
+              }
+            ]
+          },
+          "spot": null,
+          "agreement": null,
+          "source_skew_ms": null,
+          "max_joint_skew_ms": 30000,
+          "independent_venue_count": 1
+        }
+      },
+      "LIQ": {
+        "status": "NOT_CLOSED",
+        "calculated_scenario_count": 0,
+        "displayed_zone_count": 0,
+        "factual_future_levels_status": "NO_FACTUAL_FUTURE_LEVELS",
+        "future_sources": {
+          "coverage_admission": {
+            "status": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+            "eligible": false,
+            "source_ids": [],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          },
+          "orderly": {
+            "source": "ORDERLY_PUBLIC_POSITIONS",
+            "status": "NOT_COLLECTED",
+            "source_ts": null,
+            "nearby_levels": 0
+          },
+          "coinboss": {
+            "source": "COINBOSS_CEX_MODEL",
+            "status": "CLOSED",
+            "reason": null,
+            "network_calls": 1,
+            "capability_receipt": null,
+            "source_ts": 1792321757211,
+            "scenario_count": 8
+          },
+          "swolecharts": {
+            "source": "SWOLECHARTS_CEX_MODEL",
+            "status": "NOT_COLLECTED",
+            "source_ts": null,
+            "scenario_count": 0
+          }
+        },
+        "coinboss_source_age_at_canonical_ms": 301905,
+        "model_is_not_open_position": true,
+        "actual_numeric_Gate_N12_current": false
+      },
+      "local_consumers": {
+        "clock": "UNCHANGED_SAVED_CANONICAL_OBSERVATION",
+        "manual_ok": true,
+        "V5_ok": false,
+        "V5_status": "DISPLAY_IDENTITY_NOT_CLOSED",
+        "V5_length": null,
+        "V5_max_length": null,
+        "manual_source_context_blocks": [
+          "N05",
+          "N12",
+          "N10"
+        ],
+        "V5_source_context_blocks": [],
+        "manual_context_receipts": [
+          {
+            "block_id": "N05",
+            "evidence_id": "EV2:865b100ca1f81313f623b587b666d14b0c6ae2bdac19dfbf63314af5154f3a32",
+            "physical_root_key": "AVAILABLE_FLOW:BR-USDT:1792307580000:1792321980000",
+            "evidence_ids": [
+              "EV2:865b100ca1f81313f623b587b666d14b0c6ae2bdac19dfbf63314af5154f3a32"
+            ],
+            "physical_root_keys": [
+              "AVAILABLE_FLOW:BR-USDT:1792307580000:1792321980000"
+            ],
+            "source_ts": 1792321980000,
+            "observed_ts": 1792322039717,
+            "label": "Поток сделок по доступным площадкам за четыре часа",
+            "value": "HTX фьючерсы: покупки 19 975,73, продажи 48 130,52 USDT; перевес продаж 41,34%; данные одной биржи, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены",
+            "source": "HTX",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N12",
+            "source_block_ids": [
+              "N12",
+              "N05"
+            ],
+            "evidence_id": "EV2:ef9e87d6ec220e84347fce59e9587c793e7d7a175c8fa9df3e09a9509fa10d7d",
+            "physical_root_key": "HTX:BR-USDT|BR-USDT:BOUNDED:1000000986083970000",
+            "evidence_ids": [
+              "EV2:ef9e87d6ec220e84347fce59e9587c793e7d7a175c8fa9df3e09a9509fa10d7d",
+              "EV2:865b100ca1f81313f623b587b666d14b0c6ae2bdac19dfbf63314af5154f3a32"
+            ],
+            "physical_root_keys": [
+              "HTX:BR-USDT|BR-USDT:BOUNDED:1000000986083970000"
+            ],
+            "source_ts": 1792322021104,
+            "observed_ts": 1792322049908,
+            "label": "Направление последних сделок HTX",
+            "value": "выборка 19 сделок: покупки 76,15, продажи 1 004,54 USDT; ограниченная выборка, не суточный поток; за отдельное полное окно 4 часа доступны сделки HTX; общее межбиржевое направление не подтверждено, окна не складывались; общий направленный вывод по разным окнам не установлен",
+            "source": "HTX / HTX",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:811cacd27f01be664578530043c1c78404037d002178ebea197ca6793e7fca77",
+            "physical_root_key": "htx-futures:BR-USDT|BR-USDT:60min:1792321200000",
+            "evidence_ids": [
+              "EV2:811cacd27f01be664578530043c1c78404037d002178ebea197ca6793e7fca77"
+            ],
+            "physical_root_keys": [
+              "htx-futures:BR-USDT|BR-USDT:60min:1792321200000"
+            ],
+            "source_ts": 1792322039205,
+            "observed_ts": 1792322039641,
+            "label": "Фактический ценовой диапазон",
+            "value": "20 закрытых свечей 60min: 0,36703–0,53957 USDT, ширина 47,01%; цена последней закрытой свечи 0,39566 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно",
+            "source": "HTX / закрытые свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          },
+          {
+            "block_id": "N10",
+            "evidence_id": "EV2:09493be9d58e0496417005fd57420d0ee23d631b20e8fc1c516ee5e98df05d8e",
+            "physical_root_key": "htx-futures:BR-USDT|BR-USDT:15m:1792321980000",
+            "evidence_ids": [
+              "EV2:09493be9d58e0496417005fd57420d0ee23d631b20e8fc1c516ee5e98df05d8e"
+            ],
+            "physical_root_keys": [
+              "htx-futures:BR-USDT|BR-USDT:15m:1792321980000"
+            ],
+            "source_ts": 1792321980000,
+            "observed_ts": 1792322059116,
+            "label": "Фактический путь цены за 15 минут",
+            "value": "15 закрытых минутных свечей: 0,39657 → 0,40131 USDT (+1,2%); минимум 0,39394, максимум 0,40175 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+            "source": "HTX / закрытые минутные свечи",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        ],
+        "V5_context_receipts": [],
+        "available_not_rendered": [],
+        "compact_prior_saved_receipt": {
+          "status": "READY",
+          "length": 1385,
+          "max": 1600,
+          "reexecuted": false
+        },
+        "delivery_proven": false
+      },
+      "whole_job_HTTP_or_native_cost_reconstructed": false
+    }
+  ],
+  "limitations": [
+    "No missing raw Gate CT body reconstructed from receipt hash.",
+    "No reclassification of chronological pagination saturation as provider corruption.",
+    "No asset/route/provider/current105 qualification from local rendering.",
+    "NoSENT/noentry; both saved statesREJECTED/directionnull.",
+    "No changes to weights, selection, paused blocks, report/TG forms, caps, unknown or spent reservations."
+  ]
+}

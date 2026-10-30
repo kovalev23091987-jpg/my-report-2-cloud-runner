@@ -1,0 +1,84 @@
+{
+  "schema": "F587_PRIMARY_UNIFIED_RATE_UNIT_CHAIN_V1",
+  "authority_main": "c794ad86b8e8e040484be5c3d0fbcd8ff572e5dd",
+  "classification": "ADAPTER_BASED_INFERENCE",
+  "qualification_status": "PARTIAL_EXACT_NORMALIZATION_FOUND;FRACTION_PREMISE_NOT_FULLY_PROVEN",
+  "sources": [
+    {
+      "id": "BINGX_PINNED_ADAPTER_REUSED_F586",
+      "url": "https://github.com/ccxt/ccxt/blob/d3159f7036f93db086cd0414642132fba5401710/ts/src/bingx.ts",
+      "git_blob": "7d05d1e811f498d0ddc4b295c1575e072c2675d9",
+      "sha256": "94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+      "lines": [
+        1827,
+        1867
+      ],
+      "short_literal": "'fundingRate': this.safeNumber (contract, 'lastFundingRate'),",
+      "supported": "Native BingX lastFundingRate is passed unchanged into unified FundingRate;no100division. Timestamp/period mapping remainsasF586.",
+      "new_external_read_in_F587": false
+    },
+    {
+      "id": "CCXT_DELTA_PRIMARY_NORMALIZER",
+      "url": "https://github.com/ccxt/ccxt/blob/d3159f7036f93db086cd0414642132fba5401710/ts/src/delta.ts",
+      "commit": "d3159f7036f93db086cd0414642132fba5401710",
+      "git_blob": "8f71950adf5d3211c1107566487736385a0bacd7",
+      "sha256": "1f052fc63cede5efececbb76af3662d48d7b0e28a4bbd1455c54b20f5bc6905b",
+      "retrieved_utc": "2026-10-26T09:55:13Z orbefore;clockafterresponse",
+      "lines": [
+        2875,
+        2898
+      ],
+      "short_literals": [
+        "const fundingRate = Precise.stringDiv (fundingRateString, '100');",
+        "'fundingRate': this.parseNumber (fundingRate),"
+      ],
+      "supported": "The primary CCXT adapter explicitly divides native Delta funding_rate by100 before assigning the same unified field.",
+      "limits": "This file doesnotdefine nativeDelta funding_rate aspercent, and isnot aconsumerprintingunifiedfundingRatepercentorcalculatingfundingfee. No numericexampleused."
+    },
+    {
+      "id": "OFFICIAL_CCXT_TREE",
+      "url": "https://api.github.com/repos/ccxt/ccxt/git/trees/d3159f7036f93db086cd0414642132fba5401710?recursive=1",
+      "entries": 10695,
+      "truncated": false,
+      "returned_text_sha256": "3ed4caab2bfa4a03bf27edf117935711341aaabba2383c2ae898b4be57e6922d",
+      "scope": "Primaryrepo paths inspectedtofindspecificconsumer;onlyhistory-namedfundingexamples identified;theircontentswereNOTreadandnoabsenceclaimmade."
+    },
+    {
+      "id": "PRIMARY_FAQ_SEARCH_EXCERPT",
+      "url": "https://github.com/ccxt/ccxt/wiki/FAQ/5df7676a8f2f8cb7c3a200594f7108a58a909b75",
+      "scope": "SearchreturnedofficialCCXTFAQdistinguishingupcoming/mutablefundingRatefromprevioussettledrate",
+      "used_for_fraction_proof": false
+    }
+  ],
+  "logical_chain": [
+    {
+      "premise": "BingXnative→unifiedrate mapping is passthrough",
+      "status": "PROVEN_PRIMARY_CODE"
+    },
+    {
+      "premise": "DeltaNative→sameunifiedslot mapping divides100",
+      "status": "PROVEN_PRIMARY_CODE"
+    },
+    {
+      "premise": "Delta nativefunding_rateunit is percentage points",
+      "status": "NOT_PROVEN_IN_READ_FILE"
+    },
+    {
+      "conclusion": "Ifthatpremiseisconfirmed,thecross-adapterchainwouldsupportBingXrawratefractionasADAPTER_BASED_INFERENCE",
+      "status": "CONDITIONAL;NOT_VENDOR_GUARANTEE"
+    }
+  ],
+  "inference_boundaries": {
+    "direct_official_CCXT_consumer_rate_times100_found": false,
+    "explicit_fundingFee_notional_times_unifiedRate_found": false,
+    "explicit_unified_fraction_unit_contract_found": false,
+    "unit_relation_only": "Source shows two normalization transforms into oneunifiedfield. ItdoesnotassertnumericalratesonBingXandDeltaareequal.",
+    "sample_magnitude_or_user_UI_used": false,
+    "rate_fraction_promoted_to_PROVEN": false,
+    "ordinary_BingX_funding_profile_activated": false
+  },
+  "concrete_remaining_premise": "Onefirstparty declarationthatDelta native ticker funding_rate isexpressedinpercent wouldcomplete this specificadapter-normalizationinference. AlternativelyaCCXTconsumerexplicitlyrendersunifiedfundingRate*100aspercent/closesviafeeformula wouldestablishtargetunit directly.",
+  "source_code_changes": 0,
+  "tests": 0,
+  "native_IO": 0
+}

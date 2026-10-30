@@ -1,0 +1,106 @@
+--- a/current-generation/files/src/anomaly-native-ingress.mjs
++++ b/current-generation/files/src/anomaly-native-ingress.mjs
+@@ -1,5 +1,6 @@
+ // TEXT PROPOSAL. Installed only by the coordinator after the affected common.
+ // No acquisition, SQL, admission grant, sender or independent scheduler here.
++import {APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS,APPROVED_HTX_NATIVE_CONTRACTS} from './approved-htx-analysis-scope.mjs';
+ import {capturedHtxAnomalyBasis} from './htx-signed-tape.mjs';
+ import {capturedClosedWindow,lockedOutcomePlan,opaqueLogicalEventKey,prepareAnomalyCommit,nativeRecordCompatibility,DOMAIN_BOUNDS,canonical,digest} from './anomaly-native-domain.mjs';
+ import {opaqueRecordInstrument,detectClosed,newMemory,capture,hash} from './anomaly-record-observer.mjs';
+@@ -31,16 +32,17 @@
+   const operation_id='ANOMALY_OBS:'+digest({logical_event_id:origin.logical_event_id,expected_revision:origin.revision,observation_fingerprint:observation.observation_fingerprint});
+   return prepareAnomalyCommit({operation_id,expected_revision:origin.revision,logical_event_id:origin.logical_event_id,card:clone(origin.card),descriptor:clone(origin.descriptor),plan:clone(origin.plan),state});
+ }
+-function lazyCandidate(draft,observation){
++function lazyCandidate(draft,observation,capture_scope='SELECTED_DEEP'){
+   // Keep only bounded card/state/descriptor/plan, not the source body or basis.
+   const retainedDraft=clone(draft),retainedObservation=clone(observation);
+-  return{status:'ANOMALY_DRAFT_CANDIDATE',logical_event_id:draft.logical_event_id,prepare_from_origin:origin=>resolveFromRetainedOrigin(retainedDraft,retainedObservation,origin),observation_fingerprint:observation.observation_fingerprint,scope:'ONE_INITIAL_15M_EVENT_FROM_SELECTED_DEEP_NOT_INDEPENDENT105',first_known_ts:draft.card.first_known_ts,first_durable_recorded_ts:null,empirical_accuracy:null,...falseQualifications,provider_HTTP:0,SQL:0};
++  return{status:'ANOMALY_DRAFT_CANDIDATE',logical_event_id:draft.logical_event_id,prepare_from_origin:origin=>resolveFromRetainedOrigin(retainedDraft,retainedObservation,origin),observation_fingerprint:observation.observation_fingerprint,scope:capture_scope==='INDEPENDENT_APPROVED_CURSOR'?'ONE_INITIAL_15M_EVENT_FROM_INDEPENDENT_APPROVED_CURSOR_NOT_CONTINUOUS105':'ONE_INITIAL_15M_EVENT_FROM_SELECTED_DEEP_NOT_INDEPENDENT105',first_known_ts:draft.card.first_known_ts,first_durable_recorded_ts:null,empirical_accuracy:null,...falseQualifications,provider_HTTP:0,SQL:0};
+ }
+-export function prepareCapturedAnomalyCardWatch({contract,known_ts}={}) {
++export function prepareCapturedAnomalyCardWatch({contract,known_ts,capture_scope='SELECTED_DEEP'}={}) {
+   try {
++    need(['SELECTED_DEEP','INDEPENDENT_APPROVED_CURSOR'].includes(capture_scope),'EXPLICIT_EXISTING_CAPTURE_SCOPE_REQUIRED');
+     const basis=capturedHtxAnomalyBasis({contract,now:known_ts});
+     if(!basis)return {status:'NO_SAME_COMPLETED_CAPTURE',provider_HTTP:0,SQL:0};
+-    const window=capturedClosedWindow({basis,timeframe:'15m',alignment_offset_ms:0,known_ts,source_ref:'SAME_HTX_DEEP_CAPTURE_METADATA_RECORD'});
++    const window=capturedClosedWindow({basis,timeframe:'15m',alignment_offset_ms:0,known_ts,source_ref:capture_scope==='INDEPENDENT_APPROVED_CURSOR'?'SAME_HTX_INDEPENDENT_CURSOR_CAPTURE_METADATA_RECORD':'SAME_HTX_DEEP_CAPTURE_METADATA_RECORD'});
+     if(window.status!=='CLOSED_WINDOW_RECORD_BOUND_NOT_NATIVE_QUALIFIED')return {status:window.status,provider_HTTP:0,SQL:0};
+     const raw_ref='HTX_CAPTURE_TEXT_SHA256:'+window.body_text_sha256;
+     const provenance={raw_sha256:window.body_text_sha256,raw_ref,source_as_of_ts:window.source_as_of_ts,received_ts:window.received_ts,evidence_class:'RETAINED',retention_scope:'SAME_PROCESS_CAPTURE_NOT_DURABLE_NATIVE_ACK',body_completed_ts:window.body_completed_ts,hash_scope:window.hash_scope,metadata_row_sha256:window.descriptor.parsed_metadata_row_sha256};
+@@ -66,8 +68,73 @@
+       outbox:{capture0:{status:'DRAFT',form_status:'NOT_APPROVED',actual_send:false,source_snapshot_id,message_ru:`Блок аномалий · ${contract} · 15m. Закрытое окно ${new Date(card.event_end_ts).toISOString()}: объём ${card.features.volume_ratio.toFixed(2)}× прошлого фона. Направление не определено. Запись по native-контракту HTX; epoch и первое знание события не квалифицированы. Спотовое окно отсутствует. Наблюдение без разрешения входа.`}},
+       native_epoch_qualified:false,event_first_knowledge_qualified:false,native_admission_qualified:false,
+     };
+-    return lazyCandidate({operation_id,expected_revision:0,logical_event_id,card,descriptor:window.descriptor,plan,state},observation);
++    return lazyCandidate({operation_id,expected_revision:0,logical_event_id,card,descriptor:window.descriptor,plan,state},observation,capture_scope);
+   } catch(error) {
+     return {status:'ANOMALY_PREPARATION_NOT_CLOSED',reason:String(error?.message||error).slice(0,240),provider_HTTP:0,SQL:0};
+   }
+ }
++
++// Bounded source-independent selector; NOT an independent native scheduler/grant.
++export function independentAnomalyCaptureRoster(){
++  need(APPROVED_HTX_SCOPE.approved_assets===105&&APPROVED_HTX_SCOPE.approved_contracts===122&&APPROVED_HTX_ANALYSIS_CONTRACTS.length===105&&APPROVED_HTX_NATIVE_CONTRACTS.length===122,'INDEPENDENT_APPROVED_ROSTER_REQUIRED');
++  const rows=APPROVED_HTX_ANALYSIS_CONTRACTS;
++  need(new Set(rows.map(x=>x.contract_code)).size===105&&rows.every(x=>x.contract_code===x.asset_symbol+'-USDT'),'INDEPENDENT_EXACT_ANALYSIS_KEYS_REQUIRED');
++  return{schema:'INDEPENDENT_ANOMALY_CAPTURE_ROSTER_V1',generation:APPROVED_HTX_SCOPE.generation,manifest_sha256:APPROVED_HTX_SCOPE.manifest_sha256,roster_sha256:digest({scope:APPROVED_HTX_SCOPE,analysis:rows,native:APPROVED_HTX_NATIVE_CONTRACTS}),analysis_assets:105,native_contracts:122,unsupported_other_native_contracts:17,structural_membership_only:true,current_useful_coverage:null};
++}
++export function initialIndependentAnomalyCaptureCursor(){
++  return canonical({schema:'INDEPENDENT_ANOMALY_CAPTURE_CURSOR_V1',roster_sha256:independentAnomalyCaptureRoster().roster_sha256,next_index:0});
++}
++export async function runIndependentCapturedAnomalyIngress({env,run_id,fetch_json,classify_contract}={}){
++  const roster=independentAnomalyCaptureRoster(),base={schema:'INDEPENDENT_COMPLETED_CAPTURE_INGRESS_V1',...falseQualifications,registry_assets:105,registry_native_contracts:122,unsupported_other_native_contracts:17,selection:'APPROVED_REGISTRY_CURSOR_NOT_SCORE_OR_DEEP_TOP2',max_selected_this_invocation:1,timeframes_supported:['15m'],other_timeframes_not_observed:['30m','1h','4h','1d','1w'],independent_scheduler_installed:false,continuous105_coverage_qualified:false,spot:{status:'NO_EXACT_REUSED_SPOT_WINDOW_IN_EXISTING_ANOMALY_CAPTURE_SEAM',preferred:true,required:false,used:false,new_spot_HTTP:0},durable_cursor_qualified:false,cursor_advanced_durably:false};
++  let calls=0,callbacks=0,selected=null,cursorText=null,nextText=null;
++  const done=(status,extra={})=>({...base,status,selected_contract:selected?.contract_code??null,selected_asset:selected?.asset_symbol??null,selected_registry_index:selected?.index??null,source_HTTP_attempts:calls,actual_IO_handler_calls:callbacks,cursor_before:cursorText,next_cursor_proposed:nextText,registry_assets_not_selected_this_invocation:selected?104:105,market_coverage_is_only_this_slice:true,full_roster_sweep_completed:false,...extra,...falseQualifications});
++  if(env?.REPORT2_ANOMALY_INDEPENDENT_CAPTURE_ENABLED!=='1')return done('INDEPENDENT_CAPTURE_DEFAULT_OFF');
++  if(typeof env?.REPORT2_ANOMALY_CAPTURE_IO!=='function'||typeof env?.REPORT2_ANOMALY_DOMAIN_COMMIT!=='function'||typeof fetch_json!=='function'||typeof classify_contract!=='function')return done('INDEPENDENT_CAPTURE_ACTUAL_CALLBACKS_REQUIRED');
++  if(typeof run_id!=='string'||!/^[A-Za-z0-9:._-]{1,160}$/.test(run_id))return done('INDEPENDENT_CAPTURE_RUN_ID_REQUIRED');
++  let cursor;
++  try{
++    cursorText=env.REPORT2_ANOMALY_CAPTURE_CURSOR;
++    need(typeof cursorText==='string'&&Buffer.byteLength(cursorText)<=1024,'INDEPENDENT_EXPLICIT_CURSOR_REQUIRED');cursor=JSON.parse(cursorText);
++    need(canonical(cursor)===cursorText&&Object.keys(cursor).sort().join('|')==='next_index|roster_sha256|schema'&&cursor.schema==='INDEPENDENT_ANOMALY_CAPTURE_CURSOR_V1'&&cursor.roster_sha256===roster.roster_sha256&&Number.isSafeInteger(cursor.next_index)&&cursor.next_index>=0&&cursor.next_index<105,'INDEPENDENT_CURSOR_IDENTITY_REQUIRED');
++    selected={...APPROVED_HTX_ANALYSIS_CONTRACTS[cursor.next_index],index:cursor.next_index};nextText=cursorText;
++  }catch{return done('INDEPENDENT_CURSOR_NOT_CLOSED');}
++  const advance=()=>{nextText=canonical({...cursor,next_index:(cursor.next_index+1)%105});};
++  const deadline_ts=Date.now()+25000;
++  const io=async(kind,url)=>{
++    let active=true,executions=0,pending=null,value=null,failed=null,returned;
++    const execute=()=>{
++      if(!active||executions!==0||Date.now()>=deadline_ts)throw Error('INDEPENDENT_IO_ONCE_CURRENT_DEADLINE_REQUIRED');
++      executions++;
++      pending=Promise.resolve().then(()=>{need(Date.now()<deadline_ts,'INDEPENDENT_IO_DEADLINE_BEFORE_ACTUAL_FETCH');calls++;return fetch_json(url);}).then(x=>{value=x;return x;},e=>{failed=e;throw e;});return pending;
++    };
++    callbacks++;
++    try{returned=await env.REPORT2_ANOMALY_CAPTURE_IO({schema:'INDEPENDENT_ANOMALY_SOURCE_IO_V1',logical_request_id:'ANOMALY_CAPTURE:'+run_id+':'+selected.contract_code+':'+kind,run_id,contract:selected.contract_code,provider:'HTX_OFFICIAL',kind,url,attempts:1,deadline_ts,requires_current_parent_provider_shared_day_minute_budget:true,requires_preserved_main_LIQ_manual_reserve:true,requires_available_anomaly_persistence_slot:true},execute);}
++    finally{active=false;if(pending)try{await pending;}catch{}}
++    need(executions===1&&!failed&&returned===value&&value&&typeof value==='object'&&value.url===url,'INDEPENDENT_IO_RESULT_NOT_SAME_EXECUTED_FETCH');
++    return value;
++  };
++  try{
++    const q=encodeURIComponent(selected.contract_code),metadataURL='https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?contract_code='+q;
++    const metadata=await io('EXACT_METADATA',metadataURL),now=Date.now(),payload=metadata.data;
++    if(metadata.ok!==true||metadata.http_status!==200||payload?.status!=='ok'||!Array.isArray(payload.data))return done('INDEPENDENT_METADATA_REPLY_NOT_CLOSED',{automatic_retry:false,useful_closed_windows:0});
++    if(!Number.isSafeInteger(payload.ts)||payload.ts>now||now-payload.ts>120000)return done('INDEPENDENT_METADATA_CLOCK_NOT_CLOSED',{useful_closed_windows:0});
++    const matches=payload.data.filter(x=>x?.contract_code===selected.contract_code);
++    if(matches.length!==1){advance();return done('INDEPENDENT_METADATA_EXACT_RECORD_ABSENT_OR_DUPLICATE',{metadata_match_count:matches.length,source_ts:payload.ts,current_native_availability_qualified:false,useful_closed_windows:0});}
++    const row=matches[0],classification=classify_contract(row);
++    if(row.symbol!==selected.asset_symbol||row.pair!==selected.contract_code||row.contract_status!==1||row.business_type!=='swap'||row.contract_type!=='swap'||row.trade_partition!=='USDT'||classification?.classification!=='CRYPTO_CONFIRMED'||classification?.eligible_for_crypto_discovery!==true){advance();return done('INDEPENDENT_METADATA_NOT_ELIGIBLE',{source_ts:payload.ts,useful_closed_windows:0});}
++    const minuteURL='https://api.hbdm.com/linear-swap-ex/market/history/kline?contract_code='+q+'&period=1min&size=2000',minuteStart=Date.now(),minutes=await io('CLOSED_MINUTES',minuteURL);
++    if(minutes.ok!==true||minutes.http_status!==200)return done('INDEPENDENT_MINUTE_REPLY_NOT_CLOSED',{automatic_retry:false,useful_closed_windows:0});
++    const known=Date.now(),basis=capturedHtxAnomalyBasis({contract:selected.contract_code,now:known});
++    if(!basis||basis.metadata!==metadata.data||basis.minutes!==minutes.data||basis.body_receipt.started_ts<minuteStart)return done('INDEPENDENT_SAME_COMPLETED_CAPTURE_NOT_CLOSED',{useful_closed_windows:0,caller_returned_payload_is_not_capture_authority:true});
++    const candidate=prepareCapturedAnomalyCardWatch({contract:selected.contract_code,known_ts:known,capture_scope:'INDEPENDENT_APPROVED_CURSOR'}),provenance={source_as_of_ts:basis.minutes.ts,metadata_source_ts:basis.metadata.ts,body_completed_ts:basis.body_receipt.body_knowledge.body_completed_ts,body_text_sha256:basis.body_receipt.body_knowledge.body_text_sha256,hash_scope:basis.body_receipt.body_knowledge.hash_scope,source_scope:'SAME_EXECUTED_WORKER_FETCH_AND_COMPLETED_CAPTURE_NOT_NATIVE_ACK',metadata_raw_body_sha256:null};
++    if(candidate.status==='NO_EVENT_IN_THIS_CLOSED_WINDOW'){advance();return done('INDEPENDENT_CAPTURE_CLOSED_NO_EVENT_IN_LAST_15M',{candidate_status:candidate.status,useful_closed_windows:1,provenance});}
++    if(candidate.status!=='ANOMALY_DRAFT_CANDIDATE'){advance();return done('INDEPENDENT_CAPTURE_WINDOW_NOT_USABLE',{candidate_status:candidate.status,useful_closed_windows:0,provenance});}
++    const result=await env.REPORT2_ANOMALY_DOMAIN_COMMIT({logical_event_id:candidate.logical_event_id,prepare_from_origin:candidate.prepare_from_origin});
++    const parent_status=typeof result?.status==='string'?result.status.slice(0,96):'PARENT_RESULT_NOT_CLOSED';
++    const bound=result?.logical_event_id===candidate.logical_event_id,uncertain=result?.new_operation_id_allowed===false||result?.known_reply_persistence_failed===true||result?.cost_status==='PROJECTION_EXCEEDED_OR_UNKNOWN';
++    const committed=bound&&parent_status==='COMMITTED_RECEIPT_READBACK'&&result.cost_status==='WITHIN_CALLER_PROJECTION';
++    const duplicate=bound&&parent_status==='STORED_DUPLICATE'&&result.write_required===false&&result.durable_new_observation===false&&result.origin_receipt?.status==='VERIFIED_RETAINED_ORIGIN'&&result.origin_receipt.cost_status==='WITHIN_CALLER_PROJECTION';
++    if(!uncertain&&(committed||duplicate))advance();
++    return done('INDEPENDENT_CAPTURE_OBSERVER_RETURNED',{candidate_status:candidate.status,logical_event_id:candidate.logical_event_id,first_known_ts:candidate.first_known_ts,first_known_scope:'EXISTING_INGRESS_WORKER_CAPTURE_NOT_GLOBAL_EVENT_FIRST_KNOWLEDGE',discovery_not_promoted_from_REPLAY:true,useful_closed_windows:1,provenance,parent_status,parent_operation_id:typeof result?.operation_id==='string'?result.operation_id:null,parent_reply_is_not_new_native_ACK_grant:true,automatic_retry:false,uncertain_parent_requires_existing_reconciliation:!!uncertain||!(committed||duplicate)});
++  }catch(error){return done('INDEPENDENT_CAPTURE_NOT_CLOSED',{reason:String(error?.message||error).slice(0,160),useful_closed_windows:0,automatic_retry:false,automatic_new_operation_id_retry:false});}
++}

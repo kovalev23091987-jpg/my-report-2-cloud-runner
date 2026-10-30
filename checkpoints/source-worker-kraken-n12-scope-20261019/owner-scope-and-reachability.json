@@ -1,0 +1,254 @@
+{
+  "schema": "OWNER15_SCOPE_AND_PAXG_REACHABILITY_BOUNDARY_V1",
+  "fresh_guard_main": "7c3044a0f27599315148ea60045b6131c521469f",
+  "contract_raw_sha256": {
+    "checkpoints/N15_FREE_HOURLY_HISTORY_DEPLOYMENT_20261012.json": "7604596559b6f06b20abcb8b01c58d260470d98df43d86bbe3709e544c11e8e9",
+    "checkpoints/OWNER_N15_TO_N16_AND_FINAL_INTEGRATION_20261012.json": "43a0d32ebdd8edfd993bb6004bbfeb8903c4fad706db2f814fdbd428af2f0afe",
+    "checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json": "5b16686226115dfedc52816b7a3b1c9edb3420d428602416ea1f0c89386f2d78",
+    "checkpoints/OWNER_ALL_BLOCK_SPOT_FUTURES_SOURCE_SEARCH_RULE_20261011.json": "7ec3e4c8873b9d57ac64ae66dd422e79b0148ccb152c53f978b7bc7764bab8ae",
+    "checkpoints/OWNER_SPOT_FUTURES_JOINT_ANALYSIS_20261010.json": "60ebfeeb24ea27e63a5e63705b303672f1c4461370feef1f941710b901437b10",
+    "checkpoints/n15-spot-coverage-20261012/FIFTEEN-SPOT-FUTURES-COMPARISON.json": "ceab31a751276c102e99b3ea9e7b87d799d9c1c21136b03c67660b01f96e39e7"
+  },
+  "retained_contract_fields": {
+    "checkpoints/N15_FREE_HOURLY_HISTORY_DEPLOYMENT_20261012.json": {
+      "owner_scope": "HTX-only hourly historical statistics: 104 approved futures contracts and existing HTX spot pairs; owner excluded external spot for 15 HTX-missing pairs",
+      "worker": {
+        "name": "my-report-2-free-history",
+        "etag": "c58eba6d7925c8a2cc1870e798c0005de76069da81b7f1e6ba86c1355ac5e321",
+        "cron": "35 * * * *",
+        "data_db": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+        "archive_db": "82dad15b-00ef-485f-862a-7746fae49444",
+        "archive_db_created": true,
+        "schema_applied": true,
+        "binding_and_schedule_readback": true,
+        "first_actual_run": {
+          "scheduled_ts": 1791819352000,
+          "status": "ERROR_FROM_RETIRED_BITGET_LANE",
+          "htx_futures": {
+            "present": 104,
+            "qualified": 104,
+            "payload_sha256": "2f79f9c97c6689c2b4026f3f6e700c5cb6177c6f488125a37a6970608c4af607"
+          },
+          "htx_spot": {
+            "present": 89,
+            "quote_checked": 88,
+            "payload_sha256": "a029e82e2ceb4cc87feccbaa6b9126911260079e886f84885f99e2d04a9c6705"
+          },
+          "note": "Both HTX lanes archived real data; old Bitget lane HTTP403 made whole run ERROR before owner HTX-only decision."
+        },
+        "gate_target_expansion": "RETIRED_OWNER_HTX_ONLY;HISTORICAL_D1_PROBE_NOT_DELETED",
+        "bitget_rave_route": "RETIRED_OWNER_HTX_ONLY;HISTORICAL_HTTP403_NOT_DELETED",
+        "current_deployed_sources": [
+          "HTX_FUTURES_FROM_CLOSED_COLLECTOR",
+          "HTX_SPOT_ONE_BULK_HTTP_PER_HOUR"
+        ],
+        "script_readback_excludes": [
+          "GATE",
+          "KUCOIN",
+          "BITGET"
+        ],
+        "observability_enabled": true
+      },
+      "source_checks": {
+        "htx_spot_exact_pairs_current": 89,
+        "htx_spot_missing": [
+          "AKE",
+          "BR",
+          "BTR",
+          "CASHCAT",
+          "GPS",
+          "LAB",
+          "MYX",
+          "OKB",
+          "ONG",
+          "PAXG",
+          "RAVE",
+          "UB",
+          "USELESS",
+          "VELVET",
+          "哈基米"
+        ],
+        "gate_spot_same_ticker_candidates_current": 15,
+        "bybit_spot_candidates": [
+          "BR",
+          "GPS"
+        ],
+        "okx_spot_candidates": [
+          "OKB",
+          "PAXG"
+        ],
+        "bitget_spot_candidates": [
+          "BR",
+          "GPS",
+          "LAB",
+          "MYX",
+          "PAXG",
+          "RAVE",
+          "VELVET"
+        ],
+        "candidate_note": "Historical research only. By owner decision, no external spot is collected or used for 15 assets without HTX spot."
+      }
+    },
+    "checkpoints/OWNER_N15_TO_N16_AND_FINAL_INTEGRATION_20261012.json": {
+      "n15_scope": [
+        "104 HTX futures",
+        "Only existing HTX spot; 15 without HTX spot stay futures-only",
+        "Do not use external spot for those 15 by owner decision"
+      ],
+      "n15_unproven": [
+        "Next natural HTX-only Cron D1 run at/after 2026-10-12 16:35 UTC / 19:35 Moscow",
+        "Sustained no-gap free D1 storage and retention",
+        "New archive source→fact→N15 consumer→manual report/Telegram use",
+        "N15 full sector/peer/relative-strength all-104 requirement"
+      ],
+      "future_integrated_acceptance": [
+        "Use only active blocks N04,N05,N10,N11,N12,N15,N16; paused N01–N03,N06–N09,N14 remain excluded until explicit owner restore",
+        "Verify current 104-asset universe → up to 24 candidates → two deep checks on exact run and original clocks",
+        "Verify useful spot and futures evidence for each relevant active block, one-market fallback where qualified, without claiming same HTX venue as independent sources",
+        "Verify source caps, 164 HTTP/D1 report budget, 40-minute report cadence and five-minute collector without starving the pipeline",
+        "Verify real source→fact→decision or neutral context→manual report and Telegram equivalence; exact SENT/message_id only when it exists",
+        "Check disagreements and missing data do not become unsupported common directional conclusions",
+        "Preserve all saved evidence and owner decisions; only three latest operational pointers identify continuation; no historical data deletion"
+      ]
+    },
+    "checkpoints/OWNER_ALL_ACTIVE_BLOCKS_SOURCE_BUDGET_AND_FALLBACK_20261013.json": {
+      "owner_instruction": "Apply the LIQ source usefulness, fallback and rate-budget discipline to every active report block. Search for additional free sources when current sources do not provide strong useful coverage, and connect them only after exact-asset factual validation and report-consumer proof. Maximize useful information per source and block, remove sources from a block when they add no useful information, and reuse already verified earlier block audits unless a new defect or changed source/data requires rechecking.",
+      "scope": {
+        "active_supplemental_blocks": [
+          "N04",
+          "N05",
+          "N10",
+          "N11",
+          "N12",
+          "N15"
+        ],
+        "active_cross_cutting_block": "LIQ",
+        "also_includes": "core selection, shared market collectors and manual/Telegram consumers wherever the source contributes",
+        "paused_blocks_unchanged": [
+          "N01",
+          "N02",
+          "N03",
+          "N06",
+          "N07",
+          "N08",
+          "N09",
+          "N14",
+          "N16"
+        ]
+      },
+      "block_local_exclusion_rule": "Remove a source only from a block where it is proven unhelpful. Never disable a shared source for other active blocks solely because one block does not use it.",
+      "strategy_constraints": "Existing score weights, threshold, approved report and Telegram forms remain unchanged unless the owner separately agrees."
+    },
+    "checkpoints/OWNER_ALL_BLOCK_SPOT_FUTURES_SOURCE_SEARCH_RULE_20261011.json": {
+      "schema": "OWNER_ALL_BLOCK_SPOT_FUTURES_SOURCE_SEARCH_RULE_20261011_V1",
+      "recorded_utc": "2026-10-11T20:25:47Z",
+      "basis_main_with_owned_lease": "2e6644fafe8bc7d1f399ef2adf25a75d41a6ed32",
+      "owner_instruction": "For every block, actively look for both spot and futures information, including existing and new useful sources.",
+      "applies_to": "N12 now and each later block when its sequential review is authorized; paused blocks remain paused until separately agreed.",
+      "requirements": [
+        "For every approved HTX asset, investigate useful spot and futures data from existing and feasible new original sources.",
+        "Verify exact asset and market binding, original source clocks, actual response content, units, comparable window, quota/admission and source-to-consumer-to-report/Telegram use.",
+        "Compare compatible spot and futures components; preserve differing metrics and disagreements. No common directional conclusion from conflicting facts.",
+        "If only one useful market side is available, retain its bounded information with the missing side identified; do not invent or silently discard data.",
+        "Spot and futures on one exchange are distinct market components but not independent exchange roots.",
+        "For derivatives-only metrics such as funding, open interest and liquidations, seek relevant spot context without inventing a spot counterpart."
+      ],
+      "unchanged": [
+        "N01-N03 and N06-N09 pauses",
+        "N12 current block and PR320 still open",
+        "strategy",
+        "weights",
+        "score",
+        "report and Telegram format",
+        "approved source caps and whole-job admission",
+        "cadence"
+      ],
+      "implementation_scope": "Documentation and owner rule only; no runtime, source HTTP, D1, Telegram or report generation.",
+      "N12_complete": false,
+      "next_step": "Continue N12 source qualification under this rule. PR320 main merge remains subject to separate explicit approval and fresh lease/fence checks."
+    },
+    "checkpoints/OWNER_SPOT_FUTURES_JOINT_ANALYSIS_20261010.json": {
+      "schema": "OWNER_SPOT_FUTURES_JOINT_ANALYSIS_20261010_V1",
+      "recorded_ts": 1791631937879,
+      "owner_instruction_local": [
+        "2026-10-10T14:26:51+03:00",
+        "2026-10-10T14:27:52+03:00",
+        "2026-10-10T14:29:15+03:00"
+      ],
+      "scope": "ALL_BLOCKS_WHERE_THE_METRIC_HAS_SPOT_AND_FUTURES_MARKET_MEANING;EXACT_APPROVED_HTX_ASSETS",
+      "owner_intent": "Analyze spot and futures components and compare them together in one joint asset-level conclusion; aligned pressure can support a stronger signal.",
+      "requirements": [
+        "Trading futures does not limit analytical inputs to futures; include useful spot evidence.",
+        "Preserve venue and market provenance while combining compatible spot/futures evidence in a joint conclusion.",
+        "Compare the exact same asset over aligned complete windows, with original source clocks and verified units/contract multipliers.",
+        "For trade flow compare aggressive buy/sell imbalance; each execution has both a buyer and seller, so this is not net capital entering the market.",
+        "For N05 qualify independent actual venues, same direction and comparable normalized strength; HTX-only evidence is not multi-venue consensus.",
+        "Retain market-specific aggregates and disagreement flags; a larger futures turnover must not conceal contradictory spot pressure.",
+        "Missing data is unknown, not zero, agreement, a bearish reading, or permission to require all blocks or markets.",
+        "Do not double-count copied feeds, common upstreams or the same physical fact across blocks as independent confirmation.",
+        "Onchain exchange deposits/withdrawals from Nansen remain a separate contextual metric; do not add token quantities to quote-denominated taker turnover.",
+        "Funding, open interest and liquidations remain derivatives-specific; spot context can inform the joint conclusion without fabricating spot equivalents."
+      ],
+      "proposed_diagnostic_not_calibrated": {
+        "market_imbalance": "(aggressive_buy_quote - aggressive_sell_quote) / (aggressive_buy_quote + aggressive_sell_quote), only with validated positive denominator",
+        "joint_states": [
+          "ALIGNED_BUY_PRESSURE",
+          "ALIGNED_SELL_PRESSURE",
+          "MIXED_OR_CONTRADICTORY",
+          "PARTIAL_OR_UNKNOWN"
+        ],
+        "spot_futures_weights": null,
+        "agreement_similarity_threshold": null,
+        "minimum_qualified_venues": null,
+        "score_bonus": null,
+        "no_numeric_policy_adopted": true
+      },
+      "source_qualification_open": {
+        "scope": [
+          "HTX",
+          "BINANCE_OFFICIAL",
+          "BYBIT_OFFICIAL",
+          "GATE_OFFICIAL",
+          "OKX_OFFICIAL",
+          "Other actually connected venues after inventory verification",
+          "Additional useful public sources"
+        ],
+        "spot_and_futures_required_in_research": true,
+        "documentation_is_not_actual_connection_proof": true,
+        "actual_data_coverage_separate_from_instrument_listing_coverage": true,
+        "useful_30_percent_102_asset_target_minimum": 31,
+        "coverage_target_not_report_gate": true,
+        "Nansen_current_source_HTTP_cap": 0,
+        "Nansen_deferral_not_lifted_by_general_research_request": true
+      },
+      "implementation_status": "OWNER_RULE_RECORDED;JOINT_SPOT_FUTURES_MULTI_VENUE_RUNTIME_AND_ACTUAL_COVERAGE_NOT_YET_VERIFIED",
+      "runtime_code_changed": false,
+      "sourceHTTP": 0,
+      "production_D1": 0,
+      "Telegram": 0,
+      "tests_repeated": false,
+      "paused_blocks": [
+        "N01",
+        "N02",
+        "N03"
+      ],
+      "N04_remains_active_partial": true,
+      "threshold_weights_caps_freshness_and_approved_forms_unchanged": true,
+      "project_complete": false,
+      "next_action": "QUALIFY_ACTUAL_CONNECTED_SPOT_AND_FUTURES_FLOW_SOURCES_WITHIN_CAPS;KEEP_OWNER_SEQUENTIAL_N05_REVIEW"
+    },
+    "checkpoints/n15-spot-coverage-20261012/FIFTEEN-SPOT-FUTURES-COMPARISON.json": {
+      "routing_choice": "OWNER_DECISION_HTX_FUTURES_104_AND_HTX_SPOT_AVAILABLE_ONLY;NO_EXTERNAL_SPOT_FOR_15",
+      "source_http_per_hour_design": "HTX spot one bulk HTTP/hour, max24 attempts/UTC day; futures archive reuses closed HTX collector snapshot",
+      "owner_decision_recorded_utc": "2026-10-12T15:55:29.438595+00:00"
+    }
+  },
+  "AGENTS_context": "N15 paragraph about HTX-only hourly history, remaining text broader than the nested N15 scope",
+  "hourly_archive_prohibition": "EXPLICIT",
+  "global_normal_N05_prohibition": "NOT_UNAMBIGUOUS_FROM_RETAINED_OWNER_SCOPE",
+  "PAXG_code_path": "CLOSED versioned chain binding -> exactCapabilityIdentity -> JOINT_FLOW -> token Gate/Backpack/Bitget/Poloniex routes",
+  "PAXG_authorization_violation": "NOT_ESTABLISHED",
+  "PAXG_native_external_spot_call": "NOT_PROVEN",
+  "global_routes_disabled": false,
+  "sourceworker_scope_resolution": "No broader ban. Preserve existing routes and archive decision; coordinator owns shared policy interpretation. New ALGO/XMR N12 preparation does not change existing admissions."
+}

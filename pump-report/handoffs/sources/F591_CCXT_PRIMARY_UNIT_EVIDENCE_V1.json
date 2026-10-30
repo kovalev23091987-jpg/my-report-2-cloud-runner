@@ -1,0 +1,68 @@
+{
+  "schema": "F591_CCXT_PRIMARY_UNIT_EVIDENCE_V1",
+  "status": "MAPPING_VERIFIED_UNIT_DEFINITION_NOT_FOUND",
+  "read_utc": "2026-10-26 11:47:38 UTC",
+  "retained_mapping": {
+    "repository": "ccxt/ccxt",
+    "path": "ts/src/bingx.ts",
+    "commit": "d3159f7036f93db086cd0414642132fba5401710",
+    "git_blob": "7d05d1e811f498d0ddc4b295c1575e072c2675d9",
+    "sha256": "94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+    "snippet_sha256": "928e5260dc54d958188a74d9b3195f81e2aa6ec6ae90a2c7197ca9186b8267ea",
+    "start_line": 1827,
+    "end_line": 1867,
+    "raw_field": "lastFundingRate",
+    "unified_field": "fundingRate",
+    "scaling": "DIRECT_SAFE_NUMBER_NO_MULTIPLIER",
+    "clock_field": "updateTime",
+    "funding_event_time": "undefined",
+    "period_field": "fundingIntervalHours",
+    "missing_period": "undefined_no_default",
+    "re_read_from_network": false,
+    "source_url": "https://github.com/ccxt/ccxt/blob/d3159f7036f93db086cd0414642132fba5401710/ts/src/bingx.ts#L1827",
+    "interpretation": "Raw lastFundingRate→unified fundingRate unchanged. Establishes field/scale preservation,not a dimensional unit by itself. No pinned mapping code re-download or execution."
+  },
+  "new_primary_manual": {
+    "repository": "ccxt/ccxt",
+    "path": "wiki/Manual.md",
+    "read_ref": "master",
+    "git_blob": "8f6c52e60bdf49bdd64ac63a543a33795e6137ca",
+    "sha256": "355c17a0d6f5f08b78044d40c0fc98ae2a2b6ca030c7090b6e2f18f94bed6b06",
+    "UTF8_bytes": 521197,
+    "chars": 520384,
+    "funding_structure_start_line": 4238,
+    "funding_unit_statement_found": false,
+    "source_url": "https://github.com/ccxt/ccxt/blob/master/wiki/Manual.md#funding-rate-structure",
+    "immutable_blob_ref": "https://api.github.com/repos/ccxt/ccxt/git/blobs/8f6c52e60bdf49bdd64ac63a543a33795e6137ca",
+    "claim_scope": "Currentmasterunifiedmanual,not claimed sameversionaspinnedadapter. Fullbodywasreadandcheckedoffline;notcopiedintoGit.",
+    "funding_structure_example": {
+      "fundingRate": 0.000072,
+      "nextFundingRate": -0.000018,
+      "interval": "8h",
+      "kind": "DOCUMENTATION_EXAMPLE_NOT_ACTUAL_MARKET_FACT"
+    },
+    "what_it_defines": "Unified fields,current/next/history structures and exampleinterval;not an explicit fraction/percent denomination.",
+    "missing": "No fundingRate example labelled equivalent percentage or payment/notional formula, and no explicit universal rate-unit rule applying to fundingRate found in this manual.",
+    "scope_limit": "This is a scoped negative finding for this exact manual blob and the allotted search;not a claim that no such CCXT evidence exists anywhere."
+  },
+  "search": {
+    "query": "site:docs.ccxt.com fundingRate fraction percent percentage 100 unified",
+    "result": "OfficialmanualandFAQ/API-specresults;numericfundingexamplesbutnoexplicitunitdefinition.",
+    "different_semantics": "FAQcurrent/previous/nextnames explain temporal semantics,not units;do not reinterpret BingX lastFundingRate as completed settlement event."
+  },
+  "failed_primary_read": {
+    "operation": "webfind Funding Rate Structure",
+    "result": "No matching text in webresult;charged1read. Recoveredfullmanualthroughsecondandfinalprimaryread;noallowancerearm."
+  },
+  "not_used_as_unit_proof": [
+    "Rawfield/unifiedfieldname",
+    "smallnumericmagnitude",
+    "rateexampleswithoutlabelledpercentage",
+    "unrelatedfees/marginpercentages",
+    "ownerDOODminus1percentassertion",
+    "F588controlledcasewithassumedqualifiedunit",
+    "numericintervalorupdateTime alone"
+  ],
+  "copyrighted_full_manual_exported": false,
+  "secrets_or_private_originals_exported": false
+}

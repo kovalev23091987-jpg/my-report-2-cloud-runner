@@ -1,0 +1,49 @@
+{
+  "schema": "F599_BEST_NEXT_ONE_CALL_PROPOSAL_NOT_ADMITTED_V1",
+  "provider": "TOOBIT",
+  "reason": "Keyless public market access and an exact catalogue route/weight are documented. One batch response can establish actual schema and candidate native coverage without per-coin calls.",
+  "status": "PROPOSAL_ONLY_SEPARATE_ROOT_POSITIVE_ADMISSION_REQUIRED",
+  "max_source_calls": 1,
+  "remaining_service_attempts_before": 2,
+  "remaining_service_attempts_now": 2,
+  "request": {
+    "method": "GET",
+    "url": "https://api.toobit.com/api/v1/exchangeInfo",
+    "parameters": {},
+    "API_key": false,
+    "max_attempts": 1,
+    "retries": 0,
+    "redirects": 0,
+    "pagination": 0,
+    "followups": 0,
+    "max_response_bytes": 2097152,
+    "timeout_ms": 15000,
+    "SDK_or_MCP_wrapper": false
+  },
+  "proposed_cost_ceiling": {
+    "physical_HTTP": 1,
+    "documented_REQUEST_WEIGHT": 1,
+    "native_SQL": 0,
+    "Telegram": 0,
+    "market_values": 0
+  },
+  "preconditions": [
+    "Fresh ROOT authority and positive provider/whole-budget admission preserving spent/unknown/manual/hourly/deep/delivery/outcome reserves",
+    "Confirm direct HTTP runner can enforce one attempt/no redirect/byte/time ceilings before IO",
+    "Do not treat undocumented day/month allowance or actual anonymous remaining as unlimited or zero-spent",
+    "Record response status, headers, receive clock, original hash/size and exact attempted HTTP; any uncertain upstream cost remains UNKNOWN"
+  ],
+  "acceptance": [
+    "Validate contracts versus spot arrays and exact row fields/status/inverse/quote/margin/underlying without guessing identifiers",
+    "Form one raw-candidate batch join to the existing selected550; crypto identity remains separate",
+    "No benchmark metric collection or BTC/ETH/FX/RWA inclusion; catalogue names are not market comparison data",
+    "No invented current price/OI/funding facts, no current CORE/map coverage promotion"
+  ],
+  "stop_rules": [
+    "Any403/429/5xx/oversize/timeout stops; failure counts as spent",
+    "No key/signup/auth bypass, alternative wrapper, retry or second call",
+    "If schema insufficient, return exact gap; do not repair by per-coin probing"
+  ],
+  "later_field_routes": "Funding/history/OI/mark/book require their own unit/clock/weight/identity review and independent admissions.",
+  "not_recurring_or_installed": true
+}

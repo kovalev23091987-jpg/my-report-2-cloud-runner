@@ -1,0 +1,39 @@
+--- a/current-generation/files/src/flow-turnover-collector.mjs
++++ b/current-generation/files/src/flow-turnover-collector.mjs
+@@ -3,13 +3,13 @@
+ import {createHash} from 'node:crypto';
+ import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeOptionalEvidenceSourceCache,nativeSourceUsageUnclosed} from './evidence-source-store.mjs';
+ import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
+-import {normalizeTurnoverBaseline,turnoverHistoryEnd,FLOW_TURNOVER_BASELINE_VERSION as VERSION} from './flow-turnover-baseline.mjs';
++import {normalizeTurnoverBaseline,turnoverHistoryEnd,turnoverHistoryRequestURL,qualifiedTurnoverFlowScope,qualifiedTurnoverHistoryCache,bindTurnoverHistory,FLOW_TURNOVER_BASELINE_VERSION as VERSION} from './flow-turnover-baseline.mjs';
+ const hash=b=>createHash('sha256').update(b).digest('hex');
+ export async function collectTurnoverBaseline(params={},flow){
+- const {db,contract,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),receipts=[],venue=flow?.venue,SOURCE='N05_OFFICIAL_FLOW:'+venue;
++ const {db,contract,run_id,request_admit,source_health_admit,fetch_impl=globalThis.fetch,clock=Date.now}=params,now=params.now??clock(),read_now=clock(),receipts=[],venue=flow?.venue,SOURCE='N05_OFFICIAL_FLOW:'+venue;
+  const cache_write_receipts=[];let retained=null;
+  const root={status:'TURNOVER_HISTORY_NOT_CLOSED',check_completed:false,network_calls:0,receipts,cache_write_receipts};let calls=0,sequence=0,providerBlocked=false;
+- if(!db?.prepare||!run_id||flow?.check_completed!==true||!['GATE','BINANCE'].includes(venue))return root;
++ if(!db?.prepare||!run_id||(!Number.isSafeInteger(now)||now>read_now||!qualifiedTurnoverFlowScope({contract,flow,now:read_now})))return root;
+  const unclosed=()=>nativeSourceUsageUnclosed(db);
+  if(unclosed())return{...root,status:'SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE'};
+  const cacheRead=async input=>unclosed()?null:readEvidenceSourceCache(db,input);
+@@ -39,13 +39,14 @@
+  };
+  try{
+   if(!admitDb())return{...root,status:'FLOW_DB_HEADROOM_REQUIRED'};
+-  const history_end_ts=turnoverHistoryEnd(flow.window_start_ts),key=`TURNOVER30D:${contract}:${history_end_ts}`,old=await cacheRead({source:SOURCE,asset_key:key,now,include_cache_clock:true});
++  const history_end_ts=turnoverHistoryEnd(flow.window_start_ts),key=`TURNOVER30D:${contract}:${history_end_ts}`,old=await cacheRead({source:SOURCE,asset_key:key,now:read_now,include_cache_clock:true});
++  const url=turnoverHistoryRequestURL({contract,venue,history_end_ts}),cache_hit=qualifiedTurnoverHistoryCache(old,{contract,venue,history_end_ts,now:read_now});
+   let candles,ts;
+-  if(old?.version===VERSION&&old.observed_ts<=now){candles=old.candles;ts=old.observed_ts;receipts.push({...old.receipt,actual_http:0,cache_status:'HIT_ORIGINAL_CLOCKS'});}
+-  else{const base=contract.slice(0,-5),url=venue==='BINANCE'?`https://data-api.binance.vision/api/v3/klines?symbol=${encodeURIComponent(base+'USDT')}&interval=1h&startTime=${history_end_ts-30*86400000}&endTime=${history_end_ts-1}&limit=720`:`https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=${encodeURIComponent(base+'_USDT')}&from=${(history_end_ts-30*86400000)/1000}&to=${history_end_ts/1000-1}&interval=1h`;candles=await get(url);ts=receipts.at(-1)?.received_ts;}
+-  const baseline=normalizeTurnoverBaseline({contract,venue,candles,history_end_ts,observed_ts:ts,current_flow:flow});
++  if(cache_hit){candles=old.candles;ts=old.observed_ts;receipts.push({...old.receipt,actual_http:0,cache_status:'HIT_ORIGINAL_CLOCKS'});}
++  else{candles=await get(url);ts=receipts.at(-1)?.received_ts;}
++  const receipt=receipts.at(-1),baseline=bindTurnoverHistory(normalizeTurnoverBaseline({contract,venue,candles,history_end_ts,observed_ts:ts,current_flow:flow}),{contract,venue,candles,receipt});
+   if(baseline.check_completed)retained=baseline;
+-  if(baseline.check_completed&&!old&&admitDb())await cacheWrite({source:SOURCE,asset_key:key,observed_ts:ts,expires_ts:history_end_ts+14400000+21600000,payload:{version:VERSION,observed_ts:ts,candles,receipt:receipts.at(-1)}});
++  if(baseline.check_completed&&!cache_hit&&admitDb())await cacheWrite({source:SOURCE,asset_key:key,observed_ts:ts,expires_ts:history_end_ts+14400000+21600000,payload:{version:VERSION,observed_ts:ts,candles,receipt,cache_scope:{schema:'N05_TURNOVER_CACHE_SCOPE_V1',contract,venue,market:'SPOT',quote:'USDT',request_url:url,history_start_ts:baseline.history_start_ts,history_end_ts,observed_ts:ts,expires_at:baseline.expires_at,body_sha256:receipt.body_sha256,candles_sha256:baseline.history_binding.candles_sha256}}});
+   return{...root,...baseline,network_calls:calls};
+  }catch(e){return{...root,...(retained||{status:'TURNOVER_COLLECTOR_ERROR',reason:e.message}),network_calls:calls};}
+ }

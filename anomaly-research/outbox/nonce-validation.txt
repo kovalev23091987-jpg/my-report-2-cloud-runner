@@ -1,0 +1,14 @@
+✔ targeted regression: known-rejected attempt nonce cannot be reused; old ACK cannot close fresh attempt (1.257083ms)
+✔ historical nonce remains consumed across multiple attempts, owner change and restart (1.273583ms)
+✔ expired unstarted claim consumes nonce; recovery cannot authorize its reuse (0.411041ms)
+✔ bounded nonce journal defers fresh attempts and preserves pending event/outbox/history (0.68325ms)
+✔ nonce consumption shares CAS boundary: before-commit crash does not consume, lost ACK retry does not duplicate (0.637375ms)
+✔ restored legacy model without nonce history fails closed on CLAIM instead of inventing empty history (0.544333ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 59.237458

@@ -1,0 +1,89 @@
+{
+  "schema": "F566_PRIMARY_DOCUMENT_ATTEMPTS_V1",
+  "admission": "ROOT_DIRECT_DELEGATION_F566",
+  "maximum": 6,
+  "spent": 6,
+  "remaining": 0,
+  "failed_attempts_nonrefundable": true,
+  "counting": "Each explicit web search/open attempt counts1; no multi-query batch or repeated failedURL. Existing saved project/GitHub authority reads are not vendor primary-doc probes.",
+  "attempts": [
+    {
+      "attempt": 1,
+      "kind": "PRIMARY_DOMAIN_SEARCH",
+      "query": "site:bingx.com \"1000SHIB\" \"Amount\"",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:49:12 UTC",
+      "status": "NO_RESULTS_SPENT"
+    },
+    {
+      "attempt": 2,
+      "kind": "OFFICIAL_PRODUCT_PAGE_OPEN",
+      "url": "https://bingx.com/en/perpetual/1000SHIB-USDT",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:49:23 UTC",
+      "status": "OPENED_INDEXED_HTML_NAVIGATION_ONLY_NO_DENOMINATORS",
+      "market_values_not_used": true,
+      "source_ref": "turn40view0",
+      "usable_unit_proof": false
+    },
+    {
+      "attempt": 3,
+      "kind": "OFFICIAL_TRADING_INFORMATION_LINK_OPEN",
+      "from_url": "https://bingx.com/en/perpetual/1000SHIB-USDT",
+      "from_link_id": 9,
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:49:39 UTC",
+      "status": "OPENED_NAVIGATION_ONLY_NO_RULE_FIELDS",
+      "resolved_url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/BTC-USDT",
+      "source_ref": "turn41view0",
+      "market_or_benchmark_values_used": false
+    },
+    {
+      "attempt": 4,
+      "kind": "PRIMARY_DOMAIN_SEARCH",
+      "query": "site:bingx.com \"1000SHIB\" \"1000PEPE\" unit",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:49:54 UTC",
+      "status": "OFFICIAL_FEE_SCHEDULE_ONLY_NO_COIN_DENOMINATION",
+      "usable_unit_proof": false,
+      "primary_urls": [
+        "https://bingx.com/de-de/support/articles/22183116881561-%D8%AC%D8%AF%D9%88%D9%84%DA%A9%D8%A7%D8%B1%D9%85%D8%B2%D8%AF%D9%82%DB%8C%D9%85%D8%AA%D8%AA%D8%B6%D9%85%DB%8C%D9%86%DB%8C%DA%A9%D9%BE%DB%8C%E2%80%8C%D8%AA%D8%B1%DB%8C%D8%AF/",
+        "https://bingx.com/es-es/support/articles/22183116881561-Traders-Guaranteed-Price-Fee-Schedule/"
+      ],
+      "fee_values_not_used": true
+    },
+    {
+      "attempt": 5,
+      "kind": "EXACT_OFFICIAL_CONTRACT_RULES_PAGE_OPEN",
+      "url": "https://bingx.com/en/tradeInfo/perpetual/contract-rules/1000SHIB-USDT",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:50:23 UTC",
+      "status": "TOOL_INACCESSIBLE_SPENT_NO_RETRY",
+      "source_ref": "turn43view0",
+      "usable_unit_proof": false
+    },
+    {
+      "attempt": 6,
+      "kind": "PRIMARY_OFFICIAL_ANNOUNCEMENT_RULE_SEARCH",
+      "query": "site:bingx.com \"1000SHIB\" contract -guaranteed -schedule -gebührenordnung",
+      "charged_before_IO": true,
+      "charged_utc": "2026-10-25 22:50:42 UTC",
+      "status": "NO_DENOMINATION_PROOF_FEES_AND_UNRELATED_SPOT_NEWS",
+      "usable_unit_proof": false,
+      "automatic_duplicate_search_hits_rejected": true,
+      "new_primary_urls_not_used_as_unit_proof": [
+        "https://bingx.com/en/flash-news/post/shiba-inu-expands-to-solana-via-sunrise-shib-token-rises-in-hours",
+        "https://bingx.com/vi/how-to-buy/1000shib"
+      ],
+      "market_values_not_used": true
+    }
+  ],
+  "known_failed_not_retried": [
+    "https://bingx.com/en/perpetual/APT-USDT",
+    "Firecrawl credits exhausted earlier; no retry"
+  ],
+  "new_market_provider_SQL_TG_deploy": 0,
+  "exhausted": true,
+  "additional_attempts_allowed": 0,
+  "all_nine_unknown_preserved": true
+}

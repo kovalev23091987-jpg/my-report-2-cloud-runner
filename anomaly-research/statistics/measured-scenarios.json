@@ -1,0 +1,293 @@
+{
+  "schema": "ANOMALY_CONTROLLED_COST_AND_REAL_DATA_BOUNDARY_V1",
+  "node": "v24.19.0",
+  "platform": "darwin",
+  "card_serialized_bytes": 4755,
+  "scenarios": {
+    "ordinary": {
+      "schema": "ANOMALY_CONDITIONAL_CAPACITY_SCENARIO_V1",
+      "assumptions": {
+        "new_events_day": 10,
+        "deep_rechecks_day": 20,
+        "metadata_HTTP": 1,
+        "futures_pages_per_check": 2,
+        "optional_spot_pages_per_check": 2,
+        "watch_interval_minutes": 5,
+        "page_events": 64,
+        "checkpoint_events": 32,
+        "card_bytes": 4755,
+        "raw_body_bytes": 65536,
+        "watch_bytes": 512,
+        "compact_result_bytes": 512,
+        "summary_days": 90,
+        "closed_hot_days": 2,
+        "max_active": 128,
+        "max_cards": 512,
+        "residence_mix": [
+          {
+            "timeframe": "15m",
+            "share": 0.35,
+            "days": 2
+          },
+          {
+            "timeframe": "30m",
+            "share": 0.2,
+            "days": 4
+          },
+          {
+            "timeframe": "1h",
+            "share": 0.2,
+            "days": 7
+          },
+          {
+            "timeframe": "4h",
+            "share": 0.15,
+            "days": 14
+          },
+          {
+            "timeframe": "1d",
+            "share": 0.08,
+            "days": 45
+          },
+          {
+            "timeframe": "1w",
+            "share": 0.02,
+            "days": 90
+          }
+        ]
+      },
+      "expected_mean_residence_days": 10.4,
+      "expected_active_events": 104,
+      "stored_cards_before_archival": 900,
+      "active_cap_deficit": 0,
+      "card_cap_deficit": 388,
+      "source_HTTP": {
+        "mandatory_futures_floor_day": 61,
+        "optional_spot_floor_day": 60,
+        "total_floor_day": 121,
+        "total_floor_31days": 3751,
+        "reused_common_snapshot_extra_HTTP": 0,
+        "errors_pagination_retries_not_included": true
+      },
+      "watch": {
+        "scans_day": 288,
+        "event_visits_day": 29952,
+        "indexed_page_queries_day": 576,
+        "one_row_per_event": {
+          "logical_rows_read_day": 29952,
+          "logical_rows_written_day": 30132
+        },
+        "checkpoint_shards_proposal": {
+          "logical_rows_read_day": 1152,
+          "logical_rows_written_day": 1332,
+          "native_qualified": false
+        }
+      },
+      "storage": {
+        "protected_active_serialized_bytes": 7363512,
+        "closed_compact_serialized_bytes": 407552,
+        "closed_hot_conservative_serialized_bytes": 1310720,
+        "total_serialized_estimate": 9081784,
+        "physical_database_bytes": null,
+        "index_and_page_overhead_measured": false
+      },
+      "actual_remaining_budget": null,
+      "total_native_R_W_HTTP_CPU_day": null,
+      "activation_allowed": false
+    },
+    "peak": {
+      "schema": "ANOMALY_CONDITIONAL_CAPACITY_SCENARIO_V1",
+      "assumptions": {
+        "new_events_day": 100,
+        "deep_rechecks_day": 200,
+        "metadata_HTTP": 1,
+        "futures_pages_per_check": 2,
+        "optional_spot_pages_per_check": 2,
+        "watch_interval_minutes": 5,
+        "page_events": 64,
+        "checkpoint_events": 32,
+        "card_bytes": 4755,
+        "raw_body_bytes": 65536,
+        "watch_bytes": 512,
+        "compact_result_bytes": 512,
+        "summary_days": 90,
+        "closed_hot_days": 2,
+        "max_active": 128,
+        "max_cards": 512,
+        "residence_mix": [
+          {
+            "timeframe": "15m",
+            "share": 0.35,
+            "days": 2
+          },
+          {
+            "timeframe": "30m",
+            "share": 0.2,
+            "days": 4
+          },
+          {
+            "timeframe": "1h",
+            "share": 0.2,
+            "days": 7
+          },
+          {
+            "timeframe": "4h",
+            "share": 0.15,
+            "days": 14
+          },
+          {
+            "timeframe": "1d",
+            "share": 0.08,
+            "days": 45
+          },
+          {
+            "timeframe": "1w",
+            "share": 0.02,
+            "days": 90
+          }
+        ]
+      },
+      "expected_mean_residence_days": 10.4,
+      "expected_active_events": 1040,
+      "stored_cards_before_archival": 9000,
+      "active_cap_deficit": 912,
+      "card_cap_deficit": 8488,
+      "source_HTTP": {
+        "mandatory_futures_floor_day": 601,
+        "optional_spot_floor_day": 600,
+        "total_floor_day": 1201,
+        "total_floor_31days": 37231,
+        "reused_common_snapshot_extra_HTTP": 0,
+        "errors_pagination_retries_not_included": true
+      },
+      "watch": {
+        "scans_day": 288,
+        "event_visits_day": 299520,
+        "indexed_page_queries_day": 4896,
+        "one_row_per_event": {
+          "logical_rows_read_day": 299520,
+          "logical_rows_written_day": 301320
+        },
+        "checkpoint_shards_proposal": {
+          "logical_rows_read_day": 9504,
+          "logical_rows_written_day": 11304,
+          "native_qualified": false
+        }
+      },
+      "storage": {
+        "protected_active_serialized_bytes": 73635120,
+        "closed_compact_serialized_bytes": 4075520,
+        "closed_hot_conservative_serialized_bytes": 13107200,
+        "total_serialized_estimate": 90817840,
+        "physical_database_bytes": null,
+        "index_and_page_overhead_measured": false
+      },
+      "actual_remaining_budget": null,
+      "total_native_R_W_HTTP_CPU_day": null,
+      "activation_allowed": false
+    }
+  },
+  "local_measurement": [
+    {
+      "evidence_class": "CONTROLLED_LOCAL_NODE",
+      "events": 10,
+      "one_tick_event_updates": 10,
+      "wall_ms": 3.0665830000000085,
+      "cpu_user_us": 3604,
+      "cpu_system_us": 704,
+      "heap_delta_bytes": 357808,
+      "serialized_state_before_bytes": 52306,
+      "serialized_state_after_bytes": 53846,
+      "due_next_tick": 10,
+      "peak_heap_measured": false,
+      "cloudflare_CPU_or_native_SQL_qualified": false
+    },
+    {
+      "evidence_class": "CONTROLLED_LOCAL_NODE",
+      "events": 104,
+      "one_tick_event_updates": 104,
+      "wall_ms": 203.239958,
+      "cpu_user_us": 202949,
+      "cpu_system_us": 2563,
+      "heap_delta_bytes": 2311816,
+      "serialized_state_before_bytes": 541298,
+      "serialized_state_after_bytes": 557314,
+      "due_next_tick": 104,
+      "peak_heap_measured": false,
+      "cloudflare_CPU_or_native_SQL_qualified": false
+    },
+    {
+      "evidence_class": "CONTROLLED_LOCAL_NODE",
+      "events": 128,
+      "one_tick_event_updates": 128,
+      "wall_ms": 302.188,
+      "cpu_user_us": 302071,
+      "cpu_system_us": 2478,
+      "heap_delta_bytes": -24071624,
+      "serialized_state_before_bytes": 666170,
+      "serialized_state_after_bytes": 685882,
+      "due_next_tick": 128,
+      "peak_heap_measured": false,
+      "cloudflare_CPU_or_native_SQL_qualified": false
+    }
+  ],
+  "actual_retained_boundary": {
+    "accepted_audit_path": "checkpoints/source-worker-anomaly-source-feasibility-20261018/analysis.json",
+    "accepted_audit_raw_SHA256": "a69ee46f4d00f02872bce31c5b5ba53137ee21d12858e432a5b719dd5e4f4282",
+    "rows": [
+      {
+        "contract": "CT-USDT",
+        "evidence_class": "EXACT_SAVED_FULL_CANONICAL_WITH_NORMALIZED_EVENT_BARS",
+        "first_detection_ts_retained": null,
+        "prospective_outcome_eligible": false,
+        "reason": "MISSING_ORIGINAL_FIRSTKNOWN_AND_KNOWN_TIME_ANCHOR_AND_MATCHED_LATER_PATH"
+      },
+      {
+        "contract": "BR-USDT",
+        "evidence_class": "EXACT_SAVED_FULL_CANONICAL_WITH_NORMALIZED_EVENT_BARS",
+        "first_detection_ts_retained": null,
+        "prospective_outcome_eligible": false,
+        "reason": "MISSING_ORIGINAL_FIRSTKNOWN_AND_KNOWN_TIME_ANCHOR_AND_MATCHED_LATER_PATH"
+      },
+      {
+        "contract": "TIA-USDT",
+        "evidence_class": "SAVED_PUBLIC_RUN_ARTIFACT_COMPACT_CANONICAL_AND_PRODUCER_RECEIPTS",
+        "first_detection_ts_retained": null,
+        "prospective_outcome_eligible": false,
+        "reason": "COMPACT_ARTIFACT_WITHOUT_ORIGINAL_CANDLE_ARRAYS"
+      },
+      {
+        "contract": "APR-USDT",
+        "evidence_class": "SAVED_PUBLIC_RUN_ARTIFACT_COMPACT_CANONICAL_AND_PRODUCER_RECEIPTS",
+        "first_detection_ts_retained": null,
+        "prospective_outcome_eligible": false,
+        "reason": "COMPACT_ARTIFACT_WITHOUT_ORIGINAL_CANDLE_ARRAYS"
+      }
+    ],
+    "empirical_success_rate": null,
+    "raw_provider_replay_repeated": false
+  },
+  "nominal_reference_only": {
+    "existing_daily_envelope_R": 3499996,
+    "existing_daily_envelope_W": 69983,
+    "nominal_limit_R": 3500000,
+    "nominal_limit_W": 70000,
+    "nominal_difference_R": 4,
+    "nominal_difference_W": 17,
+    "actual_free_residual": null,
+    "scope": "Copied historical main full-run projection; not live measured all-consumer capacity"
+  },
+  "admission_without_native_measurements": {
+    "status": "NOT_MEASURED",
+    "arithmetic_fits": false,
+    "activation_allowed": false,
+    "reason": "EXACT_COMMON_PROVIDER_RESIDUAL_OR_NATIVE_COST_MISSING"
+  },
+  "activation": false,
+  "limitations": [
+    "One controlled local pass per event count; not sustained benchmark, SLA, p95, Worker limit or native billing proof",
+    "Pure reducer clones total memory for every event; O(E²) per tick. A real durable indexed store needs a different transactional adapter and qualification",
+    "Creation writes18/event,2futures+2optionalspotpages and64KiB rawbody are explicit scenario assumptions, not measured native costs",
+    "Longer actual lifetimes, event rate or source pagination increases queue; no autoexpiry or silent eviction"
+  ]
+}

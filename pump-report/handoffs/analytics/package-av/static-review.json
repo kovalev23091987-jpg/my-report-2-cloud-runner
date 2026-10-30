@@ -1,0 +1,96 @@
+{
+  "schema": "AV_STATIC_PACING_RUNNER_REVIEW_V1",
+  "status": "NO_CONCRETE_P1_P2_FOUND",
+  "findings": [],
+  "checks": [
+    {
+      "subject": "Capacity not forced selection",
+      "paths": [
+        "runtime/runner.mjs:72-78",
+        "runtime/runner.mjs:229-231",
+        "runtime/budget.mjs:116-119"
+      ],
+      "finding": "No P1/P2: selects actual queued/eligible candidate first; no candidate means no admitCandidate/getCore. DISCOVERY saves allocation independently of candidate selection."
+    },
+    {
+      "subject": "First empty hour and carry",
+      "paths": [
+        "runtime/budget.mjs:31-66",
+        "runtime/budget.mjs:187-192"
+      ],
+      "finding": "No P1/P2: base N fixed at first discovery; current maximum=N*(elapsed+1)-issued_before; empty prior hour gives2N; future hours unavailable. Current already-issued count is deducted for denial/remaining."
+    },
+    {
+      "subject": "Nonrefund and new invocation",
+      "paths": [
+        "runtime/budget.mjs:41-66",
+        "runtime/budget.mjs:132-146",
+        "runtime/budget.mjs:191-192"
+      ],
+      "finding": "No P1/P2: candidate_count increments durably at issuance and is never decremented for cheap refusal, timeout or failed attempt. New budget reads same day allocation and buckets."
+    },
+    {
+      "subject": "Atomic same-hour issue",
+      "paths": [
+        "runtime/budget.mjs:185-192"
+      ],
+      "finding": "No P1/P2: non-atomic forecast is reassessed inside atomic operation before increment; concurrent calls cannot issue beyond maximum."
+    },
+    {
+      "subject": "State validation",
+      "paths": [
+        "runtime/budget.mjs:24-25",
+        "runtime/budget.mjs:41-60"
+      ],
+      "finding": "No P1/P2 concrete reachable trigger: saved plan integer/nonnegative checks, baseline floor, fraction, pacing version/provider costs/bound, period horizon, first clock and cumulative issued-count guards fail closed. This is static validation of checked transitions, not a claim of exhaustive arbitrary-corruption proof."
+    },
+    {
+      "subject": "Day and clock boundary",
+      "paths": [
+        "runtime/budget.mjs:24",
+        "runtime/budget.mjs:35-55",
+        "runtime/budget.mjs:68"
+      ],
+      "finding": "No P1/P2: maps are UTC-day keyed; Moscow business window07-17UTC is wholly inside one UTCday, so next business day selects a new allocation. Same-day reversed/future bucket clock is rejected. Strict AUTO window remains."
+    },
+    {
+      "subject": "Actual day/month and eighty percent",
+      "paths": [
+        "runtime/budget.mjs:20-29",
+        "runtime/budget.mjs:45-52",
+        "runtime/budget.mjs:169-181"
+      ],
+      "finding": "No P1/P2: initial base uses existing automatic allowance remaining, current day ledger, current provider month/day counters and fixed/discovery protection. Each candidate still checks whole/project/provider/month/future reserves; N is capacity, not an IO admission or guarantee."
+    },
+    {
+      "subject": "Whole candidate bound",
+      "paths": [
+        "runtime/production-policy.mjs:13-18",
+        "runtime/runner.mjs:107-112",
+        "runtime/budget.mjs:167-181"
+      ],
+      "finding": "No P1/P2: whole upper12 includes BingX10 +Telegram1 +unassigned map1. Runner passes total12 plus per-provider costs, not bare BingX10. Optional/maps remain governed by actual admitted provider policy."
+    },
+    {
+      "subject": "Physical guards and unknowns",
+      "paths": [
+        "runtime/budget.mjs:75-127",
+        "runtime/budget.mjs:132-146"
+      ],
+      "finding": "No P1/P2: actual requests still require durable day/month/minute/second/backoff/native-context guards; old unknown map is not cleared, physical charges monotonic. Logical candidate ticket does not invent/refund HTTP."
+    },
+    {
+      "subject": "Deferral and cleanup",
+      "paths": [
+        "runtime/runner.mjs:107-108",
+        "runtime/runner.mjs:231-245"
+      ],
+      "finding": "No P1/P2: missing-analysis quota deferral saved separately and breaks loop; readiness count uses optional chaining; run is saved and finally releases only matching executor owner."
+    }
+  ],
+  "ROOT_reported_tests": "9PASS(6new+3existing production-policy);one initial fixture carry assertion corrected13vs11;not rerun by AV",
+  "AV_imports_tests_native": 0,
+  "ROOT_files_modified": false,
+  "monthly_limit": "Existing monthly spend/cap protection only. futureDiscoveryHttp computes remaining slots of current Moscow business day even when until_ts is month-end; this review does not prove budget availability for future calendar days or whole account. This unchanged helper behavior is not reported as a new AV defect.",
+  "scope_limit": "Four exact ROOT-frozen files; narrow references only. Static review is not execution/deploy/provider/native admission."
+}

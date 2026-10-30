@@ -1,0 +1,77 @@
+{
+  "schema": "B04_COMBINED_STATIC_TEXT_RECEIPT_V1",
+  "fixed_main": "6a5fe77903b50f7ee2b05a735cd7a8429707755d",
+  "recorded_ts": 1792861915825,
+  "checks": [
+    {
+      "name": "all4actual base/candidate pins and both-order outputs exact",
+      "status": "TEXT_MATCH"
+    },
+    {
+      "name": "9full closure files pinned; builtin-only dependencies explicit; Worker input not imported",
+      "status": "TEXT_MATCH"
+    },
+    {
+      "name": "literal static import inventory no external packages/unlisted static edge",
+      "status": "TEXT_MATCH",
+      "edges": {
+        "market-contracts.combined.mjs.txt": [],
+        "market-history-reader.combined.mjs.txt": [
+          "./market-snapshot-batch.mjs",
+          "./market-snapshot-batch.mjs"
+        ],
+        "market-snapshot-batch.combined.mjs.txt": [
+          "node:crypto"
+        ],
+        "identity-case.bound.mjs": [
+          "node:assert/strict",
+          "node:fs/promises",
+          "node:crypto",
+          "node:path",
+          "node:url"
+        ],
+        "targets-case.bound.mjs": [
+          "node:assert/strict",
+          "node:fs/promises",
+          "node:crypto",
+          "node:path",
+          "node:url"
+        ],
+        "combined.proposed.mjs": [
+          "node:assert/strict",
+          "node:fs/promises",
+          "node:crypto",
+          "node:path",
+          "node:url"
+        ]
+      },
+      "not_claim": "Not AST/dynamic general-purpose proof; exact dynamic paths separately frozen in cases and closure."
+    },
+    {
+      "name": "both ACTUAL individual and whole-selection callers plus FIVE actual options found in same candidate",
+      "status": "TEXT_MATCH"
+    },
+    {
+      "name": "18+22original variant counts; case inverse exact; combined returned result callback before assertion/postpins/next; no missing->zero",
+      "status": "TEXT_MATCH_NOT_BEHAVIOR"
+    },
+    {
+      "name": "only own new prefix; original634/635 and sharedruntime untouched",
+      "status": "MATCH"
+    }
+  ],
+  "methods": "Python text/hash/JSON/Git only, no JS parser/syntax/import/semantics/Node/test/SQL",
+  "actual_semantic_execution": 0,
+  "case_status": "BOTH_PREPARED_UNEXECUTED_18_PLUS22_NO_THIRD_GROUP",
+  "native_registry_or_admission": false,
+  "full_production_Worker_closure_qualified": false,
+  "prefreeze": {
+    "current_main": "15b1fbcfaee15e1d09645b899991ed4748e2ffda",
+    "fixed_source_main": "6a5fe77903b50f7ee2b05a735cd7a8429707755d",
+    "AGENTS_byteequal": true,
+    "all4equal": true,
+    "all4runtime_base_Git_blobs_unchanged": true,
+    "own_lease_amendment": "1dd426836e7991fb2a509bc018e9095eb9172506",
+    "acquired_expiry_unchanged": true
+  }
+}

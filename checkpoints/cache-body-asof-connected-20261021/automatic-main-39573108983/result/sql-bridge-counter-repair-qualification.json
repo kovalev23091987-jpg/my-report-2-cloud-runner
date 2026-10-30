@@ -1,0 +1,89 @@
+{
+  "schema": "INSTALLED_SQL_BRIDGE_COUNTER_REPAIR_QUALIFICATION_V1",
+  "status": "EXACT_CURRENT_BRIDGE_SOURCE_AND_OFFLINE_REPAIR_QUALIFIED",
+  "native_source": {
+    "run": 38932219618,
+    "head": "f4866f3a5fd88e9223a5fcd4ed9a6980d2c44928",
+    "artifact": 12059960863,
+    "artifact_digest": "sha256:ee8d4d5a9bcb350fa3101c69d8b011fe6ca53c20ec0cf22dfa997aaf483f7f86",
+    "proof_path": "checkpoints/free-storage-20261016/sql-bridge-inspection-38932219618.json",
+    "proof_raw_sha256": "78d37c4e7a3c1e070173eab5a960a6e45129599072f856044cbad50db41e5faa",
+    "module_sha256": "70c3b56e3c93612379e5d344ba9e856e0150d0be83e2fb9b66acdfc62dc99df8",
+    "module_bytes": 5103,
+    "version_id": "9543ad66-087e-49d9-b7de-5766a5b63687",
+    "deployment_id": "4bbbca85-8201-4a3e-ba43-60c6fc48b147",
+    "fixture_exactly_equals_current_native_module": true
+  },
+  "repair": {
+    "schema": "EXACT_INSTALLED_SQL_BRIDGE_COUNTER_REPAIR_V1",
+    "status": "OFFLINE_COUNTER_REPAIR_PREPARED",
+    "original_module_sha256": "70c3b56e3c93612379e5d344ba9e856e0150d0be83e2fb9b66acdfc62dc99df8",
+    "patched_module_sha256": "06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf",
+    "changed_spans": [
+      {
+        "before_sha256": "7030330202c35d9b7f736144659bd02a414e5dc20c2db7700d22a80522181df7",
+        "after_sha256": "33362790e4b8db2bc9cb9ea8457820e390a392fdd34c6ca1151bf937f677c14f",
+        "occurrences": 1
+      },
+      {
+        "before_sha256": "8377c52a3c3e3d916c5023c334e08971c1f4060e3417cf8e7dd8d37d9b7c0797",
+        "after_sha256": "a502835056c5d93ddd812f4d85a926dcae9504db9f5c9272c71cdccb8e84d0dc",
+        "occurrences": 1
+      },
+      {
+        "before_sha256": "cbf84fd9895dcc38bf6eaa7176bb15f0f4468658753710448f323c5b350f5ca6",
+        "after_sha256": "aae2f73a42ec760680c0ead2bf8f30e6599ca7ef2d5ffe7df11ee0df466ebf10",
+        "occurrences": 1
+      },
+      {
+        "before_sha256": "5ddd7540339f15572148e8fb244679f3f02ded86f883d511784130be32323a83",
+        "after_sha256": "b8a5302a6e0860a2d4872eb009a0bd5e03a125d0e354e92de7abe671cbc981b9",
+        "occurrences": 1
+      },
+      {
+        "before_sha256": "936f7d63a3bd95c2b0b5541adc790a8a9fe33c8843860803502aabaa7a9b55d7",
+        "after_sha256": "cb5791ff6e51af14d6addef9aa0ccadc2eafbbdaa71926e41f30c19a1988789b",
+        "occurrences": 1
+      },
+      {
+        "before_sha256": "6209ed922f58d1352a7d7cc33e9d4543e08adc06d2df0072d0dd55b9d0a7bc03",
+        "after_sha256": "8e99826a39d2a59b6a736dc3130873689cb32058d287758e7c3c19730b0d0e37",
+        "occurrences": 1
+      },
+      {
+        "before_sha256": "36691291da1ef5e9d2390352d248150a8b8ae6bc23ea955d8ccc23f6cbdee6ef",
+        "after_sha256": "0f6f640d80dccea3c07649cb9d09e03d124343392da8801f16ded07af3010a24",
+        "occurrences": 2
+      }
+    ],
+    "known_native_counters_preserved_independently": true,
+    "missing_or_invalid_counter_is_null": true,
+    "SQL_or_params_changed": false,
+    "auth_or_binding_or_operation_changed": false,
+    "limits_or_response_result_changed": false,
+    "source_clocks_changed": false,
+    "production_activation_authorized": false,
+    "native_reply_accepted": false,
+    "SQL": 0,
+    "sourceHTTP": 0,
+    "Worker_invocations": 0,
+    "uploads": 0,
+    "activations": 0
+  },
+  "known_defect": {
+    "one_missing_counter_reported_as_zero": true,
+    "finite_noninteger_or_negative_or_coerced_counter_reported_measured": true,
+    "failed_statement_success_flag_ignored": true
+  },
+  "installed_module_provenance_accepted": true,
+  "controlled_semantics_only": true,
+  "native_partial_reply_accepted": false,
+  "repair_installed": false,
+  "whole_day_closed": false,
+  "physical_bytes_freed": 0,
+  "sourceHTTP": 0,
+  "SQL": 0,
+  "Worker_invocations": 0,
+  "uploads": 0,
+  "activations": 0
+}

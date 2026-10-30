@@ -1,0 +1,86 @@
+{
+  "schema": "CONTROLLED_SAVED_UTC18_PRIVATE_PRICE_DAY_GATE_REPRODUCTION_V1",
+  "status": "THREE_CONTROLLED_CASES_PASS",
+  "accounting_original": {
+    "manifest": "checkpoints/paid-report-recovery-20261018/UTC18-39081512792-reconciliation.json",
+    "manifest_sha256": "d26225b9364e03822354cf3b424dbf575e717693b1e69984ee965c0a6c79ab23",
+    "source_archive": {
+      "path": "checkpoints/paid-report-recovery-20261018/source-39081512792.zip",
+      "sha256": "8cb6a27b766da9a21b965751f9cdcf099632d3a7851d75168b47901f057fac1a"
+    },
+    "original_usage_sha256": "e290d9ce1fbcab1f8382369d3b6b05cf98b68ee3e7027261185f44827e6f1f9c",
+    "unknown_ops": 15
+  },
+  "source_hashes": [
+    {
+      "file": "cloudflare/public-collector/private-price-consumer.mjs",
+      "sha256": "69df0c6b0af592d40d10aa491086820ffa986ff3b3c59cb35f3a292e656696de"
+    },
+    {
+      "file": "runner/d1-preaction-budget-guard.mjs",
+      "sha256": "88fd742f0a9791efe9a8208ac96bea6212c9e12210e5000d243c5feca19f7e14"
+    },
+    {
+      "file": "runner/native-day-reconciliation-tokens.mjs",
+      "sha256": "dbdf73b98313ff50b2c0db4f0db2e795366db02ca4c67529b63cd8291d586c8a"
+    },
+    {
+      "file": "runner/verified-native-day-reconciliation.mjs",
+      "sha256": "d9c37ff7a087f69ebec1d3ccb99fedea8f0c30f5fa8207172e95d8d8f65df381"
+    }
+  ],
+  "results": [
+    {
+      "mode": "CONTROL_NO_UNKNOWN",
+      "authenticated_handle_supplied": false,
+      "full_style_admission_allowed": true,
+      "full_style_status": "CLOSED",
+      "private_price_status": "CONTROLLED_CHECK_CALLBACK_REACHED",
+      "price_check_callback_calls": 1,
+      "original15unknown_preserved": null,
+      "original_row_byte_values_unchanged": null,
+      "new_price_slot_reserved": true
+    },
+    {
+      "mode": "ORIGINAL15_NO_HANDLE",
+      "authenticated_handle_supplied": false,
+      "full_style_admission_allowed": false,
+      "full_style_status": "UNMEASURED_FINALIZED_USAGE",
+      "private_price_status": "PRIVATE_PRICE_SHARED_DAY_BOUND_OR_DUPLICATE",
+      "price_check_callback_calls": 0,
+      "original15unknown_preserved": 15,
+      "original_row_byte_values_unchanged": true,
+      "new_price_slot_reserved": false
+    },
+    {
+      "mode": "ORIGINAL15_AUTHENTICATED_HANDLE",
+      "authenticated_handle_supplied": true,
+      "full_style_admission_allowed": true,
+      "full_style_status": "CLOSED",
+      "private_price_status": "PRIVATE_PRICE_SHARED_DAY_BOUND_OR_DUPLICATE",
+      "price_check_callback_calls": 0,
+      "original15unknown_preserved": 15,
+      "original_row_byte_values_unchanged": true,
+      "new_price_slot_reserved": false
+    }
+  ],
+  "scope": {
+    "SQLite_only": true,
+    "original_source_reservation_and_counters": true,
+    "source_completed_ts": "CONTROLLED_WITHIN_VERIFIED_INTERVAL_NOT_NATIVE_ROW_EXPORT",
+    "simulated_UTC18_clock": true,
+    "market_condition_tested": false,
+    "original_canonical_body_available": false,
+    "production_task_executed": false,
+    "deployed_collector_version_verified": false,
+    "actual_production_log_root_cause_proven": false,
+    "all_historical_ENTRY_failures_explained": false,
+    "native_billing_claim": false,
+    "sourceHTTP": 0,
+    "native_SQL": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "strategy_caps_unknown_or_reservations_changed": false
+  },
+  "conclusion": "Current private-price code unconditionally refuses this retained15unknown day before calling any price checker, even when a separately authenticated historical proof permits full-style admission. A qualified atomic witness path for this consumer is still missing; no bypass is authorized by this reproduction."
+}

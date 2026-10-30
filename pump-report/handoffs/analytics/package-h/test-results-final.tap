@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: H01 forty-two independent waves have exact materialized counters without passing old records to the query
+ok 1 - H01 forty-two independent waves have exact materialized counters without passing old records to the query
+  ---
+  duration_ms: 30.772875
+  type: 'test'
+  ...
+# Subtest: H02 exact event replay is a no-op and cannot increment counters or revisions twice
+ok 2 - H02 exact event replay is a no-op and cannot increment counters or revisions twice
+  ---
+  duration_ms: 1.25275
+  type: 'test'
+  ...
+# Subtest: H03 UNKNOWN becomes HIT and a later UNKNOWN cannot erase confirmed hit or re-count its wave
+ok 3 - H03 UNKNOWN becomes HIT and a later UNKNOWN cannot erase confirmed hit or re-count its wave
+  ---
+  duration_ms: 1.164042
+  type: 'test'
+  ...
+# Subtest: H04 early HIT stays pending until explicit due transition; query flags stale maturity honestly
+ok 4 - H04 early HIT stays pending until explicit due transition; query flags stale maturity honestly
+  ---
+  duration_ms: 0.886667
+  type: 'test'
+  ...
+# Subtest: H05 late receipt moves exactly one original wave from UNKNOWN to SENT cohort
+ok 5 - H05 late receipt moves exactly one original wave from UNKNOWN to SENT cohort
+  ---
+  duration_ms: 0.526292
+  type: 'test'
+  ...
+# Subtest: H06 a later UNKNOWN receipt state cannot downgrade a receipt-backed SENT
+ok 6 - H06 a later UNKNOWN receipt state cannot downgrade a receipt-backed SENT
+  ---
+  duration_ms: 0.453042
+  type: 'test'
+  ...
+# Subtest: H07 two raw cards of one wave retain the selected original map/mode instead of becoming two successes
+ok 7 - H07 two raw cards of one wave retain the selected original map/mode instead of becoming two successes
+  ---
+  duration_ms: 0.619042
+  type: 'test'
+  ...
+# Subtest: H08 all mode/delivery/map/rules/profile/evidence cohorts match batch counts
+ok 8 - H08 all mode/delivery/map/rules/profile/evidence cohorts match batch counts
+  ---
+  duration_ms: 10.973333
+  type: 'test'
+  ...
+# Subtest: H09 gapped HIT and enclosing-bar MISS preserve distinct coverage and unknown adverse data
+ok 9 - H09 gapped HIT and enclosing-bar MISS preserve distinct coverage and unknown adverse data
+  ---
+  duration_ms: 1.283584
+  type: 'test'
+  ...
+# Subtest: H10 contradictory HIT/MISS censors the original wave just like the batch oracle
+ok 10 - H10 contradictory HIT/MISS censors the original wave just like the batch oracle
+  ---
+  duration_ms: 0.741709
+  type: 'test'
+  ...
+# Subtest: H11 invalid later targets retain issues without erasing an earlier valid HIT
+ok 11 - H11 invalid later targets retain issues without erasing an earlier valid HIT
+  ---
+  duration_ms: 0.657833
+  type: 'test'
+  ...
+# Subtest: H12 P0, t0 and original map cannot be rewritten; rejected protocol events leave state untouched
+ok 12 - H12 P0, t0 and original map cannot be rewritten; rejected protocol events leave state untouched
+  ---
+  duration_ms: 0.561875
+  type: 'test'
+  ...
+# Subtest: H13 verified instrument-to-asset conflicts stop reconciliation before applying any delta
+ok 13 - H13 verified instrument-to-asset conflicts stop reconciliation before applying any delta
+  ---
+  duration_ms: 0.325417
+  type: 'test'
+  ...
+# Subtest: H14 replaying a record ID with changed bytes is rejected rather than silently replaced
+ok 14 - H14 replaying a record ID with changed bytes is rejected rather than silently replaced
+  ---
+  duration_ms: 0.313833
+  type: 'test'
+  ...
+# Subtest: H15 sequence gaps, backwards clocks and mixed materializations cannot corrupt counters
+ok 15 - H15 sequence gaps, backwards clocks and mixed materializations cannot corrupt counters
+  ---
+  duration_ms: 0.363666
+  type: 'test'
+  ...
+# Subtest: H16 DELIVERY_DIAGNOSTIC SENT239 is ignored with no origin, wave, outcome or counter
+ok 16 - H16 DELIVERY_DIAGNOSTIC SENT239 is ignored with no origin, wave, outcome or counter
+  ---
+  duration_ms: 0.10725
+  type: 'test'
+  ...
+# Subtest: H17 serialize/restore aggregate and a single compact wave then continue without prior observations
+ok 17 - H17 serialize/restore aggregate and a single compact wave then continue without prior observations
+  ---
+  duration_ms: 0.581584
+  type: 'test'
+  ...
+# Subtest: H18 adverse values remain null for gaps and materialize known drawdown/cancellation facts without profit claims
+ok 18 - H18 adverse values remain null for gaps and materialize known drawdown/cancellation facts without profit claims
+  ---
+  duration_ms: 0.561708
+  type: 'test'
+  ...
+# Subtest: H19 due transitions page explicitly and repeated mature clock ticks are idempotent
+ok 19 - H19 due transitions page explicitly and repeated mature clock ticks are idempotent
+  ---
+  duration_ms: 1.796667
+  type: 'test'
+  ...
+# Subtest: H20 a hundred updates need only compact representative observations for the next fold
+ok 20 - H20 a hundred updates need only compact representative observations for the next fold
+  ---
+  duration_ms: 20.4165
+  type: 'test'
+  ...
+# Subtest: H21 immutable input objects remain detached from the returned derived state
+ok 21 - H21 immutable input objects remain detached from the returned derived state
+  ---
+  duration_ms: 0.751417
+  type: 'test'
+  ...
+# Subtest: H22 incomplete path cannot materialize precise total drawdown or intrabar pre-hit drawdown from a stray scalar
+ok 22 - H22 incomplete path cannot materialize precise total drawdown or intrabar pre-hit drawdown from a stray scalar
+  ---
+  duration_ms: 1.011791
+  type: 'test'
+  ...
+# Subtest: H23 pre-send ERROR/FAILED is not a normalized statistical UNKNOWN signal
+ok 23 - H23 pre-send ERROR/FAILED is not a normalized statistical UNKNOWN signal
+  ---
+  duration_ms: 0.348875
+  type: 'test'
+  ...
+# Subtest: H24 maturity state revision is separate from source journal event revision
+ok 24 - H24 maturity state revision is separate from source journal event revision
+  ---
+  duration_ms: 1.962125
+  type: 'test'
+  ...
+# Subtest: H25 prepared event folds synchronously through the actual ROOT MemoryStore.atomicPair and repeats safely
+ok 25 - H25 prepared event folds synchronously through the actual ROOT MemoryStore.atomicPair and repeats safely
+  ---
+  duration_ms: 0.610875
+  type: 'test'
+  ...
+# Subtest: H26 prepared hash envelope is immutable/transient and cannot be forged or persisted as an event authority
+ok 26 - H26 prepared hash envelope is immutable/transient and cannot be forged or persisted as an event authority
+  ---
+  duration_ms: 0.355458
+  type: 'test'
+  ...
+# Subtest: H27 atomicPair may assign the next unique-event revision inside CAS without a new source sequence column
+ok 27 - H27 atomicPair may assign the next unique-event revision inside CAS without a new source sequence column
+  ---
+  duration_ms: 1.149792
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 132.183417

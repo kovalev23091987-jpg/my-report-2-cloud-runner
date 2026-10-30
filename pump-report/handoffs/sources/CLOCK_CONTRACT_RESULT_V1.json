@@ -1,0 +1,298 @@
+{
+  "schema": "PUMP_OFFLINE_PUBLIC_REQUEST_CLOCK_CONTRACT_V1",
+  "status": "STATIC_PUBLIC_CLIENT_CONTRACT_ESTABLISHED_SERVER_ACCEPTANCE_UNVERIFIED",
+  "authority": {
+    "schema": "PUMP_OFFLINE_REQUEST_CLOCK_AUTHORITY_V1",
+    "main": "dd758f61a75905aef7a4dd1d8de7e60440ec3b6f",
+    "lease": {
+      "schema": "REPORT2_OFFLINE_SOURCE_WORKER_LEASE_V1",
+      "owner": "CODEX:SOURCES:01a171fd:1792943591379",
+      "thread_id": "01a171fd-51b6-79a1-82f4-3dc4532aee24",
+      "acquired_ts": 1792943591379,
+      "expires_ts": 1792944791379,
+      "expected_main": "dd758f61a75905aef7a4dd1d8de7e60440ec3b6f",
+      "working_base": "4b44d48836b9c26b1c9c8bb0830055ee279a608a",
+      "released": false,
+      "scope": "OFFLINE_REQUEST_CLOCK_CONTRACT finite20min. Read/parse ONLY already retained BingX static JS/baseRequest and exact1GET business100003 wrapper. Extract exact timestamp/timezone/header/nonce/signature public client contract, fileSHA/function spans/algorithm/units/anon-vs-secret; prove missing request items without guessing from error. No new GET/search/API/WS/SQL/TG/deploy/browser, no downloadedJS execution, no Mac/Worker clock changes, no session credentials copied. Own handoffs/sources only; previous frozen9b4fe68 package unchanged; one affected static-integrity proof/frozenhandoff/timelyownrelease. If unresolved finite negative and one necessary external evidence only. Prior metadata1GETspent/unknowns/caps/reserves remain. No newchat/subagent/automation/outgoing messages.",
+      "root_lease_owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792942069000",
+      "guard_git_blobs": {
+        "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
+        "pump-report/AGENTS.md": "e01cab5ab39f7cdca712289858bddb708325fef6",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "abca5ca1b3ea6c1d659289dd4792a6ea5a798211",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "dfe265ae33724aa64ceeb5abb8bb953e8cd05d38",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "450b79b091fb8327a27b64aa9187b3e445fd5a2a",
+        "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "542cb41dc477c0360b9d2fd8335b1bd5c25621d5",
+        "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "435414ceff9e91907c6d5da2ababe64638cd9561",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
+        "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
+        "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
+        "checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json": "8004c6b4b8b646558b8fa0f774cdf985667324a1"
+      },
+      "all4_equal_verified": true,
+      "fence_active": false,
+      "generation_latest_only": true,
+      "previous_own_release": "65dbdd847817e79e7053c36c11718a0978745c32"
+    },
+    "lease_commit": "36e2bde4157ab0f326237a8fad41200f20462efa",
+    "FULL_exact_readback": true,
+    "read_scope": "Only already retained static JS and previous exact1GET metadata wrapper/plan; no external sources or downloaded JS execution",
+    "previous_frozen_package": {
+      "path": "pump-report/handoffs/sources/PACKAGE_FULL_UNIVERSE_TZ_SOURCES_FINAL_V1.json",
+      "sha256": "9b4fe68bc796dfc1adfb49a2400ccac0bf277c744e117882ff9e78208a204f5a",
+      "immutable": true
+    },
+    "new_provider_GET": 0,
+    "new_search": 0,
+    "new_SQL": 0,
+    "new_TG": 0
+  },
+  "endpoint": {
+    "method": "GET",
+    "url": "https://api-app.acc-de.com/api/coin/v1/display-info/list",
+    "query": {},
+    "body": null
+  },
+  "call_chain": [
+    "requestCoinInfoList -> dr.request GET no params",
+    "pr.common=new dr(request); plugin coreServices:new pr($baseRequest)",
+    "baseRequest headers:od(t), interceptor r, route prefix /api",
+    "Core imports nr/ql/Vl/jl from CeOxKRS_, export aliases B2/k2/l2/Xw"
+  ],
+  "clock_contract": {
+    "timestamp": {
+      "where": "header, not query",
+      "algorithm": "new Date().getTime()",
+      "unit": "Unix epoch milliseconds",
+      "timezone_adjustment": false,
+      "server_offset_adjustment_found_in_this_path": false,
+      "span": "REQUEST_INTERCEPTOR_R"
+    },
+    "timeZone": {
+      "where": "common header",
+      "algorithm": "new Date().getTimezoneOffset()/60*-1",
+      "unit": "hours east of UTC, fractional allowed",
+      "IANA_name": false,
+      "in_sign_preimage": false,
+      "span": "TIMEZONE_HOURS",
+      "worker_example": "0 if actual client Date timezone is UTC. Never change clocks/timezone or substitute Moscow+3 for a UTC Worker."
+    }
+  },
+  "dynamic_headers": {
+    "traceId": {
+      "algorithm": "UUIDv4 -> strip hyphens -> lowercase,32hex",
+      "explicit_nonce_header_found": false,
+      "server_nonce_semantics_proven": false,
+      "spans": [
+        "TRACE_UUID_FORMAT",
+        "UUID_V4_GENERATOR"
+      ]
+    },
+    "device_id": {
+      "source": "app_device_id cookie if present, else appConfig.uuid from uuid cookie or fresh compactUUIDv4",
+      "anonymous_path_present": true,
+      "read_real_cookie": false,
+      "span": "ANONYMOUS_DEVICE_UUID"
+    },
+    "antiDeviceId": {
+      "source": "jl() cached local fingerprint if present, else empty string",
+      "empty_branch_in_code": true,
+      "server_accepts_empty_proven": false,
+      "read_real_fingerprint": false,
+      "span": "ANTI_DEVICE_EMPTY_BRANCH"
+    },
+    "sign": {
+      "exact_header_name": "sign",
+      "algorithm": "uppercase hexadecimal SHA256 of UTF-8 preimage",
+      "HMAC": false,
+      "public_build_prefix_parts": [
+        "95d65c73dc5c437",
+        "0ae9018fb7",
+        "f2eab69"
+      ],
+      "public_build_prefix": "95d65c73dc5c4370ae9018fb7f2eab69",
+      "prefix_is": "Public build constant in retained frontend bytes; not account/API/session secret",
+      "order": [
+        "public_prefix",
+        "decimal timestamp",
+        "traceId",
+        "device_id",
+        "platformId",
+        "app_version",
+        "antiDeviceId or empty",
+        "normalized request payload"
+      ],
+      "separators": "none",
+      "empty_GET_payload": "{}",
+      "general_GET_normalization": "o2 removes top-level null/undefined and normalizes array/Date/nonfinite/nested values; ep converts numbers to uppercase strings and booleans to strings; S1 stable-sorts JSON keys recursively. This request has no params and uses literal {}.",
+      "not_in_preimage": [
+        "URL/path",
+        "method itself",
+        "timeZone",
+        "appSiteId",
+        "authorization"
+      ],
+      "method_role": "Only chooses GET payload normalization",
+      "missing_non_anti_fields": "JS template stringifies undefined, so do not silently replace missing required input with empty string",
+      "spans": [
+        "PUBLIC_SIGN_CONTRACT",
+        "SHA256_HELPER_A2",
+        "STABLE_SORT_JSON"
+      ]
+    }
+  },
+  "common_header_names": [
+    "X-Requested-With",
+    "platformId",
+    "appSiteId",
+    "channel",
+    "reg_channel",
+    "app_version",
+    "device_id",
+    "lang",
+    "appId",
+    "mainAppId",
+    "timeZone",
+    "device_brand",
+    "antiDeviceId"
+  ],
+  "pinned_public_defaults": {
+    "app_version": "5.3.37",
+    "platformId_DESKTOP": 30,
+    "appSiteId_main_site": 0,
+    "appId": "30004",
+    "mainAppId": "10009",
+    "channel": "official",
+    "reg_channel": "official",
+    "lang_en_mapping": "en"
+  },
+  "auth_boundary": {
+    "authorization": "Added Bearer only if token cookie exists. No token read/exported here.",
+    "withCredentials_in_constructor": true,
+    "anonymous_construction_possible_in_code": true,
+    "private_key_or_account_secret_in_sign": false,
+    "server_anonymous_permission_proven": false,
+    "server_fingerprint_requirement_known": false,
+    "browser_sessions_copied": 0
+  },
+  "actual_request_comparison": {
+    "plan_header_names": [
+      "Accept"
+    ],
+    "omitted_by_plan_common": [
+      "X-Requested-With",
+      "platformId",
+      "appSiteId",
+      "channel",
+      "reg_channel",
+      "app_version",
+      "device_id",
+      "lang",
+      "appId",
+      "mainAppId",
+      "timeZone",
+      "device_brand",
+      "antiDeviceId"
+    ],
+    "omitted_by_plan_dynamic": [
+      "timestamp",
+      "traceId",
+      "sign"
+    ],
+    "plan_bypasses_interceptor": true,
+    "outbound_wire_headers_present_in_supplied_response_wrapper": false,
+    "wire_absence_independently_observed_by_SOURCE": false,
+    "ROOT_reported_exact_plan_execution": true,
+    "finding": "Exact reviewed bare request plan omits public client timestamp/sign/traceId and common signing inputs. This is an established construction mismatch; it does not prove the causal absent field for100003.",
+    "one_existing_input_for_wire_level_claim": "ROOT exact deployed34-module metadata-probe request/header construction or retained redacted outbound header-name capture; no new network necessary to establish omission."
+  },
+  "actual_error_clock": {
+    "http_status": 200,
+    "business_code": 100003,
+    "message": "Your device's time is incorrect, please adjust it.",
+    "server_error_ts": 1792942913044,
+    "broker_received_ts": 1792942913224,
+    "difference_ms": 180,
+    "control_started_ts": 1792942911539,
+    "control_received_ts": 1792942913388,
+    "request_timestamp_echoed": false,
+    "clock_skew_or_causal_fix_proven": false,
+    "finding": "180ms numeric response timestamp gap is not clock-sync proof or request header value. Do not change Mac/Worker clocks."
+  },
+  "minimal_candidate": {
+    "status": "UNEXECUTED_PUBLIC_CLIENT_SHAPE_NOT_PROVEN_SERVER_MINIMUM",
+    "method": "GET",
+    "url": "https://api-app.acc-de.com/api/coin/v1/display-info/list",
+    "query": {},
+    "body": null,
+    "headers": {
+      "Accept": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "platformId": "30",
+      "appSiteId": "0",
+      "channel": "official",
+      "reg_channel": "official",
+      "app_version": "5.3.37",
+      "device_id": "<fresh anonymous compactUUIDv4, retained for this client>",
+      "lang": "en",
+      "appId": "30004",
+      "mainAppId": "10009",
+      "timeZone": "<truthful actual client offset hours>",
+      "device_brand": "",
+      "antiDeviceId": "",
+      "timestamp": "<fresh current Unix milliseconds at final send construction>",
+      "traceId": "<fresh compactUUIDv4>",
+      "sign": "<uppercase SHA256 exact preimage using identical timestamp/trace/device/platform/version/emptyanti/{}>"
+    },
+    "authorization": null,
+    "cookies": null,
+    "credentials_copied": false,
+    "assumptions": [
+      "Pinned main-site desktop profile30/site0/version5.3.37",
+      "Empty antiDeviceId/device_brand branch exists in code but server permission unknown",
+      "Never update timestamp after hashing or reuse stale synthetic vector",
+      "No invented Origin/Referer/nonce/signature/query timestamp"
+    ],
+    "max_attempts_if_ROOT_admits": 1,
+    "redirects": false,
+    "host_fallback": false,
+    "retry": false,
+    "timeout_ms": 10000,
+    "max_response_bytes": 2000000,
+    "new_admission": false
+  },
+  "synthetic_translation_vector": {
+    "input": {
+      "timestamp_ms": 1792942912381,
+      "traceId": "00000000000040008000000000000001",
+      "device_id": "00000000000040008000000000000002",
+      "platformId": 30,
+      "app_version": "5.3.37",
+      "antiDeviceId": "",
+      "GET_params": {}
+    },
+    "preimage": "95d65c73dc5c4370ae9018fb7f2eab6917929429123810000000000004000800000000000000100000000000040008000000000000002305.3.37{}",
+    "expected_SHA256_upper": "16878C74854E8BC1784A92E8A50C9D424D8757DBCCB3E58F9468A45847A5C2BC",
+    "public_JS_executed": false,
+    "real_request_or_session": false,
+    "purpose": "One manually translated standard SHA256 concatenation/units/order integrity case, not native signature acceptance or executed JS equivalence"
+  },
+  "previous_attempt": {
+    "SPENT": true,
+    "new_attempts_admitted": 0,
+    "old_unknowns_preserved": true,
+    "caps_raised": false,
+    "previous_frozen_package_changed": false
+  },
+  "remaining": "ROOT may review this exact pinned candidate and separately admit one precise action. Server-required minimum/anonymous access/signature acceptance and positive taxonomy/native bridge remain unproven.",
+  "new_IO": {
+    "GET": 0,
+    "search": 0,
+    "API": 0,
+    "WS": 0,
+    "SQL": 0,
+    "TG": 0,
+    "downloaded_JS_execution": 0,
+    "clock_or_timezone_changes": 0,
+    "old_audit_replays": 0
+  }
+}

@@ -3,22 +3,23 @@
   "captured_at": "2026-09-28T02:30:00+03:00",
   "effective_modules": {
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
-    "current-generation/files/src/manual-report-formatter.mjs": "891fdfeb75b6a0d93485c164ed967b67691df482e18c61f817d543f5fd8523b4",
-    "current-generation/files/src/telegram-compact-formatter.mjs": "625d0d464d926ccd113109bfe4908c598a6ab8b6bafef883807e66d290511552",
+    "current-generation/files/src/manual-report-formatter.mjs": "5c9eb973c29c61bdb5b415dc6d476cb322a38b5cadd8b984e6f9162852e41680",
+    "current-generation/files/src/telegram-compact-formatter.mjs": "8eabfcb03c06da637d57719d88f2df8ab8b1ddfbe72b7c9f3c78f9d65301f022",
     "current-generation/files/src/canonical-display.mjs": "60fe28962fd2ef99dccc95f26c8478f8d7288cf355e4cb9e4ebd69e3e9bcc2e8",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "19ae635fdbd0f909b85555698712cdfd3ad67badbf22568f38ce51a764da2064",
     "current-generation/files/src/canonical-runtime-adapter.mjs": "27094651cdc0fa7c75c6641d387e917b3a9ec75b10e52babb67200c661700484",
-    "current-generation/files/src/canonical-publication.mjs": "8113b3540a9d85fd6b05ab5e64013242a270831101229bbf95f6985c11991407",
+    "current-generation/files/src/canonical-publication.mjs": "19faf2271aa21c98668c83d58c67d62882b40db8e418539ee6c84c59fa3efd33",
     "current-generation/files/src/early-direction-receipt.mjs": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
-    "current-generation/files/src/block-result-context.mjs": "3c571712a2028297f70b6071ce432f14c51ebcf7aa3d4cd5d4cf1c04d7d9afc5",
-    "current-generation/files/src/telegram-plain-facts.mjs": "aa03a621974e86caec86d5a2b6b7577900bd51f2c890140fc0d2729bd8861689",
+    "current-generation/files/src/block-result-context.mjs": "5d0266b848230abf44483e49003573015dc61091af0950eb1478eafa6577e4ba",
+    "current-generation/files/src/telegram-plain-facts.mjs": "d8f0f1a7ef17f08c5db716c81bbec867fa096e771f00e85b190de93459d964ed",
     "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519",
     "current-generation/files/src/bitget-n12-bounded-trade-sample.mjs": "6e364bf5755e87adb5f592872d6b63fd4bac4d0b6179d5b5ebfc5eda48661461",
     "current-generation/files/src/n12-native-public-trade-sample.mjs": "67bfb526f2937d2aeb8ebc04741cd27595241c8f2f6d6a4f3f4e819c4e5c75b4",
     "current-generation/files/src/n12-kucoin-token-trade-sample.mjs": "a1150019d0d516cda87a0568e85da46c80dbc533e21ede1809d756b922bf0161",
-    "current-generation/files/src/verified-asset-route-identity.mjs": "ddb6bbdefd26a32d2e21d6444000d63483765500259b0768e45833d913003eb3"
+    "current-generation/files/src/verified-asset-route-identity.mjs": "ddb6bbdefd26a32d2e21d6444000d63483765500259b0768e45833d913003eb3",
+    "current-generation/files/src/bitfinex-n12-bounded-trade-sample.mjs": "87e42ed72238ff525cc7746bacc28fa33bad7128139e9a68c3ad1b01c05bd880"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -916,6 +917,142 @@
       },
       "golden_fixtures_changed": false,
       "strategy_weights_or_entry_rules_changed": false
+    },
+    {
+      "date": "2026-10-18",
+      "scope": "N10_FACT_EXPIRY_AND_UNCONFIRMED_DIRECTION_ONLY",
+      "authorization": "Owner authorized useful active-block facts, exact source clocks and matching report consumers. Repair invalid extended recent-path expiry and false directional agreement for a flat market within the existing N10 field. No report layout, golden canonical input/output, strategy, weights or entry rule change.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "3c571712a2028297f70b6071ce432f14c51ebcf7aa3d4cd5d4cf1c04d7d9afc5",
+          "after": "8cef0ff2f1c17243495964208663a6b557afce25bba580cb56f948afb4ad5ac7"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
+    {
+      "date": "2026-10-18",
+      "scope": "BITFINEX_EXISTING_N05_PAGE_BOUNDED_N12_USD_REUSE",
+      "authorization": "Owner requested useful facts and source-to-consumer coverage of active N05/N12; existing context fields only. Provider-specific exact binding, original clocks, USD preserved separately. Coordinator applies this proposal after combined verification.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "8cef0ff2f1c17243495964208663a6b557afce25bba580cb56f948afb4ad5ac7",
+          "after": "a6662ce07a107e82ccac6ec25cd3d128f1dafcd4d8066c8db37df5e5b11dc0e7"
+        },
+        "current-generation/files/src/telegram-plain-facts.mjs": {
+          "before": "aa03a621974e86caec86d5a2b6b7577900bd51f2c890140fc0d2729bd8861689",
+          "after": "81113d03dc58179ed8aa3248328e85c28fd841a9dc9dbd6a5e0d012d57f6aa5b"
+        },
+        "current-generation/files/src/bitfinex-n12-bounded-trade-sample.mjs": {
+          "before": null,
+          "after": "87e42ed72238ff525cc7746bacc28fa33bad7128139e9a68c3ad1b01c05bd880"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
+    {
+      "date": "2026-10-18",
+      "scope": "EXACT_PRIOR_TURNOVER_COMPARISON_IN_EXISTING_N05_FIELD",
+      "authorization": "Owner authorized useful original source facts and existing report consumer tuning. Apply independently verified PR438 proposal after PR433 preservation; descriptive turnover comparison uses existing N05 field, no new slot or change to approved layout.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "a6662ce07a107e82ccac6ec25cd3d128f1dafcd4d8066c8db37df5e5b11dc0e7",
+          "after": "dd21b951b58663baeb3963ac0c7aa75328f81a1d1935e29d48c0f1b433a1924c"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
+    {
+      "date": "2026-10-18",
+      "scope": "NATIVE_CT_COMPACT_OPTIONAL_FIELD_LENGTH_REPAIR",
+      "authorization": "Owner-authorized recovery. Native39123622796 independently read CT canonical607a13f9:2341chars>1600. Preserve mandatory identity/scores/safety/trigger/cancellation/all selected LIQ levels; reduce only existing optional historical changes and context counts within their approved max3. No cap/layout/strategy change and original canonical/manual/statistics remain complete.",
+      "module_changes": {
+        "current-generation/files/src/telegram-compact-formatter.mjs": {
+          "before": "625d0d464d926ccd113109bfe4908c598a6ab8b6bafef883807e66d290511552",
+          "after": "6a8829ab983cc14b8eff7c971d6087f78454cbbc99302b18cbf554b22b5366af"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true
+    },
+    {
+      "date": "2026-10-19",
+      "scope": "KRAKEN_EXISTING_ORIGINAL_MEMORY_REUSE_NEUTRAL_N10_N12",
+      "authorization": "Owner authorized main-plan active-block source integration while preserving approved forms, score and limits. Existing neutral factual rendering reused; identical canonical-input goldens passed in automatic check on4cbbb7d1. Only expected module fingerprint maintained; no fixture regenerated.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "fb0110ee6d77b01f40ad42897cbe4150fcc7df1f2c83fac95772a0bdb3cac1de",
+          "after": "466d2d3d498e97235971d159de5135b20d42d572a9f067ea2afb90f990e9bb88"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "original_saved_sent_bytes_unchanged": true,
+      "affected_cloud": 39222245111,
+      "source_HTTP_or_SQL_added_on_qualified_paths": 0
+    },
+    {
+      "date": "2026-10-19",
+      "scope": "OWNER_SILENT_TTL_AND_EXISTING_TASK_FOLLOWUP_PLUS_BITFINEX_USD_N12_METADATA",
+      "authorization": "Owner explicitly removed expiry-only Telegram notices and prioritized OBSERVE/confirmed ENTRY. TTL/task expiry and trading gates preserved. Neutral memory reuse and original composite clocks are owner-authorized active-block work; no score/format/cap change. Historical golden fixtures and old SENT bytes unchanged.",
+      "module_changes": {
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "82cfe3904a8f3c0b66260ad75f97cb07e19a818073d9bde6b695e0d0315a65a0",
+          "after": "658505469318149f4b796903e11e7a90c69b37f5f6fced55c7927cf1a79733d0"
+        },
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "466d2d3d498e97235971d159de5135b20d42d572a9f067ea2afb90f990e9bb88",
+          "after": "90b3391a923a9798785673e3210de2da59989479ea9949852309a9c17d8ded12"
+        },
+        "current-generation/files/src/telegram-plain-facts.mjs": {
+          "before": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643",
+          "after": "d8f0f1a7ef17f08c5db716c81bbec867fa096e771f00e85b190de93459d964ed"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "owner_TTL_only_notification_disabled": true,
+      "new_source_HTTP_or_SQL": 0
+    },
+    {
+      "date": "2026-10-19",
+      "scope": "ORIGINAL_N10_CLOCK_AUDIT_METADATA",
+      "authorization": "Owner authorized active-source and actual OBSERVE→ENTRY repair plan; technical pin only for newly retained source/knowledge clocks. No output/score/strategy/golden changes.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "90b3391a923a9798785673e3210de2da59989479ea9949852309a9c17d8ded12",
+          "after": "a42c81452935e1858b732400e985d5250c3fbed67b3756df1a7467230c9c80bc"
+        }
+      }
+    },
+    {
+      "date": "2026-10-21",
+      "scope": "OWNER_APPROVED_LIMITED_99_PLUS_EXACT_SIX_UNKNOWN_COVERAGE_NOTICE",
+      "authorization": "Direct owner approval recorded checkpoints/scan-source-asof-connected-20261021/owner-limited99-approval.json. Existing eight formatter golden inputs remain full or legacy and byte-identical; only valid explicitly bound limited99 scope adds honest notice. Three exact effective formatter pins updated to already qualified395986 bytes.",
+      "module_changes": {
+        "current-generation/files/src/manual-report-formatter.mjs": {
+          "before": "891fdfeb75b6a0d93485c164ed967b67691df482e18c61f817d543f5fd8523b4",
+          "after": "5c9eb973c29c61bdb5b415dc6d476cb322a38b5cadd8b984e6f9162852e41680"
+        },
+        "current-generation/files/src/telegram-compact-formatter.mjs": {
+          "before": "6a8829ab983cc14b8eff7c971d6087f78454cbbc99302b18cbf554b22b5366af",
+          "after": "8eabfcb03c06da637d57719d88f2df8ab8b1ddfbe72b7c9f3c78f9d65301f022"
+        },
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "658505469318149f4b796903e11e7a90c69b37f5f6fced55c7927cf1a79733d0",
+          "after": "19faf2271aa21c98668c83d58c67d62882b40db8e418539ee6c84c59fa3efd33"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "common_15groups_replayed": false
     }
   ],
   "consumer_selection_revisions": [
@@ -1085,5 +1222,47 @@
     "model_additional_HTTP": 0,
     "model_score_or_target_contribution": 0,
     "historical_fixtures_changed": false
+  },
+  "N12_Gate_original_page_reuse_20261018": {
+    "scope": "New exact bounded Gate spot context with zero adjustment, original receipts and no additional acquisition; fixed scenario bytes unchanged.",
+    "module_changes": {
+      "current-generation/files/src/block-result-context.mjs": {
+        "before": "dd21b951b58663baeb3963ac0c7aa75328f81a1d1935e29d48c0f1b433a1924c",
+        "after": "76ae667fba84f3a95c5495a1174639c9623870e4f05a97febc8f701b9b9ccc40"
+      },
+      "current-generation/files/src/telegram-plain-facts.mjs": {
+        "before": "81113d03dc58179ed8aa3248328e85c28fd841a9dc9dbd6a5e0d012d57f6aa5b",
+        "after": "1b1aeb4a8245d897da17b67bf8e188cfd3d8a26de171a37542ec02a399dd8643"
+      }
+    },
+    "fixture_bytes_changed": false,
+    "source_HTTP_added": 0,
+    "score_adjustment": 0,
+    "entry_authorized": false
+  },
+  "N12_exact_component_provenance_repair_20261018": {
+    "authorization": "Owner main-plan source usefulness/statistics work with main forms/strategy unchanged; metadata-only provenance and existing-neutral assessment repair",
+    "module": "current-generation/files/src/block-result-context.mjs",
+    "previous_sha256": "76ae667fba84f3a95c5495a1174639c9623870e4f05a97febc8f701b9b9ccc40",
+    "current_sha256": "fb0110ee6d77b01f40ad42897cbe4150fcc7df1f2c83fac95772a0bdb3cac1de",
+    "golden_fixtures_changed": false,
+    "automatic_golden_update": false,
+    "scope": "New origins/ownclocks/explicitmissingwindow/manual-versus-plainTelegram component receipt; existing formatter text/code unchanged. K01 identical-input canonical/manual/compact/Telegram byte-freeze must pass, not regenerate fixtures."
+  },
+  "expired_bound_delivery_repair_20261018": {
+    "scope": "Terminal classification of already verified expired immutable publication before current native source age refusal; additive exact bound refusal audit only. No presentation or trading-rule changes.",
+    "golden_fixture_files_changed": false,
+    "automatic_golden_update": false
+  },
+  "source_unit_and_event_provenance_20261023": {
+    "authorization": "Owner approved active source usefulness plan; current own exact CI-binding scope",
+    "module": "current-generation/files/src/block-result-context.mjs",
+    "before": "a42c81452935e1858b732400e985d5250c3fbed67b3756df1a7467230c9c80bc",
+    "after": "5d0266b848230abf44483e49003573015dc61091af0950eb1478eafa6577e4ba",
+    "reason": "Existing bounded context origin copies unit and origin_event_id; stale module hash caused automatic K01 failure. Update binding only.",
+    "golden_fixtures_changed": false,
+    "automatic_golden_update": false,
+    "assertion_bodies_changed": false,
+    "common_10_groups_59_variants_replayed": false
   }
 }

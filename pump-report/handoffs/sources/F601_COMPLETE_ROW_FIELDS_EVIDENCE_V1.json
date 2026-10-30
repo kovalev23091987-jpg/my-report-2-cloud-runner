@@ -1,0 +1,70 @@
+{
+  "schema": "F601_COMPLETE_ROW_FIELDS_EVIDENCE_V1",
+  "input_path": "pump-report/.private/observations/toobit-exchangeinfo-one-20261026-body.bin",
+  "input_sha256": "4cff48bfb114e262312e21e3c86da26b7da3378534f9e14de2068be5b803087c",
+  "complete_contract_rows_read": 696,
+  "top_level_field_presence_counts": {
+    "filters": 696,
+    "exchangeId": 696,
+    "symbol": 696,
+    "symbolName": 696,
+    "status": 696,
+    "baseAsset": 696,
+    "baseAssetPrecision": 696,
+    "quoteAsset": 696,
+    "quoteAssetPrecision": 696,
+    "icebergAllowed": 696,
+    "inverse": 696,
+    "index": 696,
+    "indexToken": 696,
+    "marginToken": 696,
+    "marginPrecision": 696,
+    "contractMultiplier": 696,
+    "underlying": 696,
+    "riskLimits": 696,
+    "closingStartTime": 696,
+    "closingEndTime": 696,
+    "isRwa": 696,
+    "categories": 696,
+    "minTradePrecision": 696,
+    "launchTime": 226,
+    "allowedOpenTime": 157,
+    "allowedCloseTime": 157,
+    "rwaType": 178
+  },
+  "funding_period_update_time_key_hits": [],
+  "sample_complete_SUI": {
+    "array_path": [
+      "$",
+      "contracts"
+    ],
+    "index": 65,
+    "byte_start": 676746,
+    "byte_end_exclusive": 679146,
+    "literal_sha256": "a44aacc2947f941e14f8ca320019a039178e577330e5ad4d2e664c9652a2ea94",
+    "fields": {
+      "symbol": "SUI-SWAP-USDT",
+      "underlying": "SUI",
+      "quoteAsset": "USDT",
+      "marginToken": "USDT",
+      "inverse": false,
+      "contractMultiplier": "0.1",
+      "status": "TRADING",
+      "isRwa": false,
+      "index": "SUI",
+      "indexToken": "SUIUSDT",
+      "minTradePrecision": "1",
+      "baseAsset": "SUI-SWAP-USDT",
+      "baseAssetPrecision": "0.1"
+    },
+    "quantity_filters": [
+      {
+        "minQty": "2.8",
+        "maxQty": "600000",
+        "stepSize": "0.1",
+        "filterType": "LOT_SIZE"
+      }
+    ]
+  },
+  "scope": "Only original closed F600 rows; no current prices/funding/OI fetched; no positive canonical identity or funding-unit inference."
+}

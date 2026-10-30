@@ -1,0 +1,39 @@
+name: Exact original OBSERVE to ENTRY follow-up read
+on:
+  workflow_dispatch:
+    inputs:
+      expected_main:
+        required: true
+        type: string
+      expected_owner:
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: report2-exact-original-sent214-followup-read
+  cancel-in-progress: false
+jobs:
+  inspect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read the exact original task and bounded continuation receipts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_EXPECTED_MAIN: ${{ inputs.expected_main }}
+          REPORT2_EXPECTED_OWNER: ${{ inputs.expected_owner }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/read-exact-entry-followup-20261018.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exact-entry-followup-${{ github.run_id }}
+          path: audit-output/exact-entry-followup/
+          retention-days: 90

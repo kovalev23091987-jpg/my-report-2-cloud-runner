@@ -1,0 +1,308 @@
+{
+  "schema": "SAVED_UNI_DISTINCT_PUBLICATION_LIQ_FRESHNESS_AUDIT_V1",
+  "working_base": "aac691c24af81f5e18c661759b3f2c81713f8b3b",
+  "original": {
+    "schema": "SAVED_UNI_LIQ_FRESHNESS_ORIGINAL_BINDING_V1",
+    "cloud_run": 39136880005,
+    "attempt": 1,
+    "source_head": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+    "artifact": {
+      "id": 12140187203,
+      "name": "report2-run-result",
+      "size_in_bytes": 80049,
+      "digest": "sha256:994ac1139a935d940c2ec526b0d93fcd3ac2fd8d4a889ce4ed1517073f5b7ba3"
+    },
+    "archive": "native-39136880005-12140187203.zip",
+    "archive_sha256": "994ac1139a935d940c2ec526b0d93fcd3ac2fd8d4a889ce4ed1517073f5b7ba3",
+    "member_sha256": {
+      "report2-run-result.json": "cf54131408c6d5ed8428f6de4419aaa5f38ed9a69048a57d174cc865c0f8553e",
+      "same-run-delivery-proof.json": "31481314f1e56b9dbe8f0d790d2f5fd4c91e8932e8c713ae2077e8e19ab679a0",
+      "automatic-delivery-audit.json": "b83a294cef6ab5b48a8f0dc728aa8552b0ce3cb8fa0e1181c7109ef8beed1704",
+      "known-d1-day-guard.json": "cb92abda06dd39c4fc3d65ac4ec08b28672b9fdc98396c8e321ac385fc0d32a1",
+      "report2-completion-accounting.json": "789a8f6399c0c513271230d8e16350b2d1d3d301b6c7bd3c60f20e41a947c7b0",
+      "private-canonical-archive-receipt.json": "66fa567504a76a1392da39ed63fd462e171f435a01f6e41c1f76ad0995b0eaed"
+    },
+    "run_metadata_sha256": "6b9bf9b4be2675142038bda733080d1818bdd6081234858cb6840cf335ba011e",
+    "artifact_metadata_sha256": "7de85bc6c199a27c4991e5c7aa9f372e6f6a6565405b1cf6c6e0ac1ab5407b3e",
+    "already_acquired_by_coordinator": true,
+    "worker_provider_HTTP": 0,
+    "worker_native_SQL": 0,
+    "full_canonical_reconstructed": false
+  },
+  "source_code_sha256": {
+    "current-generation/files/src/liquidation-extension/runtime-bridge.mjs": "ddfe1243fb82de55f4302ec1fc57e3e774099ca3c9251273970dbe1e5982f9ff",
+    "current-generation/files/src/liquidation-extension/providers.mjs": "aa17115002e23665fb2ddb78eeb20fa8a467dadaaa2ab48ea939392a2dbc5d25",
+    "current-generation/files/src/native-liquidation-guard.mjs": "19ae635fdbd0f909b85555698712cdfd3ad67badbf22568f38ce51a764da2064",
+    "current-generation/files/src/liquidation-extension/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
+    "current-generation/files/src/canonical-publication.mjs": "8113b3540a9d85fd6b05ab5e64013242a270831101229bbf95f6985c11991407",
+    "current-generation/files/src/publication-reconciler.mjs": "5fd1363384c1cba60571485e0ec1e77c08c5faedc0c0f1cb89d82bb715207e20",
+    "current-generation/files/src/bound-telegram-delivery-sidecar.mjs": "a03a4ae0d8b422d9da159c7c93f7df3ebfc425227999fc336d6b93e1fb96f17a"
+  },
+  "current_candidate": {
+    "publication_id": "PUB:25cbc77aa8f4d9152674f1695af3adc7062055a5",
+    "contract": "UNI-USDT",
+    "direction": "SHORT",
+    "wave_id": "EDW:UNI-USDT:1792334318579:G11",
+    "run_id": "1792334308196-1792334318400",
+    "snapshot_id": "S392:UNI-USDT:1792334416057",
+    "observed_ts": 1792334416057,
+    "valid_until_ts": 1792336216057,
+    "canonical_state": "OBSERVE",
+    "analytical_fingerprint": "9944695ffbd001bcf323fe90876e0af05a0ea17a0597f5d190cd8e4b9af8a288"
+  },
+  "retained_current_native_context": {
+    "schema": "NATIVE_LIQUIDATION_CONTEXT_V1",
+    "mode": "SHADOW_ONLY",
+    "status": "USABLE_NATIVE_SAMPLE",
+    "reason": null,
+    "freshness_max_age_ms": 120000,
+    "binding": {
+      "contract": "UNI-USDT",
+      "native_symbol": "UNI",
+      "run_id": "1792334308196-1792334318400",
+      "snapshot_id": "S392:UNI-USDT:1792334416057",
+      "observed_ts": 1792334416057,
+      "direction": "SHORT"
+    },
+    "acquisition_fingerprint": "7b5cde3f9b64bc9772425eb723b2af1037fe24dfe153d987fc338bb17bf3507f",
+    "acquisition_id": "LIQ_ACQ:1792334308196-1792334318400:UNI-USDT:1792334363556",
+    "acquisition_completed_ts": 1792334364421,
+    "source_ts": 1792334363893,
+    "source_age_ms": 52164,
+    "native_receipt_fingerprint": "9f16a77b34d70d496e30fc194d702d24b2f0655ce720d8c5d2e56257e2726813",
+    "source_count": 1,
+    "price_quote": "USDC",
+    "upstream_groups": [
+      "HYPERLIQUID_MAINNET_PERPS"
+    ],
+    "coverage": "BOUNDED_ACCOUNT_SAMPLE_NOT_FULL_MARKET",
+    "sample_accounts": 1,
+    "provider": "Hyperliquid official",
+    "venue": "Hyperliquid",
+    "market_context": null,
+    "returned_positive_levels": 1,
+    "missing_native_liquidation_prices": 0,
+    "above": [],
+    "below": [
+      {
+        "native_price": 6.5050526067,
+        "side": "LONG",
+        "notional": 825010.074,
+        "notional_unit": "USDC",
+        "native_reference_price": 7.0248,
+        "distance_pct": -7.398750046976432,
+        "selection_roles": [
+          "NEAREST_NONZERO",
+          "LARGEST_VISIBLE"
+        ],
+        "price_quote": "USDC",
+        "position_count": 1,
+        "margin_mode": "isolated",
+        "conditional_cross": false,
+        "source_ts": 1792334363893,
+        "provider": "Hyperliquid official",
+        "venue": "Hyperliquid",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "account_reference_fingerprint": "6f71e6c12265cad88f2848ea4798382897c8b748902dd60d76db59517ebb4e39",
+        "is_htx_price": false,
+        "entry_eligible": false
+      }
+    ],
+    "realized_events": [],
+    "realized_projected_separate": true,
+    "requires_24h_pump": false,
+    "distance_cap_pct": null,
+    "same_upstream_votes": 1,
+    "independent_votes_added": false,
+    "notional_summed_across_providers": false,
+    "execution_alias_verified": false,
+    "automatic_execution": false,
+    "entry_eligible": false,
+    "render_enabled": true,
+    "raw_accounts_persisted": false,
+    "body_bytes_before_fingerprint": 1928,
+    "fingerprint": "6d46a0167ce006ed4fa3a6184897d565b176509edf6b6f108caabcc5c57d444e"
+  },
+  "retained_context_digest_matches": true,
+  "digest_is_not_raw_account_proof": true,
+  "source_clock_math": {
+    "source_ts": 1792334363893,
+    "source_UTC": "2026-10-18T14:39:23.893Z",
+    "max_age_ms": 120000,
+    "last_nonstale_checked_ts": 1792334483893,
+    "last_nonstale_checked_UTC": "2026-10-18T14:41:23.893Z",
+    "first_stale_checked_ts": 1792334483894,
+    "candidate_age_ms": 52164,
+    "completion_recorded_ts": 1792334428132,
+    "age_at_completion_recorded_ms": 64239,
+    "headroom_at_candidate_ms": 67836,
+    "headroom_at_completion_recorded_ms": 55761,
+    "current_source_and_zone_would_not_be_stale_at_recorded_time": true,
+    "actual_failed_dispatch_checked_ts": null,
+    "actual_failed_dispatch_source_ts": null,
+    "actual_failed_dispatch_provider": null,
+    "guard_unchanged": true,
+    "no_current_time_or_source_clock_refresh": true,
+    "comparison_is_arithmetic_not_execution_of_full_guard": true
+  },
+  "failed_dispatch": {
+    "key": "UNI-USDT|LONG|EDW:UNI-USDT:1791877293953:G7|OBSERVE|v3-telegram-shadow-r6",
+    "status": "FAILED_RETRYABLE",
+    "reason": "NATIVE_LIQUIDATION_SOURCE_STALE",
+    "sent": false,
+    "parsed_key": {
+      "contract": "UNI-USDT",
+      "direction": "LONG",
+      "wave_id": "EDW:UNI-USDT:1791877293953:G7",
+      "lifecycle_event": "OBSERVE",
+      "rules_version": "v3-telegram-shadow-r6"
+    },
+    "publication_id": null,
+    "source_run_id": null,
+    "snapshot_id": null,
+    "checked_ts": null,
+    "original_native_context": null
+  },
+  "failed_dispatch_is_current_candidate": false,
+  "identity_mismatch_fields": [
+    "direction",
+    "wave_id"
+  ],
+  "do_not_bind_by_contract_only": true,
+  "reconciliation": {
+    "processed": 1,
+    "capacity_deferred": 1,
+    "results": [
+      {
+        "key": "APR-USDT|SHORT|EDW:APR-USDT:1792324615691:G8|IDEA_REMOVED|v3-telegram-shadow-r6",
+        "status": "BOUND_ACTIONABLE",
+        "publication_id": "PUB:54964e95ffb8ced51be7c5a9e8b3e5aeaec43343",
+        "run_id": "ORIGINAL-TASK-TERMINAL:RCHK:89a210e05ce3d309c7fd782874057213fbf9286d",
+        "snapshot_id": "REMOVAL:APR-USDT:1792334421658"
+      }
+    ],
+    "deferred_row_identity_retained": false,
+    "current_UNI_deferred_inferred": false
+  },
+  "actual_source_acquisition_routes": [
+    {
+      "contract": "UNI-USDT",
+      "run_id": "1792334308196-1792334318400",
+      "lane": "HYPERLIQUID_NATIVE",
+      "status": "ACQUISITION_RETURNED",
+      "role_usable": true,
+      "attempt": 1,
+      "source_outcome": {
+        "evaluated": true,
+        "operational_success": true,
+        "actual_http": 1,
+        "transport_status": "CLOSED",
+        "schema_status": "CLOSED",
+        "coverage_status": "SUPPORTED",
+        "failure_origin": null
+      },
+      "position_proof": null
+    },
+    {
+      "contract": "UNI-USDT",
+      "run_id": "1792334308196-1792334318400",
+      "lane": "DYDX_PINNED_NATIVE",
+      "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+      "role_usable": false,
+      "attempt": 2,
+      "source_outcome": {
+        "evaluated": false,
+        "operational_success": false,
+        "actual_http": 0,
+        "transport_status": "NOT_ATTEMPTED",
+        "schema_status": "NOT_EVALUATED",
+        "coverage_status": "NOT_EVALUATED",
+        "failure_origin": "INTERNAL_SCHEDULER"
+      },
+      "position_proof": null
+    },
+    {
+      "contract": "UNI-USDT",
+      "run_id": "1792334308196-1792334318400",
+      "lane": "GTRADE_NATIVE",
+      "status": "SKIPPED_GTRADE_USEFUL_CHAIN_BUDGET",
+      "role_usable": false,
+      "attempt": 3,
+      "source_outcome": {
+        "evaluated": false,
+        "operational_success": false,
+        "actual_http": 1,
+        "transport_status": "NOT_ATTEMPTED",
+        "schema_status": "NOT_EVALUATED",
+        "coverage_status": "NOT_EVALUATED",
+        "failure_origin": "INTERNAL_SCHEDULER"
+      },
+      "position_proof": {
+        "schema": null,
+        "source_clock_closed": false,
+        "native_snapshot_verified": false,
+        "source_ts": null,
+        "observed_ts": null,
+        "height": null,
+        "block_hash": null,
+        "receipt_sha256": [],
+        "status": null,
+        "reason": null,
+        "position_search": null,
+        "source_clocks_refreshed": false,
+        "diagnostic_only": true
+      }
+    },
+    {
+      "contract": "UNI-USDT",
+      "run_id": "1792334308196-1792334318400",
+      "lane": "DYDX_PINNED_NATIVE",
+      "status": "SKIPPED_CACHE_ONLY_NO_VERIFIED_FRESH_SAME_RUN_SNAPSHOT",
+      "role_usable": false,
+      "attempt": 1,
+      "source_outcome": {
+        "evaluated": false,
+        "operational_success": false,
+        "actual_http": 0,
+        "transport_status": "NOT_ATTEMPTED",
+        "schema_status": "NOT_EVALUATED",
+        "coverage_status": "NOT_EVALUATED",
+        "failure_origin": "INTERNAL_SCHEDULER"
+      },
+      "position_proof": null
+    }
+  ],
+  "missing_originals": [
+    "failed dispatch binding/publication canonical identity and original native context",
+    "exact original failed-attempt checked_ts or immutable attempt event",
+    "identity of deferred reconciliation row"
+  ],
+  "source_body_limits": {
+    "canonical_projection_only": true,
+    "full_canonical_present": false,
+    "raw_accounts_persisted": false,
+    "private_copy_status": "ARCHIVE_DAY_BOUND_OR_DUPLICATE",
+    "private_payload_exported": false,
+    "old_failed_publication_in_this_projection": false
+  },
+  "code_path_notes": [
+    "Native producer preserves original account state.time, selects oldest account source clock, max age120000 at canonical binding. Compact context preserves source/zone clocks and USDC; raw accounts are not persisted here.",
+    "loadBoundTelegram reads dispatch binding then its exact stored canonical publication; current run source_run_id does not replace that immutable identity.",
+    "Freshness checked against sidecar fixed now before publication valid_until expiry; stale is mapped FAILED_RETRYABLE. If an old bound publication is already expired, expiry can be masked. Actual old UNI expiry is not retained and is not asserted.",
+    "Administrative reconciliation selects its one terminal row and leaves capacity_deferred; lifecycle then independently prioritizes bound rows. Deferred1 does not identify current UNI in the artifact.",
+    "Failure lifecycle receipt contains only key/status/reason/sent. The actual failed publication, guard-source clock and checked time are not retained."
+  ],
+  "delivery": {
+    "current_run_exact_SENT": 0,
+    "actual_ENTRY": 0,
+    "terminal_APR_sent_message_id": "217",
+    "terminal_APR_is_current_UNI_delivery": false
+  },
+  "proposed_next": "Read exact already bound failed key and source timestamps under coordinator-only admission if absent in saved logs. Do not widen freshness, substitute current SHORT into old LONG, refresh source clocks, force a new report or infer provider outage.",
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "deploy_MAIN_Telegram": 0,
+  "shared_or_runtime_files_changed": false,
+  "accepted_tests_repeated": 0,
+  "full_canonical_reconstructed": false
+}

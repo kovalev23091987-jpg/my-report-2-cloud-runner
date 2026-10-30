@@ -1,0 +1,13 @@
+# AP — приёмка первого bounded saved-AUTO actual
+
+**Public actual совпадает с указанным private source JSON; новый AUTO/SENT не доказан.** Проверен `ROOT_FIRST_SAVED_AUTO_OBSERVATION_ACTUAL.json` в main `070503e318306fd474f67f6b61ab14c56e708698`, blob `1eaf55d5e6b4493be39515b218fdd22bd9851980`. Private `first-native-20261026-reply.json` — 62858 байт, SHA256 `2dcd2b63aee134fcb9ecfe8f579554657a919fe90f484096cd876bfa3ab4be14`; hash совпал с public.
+
+Сверены run_id, observer authority, implementation pin `8a0a7ea93f5dd50299bff22b6aac24e98a3abb3dbfc99b79b97981be94e77d44`, status, scope и вся native receipt. Сохранённый ROOT LOOKUP завершён FINALIZED: **7 SQL API attempts, 10R/4W, unknown_ops0**; reservation привязана к тому же run_id. Это укладывается в 500R/30W. Выданный конверт 500R/30W сохранён, фактический меньший расход его не возвращает. Нулевой unknown относится к этому native чтению; сохранённые provider unknown2 не обнулены. Нарастающие totals/дневные floors — данные public record, AP отдельный ledger query не выполнял.
+
+Прочитано 2 карточки при лимите20, after_key=`pump:card:`; page_exhausted=true. Whole_history/whole_market=false. Результат `NO_PRODUCTION_AUTO_SENT_IN_READ_SCOPE`, genuine-SAME-ORIGINAL-SENT=false; выбранные card и original — NULL. Это отсутствие подходящей отправки в фактически прочитанной области, не доказательство отсутствия сигналов во всей истории/рынке и не новая Telegram-квитанция.
+
+Последний сохранённый run — `pump-first-production-manual-20261026-three`, INCOMPLETE. В private metadata единственный manual entry — **APR, MANUAL, PRODUCTION, ready=false, delivery=NULL**; outcomes и run delivery пусты. Это историческая третья стартовая проверка, не новый AUTO и не текущий рынок. Исторические message_id239/240 этим actual не переаттестованы: положительного нового SENT и выбранной карточки/квитанции здесь нет; их отдельный lookup AP не делал.
+
+Новых доказательств READY-original, источников, плана и исходов нет. Соответственно первая цепочка READY→тот же AUTO/SENT→outcome остаётся открытой. Приёмка ограничена согласованностью сохранённого bounded LOOKUP evidence; не является повторной квалификацией кода AO, sender, стратегии, native DB или независимым пересчётом источников/плана.
+
+AP использовал GitHub control-plane guards и локальные байты указанного private файла. Новых web/provider/RPC/SQL/TG, observer executions, imports/тестов, стратегических пересчётов или deploy — 0. ROOT-файлы/private source не менялись, raw-анализ в handoff не перенесён. SOURCE datasets/SDK не исследовались, producer не включался. Все прежние расходы/unknowns/резервы/caps/9 пауз/2 OWNERdeferrals сохранены. Один freeze и отдельная своевременная own release.

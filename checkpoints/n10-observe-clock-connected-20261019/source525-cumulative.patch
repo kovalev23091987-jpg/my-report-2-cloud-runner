@@ -1,0 +1,74 @@
+--- a/current-generation/files/src/block-result-context.mjs
++++ b/current-generation/files/src/block-result-context.mjs
+@@ -146,7 +146,7 @@
+   return{source:'Delta Exchange',label:'Опционная волатильность актива на Delta',value:`медиана волатильности по котировкам ${fmt(risk.mark_iv_median_pct)}%, диапазон ${fmt(risk.mark_iv_min_pct)}–${fmt(risk.mark_iv_max_pct)}%; ${risk.call_count} колл и ${risk.put_count} пут около базовой цены (±10%), экспирация ${new Date(risk.expiration_timestamp).toISOString().replace('T',' ').slice(0,16)} UTC, расчёты в USD; данные этой площадки, направление и разрешение сделки не назначены`};
+  }
+  if(row.block_id==='N10'&&row.metric_family==='CLOSED_15M_PRICE_PATH_CONTEXT'){
+-  const rebuilt=deriveHtxRecentPathEvidence({contract:row.htx_contract,window:{label:'15m',window_start_ts:row.window_start,window_end_ts:row.window_end,candle_count:row.candle_count,open:row.path_open,high:row.path_high,low:row.path_low,close:row.path_close},source_ts:row.source_ts,observed_ts:row.observed_ts})[0];
++  const rebuilt=deriveHtxRecentPathEvidence({contract:row.htx_contract,window:{label:'15m',window_start_ts:row.window_start,window_end_ts:row.window_end,candle_count:row.candle_count,open:row.path_open,high:row.path_high,low:row.path_low,close:row.path_close},source_ts:row.source_ts,observed_ts:row.observed_ts,first_known_ts:row.first_known_ts})[0];
+   if(!rebuilt||rebuilt.evidence_id!==row.evidence_id||rebuilt.raw_hash!==row.raw_hash||rebuilt.expires_at!==row.expires_at||
+    row.source_clock_policy!=='HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M'||row.same_htx_upstream_not_independent!==true||
+    row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||row.directional_strength!==null||row.risk_strength!==null)return null;
+@@ -450,8 +450,9 @@
+    const parts=nativeAligned.map(sample=>`${sample.venue==='OKX'?'OKX':'KuCoin'} ${sample.market==='SPOT'?'спот':'фьючерсы'}: ${sample.valid_recent_rows} сделок, покупки ${fmt(sample.buy_quote_turnover_usdt)}, продажи ${fmt(sample.sell_quote_turnover_usdt)} USDT`);
+    fact={...fact,source:`${fact.source} / ${venues.join(' / ')}`,value:`${fact.value}; ${parts.join('; ')}; ${agreement?'направления всех доступных площадок совпадают лишь в этих неполных выборках':'общего направления по всем доступным неполным выборкам нет'}; спот и фьючерсы одной биржи не считались двумя независимыми площадками`};
+   }
++  const original_clock=row.block_id==='N10'&&[row.source_ts,row.first_known_ts,row.observed_ts,row.expires_at].every(Number.isSafeInteger)&&row.source_ts<=row.first_known_ts&&row.first_known_ts<=row.observed_ts&&row.observed_ts<=row.expires_at?{source_ts:row.source_ts,first_known_ts:row.first_known_ts,observed_ts:row.observed_ts,expires_at:row.expires_at,window_start_ts:number(row.window_start_ts)??number(row.window_start),window_end_ts:number(row.window_end_ts)??number(row.window_end),source_clock_policy:row.source_clock_policy??null}:null;
+   const origins=row.block_id==='N12'?contextComponentOrigins([row,...relatedRows]):null;
+-  seen.add(root);facts.push({...common,...fact,unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,...(origins?{component_origins:origins,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:[row.evidence_id,...related],component_origins:origins,decision_ts:now}),physical_root_keys:[...new Set(origins.filter(o=>o.origin_status==='EXACT_SELECTED_EVIDENCE').map(o=>o.physical_root_key))]}:{}),...(related.length?{evidence_ids:[row.evidence_id,...related]}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts});
++  seen.add(root);facts.push({...common,...fact,...(original_clock?{original_clock}:{}),unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,...(origins?{component_origins:origins,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:[row.evidence_id,...related],component_origins:origins,decision_ts:now}),physical_root_keys:[...new Set(origins.filter(o=>o.origin_status==='EXACT_SELECTED_EVIDENCE').map(o=>o.physical_root_key))]}:{}),...(related.length?{evidence_ids:[row.evidence_id,...related]}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts});
+  }
+  // Group event logs by transaction. Serial transfers are never summed as flow.
+  const groups=new Map();
+@@ -490,7 +491,7 @@
+  const available={facts:availableCanonicalContextFacts(canonical)};
+  const printed=manual?.ok===true&&typeof manual.text==='string'?manual.text:null;
+  const sourceBlockIds=row=>[...new Set([row.block_id,...(row.evidence_ids||[]).map(id=>canonical?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(e=>e.evidence_id===id)?.block_id).filter(Boolean)])];
+- const receipts=confirmedBlockContextFacts(canonical).filter(row=>printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&row.evidence_ids?.length>1?{source_block_ids:sourceBlockIds(row)}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],...(row.component_origins?{component_origins:row.component_origins,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:row.evidence_ids||[row.evidence_id],component_origins:row.component_origins,decision_ts:now})}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
++ const receipts=confirmedBlockContextFacts(canonical).filter(row=>printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&row.evidence_ids?.length>1?{source_block_ids:sourceBlockIds(row)}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],...(row.component_origins?{component_origins:row.component_origins,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:row.evidence_ids||[row.evidence_id],component_origins:row.component_origins,decision_ts:now})}:{}),...(row.original_clock?{original_clock:row.original_clock}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
+  const payload=telegram?.ok===true&&typeof telegram.text==='string'&&Boolean(canonical?.analytical_fingerprint)&&telegram.analytical_fingerprint===canonical.analytical_fingerprint?telegram.text:null;
+  // The plain Telegram form may represent only a subset of the manual
+  // row. Observe the existing pure formatter with one related ID removed;
+@@ -504,7 +505,7 @@
+   const origins=row.component_origins.filter(origin=>represented.includes(origin.evidence_id));
+   return{...row,evidence_ids:represented,component_origins:origins,physical_root_keys:[...new Set(origins.filter(o=>o.origin_status==='EXACT_SELECTED_EVIDENCE').map(o=>o.physical_root_key))]};
+  };
+- const telegramReceipts=confirmedBlockContextFacts(canonical).map(printedTelegramFact).filter(Boolean).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&(row.evidence_ids?.length>1||row.component_origins)?{source_block_ids:sourceBlockIds(row),evidence_ids:row.evidence_ids}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,...(row.component_origins?{component_origins:row.component_origins,physical_root_keys:row.physical_root_keys,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:row.evidence_ids||[row.evidence_id],component_origins:row.component_origins,decision_ts:now})}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
++ const telegramReceipts=confirmedBlockContextFacts(canonical).map(printedTelegramFact).filter(Boolean).map(row=>({block_id:row.block_id,...(row.block_id==='N12'&&(row.evidence_ids?.length>1||row.component_origins)?{source_block_ids:sourceBlockIds(row),evidence_ids:row.evidence_ids}:{}),evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,...(row.component_origins?{component_origins:row.component_origins,physical_root_keys:row.physical_root_keys,composite_first_known_ts:n12CompositeFirstKnown({contract,evidence_ids:row.evidence_ids||[row.evidence_id],component_origins:row.component_origins,decision_ts:now})}:{}),...(row.original_clock?{original_clock:row.original_clock}:{}),source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
+ 
+  return{version:BLOCK_RESULT_CONTEXT_VERSION,contract,run_id:canonical?.run_id??null,snapshot_id:canonical?.snapshot_id??null,status:printed?'RENDERED_OUTPUT_VERIFIED':'FORMATTER_OUTPUT_NOT_CONFIRMED',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.flatMap(row=>row.source_block_ids||[row.block_id]))],available_not_rendered_evidence_ids:available.facts.filter(row=>!receipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_payload_status:payload?'APPROVED_PAYLOAD_TEXT_OBSERVED':'APPROVED_PAYLOAD_NOT_CONFIRMED',telegram_context_receipts:telegramReceipts,telegram_used_context_block_ids:[...new Set(telegramReceipts.flatMap(row=>row.source_block_ids||[row.block_id]))],telegram_available_not_rendered_evidence_ids:available.facts.filter(row=>!telegramReceipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_delivery_proven:false,telegram_message_id:null,entry_authorized:false,internal_only:true};
+ }
+--- a/current-generation/files/src/htx-technical-structure.mjs
++++ b/current-generation/files/src/htx-technical-structure.mjs
+@@ -73,18 +73,18 @@
+ // A recent path is useful context when the trajectory already contains the
+ // exact fifteen closed one-minute candles. It is the same HTX upstream as the
+ // longer range and never supplies a target, score or entry permission.
+-export function deriveHtxRecentPathEvidence({contract,window,source_ts,observed_ts}={}){
++export function deriveHtxRecentPathEvidence({contract,window,source_ts,observed_ts,first_known_ts=observed_ts}={}){
+  const w=window,M=60000,positive=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
+  if(!isExactHtxUsdtSwapKey(contract)||!exact15mWindow(w)||
+-  ![w.window_start_ts,w.window_end_ts,source_ts,observed_ts].every(Number.isSafeInteger)||
++  ![w.window_start_ts,w.window_end_ts,source_ts,observed_ts,first_known_ts].every(Number.isSafeInteger)||
+   w.window_end_ts-w.window_start_ts!==15*M||w.window_end_ts%M!==0||
+-  w.window_end_ts>source_ts||source_ts>observed_ts||observed_ts-source_ts>TTL||observed_ts-w.window_end_ts>TTL||
++  w.window_end_ts>source_ts||source_ts>first_known_ts||first_known_ts>observed_ts||observed_ts-source_ts>TTL||observed_ts-w.window_end_ts>TTL||
+   ![w.open,w.high,w.low,w.close].every(positive)||w.low>w.high||
+   w.open<w.low||w.open>w.high||w.close<w.low||w.close>w.high)return[];
+  return[buildEvidenceV2({provider_id:'PRIMARY_TECHNICAL_CONTEXT',upstream_id:'HTX_OFFICIAL_CLOSED_1M_CANDLES',
+   asset_id:`htx-futures:${contract}`,htx_contract:contract,block_id:'N10',metric_family:'CLOSED_15M_PRICE_PATH_CONTEXT',
+   origin_event_id:`${contract}:15m:${w.window_end_ts}`,dependency_group:`HTX_CLOSED_CANDLES:${contract}:${w.window_end_ts}`,
+-  source_ts,observed_ts,expires_at:Math.min(source_ts+TTL,w.window_end_ts+TTL),coverage_status:'EXACT_FIFTEEN_CLOSED_1M_CANDLES',coverage_fraction:0,
++  source_ts,observed_ts,first_known_ts,expires_at:Math.min(source_ts+TTL,w.window_end_ts+TTL),coverage_status:'EXACT_FIFTEEN_CLOSED_1M_CANDLES',coverage_fraction:0,
+   directional_strength:null,risk_strength:null,extra:{window_start:w.window_start_ts,window_end:w.window_end_ts,candle_count:15,
+    path_open:w.open,path_high:w.high,path_low:w.low,path_close:w.close,change_pct:(w.close/w.open-1)*100,
+    range_pct:(w.high/w.low-1)*100,source_clock_policy:'HTX_PRIMARY_TRAJECTORY_EXACT_CLOSED_1M',
+@@ -244,7 +244,7 @@
+  const evidence=readHtxTechnicalStructure({contract,now}).filter(r=>r.metric_family==='CLOSED_CANDLE_RANGE_CONTEXT');
+  if(!evidence.length)failures.push('VALIDATED_CLOSED_CANDLE_CONTEXT_REQUIRED');
+  const closed=failures.length===0;
+- const recentPath=closed?deriveHtxRecentPathEvidence({contract,window:windows.find(w=>w.label==='15m'),source_ts:t.provider_source_ts,observed_ts:now}):[];
++ const recentPath=closed?deriveHtxRecentPathEvidence({contract,window:windows.find(w=>w.label==='15m'),source_ts:t.provider_source_ts,observed_ts:now,first_known_ts:trajectory.available_ts??now}):[];
+  return {status:closed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:closed,network_calls:0,evidence:closed?[...evidence,...recentPath]:[],receipts:[{check_completed:closed,status:route_state||'NO_ENTRY_STATE',contract,futures_status:states[0],trajectory_status:states[1],reference_price_status:reference_price?.status||'NOT_EVALUATED',reference_source_ts:reference_price?.source_ts??null,trajectory_source_ts:t?.provider_source_ts??null,actual_price_windows:windows,failures,source_transport:'EXISTING_SAME_CANDIDATE_SNAPSHOT_AND_TRAJECTORY',signed_raw_24h_verified:false,entry_authorized_by_context:false}],entry_rules_changed:false};
+ }
+ 

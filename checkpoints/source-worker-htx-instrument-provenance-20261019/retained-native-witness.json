@@ -1,0 +1,228 @@
+{
+  "schema": "HTX_CURRENT_INSTRUMENT_RETAINED_SOURCE_WITNESS_V1",
+  "classification": "EXACT_SAVED_NATIVE_CATALOG_SNAPSHOT_NOT_LATEST_LIVE_OR_HISTORICAL_EPOCH",
+  "source": {
+    "head": "ce7678630aa736b466cffaba83d5aabc04e6fa21",
+    "cloud_run": "39123622796",
+    "run_id": "1792321965799-1792321975225",
+    "proof_path": "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/proof.json",
+    "proof_sha256": "89d380bb85e0cef9723243e3c0e70570be502d234233f1d1e4fdd8a9a8c7ed69",
+    "raw_path": "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/linear-default.json.gz",
+    "gzip_sha256": "321857c20ef9213a8cf47ef07ff626f932002c74577b94e0f777c52327df583b",
+    "body_sha256": "e184d100b36d405a576f6dbb2b2ce24e9e446569c994f272b81750ffdb0ea828",
+    "body_bytes": 191341,
+    "payload_status": "ok",
+    "payload_ts": 1792323140029,
+    "recorded_catalog_receipt": {
+      "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+      "http_status": 200,
+      "received_ts": 1792323140215,
+      "bytes": 191341,
+      "body_sha256": "e184d100b36d405a576f6dbb2b2ce24e9e446569c994f272b81750ffdb0ea828",
+      "source_ts": 1792323140029
+    },
+    "original_recorded_receipt_semantics": "Timestamp as retained; full-body-completion chronology not independently reconstructed here",
+    "original_provider_body_completion_ts": null
+  },
+  "selected_native_rows": [
+    {
+      "json_pointer": "/data/20",
+      "exact_matches": 1,
+      "fields": {
+        "contract_code": "AAVE-USDT",
+        "symbol": "AAVE",
+        "business_type": "swap",
+        "contract_type": "swap",
+        "trade_partition": "USDT",
+        "contract_size": 0.1,
+        "price_tick": 0.001,
+        "create_date": "20201120",
+        "contract_status": 1
+      },
+      "native_field_presence": {
+        "contract_code": true,
+        "symbol": true,
+        "business_type": true,
+        "contract_type": true,
+        "trade_partition": true,
+        "contract_size": true,
+        "price_tick": true,
+        "create_date": true,
+        "contract_status": true
+      },
+      "contract_size_field_unit_independently_verified": null,
+      "historical_contract_size": null,
+      "historical_epoch_continuity_proven": false,
+      "project_identity_proven": false,
+      "native_admission_granted": false
+    },
+    {
+      "json_pointer": "/data/0",
+      "exact_matches": 1,
+      "fields": {
+        "contract_code": "BTC-USDT",
+        "symbol": "BTC",
+        "business_type": "swap",
+        "contract_type": "swap",
+        "trade_partition": "USDT",
+        "contract_size": 0.001,
+        "price_tick": 0.1,
+        "create_date": "20201021",
+        "contract_status": 1
+      },
+      "native_field_presence": {
+        "contract_code": true,
+        "symbol": true,
+        "business_type": true,
+        "contract_type": true,
+        "trade_partition": true,
+        "contract_size": true,
+        "price_tick": true,
+        "create_date": true,
+        "contract_status": true
+      },
+      "contract_size_field_unit_independently_verified": null,
+      "historical_contract_size": null,
+      "historical_epoch_continuity_proven": false,
+      "project_identity_proven": false,
+      "native_admission_granted": false
+    }
+  ],
+  "current_local_read_marker": {
+    "schema": "CURRENT_LOCAL_RETAINED_CATALOG_READ_MARKER_V1",
+    "raw_ref": "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/linear-default.json.gz#uncompressed",
+    "read_started_ts": 1792413991289,
+    "full_retained_body_obtained_ts": 1792413991289,
+    "sha256_completed_ts": 1792413991289,
+    "JSON_parse_completed_ts": 1792413991290,
+    "conservative_current_consumer_known_by_ts": 1792413991290,
+    "body_sha256": "e184d100b36d405a576f6dbb2b2ce24e9e446569c994f272b81750ffdb0ea828",
+    "body_bytes": 191341,
+    "clock_basis": "CURRENT_LOCAL_FULL_RETAINED_INPUT_READ_GUNZIP_HASH_AND_PARSE",
+    "original_native_ingress": false,
+    "original_provider_body_completion_ts": null,
+    "native_ACK": false,
+    "earlier_inventory_reads_do_not_make_this_true_first_knowledge": true
+  },
+  "current_local_read_marker_sha256": "4dccbd80d33ec889de0ce747987ad178f0c50eea797e87d74e77724bb9fa2c1e",
+  "approved_manifest": {
+    "path": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+    "gzip_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+    "body_sha256": "7da5e99f93bd380cf20dbfe7dfc7c4e230d29d5231640a27523749e11b6762a2",
+    "observed_ts": 1791827516363,
+    "selected_records": [
+      {
+        "family": "linear",
+        "contract_code": "BTC-USDT",
+        "asset_symbol": "BTC",
+        "market_kind": "LINEAR_PERPETUAL",
+        "settlement_asset": "USDT",
+        "price_quote": "USDT",
+        "contract_size": 0.001,
+        "price_tick": 0.1,
+        "delivery_time": null,
+        "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all",
+        "source_ts": 1791652902035,
+        "observed_ts": 1791652904807,
+        "scope": {
+          "classification": "CRYPTO_CONFIRMED",
+          "eligible_for_crypto_discovery": true,
+          "source": "HTX swap_contract_info labels/tradfi_labels",
+          "source_fields_present": {
+            "labels": true,
+            "tradfi_labels": true,
+            "business_type": true,
+            "contract_type": true,
+            "trade_partition": true
+          },
+          "evidence": {
+            "official_forex_source_url": null,
+            "official_crypto_token_source_url": null,
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "hot",
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "reasons": [
+            "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+          ]
+        },
+        "production_market_adapter_supported": true,
+        "market_adapter_status": "EXISTING_EXACT_LINEAR_PERPETUAL_ADAPTER"
+      },
+      {
+        "family": "linear",
+        "contract_code": "AAVE-USDT",
+        "asset_symbol": "AAVE",
+        "market_kind": "LINEAR_PERPETUAL",
+        "settlement_asset": "USDT",
+        "price_quote": "USDT",
+        "contract_size": 0.1,
+        "price_tick": 0.001,
+        "delivery_time": null,
+        "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all",
+        "source_ts": 1791652902035,
+        "observed_ts": 1791652904807,
+        "scope": {
+          "classification": "CRYPTO_CONFIRMED",
+          "eligible_for_crypto_discovery": true,
+          "source": "HTX swap_contract_info labels/tradfi_labels",
+          "source_fields_present": {
+            "labels": true,
+            "tradfi_labels": true,
+            "business_type": true,
+            "contract_type": true,
+            "trade_partition": true
+          },
+          "evidence": {
+            "official_forex_source_url": null,
+            "official_crypto_token_source_url": null,
+            "business_type": "swap",
+            "contract_type": "swap",
+            "trade_partition": "USDT",
+            "labels": [
+              "common"
+            ],
+            "tradfi_labels": []
+          },
+          "reasons": [
+            "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
+          ]
+        },
+        "production_market_adapter_supported": true,
+        "market_adapter_status": "EXISTING_EXACT_LINEAR_PERPETUAL_ADAPTER"
+      },
+      {
+        "family": "coin_swap",
+        "contract_code": "BTC-USD",
+        "asset_symbol": "BTC",
+        "market_kind": "INVERSE_PERPETUAL",
+        "settlement_asset": "BTC",
+        "price_quote": "USD",
+        "contract_size": 100,
+        "price_tick": 0.1,
+        "delivery_time": null,
+        "source_url": "https://api.hbdm.com/swap-api/v1/swap_contract_info",
+        "source_ts": 1791652903372,
+        "observed_ts": 1791652904807,
+        "scope": {
+          "classification": "CRYPTO_CONFIRMED",
+          "eligible_for_crypto_discovery": true,
+          "source": "https://api.hbdm.com/swap-api/v1/swap_contract_info",
+          "reasons": [
+            "HTX_COIN_MARGINED_CRYPTO_CONTRACT"
+          ]
+        },
+        "production_market_adapter_supported": false,
+        "market_adapter_status": "EXACT_SETTLEMENT_ADAPTER_REQUIRED"
+      }
+    ],
+    "create_date_retained": false,
+    "structural_generation_not_current_source_or_epoch": true
+  },
+  "no_new_HTTP_or_SQL": true
+}

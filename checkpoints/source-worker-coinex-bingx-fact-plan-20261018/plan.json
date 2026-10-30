@@ -1,0 +1,1146 @@
+{
+  "schema": "REPORT2_COINEX_BINGX_EXACT_FACT_PLAN_V1",
+  "working_base": "51fd34e564f926c1e2f4a226acdd9e691df69047",
+  "status": "OFFLINE_REVIEWABLE_PLAN_NOT_EXECUTION_READY",
+  "execution_ready": false,
+  "reason": "New venue identities/listings and applicable HTTP/native SQL admission/cost bounds are not yet qualified. No executable acquisition code is included.",
+  "original_inputs": [
+    {
+      "file": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+      "sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+      "scope": "Only TIA/APR membership extracted; no accepted105census repeated"
+    },
+    {
+      "file": "checkpoints/natural-full-recovery-and-statistics-20261018/native-39125232536-12135613441.zip",
+      "sha256": "3d265dbd713df7aee042393dad6126925e1b50fcb0e26f78a84b5c98eaf5ea79",
+      "member": "report2-run-result.json",
+      "member_sha256": "b4d51f9113eff30ecd47fb4be9f237dc638748dfffcb97d755fa13dbfa2ec119"
+    },
+    {
+      "file": "checkpoints/source-worker-global-source-docs-20261018/documentation-receipts.json",
+      "sha256": "81f54fddd8d8a4215e92ba144f15a6385bfdea899e2bccda3e722d0c1624700f",
+      "source_head": "14f9a82ccfb70b25c5ff28bb5c774299d165beef"
+    },
+    {
+      "file": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/plan-spec.json",
+      "sha256": "8b3f68056fef9eb86a07baad18fc4d9cd75bcc023ee3cf4f89c5d45e4113def3"
+    }
+  ],
+  "assets": [
+    {
+      "contract": "TIA-USDT",
+      "selection": {
+        "htx_contract": "TIA-USDT",
+        "order": 1,
+        "reason_ru": "Первый кандидат: утверждённый нативный актив Celestia и сохранённые ценовые факты. Листинг и идентичность на новой бирже пока не доказаны."
+      },
+      "approved_membership": {
+        "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+        "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+        "asset_analysis_contract": "TIA-USDT",
+        "htx_family": "linear",
+        "market_kind": "LINEAR_PERPETUAL",
+        "quote": "USDT",
+        "HTX_contract_size_provenance_only": 0.1,
+        "new_venue_size": null,
+        "original_catalog_source_ts": 1791652902035,
+        "original_catalog_observed_ts": 1791652904807,
+        "approved105_census_reexecuted": false
+      },
+      "original_project_identity_witness": {
+        "project_asset_id": "celestia:native:mainnet",
+        "evidence_id": "EV2:391b355a8ee3e9ee9ad572862231c7f86db837a11ca50d681884ab610e86d005",
+        "physical_root_key": "celestia:native:mainnet|celestia:layer-1:1792324673000",
+        "source_ts": 1792324673000,
+        "observed_ts": 1792324708331,
+        "kind": "SAVED_VALIDATED_SOURCE_CONSUMER_RECEIPT_NOT_NEW_VENUE_BINDING"
+      },
+      "original_snapshot": {
+        "head": "0c95a59152a6f0ba9e27d7537e634bdc37be1799",
+        "run_id": "1792324604859-1792324615501",
+        "snapshot_id": "S392:TIA-USDT:1792324719982",
+        "publication_id": "PUB:aecd804d72c98962807e9616a35dfdba069639c7",
+        "observed_ts": 1792324719982,
+        "canonical_state": "REJECTED",
+        "original_N10_evidence_id": "EV2:9929cbd2eb4bd282a65fee292bd5fc392ff35641b15f006ec84428738d6960dc"
+      },
+      "historical_window_example": {
+        "not_current": true,
+        "not_exante_source_detection_proof": true,
+        "E1_sliding_end": 1792324680000,
+        "sliding_path_start": 1792323780000,
+        "E15_native_end": 1792323900000,
+        "native_event_start": 1792323000000,
+        "native_baseline_start": 1792305000000,
+        "sliding_end_differs_from_native_close": true,
+        "distinct_minute_starts_required": [
+          1792323000000,
+          1792323060000,
+          1792323120000,
+          1792323180000,
+          1792323240000,
+          1792323300000,
+          1792323360000,
+          1792323420000,
+          1792323480000,
+          1792323540000,
+          1792323600000,
+          1792323660000,
+          1792323720000,
+          1792323780000,
+          1792323840000,
+          1792323900000,
+          1792323960000,
+          1792324020000,
+          1792324080000,
+          1792324140000,
+          1792324200000,
+          1792324260000,
+          1792324320000,
+          1792324380000,
+          1792324440000,
+          1792324500000,
+          1792324560000,
+          1792324620000
+        ],
+        "minimum_rows_for_both_windows": 28,
+        "padded_rows_with_deadline_and_edges": 35,
+        "request_minute_limit": 40,
+        "request_native15m_limit": 24,
+        "retain_native_baseline_rows": 20,
+        "retain_native_event_rows": 1,
+        "native_21_bar_boundaries": [
+          {
+            "open_ts": 1792305000000,
+            "close_ts": 1792305900000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792305900000,
+            "close_ts": 1792306800000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792306800000,
+            "close_ts": 1792307700000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792307700000,
+            "close_ts": 1792308600000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792308600000,
+            "close_ts": 1792309500000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792309500000,
+            "close_ts": 1792310400000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792310400000,
+            "close_ts": 1792311300000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792311300000,
+            "close_ts": 1792312200000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792312200000,
+            "close_ts": 1792313100000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792313100000,
+            "close_ts": 1792314000000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792314000000,
+            "close_ts": 1792314900000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792314900000,
+            "close_ts": 1792315800000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792315800000,
+            "close_ts": 1792316700000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792316700000,
+            "close_ts": 1792317600000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792317600000,
+            "close_ts": 1792318500000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792318500000,
+            "close_ts": 1792319400000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792319400000,
+            "close_ts": 1792320300000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792320300000,
+            "close_ts": 1792321200000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792321200000,
+            "close_ts": 1792322100000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792322100000,
+            "close_ts": 1792323000000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792323000000,
+            "close_ts": 1792323900000,
+            "role": "EVENT"
+          }
+        ],
+        "retain_event_1m_rows": 15,
+        "derived_event3m_rows": 5,
+        "derived_event5m_rows": 3,
+        "acquisition_or_source_clocks_refreshed": false
+      },
+      "new_venue_bindings": [
+        {
+          "provider": "COINEX",
+          "native_symbol_lookup_candidate": "TIAUSDT",
+          "listing_status": null,
+          "exact_asset_identity_closed": false,
+          "market_type_confirmed": false,
+          "contract_size": null,
+          "source_clock": null,
+          "numeric_fact_count": 0,
+          "consumer_use": false
+        },
+        {
+          "provider": "BINGX",
+          "native_symbol_lookup_candidate": "TIA-USDT",
+          "listing_status": null,
+          "exact_asset_identity_closed": false,
+          "market_type_confirmed": false,
+          "contract_size": null,
+          "source_clock": null,
+          "numeric_fact_count": 0,
+          "consumer_use": false
+        }
+      ],
+      "current_new_fact_qualification": false
+    },
+    {
+      "contract": "APR-USDT",
+      "selection": {
+        "htx_contract": "APR-USDT",
+        "order": 2,
+        "conditional": true,
+        "reason_ru": "Второй кандидат только после первого: сохранён точный Ethereum-контракт aPriori. Совпадение тикера APR на новой бирже не подтверждает этот токен."
+      },
+      "approved_membership": {
+        "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+        "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+        "asset_analysis_contract": "APR-USDT",
+        "htx_family": "linear",
+        "market_kind": "LINEAR_PERPETUAL",
+        "quote": "USDT",
+        "HTX_contract_size_provenance_only": 1,
+        "new_venue_size": null,
+        "original_catalog_source_ts": 1791652902035,
+        "original_catalog_observed_ts": 1791652904807,
+        "approved105_census_reexecuted": false
+      },
+      "original_project_identity_witness": {
+        "project_asset_id": "ethereum:0x5a9610919f5e81183823a2be4bd1beb2b4da2a20",
+        "evidence_id": "EV2:14e9323fede0d05b194746860de0b66d11f13b65fbb252eb9c3d29842a79825d",
+        "physical_root_key": "ethereum:0x5a9610919f5e81183823a2be4bd1beb2b4da2a20|apriori:decentralized-finance-defi:1792324617000",
+        "source_ts": 1792324617000,
+        "observed_ts": 1792324668065,
+        "kind": "SAVED_VALIDATED_SOURCE_CONSUMER_RECEIPT_NOT_NEW_VENUE_BINDING"
+      },
+      "original_snapshot": {
+        "head": "0c95a59152a6f0ba9e27d7537e634bdc37be1799",
+        "run_id": "1792324604859-1792324615501",
+        "snapshot_id": "S392:APR-USDT:1792324681303",
+        "publication_id": "PUB:1e982dcf65394017b015e1340e4e10b5a8ee761a",
+        "observed_ts": 1792324681303,
+        "canonical_state": "REJECTED",
+        "original_N10_evidence_id": "EV2:582bd6dba06e2a51602ced004e41abe6e2f840f622c5e85832f584a49a14cf50"
+      },
+      "historical_window_example": {
+        "not_current": true,
+        "not_exante_source_detection_proof": true,
+        "E1_sliding_end": 1792324620000,
+        "sliding_path_start": 1792323720000,
+        "E15_native_end": 1792323900000,
+        "native_event_start": 1792323000000,
+        "native_baseline_start": 1792305000000,
+        "sliding_end_differs_from_native_close": true,
+        "distinct_minute_starts_required": [
+          1792323000000,
+          1792323060000,
+          1792323120000,
+          1792323180000,
+          1792323240000,
+          1792323300000,
+          1792323360000,
+          1792323420000,
+          1792323480000,
+          1792323540000,
+          1792323600000,
+          1792323660000,
+          1792323720000,
+          1792323780000,
+          1792323840000,
+          1792323900000,
+          1792323960000,
+          1792324020000,
+          1792324080000,
+          1792324140000,
+          1792324200000,
+          1792324260000,
+          1792324320000,
+          1792324380000,
+          1792324440000,
+          1792324500000,
+          1792324560000
+        ],
+        "minimum_rows_for_both_windows": 27,
+        "padded_rows_with_deadline_and_edges": 34,
+        "request_minute_limit": 40,
+        "request_native15m_limit": 24,
+        "retain_native_baseline_rows": 20,
+        "retain_native_event_rows": 1,
+        "native_21_bar_boundaries": [
+          {
+            "open_ts": 1792305000000,
+            "close_ts": 1792305900000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792305900000,
+            "close_ts": 1792306800000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792306800000,
+            "close_ts": 1792307700000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792307700000,
+            "close_ts": 1792308600000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792308600000,
+            "close_ts": 1792309500000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792309500000,
+            "close_ts": 1792310400000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792310400000,
+            "close_ts": 1792311300000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792311300000,
+            "close_ts": 1792312200000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792312200000,
+            "close_ts": 1792313100000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792313100000,
+            "close_ts": 1792314000000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792314000000,
+            "close_ts": 1792314900000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792314900000,
+            "close_ts": 1792315800000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792315800000,
+            "close_ts": 1792316700000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792316700000,
+            "close_ts": 1792317600000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792317600000,
+            "close_ts": 1792318500000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792318500000,
+            "close_ts": 1792319400000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792319400000,
+            "close_ts": 1792320300000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792320300000,
+            "close_ts": 1792321200000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792321200000,
+            "close_ts": 1792322100000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792322100000,
+            "close_ts": 1792323000000,
+            "role": "PRECEDING_BASELINE"
+          },
+          {
+            "open_ts": 1792323000000,
+            "close_ts": 1792323900000,
+            "role": "EVENT"
+          }
+        ],
+        "retain_event_1m_rows": 15,
+        "derived_event3m_rows": 5,
+        "derived_event5m_rows": 3,
+        "acquisition_or_source_clocks_refreshed": false
+      },
+      "new_venue_bindings": [
+        {
+          "provider": "COINEX",
+          "native_symbol_lookup_candidate": "APRUSDT",
+          "listing_status": null,
+          "exact_asset_identity_closed": false,
+          "market_type_confirmed": false,
+          "contract_size": null,
+          "source_clock": null,
+          "numeric_fact_count": 0,
+          "consumer_use": false
+        },
+        {
+          "provider": "BINGX",
+          "native_symbol_lookup_candidate": "APR-USDT",
+          "listing_status": null,
+          "exact_asset_identity_closed": false,
+          "market_type_confirmed": false,
+          "contract_size": null,
+          "source_clock": null,
+          "numeric_fact_count": 0,
+          "consumer_use": false
+        }
+      ],
+      "current_new_fact_qualification": false
+    }
+  ],
+  "first_packet_price": [
+    {
+      "provider": "COINEX",
+      "independence_group": "COINEX",
+      "first_TIA_futures_core_HTTP_ceiling": 5,
+      "second_APR_increment_if_shared_metadata_exact_and_fresh": 4,
+      "two_asset_futures_core_HTTP_ceiling": 9,
+      "optional_timed_OI_HTTP_per_asset": 0,
+      "optional_spot_first_asset_HTTP_ceiling": 5,
+      "optional_spot_second_asset_increment": 4,
+      "optional_spot_two_asset_HTTP_ceiling": 9,
+      "identity_lookup_included_but_NOT_ready": true,
+      "actual_HTTP_executed": 0,
+      "native_SQL_reservation": null,
+      "execution_authorized": false
+    },
+    {
+      "provider": "BINGX",
+      "independence_group": "BINGX",
+      "first_TIA_futures_core_HTTP_ceiling": 5,
+      "second_APR_increment_if_shared_metadata_exact_and_fresh": 4,
+      "two_asset_futures_core_HTTP_ceiling": 9,
+      "optional_timed_OI_HTTP_per_asset": 1,
+      "optional_spot_first_asset_HTTP_ceiling": 5,
+      "optional_spot_second_asset_increment": 4,
+      "optional_spot_two_asset_HTTP_ceiling": 9,
+      "identity_lookup_included_but_NOT_ready": true,
+      "actual_HTTP_executed": 0,
+      "native_SQL_reservation": null,
+      "execution_authorized": false
+    }
+  ],
+  "maximum_all_optional_two_assets_two_providers_HTTP": 38,
+  "default_first_packet_max_HTTP": 5,
+  "default_BingX_with_separately_admitted_timed_OI_max_HTTP": 6,
+  "full_first_packet_native_SQL_R_W": null,
+  "required_fact_numbers": [
+    "Each new provider:21closed native15mOHLC bars, with20prior+1event; retain raw volume/value separately and qualify exact base/quote scaling before volume facts.",
+    "One1mreply may serve two distinct15bar windows: source-native event endingE15 and main-style sliding path endingE1. Keep separate keys/claims; never two independent votes.",
+    "At most one1000trade page; actual sampled count/side/timestamps/ID integrity recorded, whole-window completeness remains false unless separately proved.",
+    "BingX optional OI must retain its actual time and units. Untimed CoinEx OI remains untimed."
+  ],
+  "clock_rules": {
+    "E1": "Trusted central admitted planning cutoff floored to1minute. It is a planning/client clock, never provider publication time.",
+    "E15": "floor(E1/900000)*900000, separate native15m boundary.",
+    "sliding_path": "[E1-15min,E1):15closed1m for N10. Old HTX15m path is sliding, not native15m.",
+    "native_event": "[E15-15min,E15): last closed native15m, plus20previous native15m bars.",
+    "minute_padding": "Request max40one-minute bars to retain both exact15bar windows even with up to14minute native/sliding offset, existing5minute collector deadline and forming/edge bars. Native15m requests24 to retain21targetbars with forming/cross-boundary padding.",
+    "never_merge_different_window_claims": true,
+    "provider_grid_offset": "Validate native documented timezone/period alignment expressed in UTC. Never force wrong midnight/week offset.",
+    "source_clocks": [
+      "raw provider bar open/end or trade event time",
+      "provider response/publication time if actually present, otherwise null",
+      "request_started_ts and received_ts interval",
+      "first_known_ts from original first acquisition, unchanged on reuse",
+      "decision/consumer evaluation time"
+    ],
+    "first_known_rule": "Historical fetch later cannot be assigned old canonical observation time. Mark BACKFILLED/STALE_FOR_CURRENT_REPORT as applicable; original publication or source clocks are not refreshed.",
+    "historical_CoinEx_query_time_unit_documented": true,
+    "historical_CoinEx_actual_availability_ready": false
+  },
+  "identity_stage": {
+    "attempt_ceiling_per_asset_provider": 1,
+    "status": "STATIC_ROUTES_DOCUMENTED_ACTUAL_BINDINGS_ACCESS_AND_COST_UNQUALIFIED",
+    "provider_routes": [
+      {
+        "provider": "COINEX",
+        "method": "GET",
+        "path": "/assets/info",
+        "params_template": {
+          "ccy": "EXACT_NEW_VENUE_BASE"
+        },
+        "attempt_ceiling_per_asset": 1,
+        "documentation_access": "Not marked signature required; per global guide only marked endpoints require signatures. Actual unauthenticated availability not tested.",
+        "required_fields": [
+          "short_name",
+          "full_name",
+          "website_url",
+          "chain_info.chain_name",
+          "chain_info.identity",
+          "chain_info.explorer_url"
+        ],
+        "TIA_rule": "Native Celestia/mainnet relation must be explicit in actual chain/name/site evidence; an empty native identity is not automatic failure or automatic acceptance.",
+        "APR_rule": "Exact Ethereum chain and contract0x5a9610919f5e81183823a2be4bd1beb2b4da2a20 plus matching aPriori identity; ticker/full-name alone cannot close.",
+        "additional_config_route_not_in_default": "/assets/deposit-withdraw-config?ccy=EXACT_NEW_VENUE_BASE exposes chain/explorer_asset_url but would be an extra attempt requiring separate admission. No automatic fallback."
+      },
+      {
+        "provider": "BINGX",
+        "method": "GET",
+        "path": "/openApi/wallets/v1/capital/config/getall",
+        "params_template": {
+          "coin": "EXACT_NEW_VENUE_BASE"
+        },
+        "attempt_ceiling_per_asset": 1,
+        "documentation_access": "SIGNED_HMAC_SHA256_READ_KEY_REQUIRED;5requests/s/UID additionally to applicable shared IP limits",
+        "required_fields": [
+          "coin",
+          "name",
+          "networkList.network",
+          "networkList.name",
+          "networkList.contractAddress"
+        ],
+        "default_public_route_available": false,
+        "current_key_admission": false,
+        "rule": "No key request/creation/account call by source worker. An independently approved exact official identity witness may replace this stage at its actual admitted cost; otherwise stop before numeric data."
+      }
+    ],
+    "hard_stop": "If exact native/chain/address relation cannot close from existing verified mapping plus official new-venue evidence, do not request candles/trades or guess a match. Metadata availability is not identity proof.",
+    "no_key_or_paid_fallback_created": true,
+    "no_CoinGecko_or_CoinPaprika_reserve_borrowing": true
+  },
+  "numeric_acceptance": {
+    "OHLCV": "Finite positive OHLC with valid geometry; explicit nonnegative base/quote volume and unique exact closed grid. Missing/null/boolean/nonfinite never become zero.",
+    "units": "Preserve raw decimal strings and exact contract/base/quote unit. HTX TIA0.1/APR1 multiplier is provenance only, not a CoinEx/BingX multiplier.",
+    "fill_ID": "Keep decimal IDs as strings from raw wire before lossy Number parsing; reject rounded/ambiguous IDs. No timestamp-as-ID fabrication.",
+    "decomposition": "15exact1m→5x3m and3x5m with same units/asset/venue. Compare native15m to its own1m aggregate; sliding15m remains a separate window.",
+    "taker": "Real taker side/maker inversion only where documented and actual fields match. One page may be incomplete; no whole-window CVD, raw count or direction claim from sample.",
+    "zero": "Zero is factual only when the complete relevant source response/counter proves it. Missing data stays unknown.",
+    "rounding_tolerance": "Not selected before actual decimal/tick/size evidence; no arbitrary new percentage tolerance.",
+    "unknown_native": "Any new native usage uncertainty stops further acquisitions for both venues. Existing historical15unknown and their exact witness/reserves remain untouched."
+  },
+  "consumer_proposals": [
+    {
+      "block": "N10",
+      "fact": "Exact new-venue sliding15m price path and native15m OHLCV baseline, as separate grains.",
+      "benefit": "Adds a primary venue candle fact missing from retained APR/TIA raw artifact; independent anomaly provider role without main selection change.",
+      "status": "SOURCE_FACT_BEFORE_SHARED_IMPLEMENTATION",
+      "score": 0,
+      "direction": null,
+      "entry": false,
+      "files_for_coordinator": [
+        "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+        "current-generation/files/src/block-result-context.mjs",
+        "current-generation/files/src/telegram-plain-facts.mjs"
+      ],
+      "requires": "Exact new provider adapter/version/asset/units/clocks and connected consumer validation; no generic HTX evidence masquerade."
+    },
+    {
+      "block": "N12",
+      "fact": "One correctly timed bounded new-venue taker sample, separate from historical event and other venue.",
+      "benefit": "Independent descriptive sample, not HTX duplicate or fullCVD.",
+      "status": "PROPOSAL_ONLY_UNTIL_ACTUAL_WIRE",
+      "score": 0,
+      "direction": null,
+      "entry": false
+    },
+    {
+      "block": "N05",
+      "fact": "Only source-published candle taker aggregate if actual fields/units/coverage qualify; otherwise retain N10/N12 only.",
+      "benefit": "Potential separate flow context without weakening existing exact4h raw trade contract.",
+      "status": "EXACT4H_FLOW_NOT_CLOSED_BY_FIRST_PACKET",
+      "score": 0,
+      "direction": null,
+      "entry": false
+    },
+    {
+      "block": "ANOMALY_SOURCE_HANDOFF",
+      "fact": "Typed immutable provider/asset/market/window/units/clocks/hash facts and gaps.",
+      "benefit": "Input for third worker's isolated research; no observer/event/watch/statistics module written here.",
+      "status": "THIRD_WORKER_AND_COORDINATOR_OWN_CONSUMERS",
+      "main_score_effect": 0
+    }
+  ],
+  "excluded_first_packet_roles": [
+    "N15 sector peer cohort not acquired; no sector conclusion from two tickers.",
+    "N04 wallet/transfer facts not acquired.",
+    "N11 HTX execution/book gate not replaced.",
+    "LIQ future positions/model zones not established by OI or candle volume.",
+    "No main or new-block Telegram payload/delivery implemented."
+  ],
+  "first_negative_or_failure_behavior": [
+    "Metadata negative or exact asset/units unresolved: stop target before candle/trade requests; catalog is not useful market coverage.",
+    "Actual HTTP/body/API/schema errors remain exact statuses; budget/manual denial is not provider corruption.",
+    "Previously validated immutable facts can be retained after later failure without refreshing clocks or claiming full packet.",
+    "New native usage unknown halts ALL further acquisitions and fallback, without clearing old15unknown or refunding reservations.",
+    "No retry/pagination/provider/spot escalation without a separately admitted explicit remaining packet; absence ofspot does not block a sufficient futures fact."
+  ],
+  "permanent_formula": {
+    "narrow_both_providers_with_BingX_OI": "M + I + 7*(D+R), metadata/identity actual not assumed zero",
+    "narrow_without_OI": "M + I + 6*(D+R)",
+    "six_scale_each_venue_plus_minute_trade": "M + I + 16*(D+R), no OI included",
+    "rows_and_CPU_SQL": "Unknown until chosen actor/state/cache/persistence/journal path is qualified; existing common snapshot HTTP reuse does not mean free SQL/CPU."
+  },
+  "scenarios": [
+    {
+      "new_events_D": 2,
+      "deep_rechecks_R": 4,
+      "kind": "Conditional arithmetic, not measured rarity or accepted limits",
+      "metadata_M": null,
+      "additional_identity_I": null,
+      "one_CoinEx_narrow_data_HTTP_day": 18,
+      "one_BingX_narrow_data_HTTP_day_without_OI": 18,
+      "one_BingX_narrow_data_HTTP_day_with_OI": 24,
+      "both_narrow_data_HTTP_day_without_OI": 36,
+      "both_narrow_data_HTTP_day_with_BingX_OI": 42,
+      "both_narrow_31day_HTTP_with_BingX_OI": 1302,
+      "both_six_scale_plus_minute_trade_HTTP_day": 96,
+      "both_six_scale_plus_minute_trade_31day_HTTP": 2976,
+      "complete_native_or_provider_daily_cost_qualified": false
+    },
+    {
+      "new_events_D": 10,
+      "deep_rechecks_R": 20,
+      "kind": "Conditional arithmetic, not measured rarity or accepted limits",
+      "metadata_M": null,
+      "additional_identity_I": null,
+      "one_CoinEx_narrow_data_HTTP_day": 90,
+      "one_BingX_narrow_data_HTTP_day_without_OI": 90,
+      "one_BingX_narrow_data_HTTP_day_with_OI": 120,
+      "both_narrow_data_HTTP_day_without_OI": 180,
+      "both_narrow_data_HTTP_day_with_BingX_OI": 210,
+      "both_narrow_31day_HTTP_with_BingX_OI": 6510,
+      "both_six_scale_plus_minute_trade_HTTP_day": 480,
+      "both_six_scale_plus_minute_trade_31day_HTTP": 14880,
+      "complete_native_or_provider_daily_cost_qualified": false
+    },
+    {
+      "new_events_D": 100,
+      "deep_rechecks_R": 200,
+      "kind": "Conditional arithmetic, not measured rarity or accepted limits",
+      "metadata_M": null,
+      "additional_identity_I": null,
+      "one_CoinEx_narrow_data_HTTP_day": 900,
+      "one_BingX_narrow_data_HTTP_day_without_OI": 900,
+      "one_BingX_narrow_data_HTTP_day_with_OI": 1200,
+      "both_narrow_data_HTTP_day_without_OI": 1800,
+      "both_narrow_data_HTTP_day_with_BingX_OI": 2100,
+      "both_narrow_31day_HTTP_with_BingX_OI": 65100,
+      "both_six_scale_plus_minute_trade_HTTP_day": 4800,
+      "both_six_scale_plus_minute_trade_31day_HTTP": 148800,
+      "complete_native_or_provider_daily_cost_qualified": false
+    }
+  ],
+  "interpretation": [
+    "Scenario is not a new source/day/month cap. Actualsource/provider/IP/account/common/main/manual headroom required before first call.",
+    "Existing5HTTP N05/N12 and18supplement/full164/D1limits stay. A default5HTTP experiment does not grant a new ordinary runtime route or fund two providers inside one5HTTP slot.",
+    "Sparse native daily/weekly history is different from a month of minute tape. CoinEx query milliseconds are documented; actual historical availability remains untested.",
+    "BingX exact identity route requires a signed read-key, currently not admitted. Its5HTTP figure is conditional on an approved usable identity stage, not a keyless execution plan.",
+    "Month-scale watch/history/replay/outcomes are owned by third worker, not implemented here.",
+    "Later fetched historical rows cannot be declared first-known at saved canonical time or credited as earlier prediction; current coverage/consumer/delivery remain unqualified."
+  ],
+  "source_documentation": [
+    {
+      "id": "coinexFutures",
+      "source_url": "https://docs.coinex.com/api/v2/futures/market/http/list-market-kline",
+      "returned_url": "https://docs.coinex.com/api/v2/futures/market/http/list-market-kline",
+      "title": "Get Market Candlestick | CoinEx API Docs",
+      "scrape_id": "01a14f0a-312f-7409-b504-9350b956ceb2",
+      "http_status": 200,
+      "cached_at": null,
+      "metadata_credits_used": 1,
+      "content_length_characters": 3052,
+      "content_sha256": "58905f8cf6a0104f31872fe57202667006689df1d285ada00c86a34ce44ffdb4",
+      "source_kind": "OFFICIAL_PROVIDER_DOCUMENTATION",
+      "market_data_request": false,
+      "actual_approved_asset_fact_qualified": false,
+      "source": "FrozenPR456 documentation, not re-scraped for this plan"
+    },
+    {
+      "id": "coinexSpot",
+      "source_url": "https://docs.coinex.com/api/v2/spot/market/http/list-market-kline",
+      "returned_url": "https://docs.coinex.com/api/v2/spot/market/http/list-market-kline",
+      "title": "Get Market Candlestick | CoinEx API Docs",
+      "scrape_id": "01a14f0a-1dfa-7698-880c-c5492c98b655",
+      "http_status": 200,
+      "cached_at": null,
+      "metadata_credits_used": 1,
+      "content_length_characters": 3043,
+      "content_sha256": "3715321b2e3556bb88f78adea26c797e587f10e81e3f8957484061fd769fb74f",
+      "source_kind": "OFFICIAL_PROVIDER_DOCUMENTATION",
+      "market_data_request": false,
+      "actual_approved_asset_fact_qualified": false,
+      "source": "FrozenPR456 documentation, not re-scraped for this plan"
+    },
+    {
+      "id": "coinexTrades",
+      "source_url": "https://docs.coinex.com/api/v2/futures/market/http/list-market-deals",
+      "returned_url": "https://docs.coinex.com/api/v2/futures/market/http/list-market-deals",
+      "title": "Get Market Transactions | CoinEx API Docs",
+      "scrape_id": "01a14f11-c64e-72e2-8b4c-748d71fc60a6",
+      "http_status": 200,
+      "cached_at": null,
+      "metadata_credits_used": 1,
+      "content_length_characters": 2807,
+      "content_sha256": "3efd30236b8c02fe8f8cdb0c93bcdce04f8f5ceea944adcd3eb92752156f1275",
+      "source_kind": "OFFICIAL_PROVIDER_DOCUMENTATION",
+      "market_data_request": false,
+      "actual_approved_asset_fact_qualified": false,
+      "source": "FrozenPR456 documentation, not re-scraped for this plan"
+    },
+    {
+      "id": "coinexTicker",
+      "source_url": "https://docs.coinex.com/api/v2/futures/market/http/list-market-ticker",
+      "returned_url": "https://docs.coinex.com/api/v2/futures/market/http/list-market-ticker",
+      "title": "Get Market Information | CoinEx API Docs",
+      "scrape_id": "01a14f1b-fa7a-7788-a20d-59373d0830e7",
+      "http_status": 200,
+      "cached_at": null,
+      "metadata_credits_used": 1,
+      "content_length_characters": 3701,
+      "content_sha256": "2bd405630cc7ee45255be163ea75be6268fbc7ebf4e5e14c8a3acac44e365918",
+      "source_kind": "OFFICIAL_PROVIDER_DOCUMENTATION",
+      "market_data_request": false,
+      "actual_approved_asset_fact_qualified": false,
+      "source": "FrozenPR456 documentation, not re-scraped for this plan"
+    },
+    {
+      "id": "coinexRate",
+      "source_url": "https://docs.coinex.com/api/v2/rate-limit",
+      "returned_url": "https://docs.coinex.com/api/v2/rate-limit",
+      "title": "Rate Limit | CoinEx API Docs",
+      "scrape_id": "01a14f0d-c6c9-7115-83e4-9dcccd8cc2d9",
+      "http_status": 200,
+      "cached_at": null,
+      "metadata_credits_used": 1,
+      "content_length_characters": 14896,
+      "content_sha256": "715114e89986695d77860ca8b67a6a36f38797621ad08230069f7af561170d17",
+      "source_kind": "OFFICIAL_PROVIDER_DOCUMENTATION",
+      "market_data_request": false,
+      "actual_approved_asset_fact_qualified": false,
+      "source": "FrozenPR456 documentation, not re-scraped for this plan"
+    },
+    {
+      "id": "bingxSwapSkill",
+      "source_url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/swap-market/api-reference.md",
+      "returned_url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/swap-market/api-reference.md",
+      "title": "api-ai-skills/skills/swap-market/api-reference.md at main · BingX-API/api-ai-skills · GitHub",
+      "scrape_id": "01a14f13-8ced-7587-a16f-4ee52604a00b",
+      "http_status": 200,
+      "cached_at": null,
+      "metadata_credits_used": 1,
+      "content_length_characters": 19923,
+      "content_sha256": "8c1e9f14b34142d7030c7804bbc202c72d9e55176be173bdd3df8fbdf082c0fc",
+      "source_kind": "OFFICIAL_PROVIDER_REPOSITORY_DOCUMENTATION",
+      "market_data_request": false,
+      "actual_approved_asset_fact_qualified": false,
+      "source": "FrozenPR456 documentation, not re-scraped for this plan"
+    },
+    {
+      "id": "bingxSpotSkill",
+      "source_url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/spot-market/api-reference.md",
+      "returned_url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/spot-market/api-reference.md",
+      "title": "api-ai-skills/skills/spot-market/api-reference.md at main · BingX-API/api-ai-skills · GitHub",
+      "scrape_id": "01a14f13-7758-731f-ae92-c9a17ed7f5d4",
+      "http_status": 200,
+      "cached_at": null,
+      "metadata_credits_used": 1,
+      "content_length_characters": 14920,
+      "content_sha256": "241af1f6af36933b44cc832e44abe6de9b7d39a3e439d1828a671d8901c7094c",
+      "source_kind": "OFFICIAL_PROVIDER_REPOSITORY_DOCUMENTATION",
+      "market_data_request": false,
+      "actual_approved_asset_fact_qualified": false,
+      "source": "FrozenPR456 documentation, not re-scraped for this plan"
+    },
+    {
+      "id": "bingxSharedRate",
+      "source_url": "https://bingx.com/en/support/articles/31103871611289",
+      "returned_url": "https://bingx.com/en/support/articles/31103871611289",
+      "title": "BingX Upgrades API Rate Limit (2025-10-16)",
+      "scrape_id": "01a14f09-45f0-76ec-9caf-ed1086613776",
+      "http_status": 200,
+      "cached_at": "2026-10-16T18:35:56.431Z",
+      "metadata_credits_used": 1,
+      "content_length_characters": 22192,
+      "content_sha256": "e52698b89d5c20935f264a294fa9d7219d8ffb31f0c360043b69dbb5c0d1ebd7",
+      "source_kind": "OFFICIAL_PROVIDER_DOCUMENTATION",
+      "market_data_request": false,
+      "actual_approved_asset_fact_qualified": false,
+      "source": "FrozenPR456 documentation, not re-scraped for this plan"
+    }
+  ],
+  "new_documentation": {
+    "schema": "REPORT2_FACT_PLAN_NEW_STATIC_DOCUMENT_RECEIPTS_V1",
+    "documents": [
+      {
+        "url": "https://docs.coinex.com/api/v2/futures/market/http/list-market",
+        "returned_url": "https://docs.coinex.com/api/v2/futures/market/http/list-market",
+        "scrape_id": "01a14f2d-3a27-7798-900a-f33a98a08749",
+        "http_status": 200,
+        "credits_used": 1,
+        "body_sha256": "d03d8f461fbd3171e95a1d18f5721e2d505d1825965917361d297eee5531d072",
+        "body_wording_limit": "Only derived field facts retained; not a market response.",
+        "documented_fields": [
+          "market",
+          "contract_type",
+          "base_ccy",
+          "quote_ccy",
+          "tick_size",
+          "open_interest_volume",
+          "status",
+          "is_market_available",
+          "is_api_trading_available",
+          "delisted_at"
+        ],
+        "identity_limit": "No chain/contract address in this market schema; native venue asset identity remains unproven.",
+        "id": "coinexContractMetadata"
+      },
+      {
+        "id": "planCoinexGuideDecoded",
+        "url": "https://docs.coinex.com/api/v2/guide",
+        "returned_url": "https://docs.coinex.com/api/v2/guide",
+        "scrape_id": "01a14f3a-1fec-76fe-a666-6f982fed7a9c",
+        "http_status": 200,
+        "cached_at": null,
+        "credits_used": 1,
+        "body_format": "markdown",
+        "body_sha256": "870bf60fe229cea6d890a610b23fcf6c9855218954b34d7df03b667e6d620c4a",
+        "feedback": {
+          "success": false,
+          "error": "Feedback must be submitted within 120 seconds of the job.",
+          "status": 409,
+          "feedbackErrorCode": "FEEDBACK_WINDOW_EXPIRED",
+          "retryable": false
+        },
+        "derived_facts": {
+          "time_unit": "All request time parameters and response fields use milliseconds; endpoint supports start_time/end_time.",
+          "auth": "Only endpoints explicitly marked signature required need signature per guide."
+        }
+      },
+      {
+        "id": "planCoinexIndex",
+        "url": "https://docs.coinex.com/api/v2/",
+        "returned_url": "https://docs.coinex.com/api/v2/",
+        "scrape_id": "01a14f3d-5d52-778a-9906-6806744cc84f",
+        "http_status": 200,
+        "cached_at": null,
+        "credits_used": 1,
+        "body_format": "markdown",
+        "body_sha256": "240236ad3643f80c735d379dc5a28e21e825f89a6e8ac05d57d6505c16f12313",
+        "feedback": {
+          "success": true,
+          "feedbackId": "01a14f3d-7cd4-744d-ba68-667b03ddf201",
+          "creditsRefunded": 0,
+          "creditsRefundedToday": 15,
+          "dailyRefundCap": 50
+        }
+      },
+      {
+        "id": "planCoinexDocLinks",
+        "url": "https://docs.coinex.com/api/v2/",
+        "returned_url": "https://docs.coinex.com/api/v2/",
+        "scrape_id": "01a14f3d-c8bb-7198-9599-06acf1ed4e81",
+        "http_status": 200,
+        "cached_at": "2026-10-18T13:39:45.037Z",
+        "credits_used": 1,
+        "body_format": "compact_json_links",
+        "body_sha256": "abd0b94c8830c531b379d3db256f6cd4cc5c9148967d000dd4c21c50f1e59dfa",
+        "feedback": {
+          "success": true,
+          "feedbackId": "01a14f3d-e0ac-75b0-a5a4-9c4ec631a83b",
+          "creditsRefunded": 0,
+          "creditsRefundedToday": 15,
+          "dailyRefundCap": 50
+        }
+      },
+      {
+        "id": "planCoinexAssetLinks",
+        "url": "https://docs.coinex.com/api/v2/assets/balance/http/get-spot-balance",
+        "returned_url": "https://docs.coinex.com/api/v2/assets/balance/http/get-spot-balance",
+        "scrape_id": "01a14f3e-2686-725c-a45b-0278981ffb11",
+        "http_status": 200,
+        "cached_at": null,
+        "credits_used": 1,
+        "body_format": "compact_json_links",
+        "body_sha256": "480181dc3e8c7b674d1e9aa9b06a60ad6cf6f38edef3a5e7572f14346d146348",
+        "feedback": null
+      },
+      {
+        "id": "planCoinexConfigDoc",
+        "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/get-deposit-withdrawal-config",
+        "returned_url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/get-deposit-withdrawal-config",
+        "scrape_id": "01a14f3e-e7db-73b0-a282-e4fd1ad34bd1",
+        "http_status": 200,
+        "cached_at": null,
+        "credits_used": 1,
+        "body_format": "markdown",
+        "body_sha256": "2b1cdbdc3d52ba2eeabe7309c3f9de1f19b5fa5a216d88aa8c295b1ed35ec551",
+        "feedback": {
+          "success": true,
+          "feedbackId": "01a14f3e-f7b0-74b9-b56c-02e306aff852",
+          "creditsRefunded": 0,
+          "creditsRefundedToday": 16,
+          "dailyRefundCap": 50
+        },
+        "derived_facts": {
+          "route": "GET /assets/deposit-withdraw-config?ccy=EXACT_BASE",
+          "identity_fields": [
+            "asset.ccy",
+            "chains.chain",
+            "chains.explorer_asset_url"
+          ],
+          "default_first_packet": false,
+          "reason": "Alternative/extra acquisition requires separate admission; no automatic fallback."
+        }
+      },
+      {
+        "id": "planCoinexInfoDoc",
+        "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/list-assets-info",
+        "returned_url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/list-assets-info",
+        "scrape_id": "01a14f3f-2fa4-74da-8b98-47a10e3e0937",
+        "http_status": 200,
+        "cached_at": null,
+        "credits_used": 1,
+        "body_format": "markdown",
+        "body_sha256": "81a38bc0a3582e252db93dfed018a1b46eab40d27f09773a857670cb4a07550e",
+        "feedback": {
+          "success": true,
+          "feedbackId": "01a14f3f-3f85-7604-8d31-84ecf2d8b3f8",
+          "creditsRefunded": 0,
+          "creditsRefundedToday": 16,
+          "dailyRefundCap": 50
+        },
+        "derived_facts": {
+          "route": "GET /assets/info?ccy=EXACT_BASE",
+          "identity_fields": [
+            "short_name",
+            "full_name",
+            "website_url",
+            "chain_info.chain_name",
+            "chain_info.identity",
+            "chain_info.explorer_url"
+          ],
+          "access": "Not marked signature required; actual public availability not tested.",
+          "native_asset": "Empty native identity may be valid only with exact native chain/name/site witness."
+        }
+      },
+      {
+        "id": "planBingxWallet",
+        "url": "https://github.com/bingx-api/api-ai-skills/blob/main/skills/spot-wallet/SKILL.md",
+        "returned_url": "https://github.com/bingx-api/api-ai-skills/blob/main/skills/spot-wallet/SKILL.md",
+        "scrape_id": "01a14f3d-4959-702a-87d9-a63d36d0a5bd",
+        "http_status": 200,
+        "cached_at": null,
+        "credits_used": 1,
+        "body_format": "markdown",
+        "body_sha256": "09eb8d8cc3ec295f25bbd1d0df85d3c034de4f7a233b645872fb222cb8631b76",
+        "feedback": {
+          "success": true,
+          "feedbackId": "01a14f3d-707d-70bb-8854-83e5a0b7941f",
+          "creditsRefunded": 0,
+          "creditsRefundedToday": 15,
+          "dailyRefundCap": 50
+        },
+        "derived_facts": {
+          "access": "Wallet config is signed HMAC-SHA256 with Read key; no key/account call admitted."
+        }
+      },
+      {
+        "id": "planBingxWalletReference",
+        "url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/spot-wallet/api-reference.md",
+        "returned_url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/spot-wallet/api-reference.md",
+        "scrape_id": "01a14f3d-b75b-77af-ba8f-315234c16a13",
+        "http_status": 200,
+        "cached_at": null,
+        "credits_used": 1,
+        "body_format": "markdown",
+        "body_sha256": "17ded1ef1432109878550c2e3398e08d37af0983682e1539a4dd1d0f65d748c6",
+        "feedback": {
+          "success": true,
+          "feedbackId": "01a14f3d-d5b8-74c7-ba46-6428b87d93ff",
+          "creditsRefunded": 0,
+          "creditsRefundedToday": 15,
+          "dailyRefundCap": 50
+        },
+        "derived_facts": {
+          "route": "GET /openApi/wallets/v1/capital/config/getall?coin=EXACT_BASE",
+          "identity_fields": [
+            "coin",
+            "name",
+            "networkList.network",
+            "networkList.name",
+            "networkList.contractAddress"
+          ],
+          "access": "Signed Read key;5requests/s/UID in this route, in addition to applicable shared admission."
+        }
+      }
+    ],
+    "searches": [
+      {
+        "id": "01a14f39-ecd3-703f-ade9-a3a0c7954840",
+        "success": true,
+        "credits_used": 2,
+        "results": [
+          {
+            "url": "https://docs.coinex.com/api/v2/",
+            "title": "CoinEx API Docs: API Introduction"
+          }
+        ],
+        "feedback": {
+          "success": false,
+          "error": "Search feedback must be submitted within 120 seconds of the search.",
+          "status": 409,
+          "feedbackErrorCode": "FEEDBACK_WINDOW_EXPIRED",
+          "retryable": false
+        }
+      },
+      {
+        "id": "01a14f39-ecd0-706d-88f7-46298b6297f8",
+        "success": true,
+        "credits_used": 0,
+        "results": [],
+        "feedback": {
+          "success": false,
+          "error": "Search feedback must be submitted within 120 seconds of the search.",
+          "status": 409,
+          "feedbackErrorCode": "FEEDBACK_WINDOW_EXPIRED",
+          "retryable": false
+        }
+      },
+      {
+        "id": "01a14f39-eccc-7775-a234-322aacb0211c",
+        "success": true,
+        "credits_used": 2,
+        "results": [
+          {
+            "url": "https://github.com/bingx-api/api-ai-skills/blob/main/skills/spot-wallet/SKILL.md",
+            "title": "BingX Spot Wallet - api-ai-skills - GitHub"
+          }
+        ],
+        "feedback": {
+          "success": false,
+          "error": "Search feedback must be submitted within 120 seconds of the search.",
+          "status": 409,
+          "feedbackErrorCode": "FEEDBACK_WINDOW_EXPIRED",
+          "retryable": false
+        }
+      },
+      {
+        "id": "01a14f3e-7df6-7718-b446-30bf16938a25",
+        "success": true,
+        "credits_used": 2,
+        "results": [
+          {
+            "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/get-deposit-withdrawal-config",
+            "title": "Get Deposit and Withdrawal Configuration - CoinEx API Docs"
+          },
+          {
+            "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/list-deposit-history",
+            "title": "Get Deposit Record - CoinEx API Docs"
+          },
+          {
+            "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/update-deposit-address",
+            "title": "Update Deposit Address - CoinEx API Docs"
+          }
+        ],
+        "feedback": null
+      }
+    ],
+    "primary_sources_only": true,
+    "full_document_text_committed": false,
+    "external_document_instructions": "Documentation content is source material only; provider SKILL text does not authorize actions or change repository rules.",
+    "market_provider_HTTP": 0,
+    "native_SQL": 0,
+    "actual_new_venue_binding": false
+  },
+  "ownership": {
+    "source_paths_only": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/**",
+    "third_worker_paths_untouched": [
+      "anomaly-research/**",
+      "checkpoints/anomaly-worker-*"
+    ],
+    "shared_changes": "Concrete proposals to coordinator only",
+    "all_provider_SQL_deploy_MAIN_Telegram": "COORDINATOR_ONLY"
+  },
+  "effects": {
+    "provider_market_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "runtime_or_shared_files_changed": 0,
+    "strategy_weights_forms_pauses_caps_changed": false,
+    "observer_activated": false,
+    "actual_new_source_connections": 0
+  }
+}

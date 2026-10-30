@@ -1,0 +1,435 @@
+{
+  "schema": "COINEX_TIA_NATIVE_REFERENCE_AND_EXACT_REQUEST_BOUNDARY_AUDIT_V1",
+  "working_base": "043a3177d39af5db279e7e946ff54f7526b31ea9",
+  "source_of_truth_main": "07703e786565eb2e0bbb4727f70ef6680115c07b",
+  "original_assets": {
+    "path": "checkpoints/n05-coinex-qualification-38069197541/COINEX-EXACT-ASSETS.json.gz",
+    "bytes": 63060,
+    "sha256": "253b57dc7405555ac91580c89031d93e5e53518fa4d8698a155c78d87a373cbc",
+    "decoded_sha256": "3179b70a3f6ad960e028b66f2f6f3365648633e9b5bbed109b83df59ebfa5604",
+    "cloud_run": "38069197541",
+    "head": "1b719a4f5f982a4c3fc7014182c1a7c2a6713308",
+    "raw_receipt": {
+      "name": "COINEX-EXACT-ASSETS",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/assets/info",
+      "method": "GET",
+      "received_ts": 1791650973347,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-EXACT-ASSETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791650940000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "3179b70a3f6ad960e028b66f2f6f3365648633e9b5bbed109b83df59ebfa5604",
+      "gzip_sha256": "253b57dc7405555ac91580c89031d93e5e53518fa4d8698a155c78d87a373cbc",
+      "bytes": 308496,
+      "file": "COINEX-EXACT-ASSETS.json.gz"
+    },
+    "selected_row": {
+      "short_name": "TIA",
+      "full_name": "Celestia",
+      "website_url": "https://celestia.org/",
+      "white_paper_url": null,
+      "chain_info": [
+        {
+          "chain_name": "CELESTIA",
+          "identity": "utia",
+          "explorer_url": ""
+        }
+      ]
+    },
+    "selected_row_sha256": "f48ec0fa98c60aae304f881fa4a22a247fc360068e7c33c45249a2909a7653b8",
+    "original_transport_received_ts": 1791650973347,
+    "provider_event_ts": null,
+    "current_market_first_known_ts": null,
+    "classification": "HISTORICAL_DECLARED_NATIVE_NAMESPACE_COMPATIBLE_WITH_APPROVED_TIA_REFERENCE",
+    "proof_basis": [
+      "Exact providerasset TIA+Celestia+officialdomain",
+      "Explicit native CELESTIA:utia declaration",
+      "Matching HTX nativeTIA policy/reference",
+      "Primary native denomination authority"
+    ],
+    "not_claimed": [
+      "Currentcache/futureslisting/price",
+      "Nativechain RPC/finality/genesis attestation",
+      "Derivativecontract quantity/epoch/multiplier",
+      "Actualsourceconnection or earlydetection"
+    ],
+    "old_transport_clock_not_relabelled_as_current_qualification": true
+  },
+  "native_denomination": {
+    "reference": {
+      "schema": "COINEX_TIA_MISSING_PRIMARY_NATIVE_DENOM_DOCUMENT_V1",
+      "source_url": "https://docs.celestia.org/learn/TIA/overview/",
+      "returned_url": "https://docs.celestia.org/learn/TIA/overview/",
+      "title": "Celestia docs - Modular data availability",
+      "scrape_id": "01a15098-c9f8-700f-bfe8-655deecf6f44",
+      "http_status": 200,
+      "original_markdown_characters": 4336,
+      "scope": "utia is Celestia native staking denomination,1TIA=1000000utia. Not EVM contract, not CoinEx futures volume/amount or contract multiplier.",
+      "market_call": false,
+      "repeated_previous_docs": false,
+      "content_sha256": "9b63cb5c6b5558fce0c787284fe78ea78a04b684cdd33562316ce801b315cffc",
+      "exact_primary_claim": {
+        "native_staking_denom": "utia",
+        "native_TIA_per_utia_denominator": 1000000
+      },
+      "not_qualified": [
+        "CoinEx volume unit",
+        "futures multiplier/epoch/availability",
+        "current source coverage",
+        "RPC mainnet proof",
+        "provider rate/native budgets"
+      ]
+    },
+    "identity_kind": "NATIVE_BANK_DENOMINATION",
+    "micro_unit_denominator": 1000000,
+    "token_contract_address": null,
+    "trading_API_volume_scale": null,
+    "derivative_multiplier": null,
+    "reason": "A bank denomination identifies an asset namespace; no automatic conversion of exchange contract/amount/volume/value fields follows."
+  },
+  "HTX_reference": {
+    "path": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+    "bytes": 77283,
+    "sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+    "decoded_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29",
+    "currency": "tia",
+    "native_chain": {
+      "chain": "tia",
+      "displayName": "TIA",
+      "fullName": "",
+      "chainType": 0,
+      "isDynamic": false,
+      "numOfConfirmations": 1,
+      "numOfFastConfirmations": 1,
+      "depositStatus": "allowed",
+      "minDepositAmt": "0.0000001",
+      "withdrawStatus": "allowed",
+      "minWithdrawAmt": "0.1",
+      "withdrawPrecision": 6,
+      "maxWithdrawAmt": "999999999999999999.000000000000000000",
+      "withdrawQuotaPerDay": "999999999999999999.000000000000000000",
+      "withdrawQuotaPerYear": null,
+      "withdrawQuotaTotal": null,
+      "withdrawFeeType": "fixed",
+      "withdrawFeeExpandType": "fixed",
+      "withdrawFeeExpandData": null,
+      "transactFeeWithdraw": "0.1",
+      "addrWithTag": true,
+      "addrDepositTag": false
+    },
+    "original_transport_received_ts": null,
+    "current_policy": {
+      "path": "current-generation/files/src/coingecko-sector-evidence.mjs",
+      "commit": "043a3177d39af5db279e7e946ff54f7526b31ea9",
+      "sha256": "6eb123b0c26740a7a2d60d3675c9255709893051695ebc0a47b0ec8db45419b6",
+      "chain": "celestia",
+      "provider_homepages": [
+        "celestia.org"
+      ]
+    },
+    "no_replay_of_accepted_HTX_cache_suite": true
+  },
+  "spot_reference": {
+    "path": "checkpoints/n05-coinex-qualification-38069197541/COINEX-SPOT-MARKETS.json.gz",
+    "bytes": 10847,
+    "sha256": "cdfed6232d187f1513d2e39ccb85593566014af1f35afddb800793eeff6ff508",
+    "decoded_sha256": "f18ebedccf7ef55765cb4ae18d3e10a59954f12a394db4ec351cd4b1a1ba6ca5",
+    "raw_receipt": {
+      "name": "COINEX-SPOT-MARKETS",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/market",
+      "method": "GET",
+      "received_ts": 1791650974637,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-SPOT-MARKETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791650940000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "f18ebedccf7ef55765cb4ae18d3e10a59954f12a394db4ec351cd4b1a1ba6ca5",
+      "gzip_sha256": "cdfed6232d187f1513d2e39ccb85593566014af1f35afddb800793eeff6ff508",
+      "bytes": 281626,
+      "file": "COINEX-SPOT-MARKETS.json.gz"
+    },
+    "selected_row": {
+      "base_ccy": "TIA",
+      "base_ccy_precision": 8,
+      "delisted_at": 0,
+      "is_amm_available": false,
+      "is_api_trading_available": true,
+      "is_margin_available": true,
+      "is_pre_market_trading_available": false,
+      "maker_fee_rate": "0.002",
+      "market": "TIAUSDT",
+      "min_amount": "0.5",
+      "quote_ccy": "USDT",
+      "quote_ccy_precision": 4,
+      "status": "online",
+      "taker_fee_rate": "0.002"
+    },
+    "scope": "Historical spot row; does not qualify future market availability/type/epoch."
+  },
+  "current_registry_audit": {
+    "explicit_code_mentions_only": [
+      {
+        "path": "current-generation/files/src/evidence-source-adapters.mjs",
+        "commit": "043a3177d39af5db279e7e946ff54f7526b31ea9",
+        "sha256": "d8b740fd0b61989a80ddafdb29e2b31cb2311b45625ee428397fcc1f26cbad54",
+        "CoinEx_literal_present": false
+      },
+      {
+        "path": "current-generation/files/src/external-n05-flow-collector.mjs",
+        "commit": "043a3177d39af5db279e7e946ff54f7526b31ea9",
+        "sha256": "cbfcc3dda74e1c3102dc512d7f10539545db05c7d37c25d325a3ce53caa2bb9b",
+        "CoinEx_literal_present": false
+      },
+      {
+        "path": "tools/read-active-source-budgets-20261014.mjs",
+        "commit": "043a3177d39af5db279e7e946ff54f7526b31ea9",
+        "sha256": "ec8bba26dac48d821bffc5cf10ad0ff5a8b89eb85bea201cdc043de307148e46",
+        "CoinEx_literal_present": false
+      }
+    ],
+    "not_a_deployed_or_DB_registry_inventory": true,
+    "budget_reader_daily_query_scope": "ALL_CURRENT_UTC_DAY_ROWS_LIMIT128",
+    "CoinEx_daily_row_can_be_returned_without_literal_policy": true,
+    "unrecognized_source_policy_cap_remains_null": true,
+    "actual_new_source_pool_id": null,
+    "current_source_balance": null,
+    "legacy_source_id": "N05_OFFICIAL_FLOW:COINEX",
+    "absent_registry_or_row_is_not_zero_usage": true,
+    "coordinator_budget_reader_repair_is_not_live_source_admission": true,
+    "no_new_pool_alias_created": true
+  },
+  "reused_plan": {
+    "spec": {
+      "path": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/plan-spec.json",
+      "bytes": 20056,
+      "sha256": "8b3f68056fef9eb86a07baad18fc4d9cd75bcc023ee3cf4f89c5d45e4113def3"
+    },
+    "plan": {
+      "path": "checkpoints/source-worker-coinex-bingx-fact-plan-20261018/plan.json",
+      "bytes": 48544,
+      "sha256": "9a77266791645bd1245f44c5ad60398914e9739b287bc793844a5d2c687b3f83"
+    },
+    "accepted459_calculator_rerun": false,
+    "accepted489_analysis": "bd2e300124a5c567e8c5b3da293d3fb81911f4481edbc670223390504b205df4",
+    "accepted489_commit": "9ede9b7f8d1e7a949cb74264ca1ae13ee00b87e9"
+  },
+  "controlled_request_example": {
+    "kind": "Controlled local plan example equals lease acquisition, not provider observation/firstknown/event proof.",
+    "E1": 1792353420000,
+    "E15": 1792352700000,
+    "minute_union_rows": 27,
+    "source_or_transport_timestamp": false,
+    "requests": [
+      {
+        "stage": 1,
+        "method": "GET",
+        "url": "https://api.coinex.com/v2/futures/market",
+        "params": {
+          "market": "TIAUSDT"
+        },
+        "HTTP_cap": 1,
+        "accept": "Exactly one active native TIAUSDT linear USDT perpetual row; baseTIA/quoteUSDT/status/APIavailability retained. Preserve epoch/multiplier only when actually returned; NULL is not fabricated.",
+        "stop": "Absent/duplicate/offline/wrongtype stops before assets/numeric; identity is pending untilstage2, not rejected merely because marketmetadata has no chain field.",
+        "preserve": [
+          "rawbody/hash",
+          "status",
+          "transportreceived",
+          "originalproductfields"
+        ],
+        "future_market_fact_present_now": false,
+        "controlled_example_url": "https://api.coinex.com/v2/futures/market?market=TIAUSDT",
+        "example_is_not_a_current_source_call": true
+      },
+      {
+        "stage": 2,
+        "method": "GET",
+        "url": "https://api.coinex.com/v2/assets/info",
+        "params": {
+          "ccy": "TIA"
+        },
+        "HTTP_cap": 1,
+        "accept": "Fresh exact native-reference TIA/Celestia/officialdomain/uniqueCELESTIA:utia relation, matched with current instrument row. Full market/identity gate adjudicated after both replies.",
+        "stop": "Mismatch/ambiguous native identity or no actual registered budget, no automatic extra identity endpoint.",
+        "preserve": "Old Oct10 original can supply typed expectations, never a fresh cache/received clock.",
+        "controlled_example_url": "https://api.coinex.com/v2/assets/info?ccy=TIA",
+        "example_is_not_a_current_source_call": true
+      },
+      {
+        "stage": 3,
+        "method": "GET",
+        "url": "https://api.coinex.com/v2/futures/kline",
+        "params": {
+          "market": "TIAUSDT",
+          "price_type": "latest_price",
+          "period": "15min",
+          "limit": 24,
+          "start_time": 1792333800000,
+          "end_time": 1792352699999
+        },
+        "HTTP_cap": 1,
+        "accept": "At least21 exact contiguous closed native15m bars:20prior+1event; same instrument epoch/quote, positive coherentOHLC, explicit rawvolume/value and independently qualified units. Exclude forming/duplicate/future/wrong-grid bars.",
+        "source_asof_rule": "Native created_at is barstart in milliseconds, not transportreceived or providerasof. Missing providerasof/closed assurance remains explicitlyunclosed; do not fill with localclock.",
+        "volume_fallback": "If volume/value scaling remainsunqualified retain rawstrings and at most qualified OHLC-only informational context; no unusualvolume/candle-flow claim.",
+        "gate": "Bounded qualification acquisition may resolve missing bar/unit semantics only after exact market/asset relation and actualcostadmission. Unproven epoch/unit means diagnostic/raw or atmostqualifiedprice-onlycontext, never closed anomalyvolume proof or automaticconsumer.",
+        "controlled_example_url": "https://api.coinex.com/v2/futures/kline?market=TIAUSDT&price_type=latest_price&period=15min&limit=24&start_time=1792333800000&end_time=1792352699999",
+        "example_is_not_a_current_source_call": true
+      },
+      {
+        "stage": 4,
+        "method": "GET",
+        "url": "https://api.coinex.com/v2/futures/kline",
+        "params": {
+          "market": "TIAUSDT",
+          "price_type": "latest_price",
+          "period": "1min",
+          "limit": 40,
+          "start_time": 1792351800000,
+          "end_time": 1792353419999
+        },
+        "HTTP_cap": 1,
+        "accept": "Separate nativeevent15closed1m bars endingE15 and optional sliding15m path endingE1; union spans15..29minutes, do not relabel one as the other or two upstreams.",
+        "scope": "OHLC/qualifiedvolume path gives intrabar candle structure, not true historical aggressor side or full raw fills.",
+        "controlled_example_url": "https://api.coinex.com/v2/futures/kline?market=TIAUSDT&price_type=latest_price&period=1min&limit=40&start_time=1792351800000&end_time=1792353419999",
+        "example_is_not_a_current_source_call": true
+      },
+      {
+        "stage": 5,
+        "method": "GET",
+        "url": "https://api.coinex.com/v2/futures/deals",
+        "params": {
+          "market": "TIAUSDT",
+          "limit": 1000
+        },
+        "HTTP_cap": 1,
+        "accept": "At most one exact recent page, original tradeclock/decimalstrings/safeuniqueIDs/side literal and units retained.",
+        "last_id_parameter": "OMITTED; no last_id=0 reuse or pagination inferred from old spot request.",
+        "scope": "LIMITED_RECENT_SAMPLE_NOT_COMPLETE_HISTORICAL_CANDLE_TAKER_WINDOW",
+        "not_proven": [
+          "Whole15m or4h trade coverage",
+          "True candle aggressor side/CVD",
+          "Cancelled resting orders",
+          "Trader identity or intent",
+          "Manipulation/absorption/trap"
+        ],
+        "stop": "Missingclock/unsafeID/duplicate/wrongunit/missing event overlap retains exactpartial status, not invented0/failedmarket.",
+        "controlled_example_url": "https://api.coinex.com/v2/futures/deals?market=TIAUSDT&limit=1000",
+        "example_is_not_a_current_source_call": true
+      }
+    ]
+  },
+  "staged_admission": {
+    "first_metadata_and_identity_HTTP_cap": 2,
+    "remaining_numeric_HTTP_cap": 3,
+    "conditional_total_HTTP_cap": 5,
+    "actual_admission": false,
+    "identity_pending_after_market_metadata_not_automatic_denial": true,
+    "exact_instrument_or_identity_failure_stops_before_numeric": true,
+    "source_sql_r_w_and_partial_finalizer_bound": null,
+    "coordinator_must_resolve_before_calls": [
+      "Coordinator new current main/phase/fence/own applicable live lease",
+      "Actual shared/source/provider/IP/day/month admission; protect main/manual and nextfull59000R920W",
+      "Exact registered source pool/balance, no absentrow=0 assumption",
+      "Native SQL/R/W/transport/admission/finalizer bound including partial/unknown tail",
+      "No reuse of current offline lease or hardcoded old native job"
+    ],
+    "bounded_raw_qualification_not_automatic_volume_fact": true
+  },
+  "internal_structure_boundaries": {
+    "native_price_structure": "21closed15m including20prior and chosen event, plus exact1min grid for event/sliding windows, when actually received/qualified.",
+    "raw_volume_strings": "Retain volume/value; unit/scale/contract conversion remainUNKNOWN until exact source evidence.",
+    "trade_scope": "One latest<=1000 page without historical pagination; no full historicalcandle taker side/CVD/absorption/manipulation.",
+    "maker_or_taker_side_semantics": "Source side literal retained; no unqualified intent/maker/taker inference.",
+    "no_fabricated_candle_or_zero_missing_volume": true
+  },
+  "prospective_and_watch": {
+    "native_grid": "Freeze E1/E15 from admitted cutoff; verify actual providergrid/UTCepochs; do not assume weekly/day offsets.",
+    "startup": "History/replay BACKFILLED; no firstknown at native candle start/end or at oldOct10 receipt.",
+    "prospective": "Separate new post-ingest nativeclose with own received/firstknown/causalACK/lag<=10min; not current output.",
+    "watch": "Existing HTX sampled5m reference permitted only with its own exactvenue/quote/basis/clock/anchor and actualnative read costs; not a reconstruction of CoinEx intrabar history.",
+    "persistence": "No successful/qualified ingestion without exact saved rawref and causal persisted readback/ACK; nativeSQL budget needs coordinatorplan.",
+    "publication": "No score/entry/Telegram or independent-source vote from this offline reference.",
+    "missing": "DEFERRED/PENDING_DATA/GAP/CENSORED or unitunknown, not no-event/no-move/zerovolume."
+  },
+  "remaining": [
+    "Current registered CoinEx source budget/pool and actualremaining day/month/minute/common/main/manual resources.",
+    "Qualified native SQL statement/charged R/W admission/finalizer costs for the exact central actor; repairreader itself is not sourceadmission.",
+    "Actual fresh futures-market and assetsreference replies for TIA, including active instrument epoch and price/volume unit contract.",
+    "Actual returned21closed15m/1min bars, end/start semantics/gaps/asof and body bounds.",
+    "Limited trades are not a full historical candle taker feed; proving side/completewindow would require a separately documented/bounded/admitted route."
+  ],
+  "effects": {
+    "market_HTTP": 0,
+    "WS": 0,
+    "native_SQL": 0,
+    "newrunacquisition": 0,
+    "production_framework_imports": 0,
+    "shared_edits": 0,
+    "accepted_suites_rerun": 0,
+    "unknown_or_reservation_refund": false
+  },
+  "acceptance": {
+    "new_native_reference_field_understanding": true,
+    "exact_request_shape_prepared": true,
+    "current_CoinEx_market_coverage": false,
+    "current21closedbars_qualified": false,
+    "complete_historical_taker_window": false,
+    "native_cost_bound": false,
+    "source_admission": false,
+    "source_connected": false,
+    "production_change": false
+  }
+}

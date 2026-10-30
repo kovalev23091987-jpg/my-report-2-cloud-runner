@@ -1,0 +1,1933 @@
+{
+  "schema": "UNRESOLVED_PUBLIC_CATALOG_CARRIER_CONTROLLED_COMPONENT_V1",
+  "status": "CONTROLLED_COMPONENT_COMPLETED",
+  "control_count": 12,
+  "controls": [
+    {
+      "name": "99 accepted and six absent retain complete detached parsed public payload",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": {
+        "scope_status": "NOT_CLOSED",
+        "accepted": 99,
+        "checked": 99,
+        "unresolved": [
+          "BTR-USDT",
+          "DOS-USDT",
+          "GPS-USDT",
+          "PIPPIN-USDT",
+          "SKR-USDT",
+          "UB-USDT"
+        ],
+        "classifier_calls": 0,
+        "snapshot": {
+          "status": "COMPLETE_PARSED_PUBLIC_CATALOG",
+          "complete": true,
+          "emitted_utf8_bytes": 39379,
+          "parsed_payload_utf8_bytes": 21606,
+          "rows": 99,
+          "parsed_payload_sha256": "d60513e21d00f33a3e67aa88bdb0fd29a235cb9a4637fa309d035cd1616d37ab",
+          "omission_reason": null,
+          "attempted_snapshot_utf8_bytes": null
+        }
+      }
+    },
+    {
+      "name": "aliases and extra public metadata remain visible without changing exact-key refusal",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": {
+        "scope_status": "NOT_CLOSED",
+        "accepted": 99,
+        "checked": 99,
+        "unresolved": [
+          "BTR-USDT",
+          "DOS-USDT",
+          "GPS-USDT",
+          "PIPPIN-USDT",
+          "SKR-USDT",
+          "UB-USDT"
+        ],
+        "classifier_calls": 0,
+        "snapshot": {
+          "status": "COMPLETE_PARSED_PUBLIC_CATALOG",
+          "complete": true,
+          "emitted_utf8_bytes": 42709,
+          "parsed_payload_utf8_bytes": 23298,
+          "rows": 105,
+          "parsed_payload_sha256": "34f86b4537c10d9d80a32cc9391fdaa36cb3375133d29744172a1a2215470810",
+          "omission_reason": null,
+          "attempted_snapshot_utf8_bytes": null
+        }
+      }
+    },
+    {
+      "name": "six explicit status3 rows keep the successful old shape",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": {
+        "scope_status": "CLOSED",
+        "accepted": 99,
+        "checked": 105,
+        "unresolved": [],
+        "classifier_calls": 6,
+        "snapshot": null
+      }
+    },
+    {
+      "name": "105 market rows retain old complete shape even with irrelevant missing catalog",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": {
+        "scope_status": "CLOSED",
+        "accepted": 105,
+        "checked": 105,
+        "unresolved": [],
+        "classifier_calls": 0,
+        "snapshot": null
+      }
+    },
+    {
+      "name": "legacy diagnostic optout keeps original unresolved output shape",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": {
+        "scope_status": "NOT_CLOSED",
+        "accepted": 99,
+        "checked": 99,
+        "unresolved": [
+          "BTR-USDT",
+          "DOS-USDT",
+          "GPS-USDT",
+          "PIPPIN-USDT",
+          "SKR-USDT",
+          "UB-USDT"
+        ],
+        "classifier_calls": 0,
+        "snapshot": null
+      }
+    },
+    {
+      "name": "exact emitted JSON UTF8 boundary includes envelope and multibyte text",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": {
+        "exact": {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "COMPLETE_PARSED_PUBLIC_CATALOG",
+            "complete": true,
+            "emitted_utf8_bytes": 262144,
+            "parsed_payload_utf8_bytes": 244358,
+            "rows": 99,
+            "parsed_payload_sha256": "8697f4f8259a9ebab5133b87fb356ea620c7f47ddc29350088edb5e6148a3179",
+            "omission_reason": null,
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        "one_byte_over": {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_OVERSIZE",
+            "complete": false,
+            "emitted_utf8_bytes": 894,
+            "parsed_payload_utf8_bytes": 244359,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "SNAPSHOT_UTF8_LIMIT",
+            "attempted_snapshot_utf8_bytes": 262145
+          }
+        }
+      }
+    },
+    {
+      "name": "oversize payload is omitted as a whole, never a complete prefix or sample",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": {
+        "scope_status": "NOT_CLOSED",
+        "accepted": 99,
+        "checked": 99,
+        "unresolved": [
+          "BTR-USDT",
+          "DOS-USDT",
+          "GPS-USDT",
+          "PIPPIN-USDT",
+          "SKR-USDT",
+          "UB-USDT"
+        ],
+        "classifier_calls": 0,
+        "snapshot": {
+          "status": "OMITTED_OVERSIZE",
+          "complete": false,
+          "emitted_utf8_bytes": 894,
+          "parsed_payload_utf8_bytes": 545914,
+          "rows": null,
+          "parsed_payload_sha256": null,
+          "omission_reason": "SNAPSHOT_UTF8_LIMIT",
+          "attempted_snapshot_utf8_bytes": 563700
+        }
+      }
+    },
+    {
+      "name": "NULL malformed and nonpublic/failed envelopes omit explicitly and preserve refusal",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": [
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_INPUT",
+            "complete": false,
+            "emitted_utf8_bytes": 858,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "NATIVE_PUBLIC_CATALOG_INPUT_NOT_CLOSED",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_INPUT",
+            "complete": false,
+            "emitted_utf8_bytes": 868,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "NATIVE_PUBLIC_CATALOG_INPUT_NOT_CLOSED",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_INPUT",
+            "complete": false,
+            "emitted_utf8_bytes": 867,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "NATIVE_PUBLIC_CATALOG_INPUT_NOT_CLOSED",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_INPUT",
+            "complete": false,
+            "emitted_utf8_bytes": 811,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "NATIVE_PUBLIC_CATALOG_INPUT_NOT_CLOSED",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_INPUT",
+            "complete": false,
+            "emitted_utf8_bytes": 867,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "NATIVE_PUBLIC_CATALOG_INPUT_NOT_CLOSED",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "COMPLETE_PARSED_PUBLIC_CATALOG",
+            "complete": true,
+            "emitted_utf8_bytes": 1070,
+            "parsed_payload_utf8_bytes": 140,
+            "rows": 0,
+            "parsed_payload_sha256": "fbda85f916b9eb5a3764d0705bee21d7971695787b7b7460f189526953a3c949",
+            "omission_reason": null,
+            "attempted_snapshot_utf8_bytes": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "cycle nonJSON and valid parsed negative-zero cannot silently become a complete changed payload",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": [
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_OR_NON_LOSSLESS_JSON",
+            "complete": false,
+            "emitted_utf8_bytes": 886,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_OR_NON_LOSSLESS_JSON",
+            "complete": false,
+            "emitted_utf8_bytes": 886,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_OR_NON_LOSSLESS_JSON",
+            "complete": false,
+            "emitted_utf8_bytes": 886,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_OR_NON_LOSSLESS_JSON",
+            "complete": false,
+            "emitted_utf8_bytes": 886,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_OR_NON_LOSSLESS_JSON",
+            "complete": false,
+            "emitted_utf8_bytes": 886,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_OR_NON_LOSSLESS_JSON",
+            "complete": false,
+            "emitted_utf8_bytes": 886,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        },
+        {
+          "scope_status": "NOT_CLOSED",
+          "accepted": 99,
+          "checked": 99,
+          "unresolved": [
+            "BTR-USDT",
+            "DOS-USDT",
+            "GPS-USDT",
+            "PIPPIN-USDT",
+            "SKR-USDT",
+            "UB-USDT"
+          ],
+          "classifier_calls": 0,
+          "snapshot": {
+            "status": "OMITTED_INVALID_OR_NON_LOSSLESS_JSON",
+            "complete": false,
+            "emitted_utf8_bytes": 886,
+            "parsed_payload_utf8_bytes": null,
+            "rows": null,
+            "parsed_payload_sha256": null,
+            "omission_reason": "INVALID_CYCLIC_OR_NON_LOSSLESS_PARSED_JSON",
+            "attempted_snapshot_utf8_bytes": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "existing 8192-byte trace and its overflow flags remain exact",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": {
+        "scope_status": "NOT_CLOSED",
+        "accepted": 99,
+        "checked": 99,
+        "unresolved": [
+          "BTR-USDT",
+          "DOS-USDT",
+          "GPS-USDT",
+          "PIPPIN-USDT",
+          "SKR-USDT",
+          "UB-USDT"
+        ],
+        "classifier_calls": 0,
+        "snapshot": {
+          "status": "COMPLETE_PARSED_PUBLIC_CATALOG",
+          "complete": true,
+          "emitted_utf8_bytes": 40361,
+          "parsed_payload_utf8_bytes": 22418,
+          "rows": 100,
+          "parsed_payload_sha256": "7729635d37cf3c0566029d655117e6b57053aa5ed6a34cd05dc181d0c74088b3",
+          "omission_reason": null,
+          "attempted_snapshot_utf8_bytes": null
+        }
+      }
+    },
+    {
+      "name": "actual partial guard and existing fatal exporter preserve full carrier, refusal and usage",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": [
+        {
+          "snapshot_emitted_utf8_bytes": 39379,
+          "unknown_preserved": 0,
+          "artifact": "report2-failure-accounting.json",
+          "parsed_rows": 99,
+          "artifact_sha256": "a5455d01f9458b8362bfd1ca163d3af125111d7a65009e4827248cb3f3767dcd",
+          "exitCode": 1,
+          "refusal": "PARTIAL",
+          "additional_SQL": 0,
+          "additional_source_HTTP": 0
+        },
+        {
+          "snapshot_emitted_utf8_bytes": 39379,
+          "unknown_preserved": 1,
+          "artifact": "report2-failure-accounting.json",
+          "parsed_rows": 99,
+          "artifact_sha256": "5fd4208b9ca6ed9ba187946476391188f7619ab201ce3cd905f5303a3fbe7f75",
+          "exitCode": 1,
+          "refusal": "PARTIAL",
+          "additional_SQL": 0,
+          "additional_source_HTTP": 0
+        },
+        {
+          "snapshot_emitted_utf8_bytes": 262144,
+          "unknown_preserved": 0,
+          "artifact": "report2-failure-accounting.json",
+          "parsed_rows": 99,
+          "artifact_sha256": "1d2de967e844c0fe3ec21b98f5ce5adaa166341f67e453ace2bacadcf22bb4fd",
+          "exitCode": 1,
+          "refusal": "PARTIAL",
+          "additional_SQL": 0,
+          "additional_source_HTTP": 0
+        },
+        {
+          "snapshot_emitted_utf8_bytes": 262144,
+          "unknown_preserved": 1,
+          "artifact": "report2-failure-accounting.json",
+          "parsed_rows": 99,
+          "artifact_sha256": "210078937f0bf2e22fec149e7f87bdf59ee8573f4eb3e888ba1c519eb778bc24",
+          "exitCode": 1,
+          "refusal": "PARTIAL",
+          "additional_SQL": 0,
+          "additional_source_HTTP": 0
+        }
+      ]
+    },
+    {
+      "name": "successful cron shape and incomplete-success refusal are unchanged",
+      "classification": "NEW_CONTROLLED_CATALOG_CARRIER_AND_EXISTING_FAILURE_EXPORTER",
+      "detail": {
+        "success_guard_return": "UNCHANGED",
+        "incomplete_success_refused": true,
+        "no_send": true
+      }
+    }
+  ],
+  "representative_exported_failure": {
+    "status": "CONTROLLED_FAILED_USAGE_FINALIZED",
+    "unknown_ops_preserved": 0,
+    "reservation_never_reduced": true,
+    "usage_after": {
+      "requests": 11,
+      "rows_read": 17,
+      "rows_written": 3,
+      "unknown_ops": 0
+    },
+    "partial_cron_failure": {
+      "schema": "PARTIAL_CRON_IN_MEMORY_DIAGNOSTIC_V1",
+      "generation": "CONTROLLED_CURRENT_GENERATION",
+      "head": "cccccccccccccccccccccccccccccccccccccccc",
+      "source_run_id": "CONTROLLED_NEW_CATALOG_CARRIER",
+      "cron": {
+        "run_id": "CONTROLLED_NEW_UNRESOLVED_CATALOG",
+        "status": "PARTIAL",
+        "completed_ts": 1792570325097,
+        "universe_total": 105,
+        "scanned": 99,
+        "persistence_status": "NOT_CLOSED"
+      },
+      "approved_universe_audit": {
+        "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+        "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+        "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+        "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+        "approved_contracts": 122,
+        "approved_assets": 105,
+        "catalog_families": 3,
+        "unsupported_inverse_delivery_contracts": 17,
+        "catalog_observed_ts": 1791827516363,
+        "observed_ts": 1792570324097,
+        "expected_analysis_contracts": 105,
+        "accepted_analysis_contracts": 99,
+        "missing_approved_analysis_contracts": [
+          "BTR-USDT",
+          "DOS-USDT",
+          "GPS-USDT",
+          "PIPPIN-USDT",
+          "SKR-USDT",
+          "UB-USDT"
+        ],
+        "officially_unavailable_analysis_contracts": [],
+        "unresolved_approved_analysis_contracts": [
+          "BTR-USDT",
+          "DOS-USDT",
+          "GPS-USDT",
+          "PIPPIN-USDT",
+          "SKR-USDT",
+          "UB-USDT"
+        ],
+        "checked_analysis_contracts": 99,
+        "market_data_analysis_contracts": 99,
+        "scan_count_basis": "APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE",
+        "outside_approved_crypto_contracts": [],
+        "identity_rejected": [],
+        "duplicate_rejected": [],
+        "status": "NOT_CLOSED",
+        "structural_membership_only": true,
+        "source_clocks_refreshed": false,
+        "approved_universe_changed": false,
+        "native_availability_diagnostic": {
+          "schema": "APPROVED_HTX_NATIVE_AVAILABILITY_DIAGNOSTIC_V1",
+          "status": "CAPTURED",
+          "scope": "EXECUTED_HELPER_PREDICATES_AND_ALREADY_LOADED_METADATA_ONLY",
+          "observation_ts": 1792570324097,
+          "catalog_observed_ts": 1792570324725,
+          "catalog_source_ts": 1792570324399,
+          "clock_basis": "EXISTING_CALLER_EVALUATION_AND_CATALOG_OBSERVATION_NOT_BODY_COMPLETION",
+          "original_body_completion_ts": null,
+          "raw_body_sha256": null,
+          "catalog_gate": {
+            "first_failed_term": null,
+            "ok": true,
+            "http_status": 200,
+            "source_url_exact": true,
+            "payload_status": "ok",
+            "data_is_array": true,
+            "catalog_rows_count": 99,
+            "classifier_is_function": true
+          },
+          "missing_contracts_count": 6,
+          "qualified_contracts_count": 0,
+          "records": [
+            {
+              "contract": "BTR-USDT",
+              "analysis_input_match_count": 0,
+              "native_catalog_match_count": 0,
+              "first_failed_term": "NATIVE_CATALOG_MATCH_COUNT_NOT_ONE",
+              "native_symbol": null,
+              "native_contract_status": null,
+              "business_type": null,
+              "contract_type": null,
+              "trade_partition": null,
+              "labels_count": null,
+              "tradfi_labels_count": null,
+              "classification": null,
+              "value_overflow": false
+            },
+            {
+              "contract": "DOS-USDT",
+              "analysis_input_match_count": 0,
+              "native_catalog_match_count": 0,
+              "first_failed_term": "NATIVE_CATALOG_MATCH_COUNT_NOT_ONE",
+              "native_symbol": null,
+              "native_contract_status": null,
+              "business_type": null,
+              "contract_type": null,
+              "trade_partition": null,
+              "labels_count": null,
+              "tradfi_labels_count": null,
+              "classification": null,
+              "value_overflow": false
+            },
+            {
+              "contract": "GPS-USDT",
+              "analysis_input_match_count": 0,
+              "native_catalog_match_count": 0,
+              "first_failed_term": "NATIVE_CATALOG_MATCH_COUNT_NOT_ONE",
+              "native_symbol": null,
+              "native_contract_status": null,
+              "business_type": null,
+              "contract_type": null,
+              "trade_partition": null,
+              "labels_count": null,
+              "tradfi_labels_count": null,
+              "classification": null,
+              "value_overflow": false
+            },
+            {
+              "contract": "PIPPIN-USDT",
+              "analysis_input_match_count": 0,
+              "native_catalog_match_count": 0,
+              "first_failed_term": "NATIVE_CATALOG_MATCH_COUNT_NOT_ONE",
+              "native_symbol": null,
+              "native_contract_status": null,
+              "business_type": null,
+              "contract_type": null,
+              "trade_partition": null,
+              "labels_count": null,
+              "tradfi_labels_count": null,
+              "classification": null,
+              "value_overflow": false
+            },
+            {
+              "contract": "SKR-USDT",
+              "analysis_input_match_count": 0,
+              "native_catalog_match_count": 0,
+              "first_failed_term": "NATIVE_CATALOG_MATCH_COUNT_NOT_ONE",
+              "native_symbol": null,
+              "native_contract_status": null,
+              "business_type": null,
+              "contract_type": null,
+              "trade_partition": null,
+              "labels_count": null,
+              "tradfi_labels_count": null,
+              "classification": null,
+              "value_overflow": false
+            },
+            {
+              "contract": "UB-USDT",
+              "analysis_input_match_count": 0,
+              "native_catalog_match_count": 0,
+              "first_failed_term": "NATIVE_CATALOG_MATCH_COUNT_NOT_ONE",
+              "native_symbol": null,
+              "native_contract_status": null,
+              "business_type": null,
+              "contract_type": null,
+              "trade_partition": null,
+              "labels_count": null,
+              "tradfi_labels_count": null,
+              "classification": null,
+              "value_overflow": false
+            }
+          ],
+          "records_omitted": 0,
+          "value_overflows": 0,
+          "limits": {
+            "records": 8,
+            "record_utf8": 1024,
+            "frame_utf8": 8192
+          },
+          "admission_granted": false
+        },
+        "native_catalog_parsed_snapshot": {
+          "schema": "APPROVED_HTX_PUBLIC_PARSED_CATALOG_V1",
+          "status": "COMPLETE_PARSED_PUBLIC_CATALOG",
+          "complete": true,
+          "representation": "ALREADY_PARSED_JSON_NOT_ORIGINAL_RESPONSE_TEXT_OR_WIRE",
+          "source_url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info",
+          "http_status": 200,
+          "transport_ok": true,
+          "payload_status": "ok",
+          "evaluation_ts": 1792570324097,
+          "catalog_observed_ts": 1792570324725,
+          "catalog_source_ts": 1792570324399,
+          "original_body_completion_ts": null,
+          "raw_body_sha256": null,
+          "max_snapshot_utf8_bytes": 262144,
+          "emitted_json_basis": "EXISTING_PARTIAL_FAILURE_JSON_2SPACE_DEPTH3",
+          "parsed_payload_utf8_bytes": 21606,
+          "omission_reason": null,
+          "parsed_payload": {
+            "status": "ok",
+            "ts": 1792570324399,
+            "data": [
+              {
+                "contract_code": "AAVE-USDT",
+                "symbol": "AAVE",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ACE-USDT",
+                "symbol": "ACE",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ADA-USDT",
+                "symbol": "ADA",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "AKE-USDT",
+                "symbol": "AKE",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ALGO-USDT",
+                "symbol": "ALGO",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "APR-USDT",
+                "symbol": "APR",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "APT-USDT",
+                "symbol": "APT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ARB-USDT",
+                "symbol": "ARB",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ASTER-USDT",
+                "symbol": "ASTER",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ATOM-USDT",
+                "symbol": "ATOM",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "AVAX-USDT",
+                "symbol": "AVAX",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "AVNT-USDT",
+                "symbol": "AVNT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BANK-USDT",
+                "symbol": "BANK",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BCH-USDT",
+                "symbol": "BCH",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BEAT-USDT",
+                "symbol": "BEAT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BILL-USDT",
+                "symbol": "BILL",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BNB-USDT",
+                "symbol": "BNB",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BOME-USDT",
+                "symbol": "BOME",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BONK-USDT",
+                "symbol": "BONK",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BR-USDT",
+                "symbol": "BR",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BTC-USDT",
+                "symbol": "BTC",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BTT-USDT",
+                "symbol": "BTT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "BTW-USDT",
+                "symbol": "BTW",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "CASHCAT-USDT",
+                "symbol": "CASHCAT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "CHZ-USDT",
+                "symbol": "CHZ",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "CT-USDT",
+                "symbol": "CT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "DASH-USDT",
+                "symbol": "DASH",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "DOGE-USDT",
+                "symbol": "DOGE",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "DOT-USDT",
+                "symbol": "DOT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ENA-USDT",
+                "symbol": "ENA",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ETC-USDT",
+                "symbol": "ETC",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ETH-USDT",
+                "symbol": "ETH",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ETHFI-USDT",
+                "symbol": "ETHFI",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "EUL-USDT",
+                "symbol": "EUL",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "FARTCOIN-USDT",
+                "symbol": "FARTCOIN",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "FIL-USDT",
+                "symbol": "FIL",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "FLOKI-USDT",
+                "symbol": "FLOKI",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "GRAM-USDT",
+                "symbol": "GRAM",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "HBAR-USDT",
+                "symbol": "HBAR",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "HYPE-USDT",
+                "symbol": "HYPE",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ICP-USDT",
+                "symbol": "ICP",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "JST-USDT",
+                "symbol": "JST",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "JUP-USDT",
+                "symbol": "JUP",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "LAB-USDT",
+                "symbol": "LAB",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "LINK-USDT",
+                "symbol": "LINK",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "LIT-USDT",
+                "symbol": "LIT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "LSK-USDT",
+                "symbol": "LSK",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "LTC-USDT",
+                "symbol": "LTC",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "MARSCOIN-USDT",
+                "symbol": "MARSCOIN",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "MUBARAK-USDT",
+                "symbol": "MUBARAK",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "MYX-USDT",
+                "symbol": "MYX",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "NEAR-USDT",
+                "symbol": "NEAR",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "NIL-USDT",
+                "symbol": "NIL",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "OKB-USDT",
+                "symbol": "OKB",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ONDO-USDT",
+                "symbol": "ONDO",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ONG-USDT",
+                "symbol": "ONG",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "OP-USDT",
+                "symbol": "OP",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ORDI-USDT",
+                "symbol": "ORDI",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "PAXG-USDT",
+                "symbol": "PAXG",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "PENGU-USDT",
+                "symbol": "PENGU",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "PEOPLE-USDT",
+                "symbol": "PEOPLE",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "PEPE-USDT",
+                "symbol": "PEPE",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "PONS-USDT",
+                "symbol": "PONS",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "PUMP-USDT",
+                "symbol": "PUMP",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "QNT-USDT",
+                "symbol": "QNT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "RAVE-USDT",
+                "symbol": "RAVE",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "RAY-USDT",
+                "symbol": "RAY",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "RIVER-USDT",
+                "symbol": "RIVER",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "RLC-USDT",
+                "symbol": "RLC",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "SHIB-USDT",
+                "symbol": "SHIB",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "SKYAI-USDT",
+                "symbol": "SKYAI",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "SOL-USDT",
+                "symbol": "SOL",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "STEEM-USDT",
+                "symbol": "STEEM",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "STRK-USDT",
+                "symbol": "STRK",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "SUI-USDT",
+                "symbol": "SUI",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "SUN-USDT",
+                "symbol": "SUN",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "SUSHI-USDT",
+                "symbol": "SUSHI",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "TAO-USDT",
+                "symbol": "TAO",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "TIA-USDT",
+                "symbol": "TIA",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "TRUMP-USDT",
+                "symbol": "TRUMP",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "TRX-USDT",
+                "symbol": "TRX",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "TUT-USDT",
+                "symbol": "TUT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "UNI-USDT",
+                "symbol": "UNI",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "USELESS-USDT",
+                "symbol": "USELESS",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "VELVET-USDT",
+                "symbol": "VELVET",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "WIF-USDT",
+                "symbol": "WIF",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "WIN-USDT",
+                "symbol": "WIN",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "WLD-USDT",
+                "symbol": "WLD",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "XAUT-USDT",
+                "symbol": "XAUT",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "XLM-USDT",
+                "symbol": "XLM",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "XMR-USDT",
+                "symbol": "XMR",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "XPL-USDT",
+                "symbol": "XPL",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "XRP-USDT",
+                "symbol": "XRP",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ZEC-USDT",
+                "symbol": "ZEC",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "ZKC-USDT",
+                "symbol": "ZKC",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "哈基米-USDT",
+                "symbol": "哈基米",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "币安人生-USDT",
+                "symbol": "币安人生",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "牛来-USDT",
+                "symbol": "牛来",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              },
+              {
+                "contract_code": "龙虾-USDT",
+                "symbol": "龙虾",
+                "contract_status": 1,
+                "business_type": "swap",
+                "contract_type": "swap",
+                "trade_partition": "USDT",
+                "labels": [],
+                "tradfi_labels": [],
+                "public_controlled_note": "CONTROLLED_NOT_NATIVE"
+              }
+            ],
+            "public_extra": {
+              "kind": "NEW_CONTROLLED_PARSED_PAYLOAD",
+              "unicode": "котировка ≠ wire"
+            }
+          }
+        }
+      },
+      "candidate_selection_audit": {
+        "status": "CONTROLLED_NOT_A_NEW_DECISION"
+      },
+      "d1_day_admission": {
+        "allowed": true,
+        "unknown_ops": 0
+      },
+      "additional_SQL": 0,
+      "additional_source_HTTP": 0,
+      "full_report_completed": false,
+      "entry_authorized": false,
+      "Telegram_SENT_claimed": false
+    }
+  },
+  "fixture_provenance": "NEW_CONTROLLED_PUBLIC_PARSED_CATALOG_AND_MEMORY_EXPORTER_NOT_NATIVE_RESPONSE_OR_ACTUAL_REPORT",
+  "snapshot_limit_utf8_bytes": 262144,
+  "old_trace_limit_utf8_bytes": 8192,
+  "only_proposed_helper_changed": true,
+  "old_scope_outputs_and_gates_unchanged": true,
+  "raw_body_or_wire_retained": false,
+  "body_completion_ts": null,
+  "new_SQL": 0,
+  "provider_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "new_admission": false,
+  "new_current_source_facts": false,
+  "old_accepted_cases_replayed": false,
+  "existing_response395674_recovered": false
+}

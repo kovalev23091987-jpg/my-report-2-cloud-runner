@@ -1,0 +1,173 @@
+{
+  "schema": "PUMP_F550_SOURCE_SINGLE_NATIVE_ACTUAL_V1",
+  "status": "SPENT_FINALIZED_3RESPONSES_WITH_CONCRETE_OPTIONAL_TRADES_PARSER_DEFECT",
+  "run_id": "pump-f550-source-feasibility-20261025-one",
+  "authority_main": "c053263012501b00de1e28f273fbab966548d12a",
+  "recorded_ts": 1792958281952,
+  "capture_sha256": "0170bba73bc1fd2d56796d2c448258f6192a8c8fb612ab438d4f3d017de60e07",
+  "capture_bytes": 1186568,
+  "private_raw_preserved": true,
+  "client_HTTP_attempts": 1,
+  "provider_attempts": 3,
+  "provider_completed_replies": 3,
+  "provider_new_unknowns": 0,
+  "native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:CONTROL:pump-f550-source-feasibility-20261025-one",
+    "usage": {
+      "requests": 28,
+      "rows_read": 51,
+      "rows_written": 15,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 51,
+      "rows_written": 15
+    },
+    "original_envelope_never_reduced": true
+  },
+  "native_budget_snapshot": {
+    "schema": "PUMP_SHARED_NATIVE_DAY_BOUNDED_SNAPSHOT_V1",
+    "day_utc": "2026-10-25",
+    "observed_ts": 1792958218125,
+    "reservation_count": 16,
+    "accounted_reads_upper": 48500,
+    "accounted_writes_upper": 2910,
+    "unknown_count": 0,
+    "unacknowledged": 0,
+    "complete": true,
+    "covers": "CURRENT_SHARED_SHADOW_TABLE_ONLY",
+    "whole_account_complete": false,
+    "original_reservations_not_refunded": true
+  },
+  "transport": [
+    {
+      "path": "/openApi/swap/v2/quote/trades",
+      "status": 200,
+      "business_code": 0,
+      "rows": 1000,
+      "received_ts": 1792958218994,
+      "request_started_ts": 1792958218332,
+      "latency_ms": 662,
+      "body_bytes": 134705,
+      "body_bytes_basis": "FETCH_RESPONSE_BODY_BYTES_NOT_COMPRESSED_NETWORK_WIRE",
+      "wire_bytes": null
+    },
+    {
+      "path": "/openApi/swap/v3/quote/klines",
+      "status": 200,
+      "business_code": 0,
+      "rows": 125,
+      "received_ts": 1792958219615,
+      "request_started_ts": 1792958219337,
+      "latency_ms": 278,
+      "body_bytes": 13749,
+      "body_bytes_basis": "FETCH_RESPONSE_BODY_BYTES_NOT_COMPRESSED_NETWORK_WIRE",
+      "wire_bytes": null
+    },
+    {
+      "path": "/openApi/swap/v2/quote/ticker",
+      "status": 200,
+      "business_code": 0,
+      "rows": 1015,
+      "received_ts": 1792958221604,
+      "request_started_ts": 1792958220898,
+      "latency_ms": 706,
+      "body_bytes": 364496,
+      "body_bytes_basis": "FETCH_RESPONSE_BODY_BYTES_NOT_COMPRESSED_NETWORK_WIRE",
+      "wire_bytes": null
+    }
+  ],
+  "SOL_H125": {
+    "status": "USABLE",
+    "coverage": {
+      "window_start": 1792950660000,
+      "window_end": 1792958160000,
+      "interval_ms": 60000,
+      "expected_rows": 125,
+      "returned_rows": 125,
+      "emitted_rows": 125,
+      "noncontiguous_older_rows_excluded": 0,
+      "complete": true,
+      "gaps": [],
+      "internal_gaps": [],
+      "missing_older_prefix": [],
+      "history_state": "COMPLETE_REQUESTED_WINDOW",
+      "observed_available_start": 1792950660000,
+      "available_start": 1792950660000,
+      "available_end": 1792958160000,
+      "contiguous_tail": {
+        "start_ts": 1792950660000,
+        "end_ts": 1792958160000,
+        "closed_bars": 125,
+        "duration_ms": 7500000
+      },
+      "usable_windows": [
+        {
+          "window_ms": 300000,
+          "window_start": 1792957860000,
+          "window_end": 1792958160000,
+          "closed_bars": 5
+        },
+        {
+          "window_ms": 900000,
+          "window_start": 1792957260000,
+          "window_end": 1792958160000,
+          "closed_bars": 15
+        },
+        {
+          "window_ms": 3600000,
+          "window_start": 1792954560000,
+          "window_end": 1792958160000,
+          "closed_bars": 60
+        }
+      ],
+      "time_qualified": true,
+      "volume_qualified": false,
+      "exact_turnover_available": false,
+      "relative_volume_qualified": true,
+      "time_basis": "CCXT_CONSUMER_OPEN_TIME",
+      "time_evidence_ref": "pump-report/handoffs/sources/CCXT_PINNED_NATIVE_CANDLE_REVIEW_V1.json",
+      "owner_decision_ref": "checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json",
+      "independent_vendor_guarantee_claimed": false,
+      "native_quantity_unit": "UNKNOWN",
+      "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+      "volume_comparison_key": "BINGX|USDT_M|BINGX:USDT_M:100028:SOL-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+      "absolute_base_amount_qualified": false,
+      "absolute_USD_amount_qualified": false
+    },
+    "absolute_volume_units_qualified": false,
+    "relative_volume_owner_accepted": true
+  },
+  "optional_trades": {
+    "status": "ERROR",
+    "reason": "BINGX_BOUNDED_TRADE_ARRAY_REQUIRED",
+    "requested_limit": 100,
+    "actual_source_rows": 1000,
+    "offline_source_followup": "F553",
+    "no_retry": true
+  },
+  "bulk550_coverage": "PENDING_SOURCE_F551_OFFLINE_ONCE",
+  "current_catalog_refreshed": false,
+  "all550_CORE_qualified": false,
+  "Telegram": 0,
+  "schedules_enabled": false,
+  "production_enabled": false,
+  "delivery_enabled": false,
+  "old_report_paused": true,
+  "totals_known_measured": {
+    "native_requests": 423,
+    "native_rows_read": 868,
+    "native_rows_written": 264,
+    "native_unknown": 0,
+    "provider_attempts": 25,
+    "provider_completed_replies": 23,
+    "provider_retained_unknown": 2,
+    "BINGX_total_attempts": 20,
+    "BINGX_current_qualification_spent": 15,
+    "BINGX_current_qualification_cap": 24,
+    "CONTROL_spent": 6,
+    "CONTROL_fixed_extra_SPENT": true
+  },
+  "all_original_reserved_maxima_caps_unknowns_not_refunded": true
+}

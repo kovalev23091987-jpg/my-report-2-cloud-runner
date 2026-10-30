@@ -1,0 +1,62 @@
+{
+  "schema": "ROOT_ORDERLY_CURRENT_PRIMARY_DELTA_V1",
+  "authority_main": "60e2794545e56956069c751100d680a340adb00e",
+  "reviewed_utc": "2026-10-25T21:38:49.921Z",
+  "new_primary_page_reads": 2,
+  "market_API_calls": 0,
+  "method": "POST",
+  "url": "https://api.orderly.org/v1/public/query",
+  "read_only": true,
+  "auth": "NONE_PER_CURRENT_OFFICIAL_PUBLIC_INFO_INTRO",
+  "public_pool": {
+    "weight_per_minute": 1200,
+    "scope": "ANONYMOUS_IP_ROLLING_MINUTE",
+    "independent_of": [
+      "REST",
+      "WEBSOCKET"
+    ],
+    "platform_positions_weight": 20,
+    "rate_limit_status_weight": 0
+  },
+  "confirmed_request": {
+    "type": "platformPositions",
+    "min_notional": "0",
+    "limit": 500
+  },
+  "symbol_filter_required": false,
+  "broker_filter_required": false,
+  "limit_range": [
+    1,
+    5000
+  ],
+  "cursor": "OPAQUE_OPTIONAL;NO_AUTOMATIC_PAGES_IN_PROPOSED_FIRST_CALL",
+  "position_clock": {
+    "ts": "SERVER_RESPONSE_TIMESTAMP_MS_NOT_SNAPSHOT_EVENT_TIME",
+    "documented_platform_positions_worst_age_ms": 5000,
+    "data_freshness_header": "SERVER_RESPONSE_TIME_NOT_GENERATION_TIME",
+    "source_event_ts_in_example": null,
+    "opened_at": "POSITION_OPEN_DATE_NOT_SNAPSHOT_CLOCK",
+    "required_consumer": "Preserve response ts as such; separately prove/record source age bound and conservative validity, never relabel receive as event or opened_at as freshness."
+  },
+  "positions": {
+    "est_liq_price": "ESTIMATED_CURRENT_OPEN_POSITION_LIQUIDATION_PRICE",
+    "nullable_calc_fields": true,
+    "margin_mode": "CROSS_OR_ISOLATED",
+    "next_cursor": "PAGINATED_PARTIAL_UNLESS_END",
+    "sort": "POSITION_ID_DESC",
+    "id_field_example": null,
+    "dedup": "RETURNED_STABLE_ID_OR_INDEPENDENTLY_QUALIFIED_ACCOUNT_MARKET_IDENTITY;NOT_ARRAY_INDEX"
+  },
+  "remaining": [
+    "CURRENT_ACTUAL_REPLY_AND_FREE_ACCESS",
+    "INDEPENDENT_BINGX_ORDERLY_UNDERLYING_MAPPING",
+    "USDC_USDT_VENUE_PRICE_BASIS",
+    "MONEY_UNITS_AND_CLOCK_BOUND_CONTRACT",
+    "BROKER_CONNECTED_CONSUMER_AND_ACTUAL_ADMISSION"
+  ],
+  "primary_urls": [
+    "https://orderly.network/docs/build-on-omnichain/public-info-api/overview",
+    "https://orderly.network/docs/build-on-omnichain/public-info-api/platform/platform-positions"
+  ],
+  "native_scope_coverage_not_proven": true
+}

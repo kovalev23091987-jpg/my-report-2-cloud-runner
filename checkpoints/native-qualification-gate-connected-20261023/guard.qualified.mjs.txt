@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
+import {readMirrorContext,assertMirrorOwner} from '../runner/github-four-mirror-cas.mjs';
+const P='checkpoints/native-qualification-gate-connected-20261023',s=JSON.parse(fs.readFileSync(P+'/qualification-plan.json')),stage=process.argv[2],sha=b=>createHash('sha256').update(b).digest('hex');
+if(!['before','after'].includes(stage)||process.env.GITHUB_REPOSITORY!=='kovalev23091987-jpg/my-report-2-cloud-runner'||process.env.GITHUB_REF!=='refs/heads/work/native-qualification-gate-20261023')throw Error('EXACT_NEW_GATE_CASE_SCOPE');
+for(const [p,h]of Object.entries(s.files))if(sha(fs.readFileSync(p))!==h)throw Error('NEW_GATE_SOURCE_DRIFT:'+p);
+if(sha(execFileSync('git',['show','HEAD:'+s.orchestration_path],{timeout:2000,maxBuffer:262144}))!==s.orchestration_git_sha256)throw Error('NEW_GATE_ORCHESTRATION_GIT_DRIFT');
+const c=makeGithubControl({repository:process.env.GITHUB_REPOSITORY,token:process.env.GITHUB_TOKEN,maximum_calls:1}),context=await readMirrorContext(c,{expected_main:s.expected_main,maximum_blob_reads:0}),checked=assertMirrorOwner(context,s.owner,Date.now(),s.scope_prefix);
+if(JSON.stringify(checked.lease)!==JSON.stringify(s.owned_lease))throw Error('EXACT_NEW_GATE_OWN_LEASE');
+if(stage==='before'&&checked.lease.expires_ts-Date.now()<300000)throw Error('NEW_GATE_FIVE_MIN_HEADROOM_REQUIRED');
+fs.mkdirSync('audit-output/native-qualification-gate',{recursive:true});fs.writeFileSync('audit-output/native-qualification-gate/guard-'+stage+'.json',JSON.stringify({status:'EXACT_NEW_GATE_CASE_SCOPE',stage,main:context.head,owner:s.owner,source_hashes:s.files,control:c.metrics,assembled_runtime_replayed:false,native_SQL:0,providerHTTP:0,MAIN:0,Telegram:0},null,2)+'\n');

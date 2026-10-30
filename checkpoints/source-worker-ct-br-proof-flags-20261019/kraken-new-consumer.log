@@ -1,0 +1,37 @@
+✔ ALGO new N10 price consumer uses actual 240 native closed bars and 2 last15 trades (8.155291ms)
+ℹ KRAKEN_PRICE_WITNESS {"contract":"ALGO-USDT","source_ts":1791718380000,"first_known_ts":1791718413870,"window_start":1791717480000,"window_end":1791718380000,"path_open":0.11826,"path_high":0.11826,"path_low":0.11794,"path_close":0.11794,"active_minute_count":1,"recent_trade_count":2,"source_cache_binding":{"schema":"KRAKEN_N10_REDERIVED_CACHE_BINDING_V1","source":"N05_OFFICIAL_FLOW:KRAKEN","asset_key":"NATIVE_FLOW:ALGO-USDT:1791718380000","cache_observed_ts":1791718413870,"cache_expires_ts":1791718680000,"cache_payload_sha256":"19c5198a4f68d78c34c4b56d1eb25584fc48d464b03d06b2bdc81cd1c7b478e4","rederived_component_sha256":"c92bda9cd4a3029240e0593cf97c3061b3f5fe9ee5ec160db2c9de932bfa5f70","selected_price_bars_sha256":"5877293f005e4ba4b37538468d2677400ec006cd41bac3294a34441869eb742d"},"runtime_admission_proven":false}
+✔ XMR new N10 price consumer uses actual 240 native closed bars and 144 last15 trades (12.490333ms)
+ℹ KRAKEN_PRICE_WITNESS {"contract":"XMR-USDT","source_ts":1791718380000,"first_known_ts":1791718415754,"window_start":1791717480000,"window_end":1791718380000,"path_open":532.21,"path_high":533.69,"path_low":532.21,"path_close":533.43,"active_minute_count":15,"recent_trade_count":144,"source_cache_binding":{"schema":"KRAKEN_N10_REDERIVED_CACHE_BINDING_V1","source":"N05_OFFICIAL_FLOW:KRAKEN","asset_key":"NATIVE_FLOW:XMR-USDT:1791718380000","cache_observed_ts":1791718415754,"cache_expires_ts":1791718680000,"cache_payload_sha256":"ee644c788253ea44c45861da339991e95792655337ef3051fd1ec019eb180dd8","rederived_component_sha256":"2e7b7bdaf070de6b9faabb17c4806ec432b399f9b1e4f8a3331a2c45b31a753c","selected_price_bars_sha256":"d74305794f9cbe92873c54f4d793894c5460de9d30aaee46c4b971c8fee43f80"},"runtime_admission_proven":false}
+✔ Kraken N10 refuses foreign contract (0.451458ms)
+✔ Kraken N10 refuses foreign native identity (0.6015ms)
+✔ Kraken N10 refuses wrong quote (0.414458ms)
+✔ Kraken N10 refuses forged N05 quantity (1.092958ms)
+✔ Kraken N10 refuses forged recent tradecount (0.915667ms)
+✔ Kraken N10 refuses forged proof bit (0.321292ms)
+✔ Kraken N10 refuses stale source window (0.324ms)
+✔ Kraken N10 refuses future cache receipt (0.345958ms)
+✔ Kraken N10 refuses refreshed cache clock (0.3045ms)
+✔ Kraken N10 refuses raised cache expiry (0.318959ms)
+✔ Kraken N10 refuses wrong collector version (0.28025ms)
+✔ Kraken N10 refuses missing native minute (0.872625ms)
+✔ Kraken N10 refuses duplicate native minute (0.442333ms)
+✔ Kraken N10 refuses foreign result instrument (0.342167ms)
+✔ Kraken N10 refuses invalid native cursor (0.302542ms)
+✔ Kraken N10 refuses empty raw history (0.291583ms)
+✔ Kraken N10 refuses missing raw trade (0.758916ms)
+✔ Kraken N10 refuses tampered raw tradeprice (0.932167ms)
+✔ Kraken N10 refuses tampered native count (0.785917ms)
+✔ Kraken N10 refuses tampered OHLC not used by flow normalizer (1.01025ms)
+✔ native open minute and cursors never become an extra closed bar or source clock (1.367708ms)
+✔ provider input requires current HTX spot evidence; old catalog or boolean never grants runtime use (8.206667ms)
+✔ all15 owner exclusions remain refused before any external preparation; historical ALGO/XMR membership is not freshness (5.102042ms)
+✔ inspection never opens provider HTTP or SQL and does not mutate original cache (1.197083ms)
+✔ a fully reconciled but inactive recent window cannot supply a N10 price path (1.54425ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 101.28775

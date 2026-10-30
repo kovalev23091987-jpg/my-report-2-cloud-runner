@@ -1,0 +1,539 @@
+{
+  "schema": "PUMP_F642_PROTECTED_SOURCE_REFERENCE_MATRIX_V1",
+  "status": "STATIC_CONSUMER_REFERENCE_FLOORS_NOT_DELETE_AUTHORITY",
+  "scope": "Referenced source/provenance/coverage originals only; no inventory scan, rotation or install review",
+  "authority_main": "415541ce3aa04e0d883454a63531c3ae9aa17bb9",
+  "source_remainder_groups": [
+    "REMAINDER-02",
+    "REMAINDER-05",
+    "REMAINDER-06",
+    "REMAINDER-07",
+    "REMAINDER-08"
+  ],
+  "tz_ids": [
+    "TZ12.002",
+    "TZ12.004",
+    "TZ12.005",
+    "TZ12.008",
+    "TZ12.009",
+    "TZ12.011",
+    "TZ17.002",
+    "TZ17.006",
+    "TZ17.012",
+    "TZ17.014",
+    "TZ17.015",
+    "TZ17.016"
+  ],
+  "policy": {
+    "freshness_is_not_retention": true,
+    "minimum_consumer_window_is_not_delete_permission": true,
+    "no_new_numeric_storage_TTL": true,
+    "approved_delete_ttl_ms": null,
+    "global_reference_closure": false,
+    "automatic_delete": false,
+    "archive_reader_verified": false,
+    "originals_required": true,
+    "cursor_is_not_GC_watermark": true
+  },
+  "rows": [
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-01",
+      "refs": [
+        "input.facts.*.fact_id",
+        "event_ts",
+        "received_ts",
+        "expires_ts",
+        "evidence_ref",
+        "source/primary_provider/venue/unit/origin"
+      ],
+      "consumers": [
+        "sources/index.mjs fact/reusablePrice",
+        "runtime/runner.mjs immutable input",
+        "analytics/feature-capsule.mjs factHeader"
+      ],
+      "freshness_ms": {
+        "price": 30000,
+        "orderbook": 15000,
+        "candles": 90000,
+        "trades": 30000,
+        "open_interest": 120000,
+        "funding": 300000,
+        "observed_positions": 120000,
+        "model_map": 300000
+      },
+      "min_storage_ms": null,
+      "min_until": "Пока любой original/card/anchor/outcome/audit ссылается на факт; freshness expiry не разрешение удаления.",
+      "protects": "Исходные часы, единицы, source/provider и отсутствие значения; повторное получение не обновляет event time.",
+      "code": [
+        "pump-report/sources/index.mjs:112",
+        "pump-report/analytics/feature-capsule.mjs:33"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-02",
+      "refs": [
+        "fact.evidence_ref",
+        "broker receipt_id/request_started_ts/received_ts",
+        "referenced private original captures"
+      ],
+      "consumers": [
+        "projectProtectedReferences external edges",
+        "feature provenance/readback",
+        "source clock/shape review"
+      ],
+      "freshness_ms": null,
+      "min_storage_ms": null,
+      "min_until": "До разрешения всех ссылок на exact receipt/body SHA и закрытия неизвестных расходов/аудита; одинаковый размер/row_count не заменяет тот же body.",
+      "protects": "Сохранять только фактически referenced originals; этот документ не является описью всех private файлов.",
+      "code": [
+        "pump-report/analytics/feature-capsule.mjs:171",
+        "pump-report/runtime/budget.mjs:303"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-03",
+      "refs": [
+        "instrument.identity_evidence_ref",
+        "entry.native_contract_id/native_base/family",
+        "registry exact decision_sha256",
+        "binding review refs"
+      ],
+      "consumers": [
+        "sources/index.mjs registerEntry/resolve/getCatalog",
+        "registry/native-reviewed550.mjs",
+        "original/capsule identity binding"
+      ],
+      "freshness_ms": null,
+      "min_storage_ms": null,
+      "min_until": "Пока привязка используется live-registry либо любым сохранённым original; fixed deletion TTL не утверждён.",
+      "protects": "550 captured bindings не currentglobalN;9 units UNKNOWN не UNSUPPORTED; не удалять единственный положительный identity proof.",
+      "projection_gap": "projectProtectedReferences не перечисляет instrument.identity_evidence_ref отдельным edge; одного текущего projection недостаточно.",
+      "code": [
+        "pump-report/sources/index.mjs:43",
+        "pump-report/analytics/feature-capsule.mjs:110"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-04",
+      "refs": [
+        "unit_evidence_ref",
+        "qualification.evidence_ref",
+        "time_evidence_ref/owner_decision_ref",
+        "funding clock/period/unit_proof_parts",
+        "pinned consumer source refs"
+      ],
+      "consumers": [
+        "sources/native-relative-qualification.mjs",
+        "sources/funding-qualification.mjs",
+        "sources/bingx.mjs parseCandles/parseOrderbook",
+        "historical unit/clock interpretation"
+      ],
+      "freshness_ms": null,
+      "min_storage_ms": null,
+      "min_until": "Пока соответствующий profile/unit mode либо исторический original используется; после замены profile старое доказательство всё ещё нужно старому original.",
+      "protects": "Relative volume не BASE/USD; неизвестный period/unit/source clock не ноль.",
+      "projection_gap": "factHeader — ограниченный projection; он не заменяет все unit/clock proof refs. Нужен отдельный transitive closure до удаления.",
+      "code": [
+        "pump-report/sources/native-relative-qualification.mjs:4",
+        "pump-report/analytics/feature-capsule.mjs:33"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-05",
+      "refs": [
+        "input.facts.candles.value",
+        "growth_24h boundary facts",
+        "candle volume comparison_key",
+        "fact/plan basis_fact_ids"
+      ],
+      "consumers": [
+        "sources/index.mjs candles",
+        "sources/day-growth.mjs parseDayGrowth",
+        "analysis movement/volume/plan",
+        "feature-capsule initialFeatures"
+      ],
+      "freshness_ms": 90000,
+      "lookback_ms": {
+        "core_closed125": 7500000,
+        "day_closed1440": 86400000
+      },
+      "min_storage_ms": null,
+      "min_until": "Исходный input сохранять с original/outcome refs;125m/24h — окна расчёта, не новый storage TTL.",
+      "protects": "Закрытые окна, gaps/relative units и original boundary clocks; capsule scalar не полная замена raw input.",
+      "code": [
+        "pump-report/sources/index.mjs:164",
+        "pump-report/sources/day-growth.mjs:16"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-06",
+      "refs": [
+        "input.facts.orderbook",
+        "input.facts.trades",
+        "receipt_ref",
+        "basis_fact_ids in plan zones"
+      ],
+      "consumers": [
+        "liquidity/plan",
+        "delivery revalidation",
+        "bounded trade context",
+        "feature-capsule tradeProjection"
+      ],
+      "freshness_ms": {
+        "orderbook": 15000,
+        "trades": 30000
+      },
+      "min_storage_ms": null,
+      "min_until": "Сохранённый original и его plan/receipt refs; закрытие freshness окна не закрывает доказательство исходного решения.",
+      "protects": "Один стакан не support persistence;1000 trades не полный поток; quote-notional не BASE.",
+      "code": [
+        "pump-report/sources/index.mjs:184",
+        "pump-report/sources/index.mjs:338"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-07",
+      "refs": [
+        "zone.evidence_ref",
+        "route.identity_evidence_ref",
+        "route.model_evidence_ref",
+        "route.price_mapping.evidence_ref",
+        "zone source/provider/venue/basis_type/model/units/clocks"
+      ],
+      "consumers": [
+        "sources/liquidations.mjs",
+        "Orderly/HL position producers",
+        "analysis map provenance",
+        "projectProtectedReferences zone edges"
+      ],
+      "freshness_ms": {
+        "observed_positions": 120000,
+        "model_map": 300000
+      },
+      "min_storage_ms": null,
+      "min_until": "Условно: пока сохранённая используемая zone/original/audit имеет ссылку; если квалифицированных зон0, не придумывать наличие native records.",
+      "protects": "Source/model/basis clocks отдельно; внешний venue не становится BingX; conversion expiry может ограничить срок сильнее общего model TTL.",
+      "presence": "CODE_DEFINED_CONDITIONAL; current qualified maps0, no new native inventory",
+      "code": [
+        "pump-report/sources/liquidations.mjs:3",
+        "pump-report/analytics/feature-capsule.mjs:180"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-08",
+      "refs": [
+        "pump:analysis:<sha256>",
+        "saved.input/analysis",
+        "saved.implementation_sha256/evidence_class/saved_ts",
+        "original plan and fact_ids"
+      ],
+      "consumers": [
+        "runtime/retained-capsules.mjs original",
+        "runtime/outcome-journal.mjs remember/sync",
+        "runtime/saved-outcome.mjs",
+        "card.source_input_key"
+      ],
+      "freshness_ms": null,
+      "consumer_horizon_ms": 14400000,
+      "min_storage_ms": null,
+      "min_until": "Как минимум сохранять доступность для t0+4h outcome window; дольше при pending/UNKNOWN/possible-send/audit/statistics refs. Само наступление t0+4h не разрешает удаление.",
+      "protects": "Нельзя назначать старому original текущий implementation pin или ретроспективно менять clocks/evidence_class.",
+      "code": [
+        "pump-report/runtime/retained-capsules.mjs:10",
+        "pump-report/runtime/outcome-journal.mjs:42"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-09",
+      "refs": [
+        "pump:journal:<instrument_id>:<wave_id>",
+        "journal.analyses[].analysis_id",
+        "frozen_anchor.analysis_id/analysis_sha256/origin",
+        "pump:signal:<instrument_id>:<wave_id>",
+        "pump:outcome:pump:signal:<instrument_id>:<wave_id>"
+      ],
+      "consumers": [
+        "saved-outcome max4PK reader",
+        "outcome selection/journal",
+        "outcome/summary/capsule writers"
+      ],
+      "freshness_ms": null,
+      "consumer_horizon_ms": 14400000,
+      "min_storage_ms": null,
+      "min_until": "Сохранять совместно с original как минимум до deadline и далее при отсутствии/UNKNOWN/конфликте/неподтверждённом архивном reader/ссылках.",
+      "protects": "Не разрывать4PKкомплект;UNKNOWN не HIT/MISS;другой anchor не отдаёт свой результат выбранному original.",
+      "code": [
+        "pump-report/runtime/saved-outcome.mjs:21",
+        "pump-report/runtime/outcome-journal.mjs:69"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-10",
+      "refs": [
+        "pump:card:<card_id>",
+        "card.analysis.source_input_key",
+        "card#receipt",
+        "journal.publications[].receipt_ref",
+        "send_started_ts/message_id/text_hash/recipient binding"
+      ],
+      "consumers": [
+        "publication readback",
+        "outcome-journal frozen anchor",
+        "projectProtectedReferences",
+        "retained-capsules record"
+      ],
+      "freshness_ms": null,
+      "min_storage_ms": null,
+      "min_until": "Пока READY/SENDING/RETRYABLE/UNKNOWN, possible_send, receipt/audit/original refs не закрыты; отсутствие текущей цены не удаляет старую квитанцию.",
+      "protects": "Только сохранение ссылок: это не запуск OWNER-deferred ENTRY followup/recheck/cadence.",
+      "code": [
+        "pump-report/analytics/feature-capsule.mjs:181",
+        "pump-report/runtime/retained-capsules.mjs:37"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-11",
+      "refs": [
+        "pump:feature-capsule:v2:<analysis_sha>",
+        "pump:outcome-capsule:v2:*",
+        "pump:summary-capsule-link:v2:*",
+        "pump:protected-refs:v2:<digest>"
+      ],
+      "consumers": [
+        "retained capsule writer/readFeatureCapsule",
+        "summary/statistics lineage",
+        "future ROOT logical retention protocol"
+      ],
+      "freshness_ms": null,
+      "min_storage_ms": null,
+      "min_until": "approved_delete_ttl_ms=null; originals_required=true; global_reference_closure=false. Нельзя заменить original capsule-only хранением до отдельного проверенного ROOT-протокола.",
+      "protects": "Внешнее provenance не аутентифицировано; cursor не GC watermark; archive_reader_verified=false.",
+      "code": [
+        "pump-report/analytics/feature-capsule.mjs:117",
+        "pump-report/analytics/feature-capsule.mjs:159",
+        "pump-report/analytics/feature-capsule.mjs:208",
+        "pump-report/runtime/retained-capsules.mjs:41"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-12",
+      "refs": [
+        "pump:catalog:last-observed:v1",
+        "body_sha256/receipt_id/received_ts/implementation_sha256/evidence_class",
+        "classification decisions/proposal capture refs"
+      ],
+      "consumers": [
+        "catalog snapshot ingress writer",
+        "future listing/identity review",
+        "F619 metadata provenance"
+      ],
+      "freshness_ms": null,
+      "min_storage_ms": null,
+      "min_until": "Latest key заменяется существующим writer только новым valid bound snapshot и exact readback; referenced исторические body/decision proof не удаляются автоматически при этой замене.",
+      "protects": "Rows<=2000,record<=1900000UTF8bytes — bounds, не storage TTL; source_event_ts=null; raw body не восстанавливается из summary/одинакового row count.",
+      "code": [
+        "pump-report/runtime/catalog-snapshot.mjs:3",
+        "pump-report/runtime/catalog-snapshot.mjs:25"
+      ],
+      "bounds": {
+        "rows": 2000,
+        "record_utf8_bytes": 1900000
+      }
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-13",
+      "refs": [
+        "coverage observations: instrument_id/kind/capture_ts/status_at_capture/receipt_ref/artifact_sha256",
+        "F640 source/test/diff/manifest SHAs",
+        "opt-in selected_registry_coverage"
+      ],
+      "consumers": [
+        "sources/coverage.mjs normalizeSourceCoverage",
+        "getCoverage({include_universe:true})",
+        "operator source counts"
+      ],
+      "freshness_ms": null,
+      "min_storage_ms": null,
+      "min_until": "Пока coverage/audit ссылается на исходные observations и proof; latest skipped record не заменяет полную историю ever_checked/ever_usable.",
+      "protects": "NOT_CHECKED не ABSENT/UNSUPPORTED/qualified; as_of не source event clock; default getCoverage не строит550payload.",
+      "code": [
+        "pump-report/sources/coverage.mjs:14",
+        "pump-report/sources/index.mjs:459"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-14",
+      "refs": [
+        "pump:cache:<canonical_request_hash>",
+        "cached.received_ts/data/receipt_id",
+        "in-process inflight request owner/promise"
+      ],
+      "consumers": [
+        "runtime/budget.mjs createRequestBroker request"
+      ],
+      "freshness_ms": "caller ttl_ms bounded by profile; cache reuse checks received_ts+ttl_ms, fact usability independently checks original event_ts",
+      "min_storage_ms": null,
+      "min_until": "Не раньше конца действующего reuse window/завершения запроса; также не удалять единственную referenced receipt/body. Истёкший cache сам по себе только кандидат будущей ROOT-ротации.",
+      "protects": "Не создавать повторный запрос из-за раннего удаления coalesced state; cache read не обновляет source clocks.",
+      "code": [
+        "pump-report/runtime/budget.mjs:267",
+        "pump-report/runtime/budget.mjs:303"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-15",
+      "refs": [
+        "pump:negative-cache:<canonical_request_hash>",
+        "pump:resources.providers[*].backoff_until/consecutive_temporary_failures",
+        "Retry-After/native/provider pacing"
+      ],
+      "consumers": [
+        "broker exact-route negative cache",
+        "budget.assertProviderWindow/reserve/finalize"
+      ],
+      "freshness_ms": null,
+      "existing_control_windows_ms": {
+        "negative_route_cache": 3600000,
+        "temporary_backoff_base": 60000,
+        "temporary_backoff_max": 900000
+      },
+      "min_storage_ms": null,
+      "min_until": "Сохранять до stored expires_ts/backoff_until и завершения зависимых reserved/unknown запросов. Retry-After может быть дольше temporary_max; его не сокращать.",
+      "protects": "404/410 exact route не доказательство unsupported asset; удаление не должно обходить backoff или rearm caps.",
+      "code": [
+        "pump-report/runtime/source-error-policy.mjs:2",
+        "pump-report/runtime/budget.mjs:126",
+        "pump-report/runtime/budget.mjs:156"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-16",
+      "refs": [
+        "pump:resources day/month/provider counters",
+        "reservation_id/native receipts/shared ledger",
+        "issued floors/holds/manual3/future-cycle reserves",
+        "retained surplus grants"
+      ],
+      "consumers": [
+        "unified budget",
+        "native admission/finalization",
+        "provider cap enforcement and cost audit"
+      ],
+      "freshness_ms": null,
+      "existing_accounting_windows": [
+        "UTC day",
+        "UTC month",
+        "provider seconds/minutes",
+        "stored hold/backoff expiry"
+      ],
+      "min_storage_ms": null,
+      "min_until": "Не раньше применимых quota windows И закрытия всех issued/reserved/UNKNOWN/receipt/protected refs; смена UTCday и FINALIZED одного lookup не разрешают стирать старые unknown/floors.",
+      "protects": "Не повышать retained surplus200 и не удалять grants ради новых; default10 и old13spent/exactROOT14 не переименовывать/возвращать.",
+      "code": [
+        "pump-report/runtime/budget.mjs:102",
+        "pump-report/runtime/budget.mjs:149",
+        "pump-report/runtime/budget.mjs:236"
+      ]
+    },
+    {
+      "delete_allowed": false,
+      "approved_delete_ttl_ms": null,
+      "source_inventory_verified": false,
+      "id": "SRCREF-17",
+      "refs": [
+        "implementation artifact/pin and source/registry/profile modules",
+        "owner unit/clock decisions",
+        "accepted F619/F622/F637/F639/F640 receipts/manifests and referenced private originals"
+      ],
+      "consumers": [
+        "saved original implementation binding",
+        "unit/identity review reproducibility",
+        "ROOT future archive-reader/closure proof"
+      ],
+      "freshness_ms": null,
+      "min_storage_ms": null,
+      "min_until": "Пока хоть один original/capsule/card/audit использует pin/proof; активный и исторически referenced pin не заменять новой сборкой. Архив может стать заменой только после отдельной exact byte/reader/ref-closure приёмки ROOT.",
+      "protects": "Hash доказывает байты, не актуальный market truth/квалификацию; глобальная опись и разрешение удаления не получены.",
+      "code": [
+        "pump-report/runtime/retained-capsules.mjs:13",
+        "pump-report/analytics/feature-capsule.mjs:116"
+      ]
+    }
+  ],
+  "global_closure_gaps": [
+    "projectProtectedReferences covers supplied originals only, not complete native/D1/private/GitHub inventory.",
+    "fact.evidence_ref can be unresolved external original; receipt UUID is not a resolved storage locator.",
+    "instrument.identity_evidence_ref and transitive unit/clock/profile/route proof references require explicit closure beyond current projection.",
+    "Capsule factHeader is bounded and omits portions of original input/proof metadata; it cannot silently replace originals.",
+    "UNKNOWN/possible-send/unfrozen-anchor/pending-summary/external-audit/OWNER protected references block deletion."
+  ],
+  "separate_surfaces": [
+    "D1 business/protected state",
+    "GitHub evidence/artifacts",
+    "local private source captures/code snapshots"
+  ],
+  "not_executed": [
+    "native inventory/reference scan",
+    "archive/delete/rotation",
+    "TTL/cap changes",
+    "ENTRY followup",
+    "physical storage threshold/expiry/readback/throughput/sustainable-capacity tests",
+    "Node/build/test/provider/search/connection/Telegram"
+  ],
+  "install_boundary": {
+    "ROOT_install14": "Separate direct human authorization; SOURCE no native/service check",
+    "latest_known_live_before_receipts": "1deb73",
+    "ROOT_target": "75 modules artifact ff675 / pin2988",
+    "final_install_receipts_reviewed": false,
+    "actual_current_AUTO_PASS": false
+  },
+  "created_utc": "2026-10-27T20:21:38.465206+00:00"
+}

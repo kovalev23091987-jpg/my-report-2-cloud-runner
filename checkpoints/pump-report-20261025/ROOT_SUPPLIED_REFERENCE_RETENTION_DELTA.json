@@ -1,0 +1,32 @@
+{
+  "schema": "ROOT_SUPPLIED_REFERENCE_RETENTION_DELTA_V1",
+  "status": "REFERENCE_REQUIREMENTS_RECONCILED_NOT_CLEANUP_AUTHORITY",
+  "source_manifest": {
+    "path": "pump-report/handoffs/sources/F642_REFERENCE_MATRIX_MANIFEST_V1.json",
+    "sha256": "2e0856ef03872df380a35da127aa70da7800cacfd92ce9eec6ba703a996fa976"
+  },
+  "source_matrix": {
+    "path": "pump-report/handoffs/sources/F642_PROTECTED_SOURCE_REFERENCES_V1.json",
+    "sha256": "19cc3d5d5e82004e6e4a39edbe21b4e5d58605ef75c6cda8095902dd0ab50b0a",
+    "groups": 17
+  },
+  "analytics_matrix": {
+    "path": "pump-report/handoffs/analytics/package-bz21/BZ21_PROTECTED_OUTCOME_REFERENCE_DELTA.json",
+    "sha256": "97d85d74c75f14cfb25e284e923ac771744538f69bfe1d39285d270a204afe1d",
+    "groups": 8
+  },
+  "old35dataset_matrix_unchanged": true,
+  "concrete_missing_reference_edges": [
+    "Supplied instrument identity proof",
+    "Supplied unit/clock/owner/funding qualification proof"
+  ],
+  "implementation_packet": "F644 exact supplied paths + BZ23 bounded existing projection patch and one affected case; no enrichment of old originals",
+  "consumer_horizon_not_storage_TTL": true,
+  "approved_delete_ttl_ms": null,
+  "automatic_delete": false,
+  "global_reference_closure": false,
+  "archive_reader_verified": false,
+  "cap200_semantics_not_redefined": true,
+  "physical_storage_capacity_tests_OWNER_DEFERRED": true,
+  "uncompleted_storage_protocol_remains_open": true
+}

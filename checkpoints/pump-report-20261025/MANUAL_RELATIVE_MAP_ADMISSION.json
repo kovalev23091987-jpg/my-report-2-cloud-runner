@@ -1,0 +1,158 @@
+{
+  "schema": "PUMP_MANUAL_NATIVE_RELATIVE_AND_OPTIONAL_MAP_ADMISSION_V1",
+  "status": "POSITIVE_BOUNDED_ADMISSION_REQUIRES_FROZEN_ASSEMBLED_E_AND_EXACT_ARTIFACT_READBACK_BEFORE_EXECUTION",
+  "issued_at": "2026-10-25 13:42:26 UTC",
+  "expires_ts": 1792938000000,
+  "owner_lease": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792933724000",
+  "owner_lease_expires_ts": 1792938524000,
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "owner_candle_decision": "checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json",
+  "base_main": "37d089ae72b7548be5914fc346fbf230e2b99010",
+  "runtime_stage": "MANUAL_ACCEPTANCE",
+  "manual": {
+    "request_id": "pump-native-relative-manual-btc-20261025-one",
+    "run_id_fixed": true,
+    "normalized_symbol": "BTC",
+    "max_native_reservations": 1,
+    "full_same_engine": true,
+    "publish_only_if_mandatory_data_and_independent_plan_ready": true,
+    "no_fabricated_trade_or_plan": true,
+    "duplicate_native_run_id_refused": true
+  },
+  "bingx": {
+    "version": "pump-manual-native-relative-acceptance-20261025-v1",
+    "max_new_attempts": 24,
+    "project_daily_cap": 900,
+    "project_monthly_cap": 27900,
+    "per_minute_cap": 10,
+    "per_second_cap": 1,
+    "allowed_family": "USDT_M",
+    "only_public_read_routes": true,
+    "external_production_quota_proven": false
+  },
+  "telegram": {
+    "max_new_send_attempts": 1,
+    "only_same_manual_BTC_run_ready_card": true,
+    "day_month_cap2_includes_existing_technical239": true,
+    "text_saved_and_hashed_before_send": true,
+    "SENT_requires_same_positive_id_recipient_card_hash_and_exact_saved_readback": true,
+    "lost_ACK_UNKNOWN_no_blind_resend": true
+  },
+  "swole": {
+    "probe_id": "pump-swole-btc-20261025-one",
+    "method": "GET",
+    "url": "https://swolecharts.com/api/liquidation-levels/BTC",
+    "max_new_attempts": 1,
+    "timeout_ms": 10000,
+    "max_response_bytes": 262144,
+    "redirect": "manual_refuse_any_3xx",
+    "retries": 0,
+    "domain_fallback": 0,
+    "ttl_ms": 0,
+    "budget_family": "LIQUIDATIONS",
+    "one_probe_plan": "pump-report/handoffs/sources/SWOLE_BTC_ONE_PROBE_PLAN_V2.json",
+    "verified_route_or_zones_granted": false,
+    "source_payload_saved_private": true,
+    "base_idea_nonblocking": true
+  },
+  "whole_HTTP": {
+    "max_new_provider_attempts": 26,
+    "global_project_daily_cap": 900,
+    "per_run": 164,
+    "lanes": {
+      "hot": 96,
+      "background": 56,
+      "statistics": 12
+    },
+    "per_candidate": 50,
+    "map_per_run": 8,
+    "map_native_nested": 4,
+    "manual_run_reserved_HTTP": 24,
+    "six_full_manual_protected_plan": {
+      "BINGX": 102,
+      "TELEGRAM": 6
+    },
+    "delivery_reserved24": true,
+    "outcomes_reserved24": true,
+    "MAP_CHECK_uses_AUTO_budget_reservation_to_protect_all_manual_delivery_outcome_reserves": true,
+    "provider_specific_irrelevant_delivery_outcome_hold_skipped_for_map_only": true,
+    "global_reserves_always_remain": true
+  },
+  "native": {
+    "manual": {
+      "rows_read": 5000,
+      "rows_written": 300
+    },
+    "MAP_CHECK": {
+      "rows_read": 500,
+      "rows_written": 30,
+      "max_runs_day": 1
+    },
+    "LOOKUP": {
+      "rows_read": 500,
+      "rows_written": 30,
+      "max_runs_day": 10,
+      "consumes_manual_slot": false
+    },
+    "daily": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    },
+    "admission": "Atomic indexed shared report2_runner_budget_ledger_shadow INSERT plus exact PK readback; sums retain MAX(original reserve, measured cost), all legacy reservations and unknowns; unknown/unacknowledged old rows refuse run.",
+    "protected": {
+      "external_or_bootstrap_floor": {
+        "rows_read": 59000,
+        "rows_written": 920
+      },
+      "outcomes": {
+        "rows_read": 20000,
+        "rows_written": 8000
+      },
+      "delivery": {
+        "rows_read": 2000,
+        "rows_written": 600
+      },
+      "next_full": {
+        "rows_read": 59000,
+        "rows_written": 920
+      },
+      "remaining_six_manual_each": {
+        "rows_read": 5000,
+        "rows_written": 300
+      }
+    },
+    "finalization_tail": {
+      "rows_read": 2,
+      "rows_written": 1
+    },
+    "native_absolute_or_account_unknown_never_zeroed": true
+  },
+  "existing_actual_preserved": {
+    "requests": 83,
+    "rows_read": 475,
+    "rows_written": 60,
+    "native_unknown_ops": 0,
+    "BINGX_initial5": "SPENT_3_CONFIRMED_2_CHARGED_UNKNOWN",
+    "technical_TG": "SPENT_SENT239_NOT_SIGNAL",
+    "old_policy_version_not_reused": true,
+    "qualification_totals_days_months_unknowns_not_reset": true,
+    "original_native_reservations_not_reduced": true
+  },
+  "deployment": {
+    "worker": "my-report-2-hub",
+    "exact_modules_readback_required": true,
+    "all_existing_bindings_retained": true,
+    "legacy_module_sha256": "34d4db2ea9667e000107effa5b7b17c01cb699fc5b33ceb64e1a652b34b38e10",
+    "old_scheduled_never_invoked": true,
+    "new_schedules_enabled": false,
+    "production_automatic_enabled": false
+  },
+  "gates": [
+    "Frozen SOURCES native-relative manifest exact (completed37d089ae)",
+    "Frozen ANALYTICS I and assembled E PASS",
+    "ROOT exact artifact module hashes match published GitHub source; original legacy exact",
+    "Fresh own lease/fence/generation/all4 still compatible",
+    "Official Wrangler WorkersWrite/D1Write authorization (refreshed13:40 expiry14:40)"
+  ],
+  "old_9_pauses_2_OWNER_deferrals_and_archives_preserved": true
+}

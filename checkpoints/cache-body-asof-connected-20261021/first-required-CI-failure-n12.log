@@ -1,0 +1,481 @@
+﻿2026-10-21T08:50:19.2682970Z Current runner version: '2.338.0'
+2026-10-21T08:50:19.2708006Z ##[group]Runner Image Provisioner
+2026-10-21T08:50:19.2708887Z Hosted Compute Agent
+2026-10-21T08:50:19.2709682Z Version: 20261012.601
+2026-10-21T08:50:19.2710365Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-21T08:50:19.2711139Z Build Date: 2026-10-12T17:48:21Z
+2026-10-21T08:50:19.2711862Z Worker ID: {bd00b128-4b51-4a8b-af9f-8dd90e93fa21}
+2026-10-21T08:50:19.2712589Z Region: westus3
+2026-10-21T08:50:19.2713249Z Cloud: Azure
+2026-10-21T08:50:19.2713785Z ##[endgroup]
+2026-10-21T08:50:19.2715593Z ##[group]Operating System
+2026-10-21T08:50:19.2716682Z Ubuntu
+2026-10-21T08:50:19.2717276Z 24.04.5
+2026-10-21T08:50:19.2717899Z LTS
+2026-10-21T08:50:19.2718480Z ##[endgroup]
+2026-10-21T08:50:19.2719070Z ##[group]Runner Image
+2026-10-21T08:50:19.2719695Z Image: ubuntu-24.04
+2026-10-21T08:50:19.2720281Z Version: 20261012.334.1
+2026-10-21T08:50:19.2721640Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-21T08:50:19.2723272Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-21T08:50:19.2724270Z ##[endgroup]
+2026-10-21T08:50:19.2725457Z ##[group]GITHUB_TOKEN Permissions
+2026-10-21T08:50:19.2727778Z Contents: read
+2026-10-21T08:50:19.2728399Z Metadata: read
+2026-10-21T08:50:19.2729081Z ##[endgroup]
+2026-10-21T08:50:19.2731179Z Secret source: Actions
+2026-10-21T08:50:19.2732292Z Cache mode: write
+2026-10-21T08:50:19.2732995Z Prepare workflow directory
+2026-10-21T08:50:19.3128044Z Prepare all required actions
+2026-10-21T08:50:19.3175622Z Getting action download info
+2026-10-21T08:50:19.6589253Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-21T08:50:19.7770724Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-21T08:50:19.8748290Z Download action repository 'actions/github-script@v7' (SHA:f28e40c7f34bde8b3046d885e986cb6290c5673b)
+2026-10-21T08:50:20.4308421Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-21T08:50:20.7021805Z Complete job name: verify
+2026-10-21T08:50:20.7883543Z ##[group]Run actions/checkout@v4
+2026-10-21T08:50:20.7884513Z with:
+2026-10-21T08:50:20.7885054Z   ref: f78c15dc1c0bc8f3b537f4553806f71bb63ec180
+2026-10-21T08:50:20.7885826Z   repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-21T08:50:20.7890309Z   token: ***
+2026-10-21T08:50:20.7890796Z   ssh-strict: true
+2026-10-21T08:50:20.7891279Z   ssh-user: git
+2026-10-21T08:50:20.7891760Z   persist-credentials: true
+2026-10-21T08:50:20.7892296Z   clean: true
+2026-10-21T08:50:20.7892781Z   sparse-checkout-cone-mode: true
+2026-10-21T08:50:20.7893395Z   fetch-depth: 1
+2026-10-21T08:50:20.7893858Z   fetch-tags: false
+2026-10-21T08:50:20.7894360Z   show-progress: true
+2026-10-21T08:50:20.7894861Z   lfs: false
+2026-10-21T08:50:20.7895313Z   submodules: false
+2026-10-21T08:50:20.7895829Z   set-safe-directory: true
+2026-10-21T08:50:20.7896548Z   allow-unsafe-pr-checkout: false
+2026-10-21T08:50:20.7897431Z ##[endgroup]
+2026-10-21T08:50:20.8893851Z Syncing repository: kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-21T08:50:20.8897257Z ##[group]Getting Git version info
+2026-10-21T08:50:20.8898916Z Working directory is '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-21T08:50:20.8901227Z [command]/usr/bin/git version
+2026-10-21T08:50:20.8953342Z git version 2.55.0
+2026-10-21T08:50:20.8974723Z ##[endgroup]
+2026-10-21T08:50:20.8990657Z Temporarily overriding HOME='/home/runner/work/_temp/914683e2-b7ee-4a9d-8446-45d913a3a7c6' before making global git config changes
+2026-10-21T08:50:20.8993373Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-21T08:50:20.8997092Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-21T08:50:20.9077961Z Deleting the contents of '/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner'
+2026-10-21T08:50:20.9081473Z ##[group]Initializing the repository
+2026-10-21T08:50:20.9083347Z [command]/usr/bin/git init /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-21T08:50:20.9199131Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-21T08:50:20.9200809Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-21T08:50:20.9202266Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-21T08:50:20.9203401Z hint: call:
+2026-10-21T08:50:20.9203945Z hint:
+2026-10-21T08:50:20.9204586Z hint: 	git config --global init.defaultBranch <name>
+2026-10-21T08:50:20.9205365Z hint:
+2026-10-21T08:50:20.9206101Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-21T08:50:20.9208398Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-21T08:50:20.9210180Z hint:
+2026-10-21T08:50:20.9211103Z hint: 	git branch -m <name>
+2026-10-21T08:50:20.9212008Z hint:
+2026-10-21T08:50:20.9213477Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-21T08:50:20.9216452Z Initialized empty Git repository in /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/.git/
+2026-10-21T08:50:20.9228477Z [command]/usr/bin/git remote add origin https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-21T08:50:20.9278133Z ##[endgroup]
+2026-10-21T08:50:20.9279663Z ##[group]Disabling automatic garbage collection
+2026-10-21T08:50:20.9282986Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-21T08:50:20.9316994Z ##[endgroup]
+2026-10-21T08:50:20.9318574Z ##[group]Setting up auth
+2026-10-21T08:50:20.9325282Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-21T08:50:20.9390911Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-21T08:50:20.9800519Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-21T08:50:20.9844808Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-21T08:50:21.0081340Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-21T08:50:21.0122863Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-21T08:50:21.0356802Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-21T08:50:21.0403965Z ##[endgroup]
+2026-10-21T08:50:21.0406616Z ##[group]Fetching the repository
+2026-10-21T08:50:21.0417210Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin f78c15dc1c0bc8f3b537f4553806f71bb63ec180
+2026-10-21T08:50:25.5666462Z From https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner
+2026-10-21T08:50:25.5669955Z  * branch            f78c15dc1c0bc8f3b537f4553806f71bb63ec180 -> FETCH_HEAD
+2026-10-21T08:50:25.5675179Z ##[endgroup]
+2026-10-21T08:50:25.5677359Z ##[group]Determining the checkout info
+2026-10-21T08:50:25.5679458Z ##[endgroup]
+2026-10-21T08:50:25.5683119Z [command]/usr/bin/git sparse-checkout disable
+2026-10-21T08:50:25.5737781Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-21T08:50:25.5782185Z ##[group]Checking out the ref
+2026-10-21T08:50:25.5783127Z [command]/usr/bin/git checkout --progress --force f78c15dc1c0bc8f3b537f4553806f71bb63ec180
+2026-10-21T08:50:26.4586733Z Note: switching to 'f78c15dc1c0bc8f3b537f4553806f71bb63ec180'.
+2026-10-21T08:50:26.4587463Z 
+2026-10-21T08:50:26.4587885Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-21T08:50:26.4589382Z changes and commit them, and you can discard any commits you make in this
+2026-10-21T08:50:26.4590362Z state without impacting any branches by switching back to a branch.
+2026-10-21T08:50:26.4590942Z 
+2026-10-21T08:50:26.4591346Z If you want to create a new branch to retain commits you create, you may
+2026-10-21T08:50:26.4592231Z do so (now or later) by using -c with the switch command. Example:
+2026-10-21T08:50:26.4592725Z 
+2026-10-21T08:50:26.4592955Z   git switch -c <new-branch-name>
+2026-10-21T08:50:26.4593337Z 
+2026-10-21T08:50:26.4593571Z Or undo this operation with:
+2026-10-21T08:50:26.4593915Z 
+2026-10-21T08:50:26.4594107Z   git switch -
+2026-10-21T08:50:26.4594383Z 
+2026-10-21T08:50:26.4594803Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-21T08:50:26.4595438Z 
+2026-10-21T08:50:26.4595911Z HEAD is now at f78c15d Preserve qualified HTX cached facts and original body/asof clocks
+2026-10-21T08:50:26.4636958Z ##[endgroup]
+2026-10-21T08:50:26.4686562Z [command]/usr/bin/git log -1 --format=%H
+2026-10-21T08:50:26.4714546Z f78c15dc1c0bc8f3b537f4553806f71bb63ec180
+2026-10-21T08:50:26.4995331Z ##[group]Run actions/setup-node@v4
+2026-10-21T08:50:26.4995660Z with:
+2026-10-21T08:50:26.4995881Z   node-version: 24
+2026-10-21T08:50:26.4996119Z   always-auth: false
+2026-10-21T08:50:26.4996613Z   check-latest: false
+2026-10-21T08:50:26.4998973Z   token: ***
+2026-10-21T08:50:26.4999182Z ##[endgroup]
+2026-10-21T08:50:26.6489468Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-21T08:50:26.6494443Z (node:2315) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-21T08:50:26.6495393Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-21T08:50:26.6498199Z ##[group]Environment details
+2026-10-21T08:50:27.0567068Z node: v24.21.0
+2026-10-21T08:50:27.0567638Z npm: 11.19.0
+2026-10-21T08:50:27.0568002Z yarn: 1.22.22
+2026-10-21T08:50:27.0568851Z ##[endgroup]
+2026-10-21T08:50:27.0768137Z ##[group]Run actions/github-script@v7
+2026-10-21T08:50:27.0768448Z with:
+2026-10-21T08:50:27.0771662Z   script: const owner=context.repo.owner,repo=context.repo.repo;
+const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+if(main!==context.payload.pull_request.base.sha)throw Error('MAIN_MOVED');
+const read=async(path,ref)=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref})).data.content,'base64').toString());
+const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json',main);
+const branch=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json',context.payload.pull_request.head.sha);
+const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json',main);
+if(!/^CODEX:/.test(phase.lease?.owner||'')||branch.lease?.owner!==phase.lease.owner||branch.lease?.acquired_ts!==phase.lease.acquired_ts||branch.lease?.expires_ts!==phase.lease.expires_ts||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+
+2026-10-21T08:50:27.0777249Z   github-token: ***
+2026-10-21T08:50:27.0777482Z   debug: false
+2026-10-21T08:50:27.0777706Z   user-agent: actions/github-script
+2026-10-21T08:50:27.0777975Z   result-encoding: json
+2026-10-21T08:50:27.0778188Z   retries: 0
+2026-10-21T08:50:27.0778418Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-10-21T08:50:27.0778718Z ##[endgroup]
+2026-10-21T08:50:29.0746023Z ##[group]Run mkdir -p runtime audit-output/n12-cross-venue
+2026-10-21T08:50:29.0746973Z [36;1mmkdir -p runtime audit-output/n12-cross-venue[0m
+2026-10-21T08:50:29.0747630Z [36;1mnode runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz[0m
+2026-10-21T08:50:29.0748276Z [36;1mtar -xzf runtime/payload.tar.gz -C runtime[0m
+2026-10-21T08:50:29.0748606Z [36;1mrm runtime/payload.tar.gz[0m
+2026-10-21T08:50:29.0749209Z [36;1mnode post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/n12-cross-venue/assembly.json[0m
+2026-10-21T08:50:29.0750227Z [36;1mnpm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund[0m
+2026-10-21T08:50:29.1031101Z shell: /usr/bin/bash -e {0}
+2026-10-21T08:50:29.1031442Z env:
+2026-10-21T08:50:29.1032028Z   REPORT2_PAYLOAD_KEY: ***
+2026-10-21T08:50:29.1032332Z ##[endgroup]
+2026-10-21T08:50:32.7493641Z 
+2026-10-21T08:50:32.7500854Z added 52 packages in 2s
+2026-10-21T08:50:32.7997866Z ##[group]Run cmp current-generation/files/src/worker.js runtime/src/worker.js
+2026-10-21T08:50:32.7998500Z [36;1mcmp current-generation/files/src/worker.js runtime/src/worker.js[0m
+2026-10-21T08:50:32.7999163Z [36;1mcmp current-generation/files/src/discovery-candidate-score.mjs runtime/src/discovery-candidate-score.mjs[0m
+2026-10-21T08:50:32.7999977Z [36;1mcmp current-generation/files/src/exact-saved-run-telegram.mjs runtime/src/exact-saved-run-telegram.mjs[0m
+2026-10-21T08:50:32.8000689Z [36;1mcmp current-generation/files/src/evidence-v2.mjs runtime/src/evidence-v2.mjs[0m
+2026-10-21T08:50:32.8001353Z [36;1mcmp current-generation/files/src/n12-market-trades.mjs runtime/src/n12-market-trades.mjs[0m
+2026-10-21T08:50:32.8002087Z [36;1mcmp current-generation/files/src/htx-large-trades-evidence.mjs runtime/src/htx-large-trades-evidence.mjs[0m
+2026-10-21T08:50:32.8002886Z [36;1mcmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs[0m
+2026-10-21T08:50:32.8003640Z [36;1mcmp current-generation/files/src/gate-futures-trade-sample.mjs runtime/src/gate-futures-trade-sample.mjs[0m
+2026-10-21T08:50:32.8004459Z [36;1mcmp current-generation/files/src/gate-futures-trade-collector.mjs runtime/src/gate-futures-trade-collector.mjs[0m
+2026-10-21T08:50:32.8005330Z [36;1mcmp current-generation/files/src/bitget-n12-bounded-trade-sample.mjs runtime/src/bitget-n12-bounded-trade-sample.mjs[0m
+2026-10-21T08:50:32.8006407Z [36;1mcmp current-generation/files/src/bitget-flow-collector.mjs runtime/src/bitget-flow-collector.mjs[0m
+2026-10-21T08:50:32.8007318Z [36;1mcmp current-generation/files/src/n12-native-public-trade-sample.mjs runtime/src/n12-native-public-trade-sample.mjs[0m
+2026-10-21T08:50:32.8008179Z [36;1mcmp current-generation/files/src/n12-kucoin-token-trade-sample.mjs runtime/src/n12-kucoin-token-trade-sample.mjs[0m
+2026-10-21T08:50:32.8009073Z [36;1mcmp current-generation/files/src/n12-native-public-trade-collector.mjs runtime/src/n12-native-public-trade-collector.mjs[0m
+2026-10-21T08:50:32.8009952Z [36;1mcmp current-generation/files/src/external-n05-flow-collector.mjs runtime/src/external-n05-flow-collector.mjs[0m
+2026-10-21T08:50:32.8010789Z [36;1mcmp current-generation/files/src/candidate-evidence-v2-runtime.mjs runtime/src/candidate-evidence-v2-runtime.mjs[0m
+2026-10-21T08:50:32.8011637Z [36;1mcmp current-generation/files/src/bounded-money-flow-diagnostic.mjs runtime/src/bounded-money-flow-diagnostic.mjs[0m
+2026-10-21T08:50:32.8012421Z [36;1mcmp current-generation/files/src/telegram-plain-facts.mjs runtime/src/telegram-plain-facts.mjs[0m
+2026-10-21T08:50:32.8013189Z [36;1mcmp current-generation/files/src/canonical-publication.mjs runtime/src/canonical-publication.mjs[0m
+2026-10-21T08:50:32.8013988Z [36;1mcmp current-generation/files/src/telegram-compact-formatter.mjs runtime/src/telegram-compact-formatter.mjs[0m
+2026-10-21T08:50:32.8014789Z [36;1mcmp current-generation/files/src/manual-report-formatter.mjs runtime/src/manual-report-formatter.mjs[0m
+2026-10-21T08:50:32.8015576Z [36;1mcmp current-generation/files/src/canonical-runtime-adapter.mjs runtime/src/canonical-runtime-adapter.mjs[0m
+2026-10-21T08:50:32.8019334Z [36;1mnode --test current-generation/tests/n12-market-trades.test.mjs current-generation/tests/n12-gate-futures-trades.test.mjs current-generation/tests/n12-bitget-bounded-reuse.test.mjs current-generation/tests/n12-native-public-trades.test.mjs current-generation/tests/n12-kucoin-token-trades.test.mjs current-generation/tests/bitget-flow-collector.test.mjs current-generation/tests/htx-large-trades-evidence.test.mjs current-generation/tests/block-result-context.test.mjs current-generation/tests/joint-spot-futures-flow.test.mjs current-generation/tests/shared-spot-futures-market-context.test.mjs > audit-output/n12-cross-venue/target-unit.tap[0m
+2026-10-21T08:50:32.8022939Z [36;1mnode --test current-generation/tests/paused-block-report-chains.test.mjs > audit-output/n12-cross-venue/paused-chains.tap[0m
+2026-10-21T08:50:32.8024504Z [36;1mnode --test current-generation/tests/discovery-candidate-score.test.mjs current-generation/tests/two-candidate-budget.test.mjs current-generation/tests/exact-saved-run-telegram.test.mjs > audit-output/n12-cross-venue/selection-delivery.tap[0m
+2026-10-21T08:50:32.8025753Z [36;1mnode current-generation/validate.mjs > audit-output/n12-cross-venue/generation.log 2>&1[0m
+2026-10-21T08:50:32.8026722Z [36;1mnode runner/current-runtime-binding.mjs --runtime runtime > audit-output/n12-cross-venue/binding.json[0m
+2026-10-21T08:50:32.8092955Z shell: /usr/bin/bash -e {0}
+2026-10-21T08:50:32.8093221Z env:
+2026-10-21T08:50:32.8093426Z   REPORT2_TEST_RUNTIME: runtime
+2026-10-21T08:50:32.8093703Z   REPORT2_UNIFIED_MODULE_ROOT: runtime/src
+2026-10-21T08:50:32.8094445Z   NODE_OPTIONS: --import /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/early-evidence-repair/no-network.mjs
+2026-10-21T08:50:32.8095146Z ##[endgroup]
+2026-10-21T08:51:04.9853125Z ##[error]Process completed with exit code 1.
+2026-10-21T08:51:04.9931094Z ##[group]Run for file in audit-output/n12-cross-venue/*.tap audit-output/n12-cross-venue/generation.log; do
+2026-10-21T08:51:04.9931937Z [36;1mfor file in audit-output/n12-cross-venue/*.tap audit-output/n12-cross-venue/generation.log; do[0m
+2026-10-21T08:51:04.9932589Z [36;1m  if test -f "$file"; then echo "FAILED_LOG: $file"; tail -90 "$file"; fi[0m
+2026-10-21T08:51:04.9932996Z [36;1mdone[0m
+2026-10-21T08:51:04.9995587Z shell: /usr/bin/bash -e {0}
+2026-10-21T08:51:04.9995857Z ##[endgroup]
+2026-10-21T08:51:05.0080216Z FAILED_LOG: audit-output/n12-cross-venue/paused-chains.tap
+2026-10-21T08:51:05.0095990Z ✔ owner-paused blocks are inactive and cannot score either direction or claim the physical root (4.630666ms)
+2026-10-21T08:51:05.0097603Z ✔ sole supply/calendar routes are blocked while a shared source preserves active N04 evidence (1.353244ms)
+2026-10-21T08:51:05.0099156Z ✔ manual and Telegram exclude paused facts, including previously stored facts, on the same retained snapshot (39.725984ms)
+2026-10-21T08:51:05.0100557Z ✔ exact stored manual hash is verified before paused facts are suppressed, without rewriting the archive (2.411397ms)
+2026-10-21T08:51:05.0101911Z ✔ all supply-only routes reject explicit non-XRP dispatch before admission, including manual overrides (0.367956ms)
+2026-10-21T08:51:05.0103160Z ✔ paused N06 never plans or dispatches social and pageview HTTP, even for explicit routes (0.392793ms)
+2026-10-21T08:51:05.0104197Z ✔ paused N07 skips sole-block feeds and filters old official facts (0.367655ms)
+2026-10-21T08:51:05.0105879Z ✔ HTX margin-rule adapter only serves paused N08 and N09, while the active futures book route remains available (0.308505ms)
+2026-10-21T08:51:05.0107910Z ✔ paused N14 cannot dispatch any option-only source or revive saved facts (0.521112ms)
+2026-10-21T08:51:05.0108885Z ℹ tests 9
+2026-10-21T08:51:05.0109320Z ℹ suites 0
+2026-10-21T08:51:05.0109733Z ℹ pass 9
+2026-10-21T08:51:05.0110080Z ℹ fail 0
+2026-10-21T08:51:05.0110373Z ℹ cancelled 0
+2026-10-21T08:51:05.0110655Z ℹ skipped 0
+2026-10-21T08:51:05.0110862Z ℹ todo 0
+2026-10-21T08:51:05.0111105Z ℹ duration_ms 191.476581
+2026-10-21T08:51:05.0111519Z FAILED_LOG: audit-output/n12-cross-venue/selection-delivery.tap
+2026-10-21T08:51:05.0112381Z ✔ funding is optional and adds ten points only for strong opposite signed four-hour payments (3.315574ms)
+2026-10-21T08:51:05.0113328Z ✔ hourly payout adds fifteen, but period, sign, freshness and directional boundaries fail closed (0.358629ms)
+2026-10-21T08:51:05.0114324Z ✔ funding without an independent directional route adds zero (0.264813ms)
+2026-10-21T08:51:05.0115032Z ✔ a fully qualified candidate remains eligible and scores 85 without funding (0.276326ms)
+2026-10-21T08:51:05.0115694Z ✔ market quality outranks a weaker candidate with funding (0.519549ms)
+2026-10-21T08:51:05.0117054Z ✔ worker admission cannot be created by funding and enforces the 100k HTX floor (0.817685ms)
+2026-10-21T08:51:05.0118239Z ✔ production overlay includes the candidate score module (0.206145ms)
+2026-10-21T08:51:05.0119662Z ✔ exact accepted saved run preserves the established approved non-entry layout (24.18625ms)
+2026-10-21T08:51:05.0121078Z ✔ missing levels are explicit in approved Telegram and manual forms (6.738087ms)
+2026-10-21T08:51:05.0122548Z ✔ numeric future levels supplement the same established layout and reach both forms (2.902664ms)
+2026-10-21T08:51:05.0124318Z ✔ short Unicode asset preserves approved header and expired snapshots never render (0.767011ms)
+2026-10-21T08:51:05.0126011Z ✔ top-two drift, missing active-block accounting, or calculated liquidation fails closed (0.344763ms)
+2026-10-21T08:51:05.0127948Z ✔ saved Telegram delivery rejects old 102 scope and any owner-paused block use (0.727828ms)
+2026-10-21T08:51:05.0129573Z ✔ network delivery sends exactly approved text and is idempotent on exact run and snapshot (3.268376ms)
+2026-10-21T08:51:05.0131118Z ✔ D1 rows_written acknowledgement is accepted and still requires readback (0.988975ms)
+2026-10-21T08:51:05.0133065Z ✔ legacy pre-network reservation with no owner token is reclaimed once under the analytics lease (1.419407ms)
+2026-10-21T08:51:05.0135235Z ✔ honestly accounted optional gaps permit the same approved renderer, while foreign or inflated use counts cannot (1.498395ms)
+2026-10-21T08:51:05.0137383Z ✔ runner retrieval follows the bound owner scope and still requires actual joint, Top2 and real-only liquidation acceptance (0.610949ms)
+2026-10-21T08:51:05.0138716Z ✔ exact saved-run Telegram validator accepts explicit99market plus6current suspended scope while preserving the approved message (1.74773ms)
+2026-10-21T08:51:05.0139814Z ✔ saved-run Telegram refuses fabricated unavailable counts and any suspended entry authorization (0.797428ms)
+2026-10-21T08:51:05.0140666Z ✔ two real checks fit the unchanged monthly allowance and eight manual commands (1.704399ms)
+2026-10-21T08:51:05.0141498Z ✔ two checks require admitted Node execution, while an exact coin and Worker stay at one (6.398324ms)
+2026-10-21T08:51:05.0142367Z ✔ both candidates share 164 attempts and retain real capacity for their additional sources (0.867768ms)
+2026-10-21T08:51:05.0143225Z ✔ funding and legacy direction priority cannot replace a better measured market rank (0.226152ms)
+2026-10-21T08:51:05.0144038Z ✔ full manual exact top-two order cannot be replaced by a higher enrichment score (6.107281ms)
+2026-10-21T08:51:05.0144905Z ✔ hot maintenance drains hundreds of expired rows in bounded batches and preserves fresh rows (20.072999ms)
+2026-10-21T08:51:05.0145771Z ✔ attempted automatic cycles consume a 40-minute slot even if later analysis fails (0.970661ms)
+2026-10-21T08:51:05.0146921Z ✔ scheduled provider spending cannot consume the protected owner reserve, enforced by SQL too (1.321555ms)
+2026-10-21T08:51:05.0147774Z ✔ scheduled execution cannot acquire full-manual freshness or cooldown bypass (0.710396ms)
+2026-10-21T08:51:05.0148573Z ✔ ordinary hot retention is bounded without changing freshness or retention dates (2.281195ms)
+2026-10-21T08:51:05.0149065Z ℹ tests 30
+2026-10-21T08:51:05.0149278Z ℹ suites 0
+2026-10-21T08:51:05.0149487Z ℹ pass 30
+2026-10-21T08:51:05.0149689Z ℹ fail 0
+2026-10-21T08:51:05.0149905Z ℹ cancelled 0
+2026-10-21T08:51:05.0150133Z ℹ skipped 0
+2026-10-21T08:51:05.0150347Z ℹ todo 0
+2026-10-21T08:51:05.0150591Z ℹ duration_ms 177.829686
+2026-10-21T08:51:05.0150964Z FAILED_LOG: audit-output/n12-cross-venue/target-unit.tap
+2026-10-21T08:51:05.0152015Z ✔ controlled cached identities permit four bounded transports, two reconciled markets, then immutable zero-HTTP reuse (93.746116ms)
+2026-10-21T08:51:05.0153277Z ✔ durable backoff and denied D1 headroom stop before any provider transport (4.178283ms)
+2026-10-21T08:51:05.0154134Z ✔ partial fills can still yield exact bounded N12 facts; exhausted cap cannot create new data (27.207564ms)
+2026-10-21T08:51:05.0154993Z ✔ sixteen prior attempts no longer stop qualified public data in later report cycles (18.960876ms)
+2026-10-21T08:51:05.0156012Z ✔ actual historical BTW flows, margin permission and bounded trades reach existing report layout without inventing score (60.988693ms)
+2026-10-21T08:51:05.0157227Z ✔ expired, foreign, future and corrupted sums cannot become report facts (4.317432ms)
+2026-10-21T08:51:05.0158150Z ✔ formatter failure and metadata alone never establish use; real block facts survive bounded display selection (11.049408ms)
+2026-10-21T08:51:05.0159036Z ✔ physical copies are counted once and contextual facts never vote on entry (2.052037ms)
+2026-10-21T08:51:05.0159969Z ✔ point supply, bounded zero attention and serial transfers provide small factual benefit with precise limits (3.007359ms)
+2026-10-21T08:51:05.0160971Z ✔ exact actual trade retains source clock, units and dedup while adding only bounded sample weight (4.546881ms)
+2026-10-21T08:51:05.0161911Z ✔ self-consistent wrong channel, stale or future batch never satisfies requested futures identity (0.340896ms)
+2026-10-21T08:51:05.0163051Z ✔ unsafe numeric trade ID, duplicated ID, inconsistent quote units and future trade cannot create evidence (0.781338ms)
+2026-10-21T08:51:05.0164021Z ✔ empty or saturated limited sample never means no market liquidations or full trading window (10.34295ms)
+2026-10-21T08:51:05.0164864Z ✔ transport preserves long decimal trade identifiers before JSON number rounding (0.692151ms)
+2026-10-21T08:51:05.0165766Z ✔ controlled multi-venue spot and futures agreement yields one unscored fact for both report chains (26.430876ms)
+2026-10-21T08:51:05.0167046Z ✔ single venue, opposite direction, weak imbalance, large strength spread and old window do not confirm N05 (0.742404ms)
+2026-10-21T08:51:05.0167929Z ✔ tampered report rows cannot bypass the shared recomputed agreement checks (2.430594ms)
+2026-10-21T08:51:05.0168723Z ✔ legacy single-market or Nansen rows cannot award points in the current N05 strategy (0.420274ms)
+2026-10-21T08:51:05.0169628Z ✔ same controlled canonical joint flow is actually printed in manual and both approved Telegram forms (21.986747ms)
+2026-10-21T08:51:05.0170513Z ✔ stored manual presentation hash is checked before legacy N05 text is suppressed (4.688617ms)
+2026-10-21T08:51:05.0171377Z ✔ qualified Binance native taker window participates in the same shared joint gate and reports (5.40411ms)
+2026-10-21T08:51:05.0172313Z ✔ qualified Gate exact token window survives shared validation and both report chains without score (11.256534ms)
+2026-10-21T08:51:05.0173279Z ✔ Backpack USDC flow appears in unchanged manual and both Telegram forms using only relative imbalance (13.005246ms)
+2026-10-21T08:51:05.0174133Z ✔ available context retains a single exact venue without consensus or score (2.191908ms)
+2026-10-21T08:51:05.0174860Z ✔ one qualified external venue remains useful when HTX has no full window (0.793831ms)
+2026-10-21T08:51:05.0175574Z ✔ opposite qualified venues are described separately without agreement (0.942067ms)
+2026-10-21T08:51:05.0177008Z ✔ missing, partial, foreign, stale and tampered available windows do not become flow facts (1.476393ms)
+2026-10-21T08:51:05.0177932Z ✔ all three qualified venues remain visible with disagreements and original clocks (8.052288ms)
+2026-10-21T08:51:05.0178728Z ✔ third qualified venue is printed in manual and both approved Telegram forms (11.19528ms)
+2026-10-21T08:51:05.0179537Z ✔ single-venue context is actually rendered in manual and both approved Telegram forms (5.594333ms)
+2026-10-21T08:51:05.0180621Z ✔ retained original Bitget fills have useful bounded market facts after exact native binding, with no full-window or score claim (13.229253ms)
+2026-10-21T08:51:05.0181762Z ✔ foreign, duplicate, expired or unbound Bitget rows cannot be promoted (5.684702ms)
+2026-10-21T08:51:05.0182637Z ✔ controlled same-run Bitget spot and futures join HTX as bounded facts in manual and approved Telegram (60.806559ms)
+2026-10-21T08:51:05.0183681Z ✔ retained original Gate futures trades produce bounded signed quote evidence with the real contract multiplier (5.762848ms)
+2026-10-21T08:51:05.0184794Z ✔ foreign token identity, multiplier, contract status and duplicate public fills cannot count as useful Gate evidence (0.447845ms)
+2026-10-21T08:51:05.0185791Z ✔ Gate N12 collector spends existing Gate daily/minute ledger and reuses original-clock cache (48.279785ms)
+2026-10-21T08:51:05.0186995Z ✔ full external route preserves the Gate futures sample under the shared five-request cap (18.36451ms)
+2026-10-21T08:51:05.0187910Z ✔ N12 combines HTX and independent Gate samples only as bounded facts and exposes disagreement (39.244183ms)
+2026-10-21T08:51:05.0188758Z ✔ Gate N12 fact reaches manual and approved Telegram context with exact source IDs (27.301544ms)
+2026-10-21T08:51:05.0189700Z ✔ five current original KuCoin pages bind PEPE address, live spot/future units and useful conflicting trades (5.856272ms)
+2026-10-21T08:51:05.0190650Z ✔ foreign chain, wrong mint, duplicate currency, closed market and duplicate trades fail closed (2.470803ms)
+2026-10-21T08:51:05.0191586Z ✔ admitted KuCoin token collector uses five calls, shared source ledger and zero-call cache replay (125.152495ms)
+2026-10-21T08:51:05.0192654Z ✔ opposite exact PEPE spot and futures remain one KuCoin source in manual and approved Telegram (60.613187ms)
+2026-10-21T08:51:05.0193665Z ✔ closed registry provenance retains original KuCoin spot/future facts and rejects a detached or changed proof (3.280639ms)
+2026-10-21T08:51:05.0194596Z ✔ new closed-registry proof survives the consumer and both approved report renderers (10.660393ms)
+2026-10-21T08:51:05.0195353Z ✔ same-run futures and spot agree with one HTX vote and zero extra HTTP (5.234453ms)
+2026-10-21T08:51:05.0196111Z ✔ opposite HTX markets stay separate and do not create a common directional score (5.504596ms)
+2026-10-21T08:51:05.0197226Z ✔ two fresh trade samples separated by a minute stay available without a joint direction (30.390881ms)
+2026-10-21T08:51:05.0197998Z ✔ spot-only is labeled as one market and not independent venue agreement (2.033964ms)
+2026-10-21T08:51:05.0198728Z ✔ stale, foreign-channel and duplicate spot records are not useful evidence (0.355974ms)
+2026-10-21T08:51:05.0199657Z ✔ N12 context connects same-run HTX markets with validated independent four-hour venue without mixing windows (4.036459ms)
+2026-10-21T08:51:05.0200541Z ✔ opposite recent and four-hour directions cannot become one market conclusion (1.937394ms)
+2026-10-21T08:51:05.0201299Z ✔ the joint N12 fact reaches manual and Telegram output with source receipts (36.71188ms)
+2026-10-21T08:51:05.0202065Z ✔ plain Telegram N12 receipts retain only components represented by that surface (7.626334ms)
+2026-10-21T08:51:05.0202994Z ✔ four retained original spot/futures pages contain exact, useful bounded facts with correct contract units (10.560717ms)
+2026-10-21T08:51:05.0203917Z ✔ shared native catalogs retain exact approved instruments within a small D1 cache row (1.739494ms)
+2026-10-21T08:51:05.0204898Z ✔ wrong native identity, asset class, size metadata, symbol, duplicate IDs and unsafe KuCoin nanoseconds are rejected (2.631728ms)
+2026-10-21T08:51:05.0205935Z ✔ OKX collector shares admission, stores original clocks, caches both markets and stops tokens before HTTP (69.251048ms)
+2026-10-21T08:51:05.0207230Z ✔ actual OKX spot and futures pages join controlled HTX fact and reach manual plus approved Telegram with exact IDs (40.035699ms)
+2026-10-21T08:51:05.0208158Z ✔ one native venue keeps spot and futures together and rejects a conflicting direction (8.842231ms)
+2026-10-21T08:51:05.0209050Z ✔ merged N12 component origins retain each native market root and own clocks on both report surfaces (7.091366ms)
+2026-10-21T08:51:05.0210208Z ✔ native paired N12 provenance excludes invalid or foreign related facts and never fabricates their windows (2.821471ms)
+2026-10-21T08:51:05.0211231Z ✔ N12 component accounting includes assessed printed external facts within the same shared HTTP envelope (32.047969ms)
+2026-10-21T08:51:05.0212075Z ✔ N12 component rendering alone cannot invent an assessment or decision use (5.434676ms)
+2026-10-21T08:51:05.0212933Z ✔ N12 component supplemental membership excludes unbound, foreign and other-block source rows (3.906556ms)
+2026-10-21T08:51:05.0213765Z ✔ spot comparison is limited to the exact current approved HTX analysis universe (2.69141ms)
+2026-10-21T08:51:05.0214739Z ✔ original same-depth clocks yield one neutral HTX comparison and the same bounded conclusion in manual and Telegram (34.681363ms)
+2026-10-21T08:51:05.0215635Z ✔ disagreeing recent spot/futures trades produce a cautious shared conclusion (0.306692ms)
+2026-10-21T08:51:05.0216885Z ✔ same-clock RLC overlapping quotes do not become a confirmed futures discount, while FIL separate quotes remain comparable (0.478733ms)
+2026-10-21T08:51:05.0218001Z ✔ foreign, stale, future and incomplete books retain only the verified market; skewed pairs do not compare (1.227379ms)
+2026-10-21T08:51:05.0218933Z ✔ spot original depth prices remain separate from a ticker and paused N16 emits no cost fact (3.44737ms)
+2026-10-21T08:51:05.0219696Z ✔ approved non-ASCII contract retains its exact spot query symbol (1.001568ms)
+2026-10-21T08:51:05.0220129Z ℹ tests 72
+2026-10-21T08:51:05.0220483Z ℹ suites 0
+2026-10-21T08:51:05.0220707Z ℹ pass 72
+2026-10-21T08:51:05.0220912Z ℹ fail 0
+2026-10-21T08:51:05.0221125Z ℹ cancelled 0
+2026-10-21T08:51:05.0221345Z ℹ skipped 0
+2026-10-21T08:51:05.0221558Z ℹ todo 0
+2026-10-21T08:51:05.0221800Z ℹ duration_ms 1047.393166
+2026-10-21T08:51:05.0222169Z FAILED_LOG: audit-output/n12-cross-venue/generation.log
+2026-10-21T08:51:05.0222615Z     '          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then\n' +
+2026-10-21T08:51:05.0223071Z     '            if normalize_true "$SCHEDULED_RECOVERY_RUN"; then\n' +
+2026-10-21T08:51:05.0224091Z     '              if normalize_true "$LEGACY_RUNNER_ENABLED" && ! normalize_true "$MANUAL_AUTHORIZED" && ! normalize_true "$TRIGGER_ONLY_RUN" && [ "$RECOVERY_REASON" = "SCHEDULED_CADENCE_RECOVERY" ]; then admitted=true; fi\n' +
+2026-10-21T08:51:05.0225024Z     '            elif normalize_true "$TRIGGER_ONLY_RUN"; then\n' +
+2026-10-21T08:51:05.0225653Z     '              if normalize_true "$LEGACY_RUNNER_ENABLED" && [ -n "$TRIGGER_TASK_ID" ]; then admitted=true; fi\n' +
+2026-10-21T08:51:05.0226595Z     '            elif normalize_true "$MANUAL_AUTHORIZED"; then admitted=true; fi\n' +
+2026-10-21T08:51:05.0227012Z     '          fi\n' +
+2026-10-21T08:51:05.0227331Z     '          echo "admitted=$admitted" >> "$GITHUB_OUTPUT"\n' +
+2026-10-21T08:51:05.0227819Z     '          echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"\n' +
+2026-10-21T08:51:05.0228204Z     '\n' +
+2026-10-21T08:51:05.0228438Z     '  enqueue-manual-command:\n' +
+2026-10-21T08:51:05.0232923Z     "    if: ${{ inputs.trigger_only_run != true && ((github.event_name == 'push' && (contains(toJSON(github.event.commits), 'manual-requests/run.json') || startsWith(github.event.head_commit.message, '[manual-request]')) && !contains(github.event.head_commit.message, '[public-collector-release]')) || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.public_collector_release != true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'V13_P0_READ_ONLY_DIAG' && inputs.reason != 'V13_P0_DRY_RUN' && inputs.reason != 'V13_SHADOW_MARKET_SMOKE' && inputs.reason != 'V13_FINAL_37' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE') ) }}\n" +
+2026-10-21T08:51:05.0237639Z     '    runs-on: ubuntu-latest\n' +
+2026-10-21T08:51:05.0237929Z     '    outputs:\n' +
+2026-10-21T08:51:05.0238277Z     '      command_id: ${{ steps.enqueue.outputs.command_id }}\n' +
+2026-10-21T08:51:05.0238737Z     '      command: ${{ steps.enqueue.outputs.command }}\n' +
+2026-10-21T08:51:05.0239202Z     '      coin_contract: ${{ steps.enqueue.outputs.coin_contract }}\n' +
+2026-10-21T08:51:05.0239571Z     '    env:\n' +
+2026-10-21T08:51:05.0239921Z     '      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}\n' +
+2026-10-21T08:51:05.0240432Z     '      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}\n' +
+2026-10-21T08:51:05.0240914Z     "      REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}\n" +
+2026-10-21T08:51:05.0241398Z     "      REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}\n" +
+2026-10-21T08:51:05.0242062Z     "      REPORT2_MANUAL_REQUEST_FILE: ${{ github.event_name == 'push' && 'manual-requests/run.json' || '' }}\n" +
+2026-10-21T08:51:05.0242704Z     '      REPORT2_CURRENT_POINTER_FILE: "REPORT2_CURRENT_GENERATION.json"\n' +
+2026-10-21T08:51:05.0243288Z     '      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"\n' +
+2026-10-21T08:51:05.0243856Z     '    steps:\n' +
+2026-10-21T08:51:05.0244148Z     '      - uses: actions/checkout@v4\n' +
+2026-10-21T08:51:05.0244476Z     '      - uses: actions/setup-node@v4\n' +
+2026-10-21T08:51:05.0244764Z     '        with:\n' +
+2026-10-21T08:51:05.0245016Z     "          node-version: '24'\n" +
+2026-10-21T08:51:05.0245429Z     '      - name: Durably enqueue command before analytics concurrency\n' +
+2026-10-21T08:51:05.0245809Z     '        id: enqueue\n' +
+2026-10-21T08:51:05.0246359Z     '        run: node runner/enqueue-manual-command.mjs\n' +
+2026-10-21T08:51:05.0246711Z     '\n' +
+2026-10-21T08:51:05.0246920Z     '  run-report2:\n' +
+2026-10-21T08:51:05.0247251Z     '    needs: [execution-gate, enqueue-manual-command]\n' +
+2026-10-21T08:51:05.0251251Z     "    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '7,27,47 * * * *') || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'V13_P0_READ_ONLY_DIAG' || inputs.reason == 'V13_P0_DRY_RUN' || inputs.reason == 'V13_SHADOW_MARKET_SMOKE' || inputs.reason == 'V13_FINAL_37' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}\n" +
+2026-10-21T08:51:05.0254840Z     '    runs-on: ubuntu-24.04-arm\n' +
+2026-10-21T08:51:05.0255150Z     '    timeout-minutes: 25\n' +
+2026-10-21T08:51:05.0255413Z     '    concurrency:\n' +
+2026-10-21T08:51:05.0255726Z     '      group: my-report-2-production-cycle\n' +
+2026-10-21T08:51:05.0256079Z     '      cancel-in-progress: false\n' +
+2026-10-21T08:51:05.0256596Z     '    env:\n' +
+2026-10-21T08:51:05.0256951Z     '      REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}\n' +
+2026-10-21T08:51:05.0257363Z     '      ANALYTICS_ENABLED: "1"\n' +
+2026-10-21T08:51:05.0257672Z     '      PUBLIC_COLLECTOR_ENABLED: "0"\n' +
+2026-10-21T08:51:05.0259186Z     "      DELIVERY_ENABLED: ${{ (github.event_name == 'schedule' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]'))) && '1' || '0' }}\n" +
+2026-10-21T08:51:05.0260713Z     '      CALIBRATION_APPLY_ENABLED: "0"\n' +
+2026-10-21T08:51:05.0261530Z     "      REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}\n" +
+2026-10-21T08:51:05.0262353Z     '      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}\n' +
+2026-10-21T08:51:05.0263009Z     '      REPORT2_EXPECTED_WORKER_SHA: "e80352300ea533ce25d8eeb934e7057d51da1600d021c3dda5702721a16d3e17"\n' +
+2026-10-21T08:51:05.0263654Z     '      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}\n' +
+2026-10-21T08:51:05.0264169Z     '      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}\n' +
+2026-10-21T08:51:05.0264699Z     '      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}\n' +
+2026-10-21T08:51:05.0265254Z     '      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}\n' +
+2026-10-21T08:51:05.0265963Z     '      REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"\n' +
+2026-10-21T08:51:05.0266926Z     '      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}\n' +
+2026-10-21T08:51:05.0267805Z     "      REPORT2_TELEGRAM_REPORT_TEST: ${{ inputs.telegram_report_test || 'false' }}\n" +
+2026-10-21T08:51:05.0268333Z     '      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"\n' +
+2026-10-21T08:51:05.0268718Z     '      REPORT2_TELEGRAM_WATCH70_ENABLED: "1"\n' +
+2026-10-21T08:51:05.0269086Z     '      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"\n' +
+2026-10-21T08:51:05.0269816Z     "      REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.controlled_no_telegram == true && '0' || '1' }}\n" +
+2026-10-21T08:51:05.0270485Z     '      REPORT2_TELEGRAM_INFO_ENABLED: "1"\n' +
+2026-10-21T08:51:05.0270866Z     '      REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: "1"\n' +
+2026-10-21T08:51:05.0271682Z     "      REPORT2_EVIDENCE_HTTP_CAP: ${{ (github.event_name == 'schedule' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true) && '18' || '24' }}\n" +
+2026-10-21T08:51:05.0272637Z     '      REPORT2_TELEGRAM_INFO_TEST_ID: "92c079540618aaea7403eaccf6146f6418c61f036'... 22965 more characters
+2026-10-21T08:51:05.0273114Z   
+2026-10-21T08:51:05.0273866Z       at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/generation-guard.test.mjs:137:9)
+2026-10-21T08:51:05.0274690Z       at Test.runInAsyncScope (node:async_hooks:227:14)
+2026-10-21T08:51:05.0275087Z       at Test.run (node:internal/test_runner/test:1402:25)
+2026-10-21T08:51:05.0275565Z       at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+2026-10-21T08:51:05.0276064Z       at Test.postRun (node:internal/test_runner/test:1542:19)
+2026-10-21T08:51:05.0276876Z       at Test.run (node:internal/test_runner/test:1467:12)
+2026-10-21T08:51:05.0277396Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-10-21T08:51:05.0277839Z     generatedMessage: true,
+2026-10-21T08:51:05.0278092Z     code: 'ERR_ASSERTION',
+2026-10-21T08:51:05.0321337Z     actual: 'name: Report 2 Cloud Runner\nrun-name: ${{ inputs.scheduled_recovery_run == true && \'Report 2 scheduled recovery\' || \'Report 2 Cloud Runner\' }}\n\non:\n  schedule:\n    - cron: "7,27,47 * * * *"\n  push:\n    branches:\n      - main\n    paths:\n      - "manual-requests/run.json"\n      - "cloudflare/public-collector/release-request.json"\n  workflow_dispatch:\n    inputs:\n      reason:\n        description: "manual validation"\n        required: false\n        default: "manual"\n      command:\n        description: "Russian command, for example: Найди ликвидационные монеты"\n        required: false\n        default: ""\n      coin_contract:\n        description: "optional exact HTX futures contract for a deep analysis, for example SOL-USDT"\n        required: false\n        default: ""\n      telegram_report_test:\n        description: "send one compact Telegram report test"\n        required: false\n        type: boolean\n        default: false\n      controlled_no_telegram:\n        description: "controlled smoke with Telegram fully disabled"\n        required: false\n        type: boolean\n        default: false\n      isolated_telegram_validation:\n        description: "isolate owner Telegram validation from unrelated manual smoke gates"\n        required: false\n        type: boolean\n        default: false\n      oxarchive_cost_probe:\n        description: "run one idempotent authenticated 0xArchive cost probe"\n        required: false\n        type: boolean\n        default: false\n      oxarchive_probe_symbol:\n        description: "0xArchive Hyperliquid symbol for the one-call cost probe"\n        required: false\n        default: "SOL"\n      cross_exchange_validation_lane:\n        description: "optional controlled validation lane: DEPTH, REALIZED or HISTORY"\n        required: false\n        default: ""\n      trigger_only_run:\n        description: "internal exact SENT price-trigger wake-up"\n        required: false\n        type: boolean\n        default: false\n      trigger_task_id:\n        description: "exact original trigger task; required for trigger-only run"\n        required: false\n        default: ""\n      scheduled_recovery_run:\n        description: "internal full-cycle recovery after missing scheduled events"\n        required: false\n        type: boolean\n        default: false\n      public_collector_release:\n        description: "deploy the bounded five-minute HTX public collector"\n        required: false\n        type: boolean\n        default: false\n      manual_run_authorized:\n        description: "explicitly authorize this manual analytics run"\n        required: true\n        type: boolean\n        default: true\n\npermissions:\n  contents: read\n\njobs:\n  execution-gate:\n    runs-on: ubuntu-24.04-arm\n    outputs:\n      admitted: ${{ steps.gate.outputs.admitted }}\n    env:\n      LEGACY_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}\n      EVENT_NAME: ${{ github.event_name }}\n      TRIGGER_ONLY_RUN: ${{ inputs.trigger_only_run || \'false\' }}\n      TRIGGER_TASK_ID: ${{ inputs.trigger_task_id || \'\' }}\n      SCHEDULED_RECOVERY_RUN: ${{ inputs.scheduled_recovery_run || \'false\' }}\n      RECOVERY_REASON: ${{ inputs.reason || \'\' }}\n      MANUAL_AUTHORIZED: ${{ inputs.manual_run_authorized || \'false\' }}\n    steps:\n      - name: Gate the entire working job\n        id: gate\n        shell: bash\n        run: |\n          set -Eeuo pipefail\n          normalize_true() {\n            case "$(printf \'%s\' "$1" | tr \'[:upper:]\' \'[:lower:]\')" in 1|true|yes|on) return 0 ;; *) return 1 ;; esac\n          }\n          admitted=false\n          if [ "$EVENT_NAME" = "schedule" ]; then\n            if normalize_true "$LEGACY_RUNNER_ENABLED"; then admitted=true; fi\n          elif [ "$EVENT_NAME" = "push" ]; then\n            admitted=true\n          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then\n            if normalize_true "$SCHEDULED_RECOVERY_RUN"; then\n              if normalize_true "$LEGACY_RUNNER_ENABLED" && ! normalize_true "$MANUAL_AUTHORIZED" && ! normalize_true "$TRIGGER_ONLY_RUN" && [ "$RECOVERY_REASON" = "SCHEDULED_CADENCE_RECOVERY" ]; then admitted=true; fi\n            elif normalize_true "$TRIGGER_ONLY_RUN"; then\n              if normalize_true "$LEGACY_RUNNER_ENABLED" && [ -n "$TRIGGER_TASK_ID" ]; then admitted=true; fi\n            elif normalize_true "$MANUAL_AUTHORIZED"; then admitted=true; fi\n          fi\n          echo "admitted=$admitted" >> "$GITHUB_OUTPUT"\n          echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"\n\n  enqueue-manual-command:\n    if: ${{ inputs.trigger_only_run != true && ((github.event_name == \'push\' && (contains(toJSON(github.event.commits), \'manual-requests/run.json\') || startsWith(github.event.head_commit.message, \'[manual-request]\')) && !contains(github.event.head_commit.message, \'[public-collector-release]\')) || (github.event_name == \'workflow_dispatch\' && inputs.manual_run_authorized == true && inputs.public_collector_release != true && inputs.reason != \'T00_RUNTIME_EXPORT\' && inputs.reason != \'T00_D1_INVENTORY\' && inputs.reason != \'T00_CLOUDFLARE_HUB_AUDIT\' && inputs.reason != \'V13_P0_READ_ONLY_DIAG\' && inputs.reason != \'V13_P0_DRY_RUN\' && inputs.reason != \'V13_SHADOW_MARKET_SMOKE\' && inputs.reason != \'V13_FINAL_37\' && inputs.reason != \'T16_DERIBIT_ALT_OPTIONS_SMOKE\' && inputs.reason != \'T16_CHAIN_SUPPLY_SMOKE\' && inputs.reason != \'T16_SOURCIFY_ABI_SMOKE\' && inputs.reason != \'T16_METADATA_SOURCES_SMOKE\' && inputs.reason != \'T16_OFFICIAL_FEED_SMOKE\' && inputs.reason != \'T16_LIDO_SNAPSHOT_SMOKE\' && inputs.reason != \'T16_LIGHTER_NATIVE_SMOKE\' && inputs.reason != \'T16_GMX_NATIVE_SMOKE\' && inputs.reason != \'T16_GTRADE_NATIVE_SMOKE\' && inputs.reason != \'T16_BLOCKSCOUT_INDEX_SMOKE\') ) }}\n    runs-on: ubuntu-latest\n    outputs:\n      command_id: ${{ steps.enqueue.outputs.command_id }}\n      command: ${{ steps.enqueue.outputs.command }}\n      coin_contract: ${{ steps.enqueue.outputs.coin_contract }}\n    env:\n      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}\n      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}\n      REPORT2_MANUAL_COMMAND: ${{ inputs.command || \'\' }}\n      REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || \'\' }}\n      REPORT2_MANUAL_REQUEST_FILE: ${{ github.event_name == \'push\' && \'manual-requests/run.json\' || \'\' }}\n      REPORT2_CURRENT_POINTER_FILE: "REPORT2_CURRENT_GENERATION.json"\n      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: \'24\'\n      - name: Durably enqueue command before analytics concurrency\n        id: enqueue\n        run: node runner/enqueue-manual-command.mjs\n\n  run-report2:\n    needs: [execution-gate, enqueue-manual-command]\n    if: ${{ always() && needs.execution-gate.outputs.admitted == \'true\' && ((github.event_name == \'schedule\' && github.event.schedule == \'7,27,47 * * * *\') || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true || needs.enqueue-manual-command.result == \'success\' || inputs.reason == \'T00_RUNTIME_EXPORT\' || inputs.reason == \'T00_D1_INVENTORY\' || inputs.reason == \'V13_P0_READ_ONLY_DIAG\' || inputs.reason == \'V13_P0_DRY_RUN\' || inputs.reason == \'V13_SHADOW_MARKET_SMOKE\' || inputs.reason == \'V13_FINAL_37\' || inputs.reason == \'T16_DERIBIT_ALT_OPTIONS_SMOKE\' || inputs.reason == \'T16_CHAIN_SUPPLY_SMOKE\' || inputs.reason == \'T16_SOURCIFY_ABI_SMOKE\' || inputs.reason == \'T16_BLUESKY_ATTENTION_SMOKE\' || inputs.reason == \'T16_METADATA_SOURCES_SMOKE\' || inputs.reason == \'T16_OFFICIAL_FEED_SMOKE\' || inputs.reason == \'T16_LIDO_SNAPSHOT_SMOKE\' || inputs.reason == \'T16_LIGHTER_NATIVE_SMOKE\' || inputs.reason == \'T16_GMX_NATIVE_SMOKE\' || inputs.reason == \'T16_GTRADE_NATIVE_SMOKE\' || inputs.reason == \'T16_BLOCKSCOUT_INDEX_SMOKE\') }}\n    runs-on: ubuntu-24.04-arm\n    timeout-minutes: 25\n    concurrency:\n      group: my-report-2-production-cycle\n      cancel-in-progress: false\n    env:\n      REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}\n      ANALYTICS_ENABLED: "1"\n      PUBLIC_COLLECTOR_ENABLED: "0"\n      DELIVERY_ENABLED: ${{ (github.event_name == \'schedule\' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true || (github.event_name == \'workflow_dispatch\' && inputs.isolated_telegram_validation == true) || (github.event_name == \'push\' && contains(github.event.head_commit.message, \'[telegram-canonical-delivery]\'))) && \'1\' || \'0\' }}\n      CALIBRATION_APPLY_ENABLED: "0"\n      REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == \'push\' || (github.event_name == \'workflow_dispatch\' && inputs.manual_run_authorized == true)) && \'1\' || \'0\' }}\n      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}\n      REPORT2_EXPECTED_WORKER_SHA: "e80352300ea533ce25d8eeb934e7057d51da1600d021c3dda5702721a16d3e17"\n      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}\n      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}\n      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}\n      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}\n      REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"\n      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}\n      REPORT2_TELEGRAM_REPORT_TEST: ${{ inputs.telegram_report_test || \'false\' }}\n      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"\n      REPORT2_TELEGRAM_WATCH70_ENABLED: "1"\n      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"\n      REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == \'workflow_dispatch\' && inputs.controlled_no_telegram == true && \'0\' || \'1\' }}\n      REPORT2_TELEGRAM_INFO_ENABLED: "1"\n      REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: "1"\n      REPORT2_EVIDENCE_HTTP_CAP: ${{ (github.event_name == \'schedule\' || inputs.scheduled_recovery_run == true || inputs.trigger_only_run == true) && \'18\' || \'24\' }}\n      REPORT2_TELEGRAM_INFO_TEST_ID: "92c079540618aaea7403eaccf6146f6418c61f036'... 22965 more characters,
+2026-10-21T08:51:05.0353534Z     expected: /885553691d783ca8a57b6a8a45e22a07e23208d7467b0ac300fdf38080008950/,
+2026-10-21T08:51:05.0353973Z     operator: 'match',
+2026-10-21T08:51:05.0354202Z     diff: 'simple'
+2026-10-21T08:51:05.0354405Z   }
+2026-10-21T08:51:05.0354516Z 
+2026-10-21T08:51:05.0354524Z 
+2026-10-21T08:51:05.0355006Z     at run (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:15:29)
+2026-10-21T08:51:05.0355928Z     at file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/validate.mjs:58:1
+2026-10-21T08:51:05.0356882Z     at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+2026-10-21T08:51:05.0357335Z     at async node:internal/modules/esm/loader:647:26
+2026-10-21T08:51:05.0357847Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+2026-10-21T08:51:05.0358199Z 
+2026-10-21T08:51:05.0358298Z Node.js v24.21.0
+2026-10-21T08:51:05.0410978Z ##[group]Run actions/upload-artifact@v4
+2026-10-21T08:51:05.0411280Z with:
+2026-10-21T08:51:05.0411485Z   name: n12-cross-venue-39572282932
+2026-10-21T08:51:05.0411761Z   path: audit-output/n12-cross-venue/
+2026-10-21T08:51:05.0412024Z   retention-days: 30
+2026-10-21T08:51:05.0412241Z   if-no-files-found: warn
+2026-10-21T08:51:05.0412472Z   compression-level: 6
+2026-10-21T08:51:05.0412690Z   overwrite: false
+2026-10-21T08:51:05.0412904Z   include-hidden-files: false
+2026-10-21T08:51:05.0413145Z ##[endgroup]
+2026-10-21T08:51:05.2133259Z (node:6735) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-21T08:51:05.2134983Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-21T08:51:05.2229488Z With the provided path, there will be 5 files uploaded
+2026-10-21T08:51:05.2235634Z Artifact name is valid!
+2026-10-21T08:51:05.2236649Z Root directory input is valid!
+2026-10-21T08:51:05.5775333Z Beginning upload of artifact content to blob storage
+2026-10-21T08:51:05.6050898Z (node:6735) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-21T08:51:05.8054471Z Uploaded bytes 11173
+2026-10-21T08:51:05.8637088Z Finished uploading artifact content to blob storage!
+2026-10-21T08:51:05.8638095Z SHA256 digest of uploaded artifact zip is 365c587f5e679ef2e191f17aa41877c291f5d78decebe8210810ac8041964b4c
+2026-10-21T08:51:05.8639750Z Finalizing artifact upload
+2026-10-21T08:51:06.1384816Z Artifact n12-cross-venue-39572282932.zip successfully finalized. Artifact ID 12332851358
+2026-10-21T08:51:06.1387401Z Artifact n12-cross-venue-39572282932 has been successfully uploaded! Final size is 11173 bytes. Artifact ID is 12332851358
+2026-10-21T08:51:06.1394251Z Artifact download URL: https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/actions/runs/39572282932/artifacts/12332851358
+2026-10-21T08:51:06.1608268Z Post job cleanup.
+2026-10-21T08:51:06.2495890Z [command]/usr/bin/git version
+2026-10-21T08:51:06.2546043Z git version 2.55.0
+2026-10-21T08:51:06.2590886Z Temporarily overriding HOME='/home/runner/work/_temp/473f993c-606c-42d7-ad2d-1eb77fe63b0b' before making global git config changes
+2026-10-21T08:51:06.2593092Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-21T08:51:06.2597786Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner
+2026-10-21T08:51:06.2643557Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-21T08:51:06.2687220Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-21T08:51:06.2975263Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-21T08:51:06.2999150Z http.https://github.com/.extraheader
+2026-10-21T08:51:06.3012472Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-21T08:51:06.3056868Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-21T08:51:06.3353158Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-21T08:51:06.3394602Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-21T08:51:06.3821612Z Cleaning up orphan processes
+2026-10-21T08:51:06.4156041Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/github-script@v7, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

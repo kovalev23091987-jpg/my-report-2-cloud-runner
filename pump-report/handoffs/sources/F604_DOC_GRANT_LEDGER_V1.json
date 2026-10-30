@@ -1,0 +1,55 @@
+{
+  "id": "ROOT_F604_CG_BINGX_EXACT_IDENTITY_ONLY_2SEARCH4READ_20261026",
+  "search_max": 2,
+  "open_max": 4,
+  "search_spent": 2,
+  "open_spent": 4,
+  "state": "CLOSED_EXHAUSTED_NO_REARM",
+  "old_grants_rearmed": false,
+  "attempts": [
+    {
+      "kind": "targeted_search",
+      "q": "site:coingecko.com/en/exchanges \"BingX\" \"Futures\"",
+      "purpose": "Primary vendor venue page and explicit API exchange-ID evidence, no slug guess",
+      "state": "SUCCESS_PRIMARY_API_ID_FIELD_FOUND"
+    },
+    {
+      "kind": "targeted_search",
+      "q": "site:docs.coingecko.com (\"credits\" OR \"call credits\") (\"one\" OR \"1\") \"Demo\"",
+      "purpose": "Primary per-request/month/day credit accounting beyond retained F603 pricing table",
+      "state": "NO_CREDIT_MATCH_IN_RETURNED_SEARCH_BUNDLE_SPENT"
+    },
+    {
+      "kind": "new_primary_targeted_find",
+      "url": "https://www.coingecko.com/en/exchanges/bingx_futures",
+      "pattern": "API ID",
+      "purpose": "Confirm explicit vendor API-ID field; not infer ID from URL",
+      "state": "SUCCESS_EXPLICIT_API_ID_BINGX_FUTURES"
+    },
+    {
+      "kind": "new_primary_read",
+      "ref": "turn160view0:87",
+      "purpose": "Keyless public access/limitations for same derivative identity route",
+      "state": "SUCCESS_KEYLESS_IP_POOL_AND_SCOPE"
+    },
+    {
+      "kind": "previously_unread_primary_section",
+      "url": "https://www.coingecko.com/en/api/pricing",
+      "lineno": 1000,
+      "purpose": "Previously unread pricing FAQ tail afterF603line672: per-call credits/failure/month envelope",
+      "state": "SUCCESS_NEW_FAQ_CREDIT_AND_MONTH_RESET"
+    },
+    {
+      "kind": "new_primary_endpoint_overview",
+      "ref": "turn163view0:5",
+      "purpose": "Keyless page's full Demo endpoint list for exact derivative exchange route availability",
+      "state": "SUCCESS_EXACT_ROUTE_IN_DEMO_KEYLESS_OVERVIEW"
+    }
+  ],
+  "primary_read_successes": 4,
+  "failed_primary_reads": 0,
+  "search_queries_submitted": 2,
+  "venue_search_hit": true,
+  "credit_search_result": "NOT_RETURNED_IN_BUNDLE_SPENT",
+  "new_source_qualification_calls": 0
+}

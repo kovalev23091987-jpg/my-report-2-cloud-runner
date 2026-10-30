@@ -1,0 +1,209 @@
+{
+  "schema": "PUMP_M_CROSS_OWNER_GAPS_V1",
+  "gaps": [
+    {
+      "id": "M-G01",
+      "status": "UNIMPLEMENTED",
+      "severity": "HIGH",
+      "source_lines": [
+        181,
+        216,
+        627,
+        1001
+      ],
+      "code_refs": [
+        {
+          "path": "pump-report/analytics/movement.mjs",
+          "method": "analyzeMovement",
+          "line": 65,
+          "sha256": "6b48b3e583541d4f46e4f5981f4dced800c6fe1ac86e391aabd59b5de1dbd1ad"
+        }
+      ],
+      "proof_ref": {
+        "path": "pump-report/handoffs/analytics/package-m/manual-first-diagnostic.json",
+        "sha256": "e431fdf73d1e51fad1074bb10ce8c818b8d22f482d3700768c83c667fd2b1e75"
+      },
+      "finding": "manual-first [] qualification remains empty when a later AUTO window passes; current_threshold=true but automatic_eligible=false",
+      "next": "ROOT approval required before minimal latch fix; preserve nonempty qualification/created/expiry/cancel and old origins."
+    },
+    {
+      "id": "M-G02",
+      "status": "PARTIAL",
+      "severity": "MEDIUM",
+      "source_lines": [
+        72,
+        248,
+        250,
+        251,
+        252
+      ],
+      "code_refs": [
+        {
+          "path": "pump-report/analytics/context.mjs",
+          "method": "explainOptionalFacts",
+          "line": 7,
+          "sha256": "704348a6c56bcdafe10d7335c89e4e092d92fadfe12bed856c9afb8bfc8285d6"
+        }
+      ],
+      "finding": "Only directional sample sums are implemented; trade impact/reaction/absorption is not measured",
+      "next": "Do not claim absorption; ROOT/SOURCE qualify useful route and specific price-impact scope."
+    },
+    {
+      "id": "M-G03",
+      "status": "PARTIAL",
+      "severity": "MEDIUM",
+      "source_lines": [
+        75,
+        65
+      ],
+      "code_refs": [
+        {
+          "path": "pump-report/analytics/context.mjs",
+          "method": "explainOptionalFacts",
+          "line": 7,
+          "sha256": "704348a6c56bcdafe10d7335c89e4e092d92fadfe12bed856c9afb8bfc8285d6"
+        }
+      ],
+      "finding": "Relative-return consumer exists, but live market-context producer/coverage unproven",
+      "next": "SOURCE/ROOT producer and resource-qualified exact-window evidence."
+    },
+    {
+      "id": "M-G04",
+      "status": "UNIMPLEMENTED",
+      "severity": "MEDIUM",
+      "source_lines": [
+        678
+      ],
+      "code_refs": [
+        {
+          "path": "pump-report/analytics/outcome.mjs",
+          "method": "evaluateOutcome",
+          "line": 26,
+          "sha256": "8be8aeba5bab96e66be6798078104d6b573a66e22b895789d14c6bf9a3759375"
+        }
+      ],
+      "finding": "Entry scenario has touches/order ambiguity but no drawdown relative to the touched entry area",
+      "next": "Separate small implementation/acceptance after ROOT scope decision; not old ENTRY followup resumption."
+    },
+    {
+      "id": "M-G05",
+      "status": "PARTIAL",
+      "severity": "LOW",
+      "source_lines": [
+        273
+      ],
+      "code_refs": [
+        {
+          "path": "pump-report/analytics/movement.mjs",
+          "method": "analyzeMovement",
+          "line": 65,
+          "sha256": "6b48b3e583541d4f46e4f5981f4dced800c6fe1ac86e391aabd59b5de1dbd1ad"
+        }
+      ],
+      "finding": "Profile lists3m/5m activity; movement consumes only impulse_window_ms5m",
+      "next": "ROOT decides whether proposed3m is required; no hidden extra detector."
+    },
+    {
+      "id": "M-G06",
+      "status": "PARTIAL",
+      "severity": "MEDIUM",
+      "source_lines": [
+        232,
+        233,
+        237,
+        783,
+        813,
+        815
+      ],
+      "code_refs": [
+        {
+          "path": "pump-report/analytics/movement.mjs",
+          "method": "analyzeMovement",
+          "line": 65,
+          "sha256": "6b48b3e583541d4f46e4f5981f4dced800c6fe1ac86e391aabd59b5de1dbd1ad"
+        },
+        {
+          "path": "pump-report/analytics/index.mjs",
+          "method": "render",
+          "line": 59,
+          "sha256": "4d08ce32f9ab948f14a221f172a3aa491ad1ac33a4a093c448b9905a144c0a22"
+        },
+        {
+          "path": "pump-report/analytics/presentation.mjs",
+          "method": "growthProofLine",
+          "line": 28,
+          "sha256": "8e28bad3f582d023af7b944ca37ba27de7c47f5ba800df46a109c44fc2a81bab"
+        }
+      ],
+      "finding": "Acceleration/weakening are coarse OHLC-volume proxy; optional text appends all fitting contexts rather than choosing two strongest reasons",
+      "next": "Clarify truthful stage descriptions and concise selection in one bounded amendment."
+    },
+    {
+      "id": "M-G07",
+      "status": "PARTIAL",
+      "severity": "LOW",
+      "source_lines": [
+        783,
+        811,
+        813
+      ],
+      "code_refs": [
+        {
+          "path": "pump-report/analytics/presentation.mjs",
+          "method": "growthProofLine",
+          "line": 28,
+          "sha256": "8e28bad3f582d023af7b944ca37ba27de7c47f5ba800df46a109c44fc2a81bab"
+        }
+      ],
+      "finding": "Frozen L prints a shortened internal fact_id in user text; retain full evidence inside analysis and remove internal identifier from user card",
+      "next": "ROOT requested one later affected L2 case; frozen L unchanged."
+    },
+    {
+      "id": "M-G08",
+      "status": "PARTIAL",
+      "severity": "HIGH",
+      "source_lines": [
+        45,
+        164,
+        500,
+        509,
+        958,
+        1032,
+        1054
+      ],
+      "finding": "934 activeUSDT is not cryptoN; total eligible cryptoN unknown, unknowns excluded, BTCETH separately owner-excluded; no current-policy production chain",
+      "next": "SOURCE full taxonomy/coverage; ROOT bounded allowed-instrument same-text chain after admission."
+    },
+    {
+      "id": "M-G09",
+      "status": "DEFERRED_BY_TZ",
+      "severity": "EXPECTED",
+      "source_lines": [
+        708,
+        718,
+        723,
+        747,
+        748,
+        974,
+        980
+      ],
+      "code_refs": [
+        {
+          "path": "pump-report/analytics/cohort-audit.mjs",
+          "method": "auditCohortSample",
+          "line": 65,
+          "sha256": "f70266950a6b39cdfa71895bd8fc489a176895d85e09167126cdb464034a6ae8"
+        },
+        {
+          "path": "pump-report/analytics/cohort-audit.mjs",
+          "method": "auditPairedAnalyses",
+          "line": 141,
+          "sha256": "f70266950a6b39cdfa71895bd8fc489a176895d85e09167126cdb464034a6ae8"
+        }
+      ],
+      "finding": "No learned/calibrated probability, CI/error validation, source causal utility or live shadow promotion",
+      "next": "After working launch, independent OBSERVED production sample; never label counts as model validation."
+    }
+  ],
+  "full_pipeline_production_done": false
+}

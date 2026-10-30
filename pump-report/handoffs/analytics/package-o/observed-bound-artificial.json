@@ -1,0 +1,217 @@
+{
+  "evidence": "ARTIFICIAL_ONLY",
+  "full": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000000,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400000,
+    "status": "MISS",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": 19.999999999999996,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": true,
+      "no_hit_period_covered": true,
+      "no_hit_basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "basis": "EXACT_CLOSED_MINUTE_INTERVAL",
+      "covered_until_ts": 1800014400000,
+      "observed_interval_complete": true,
+      "fully_contained_candles": 240,
+      "boundary_candles_excluded": 0,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": true,
+      "exit_touched": true,
+      "entry_then_exit_confirmed": true,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": {
+        "start_ts": 1800000000000,
+        "end_ts": 1800000060000
+      },
+      "entry_area_excursion": {
+        "area_floor_price": 95,
+        "contact_confirmed_by_ts": 1800000060000,
+        "post_confirmation_low_observed": 93,
+        "below_area_pct_lower_bound": 2.1052631578947323,
+        "reason": "OBSERVED_LOWER_BOUND_AFTER_CONFIRMED_CONTACT"
+      }
+    }
+  },
+  "gap": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000000,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400000,
+    "status": "UNKNOWN",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": null,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": false,
+      "no_hit_period_covered": false,
+      "no_hit_basis": null,
+      "basis": "INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS",
+      "covered_until_ts": 1800014400000,
+      "observed_interval_complete": false,
+      "fully_contained_candles": 239,
+      "boundary_candles_excluded": 0,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [
+      "INSUFFICIENT_HISTORY_COVERAGE"
+    ],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": true,
+      "exit_touched": true,
+      "entry_then_exit_confirmed": true,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": {
+        "start_ts": 1800000000000,
+        "end_ts": 1800000060000
+      },
+      "entry_area_excursion": {
+        "area_floor_price": 95,
+        "contact_confirmed_by_ts": 1800000060000,
+        "post_confirmation_low_observed": 93,
+        "below_area_pct_lower_bound": 2.1052631578947323,
+        "reason": "OBSERVED_LOWER_BOUND_AFTER_CONFIRMED_CONTACT"
+      }
+    }
+  },
+  "hit": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000000,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400000,
+    "status": "HIT",
+    "hit_ts": null,
+    "hit_interval": {
+      "start_ts": 1800006000000,
+      "end_ts": 1800006060000
+    },
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": null,
+    "hit_after_invalidation": true,
+    "coverage": {
+      "complete": false,
+      "no_hit_period_covered": false,
+      "no_hit_basis": null,
+      "basis": "INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS",
+      "covered_until_ts": 1800014400000,
+      "observed_interval_complete": false,
+      "fully_contained_candles": 239,
+      "boundary_candles_excluded": 0,
+      "price_points": 0,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [
+      "INTRABAR_FIRST_HIT_TIME_AND_ORDER_UNKNOWN"
+    ],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": true,
+      "exit_touched": true,
+      "entry_then_exit_confirmed": true,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": {
+        "start_ts": 1800000000000,
+        "end_ts": 1800000060000
+      },
+      "entry_area_excursion": {
+        "area_floor_price": 95,
+        "contact_confirmed_by_ts": 1800000060000,
+        "post_confirmation_low_observed": 93,
+        "below_area_pct_lower_bound": 2.1052631578947323,
+        "reason": "OBSERVED_LOWER_BOUND_AFTER_CONFIRMED_CONTACT"
+      }
+    }
+  },
+  "point": {
+    "signal_id": "ARTIFICIAL_SIGNAL_1",
+    "wave_id": "ARTIFICIAL_WAVE_1",
+    "independence_key": "ARTIFICIAL_WAVE_1",
+    "mode": "AUTO",
+    "map_mode": "WITHOUT_MAP",
+    "rules_version": "ARTIFICIAL_ORIGINAL_RULES_UNCHANGED",
+    "t0": 1800000000000,
+    "reference_price": 100,
+    "target_price": 110,
+    "deadline_ts": 1800014400000,
+    "status": "MISS",
+    "hit_ts": null,
+    "hit_interval": null,
+    "drawdown_before_hit_pct": null,
+    "drawdown_total_pct": 9.999999999999998,
+    "hit_after_invalidation": null,
+    "coverage": {
+      "complete": true,
+      "no_hit_period_covered": true,
+      "no_hit_basis": "ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET",
+      "basis": "EXACT_CLOSED_MINUTE_INTERVAL",
+      "covered_until_ts": 1800014400000,
+      "observed_interval_complete": true,
+      "fully_contained_candles": 240,
+      "boundary_candles_excluded": 0,
+      "price_points": 2,
+      "point_samples_prove_continuity": false
+    },
+    "reasons": [],
+    "scenario_outcome": {
+      "status": "PRICE_SCENARIO_ONLY",
+      "entry_touched": true,
+      "exit_touched": true,
+      "entry_then_exit_confirmed": true,
+      "intrabar_order_unknown": false,
+      "execution_proven": false,
+      "user_profit": null,
+      "entry_first_interval": {
+        "start_ts": 1800000000000,
+        "end_ts": 1800000060000
+      },
+      "entry_area_excursion": {
+        "area_floor_price": 95,
+        "contact_confirmed_by_ts": 1800000030000,
+        "post_confirmation_low_observed": 94,
+        "below_area_pct_lower_bound": 1.0526315789473717,
+        "reason": "OBSERVED_LOWER_BOUND_AFTER_CONFIRMED_CONTACT"
+      }
+    }
+  },
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0
+}

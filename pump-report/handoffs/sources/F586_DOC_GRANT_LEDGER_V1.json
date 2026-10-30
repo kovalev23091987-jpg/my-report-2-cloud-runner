@@ -1,0 +1,43 @@
+{
+  "id": "ROOT_F586_CONDITIONAL_BINGX_PREMIUM_INDEX_2SEARCH2READ_20261026",
+  "condition": "Onlyifretainedprimaryproofinsufficient",
+  "search_max": 2,
+  "open_max": 2,
+  "search_spent": 2,
+  "open_spent": 2,
+  "domains": [
+    "bingx.com",
+    "bingx-api.github.io",
+    "github.com/BingX-API",
+    "github.com/ccxt/ccxt",
+    "raw.githubusercontent.com/ccxt/ccxt"
+  ],
+  "old_grants_rearmed": false,
+  "state": "EXHAUSTED_SPENT_NON_REFUNDABLE",
+  "attempts": [
+    {
+      "kind": "search",
+      "q": "site:bingx.com lastFundingRate premiumIndex fundingIntervalHours time funding rate",
+      "state": "SPENT_COMPLETED"
+    },
+    {
+      "kind": "search",
+      "q": "site:github.com/ccxt/ccxt bingx parseFundingRate fundingIntervalHours timestamp time",
+      "state": "SPENT_COMPLETED"
+    },
+    {
+      "kind": "official_source_read",
+      "url": "https://github.com/ccxt/ccxt/blob/d3159f7036f93db086cd0414642132fba5401710/ts/src/bingx.ts",
+      "state": "SPENT_COMPLETED"
+    },
+    {
+      "kind": "official_doc_open",
+      "url": "https://bingx-api.github.io/docs-v3/#/en/Swap/Market%20Data/Mark%20Price%20and%20Funding%20Rate",
+      "state": "SPENT_NO_EXTRACTABLE_PAGE_LINES"
+    }
+  ],
+  "condition_result": "RetainednativeEN/ZHdoc hasno unitfraction/actualperiod/rate-updateclock; AIrefaddsdata.time genericTimestamp butnot explicitrateevent. RetainedCCXTtmpfileisempty,notusable.",
+  "search_remaining": 0,
+  "open_remaining": 0,
+  "actual_new_market_SQL_TG_Worker": 0
+}

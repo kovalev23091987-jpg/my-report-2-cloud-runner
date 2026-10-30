@@ -1,0 +1,121 @@
+{
+  "schema": "PACKAGE_BO_STATIC_CONSUMER_FINAL_V1",
+  "status": "PASS_STATIC_NO_CODE_NEEDED",
+  "meaning": "Current F603 is documentary metadata/HOLD; this does not claim future USD point/external funding card already supported",
+  "frozen_at": "2026-10-26T16:41:05.453065+00:00",
+  "freeze_before_own_expiry": true,
+  "own_owner": "CODEX:OFFLINE_ANOMALIES:1793032114000",
+  "own_expires_ts": 1793033314000,
+  "authority_main": "252c8ea797209b077145818af332ea537c9fc8e8",
+  "live70": {
+    "implementation_sha256": "08ab5e3f4b58cbbce2d5278ca956810fcf1f4f25cda23b033444f087846893a7",
+    "artifact_sha256": "b8f0315b2abf7e818705b52d0f7a26146992af79f82a670ffe5f7022c9b2aab5",
+    "saved_deploy_FULL": "checkpoints/pump-report-20261025/ROOT_CAPACITY70_DEPLOYMENT_READBACK.json",
+    "saved_ON_ON_FULL": "checkpoints/pump-report-20261025/ROOT_CAPACITY_AUTO_ON_READBACK.json",
+    "new_server_readback": false
+  },
+  "F603_frozen_input": {
+    "manifest_path": "pump-report/handoffs/sources/F603_PACKAGE_COINGECKO_FREE_BATCH_IDENTITY_METRIC_GAPS_FINAL_V1.json",
+    "manifest_sha256": "cba10047b0c55d59ce72b0b99f594e6de3ed51826b67cc91334a3f69205a41dc",
+    "status": "FINAL_FROZEN",
+    "frozen_utc": "2026-10-26 16:31:47 UTC",
+    "all9_payload_hashes_verified": true,
+    "profile_path": "pump-report/handoffs/sources/F603_FREE_BATCH_FOUR_LINK_PROFILE_V1.json",
+    "profile_sha256": "c42720eaeb9dc99d2b636d1851a0582c283729eeff606a9da184122e2544fcd7",
+    "profile_status": "PARTIAL_DOCUMENTARY_QUALIFICATION_NOT_RUNTIME_READY",
+    "current_actual_rows": 0,
+    "exact_BingX_derivative_exchange_id": null,
+    "OI_original_clock": "UNKNOWN",
+    "funding_clock_scale_period": "UNKNOWN",
+    "profile_consumed_only_after_freeze": true
+  },
+  "static_findings": {
+    "Fact_envelope_unit_string": "USD can be structurally represented but not admitted by current OI context whitelist",
+    "OI_context_units": [
+      "CONTRACTS",
+      "BASE_ASSET",
+      "USDT"
+    ],
+    "OI_USD_context_supported": false,
+    "OI_delta_from_one_snapshot": false,
+    "OI_card_line": false,
+    "funding_context": "Qualified RATE_FRACTION_PER_ACTUAL_PERIOD with real clocks/period may retain external source",
+    "funding_card": "Official BingX only, external vendor must not be relabelled",
+    "current_F603_metrics_ready": false,
+    "current_F603_canonical_matches": 0,
+    "clock_substitution": "last_traded/received/cache refresh never OI/funding asof",
+    "missing_optional": "quiet omission no new filler warnings",
+    "future_specific_gap": "Only after source qualification and ROOT selection, optional USD-point context whitelist; existing envelope/capsule sufficient, no card change proposed",
+    "future_affected_case": "One conditional connected case proposed only, not authored or run",
+    "current_runner_optional": [
+      "trades",
+      "funding"
+    ]
+  },
+  "Node": 0,
+  "tests": 0,
+  "old_suites": 0,
+  "source_search": 0,
+  "source_API_HTTP": 0,
+  "native_SQL": 0,
+  "MCP": 0,
+  "TG": 0,
+  "deploy": 0,
+  "code_strategy_or_ROOT_format_edits": 0,
+  "prior_BN_BM_BL_preservation": [
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/PACKAGE_BL_REV2_FIRST_FAILURE_FROZEN_V1.json",
+      "sha256": "25266c506344d93d5741725ecbf092a574a4ada030df1c9a72337cb8df5ec9f6",
+      "owned_frozen_files_preserved": 15
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/corrected-once/PACKAGE_BL_CORRECTED_FIRST_FAILURE_FROZEN_V1.json",
+      "sha256": "a37e9398c5a005f3bf880907659029cd6698fcdfebd5e126f53a475bc3935bea",
+      "owned_frozen_files_preserved": 13
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bl/memory-attempt-3/PACKAGE_BL_MEMORY_ATTEMPT3_PASS_FROZEN_V1.json",
+      "sha256": "de8fc3c6bff237d4a163dc6c2027467bf5bc06def7a610db084f451912010650",
+      "owned_frozen_files_preserved": 11
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bm/PACKAGE_BM_STATIC_ACTIVITY_GATE_FINAL_V1.json",
+      "sha256": "c6a067fa0789847187a2c90ca9f51f2bb6b3cc0969325ba873fe6ca535f370cc",
+      "owned_frozen_files_preserved": 6
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bn/PACKAGE_BN_EXACT_ORIGINAL_REPLAY_FINAL_V1.json",
+      "sha256": "d9f61a1cb0f49189e1d05d57f4c28a09a106d742841b6c981e167fc8f385b73a",
+      "owned_frozen_files_preserved": 26
+    }
+  ],
+  "limitations": [
+    "F603 schema documentary only actualrows0; no current BingX derivative exchange ID/metricclocks/funding scale-period/access proved",
+    "Saved exact live70 artifact/pin and receipts, no fresh server readback",
+    "USD point and external funding card limitations explicitly retained",
+    "No tests/replay/source execution or new numerical market facts",
+    "SOURCE route/composition/budget/canonical admission remains separate ROOT/SOURCE work"
+  ],
+  "files": [
+    {
+      "path": "pump-report/handoffs/analytics/package-bo/BO_AUTHORITY_FULL.json",
+      "bytes": 2340,
+      "sha256": "48c84e6283b895fabaeb28a9a4b370e887c626a2504c0f916646210f745b1e1e"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bo/BO_CONSUMER_CODE_AND_F603_PROOF.json",
+      "bytes": 3799,
+      "sha256": "6e515ecb71409e88a49ccd58a2938dab267c04d3dfa8939788449d0ba508657f"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bo/BO_CONSUMER_DECISION_RU.md",
+      "bytes": 11941,
+      "sha256": "8f9f5c8f6ff7ded9a046b33f563b5995f9e227f93105bcf593d2aa5cd0119c22"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-bo/BO_MINIMAL_CONSUMER_INPUT_PROPOSAL.json",
+      "bytes": 4708,
+      "sha256": "0c7e36fb500b88a627f257a0b4a9faf0e872d159050cac94eb1e02da9a4960e2"
+    }
+  ]
+}

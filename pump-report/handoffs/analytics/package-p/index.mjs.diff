@@ -1,0 +1,78 @@
+--- pump-report/handoffs/analytics/package-p/baseline/index.before.mjs	2026-10-25 19:26:02
++++ pump-report/analytics/index.mjs	2026-10-25 19:28:13
+@@ -7,7 +7,7 @@
+ import {explainOptionalFacts, explainMapPlan} from './context.mjs';
+ import {consumeObservedDayGrowth} from './day-growth.mjs';
+ import {explainManualAnalysis} from './manual-text.mjs';
+-import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT} from './presentation.mjs';
++import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,selectUserNarrative} from './presentation.mjs';
+ export {evaluateOutcome} from './outcome.mjs';
+ 
+ export const RULES_VERSION='pump-analytics-v4-first-qualification-20261025';
+@@ -16,10 +16,6 @@
+ const label=value=>clip(String(value??'').replace(/[\r\n\p{C}]/gu,' '),128);
+ const shortLabel=(value,n=32)=>{const s=label(value);return s.length>n?clip(s,n-1)+'…':s;};
+ const px=value=>Number(value.toPrecision(10)).toString();
+-const contextCodes=['TRADE_SAMPLE','OI_SNAPSHOT','FUNDING_SNAPSHOT','RELATIVE_RETURN','MAP_PLAN_CONTEXT'];
+-const descriptions={ACTIVE_WAVE:'Активная волна: рост сопровождается торговой активностью.',CALM_PULLBACK:'После активного роста идёт спокойный откат; торговая активность стала меньше.',
+-  SHARP_PULLBACK_UNCONFIRMED:'Откат резкий; возврат выше заранее известного уровня пока не подтверждён.',SHARP_PULLBACK_RECLAIMED:'После резкого снижения цена закрылась выше заранее известного уровня.',
+-  RESUMING:'После отката движение вверх возобновилось с усилением торговой активности.',WEAKENING:'Торговая активность остаётся высокой, но движение вверх ослабевает.'};
+ function profileReady(p){
+   return typeof p?.version==='string'&&['wave_max_age_ms','wave_search_ms','impulse_window_ms','volume_baseline_ms','candle_interval_ms','sharp_speed_multiple','reclaim_closed_bars',
+     'pivot_radius_bars','entry_zone_normal_range_fraction','liquidation_merge_gap_normal_range','liquidation_merge_max_width_normal_range','maximum_entry_zones','maximum_liquidation_zones_per_side'].every(k=>positive(p[k]))&&
+@@ -57,27 +53,22 @@
+   return px(z.lower)+'–'+px(z.upper)+' — '+magnitude+', '+shortLabel(z.source,compact?18:32)+(z.venue?' / '+shortLabel(z.venue,compact?14:24):'')+model+'; данные '+time+' МСК ('+age+' с назад)'+limits;
+ }
+ function render(result){
+-  const p=result.plan,context=result.findings.filter(f=>contextCodes.includes(f.code)).map(f=>wellFormed(f.text));
+-  function make(compact,selected){
+-  const mode=presentationModeLines(result),lines=[label(result.instrument.native_symbol)+' · '+mode[0],...mode.slice(1),growthProofLine(result.growth_proof,compact),FUTURE_EVENT_TEXT,result.findings.filter(f=>!contextCodes.includes(f.code)).slice(0,2).map(f=>f.text).join(' '),
++  const p=result.plan,narrative=result.user_narrative,selected=narrative.reasons.map(f=>wellFormed(f.text));
++  function make(compact){
++  const mode=presentationModeLines(result),lines=[label(result.instrument.native_symbol)+' · '+mode[0],...mode.slice(1),growthProofLine(result.growth_proof,compact),FUTURE_EVENT_TEXT,...(selected.length?[selected.join(' ')]:[]),
+     'Покупка на откате: '+p.entry_zones.map(z=>px(z.lower)+'–'+px(z.upper)+' ('+(z.basis_level.kind==='HIGH'?'прежняя вершина':'прежний минимум')+' '+px(z.basis_level.price)+'; '+(z.confirmation_status==='CONFIRMED_RECLAIM'?'возврат подтверждён':'предварительная область')+')').join('; ')+'.',
+     'Фиксация всей позиции: '+px(p.exit_zone.lower)+'–'+px(p.exit_zone.upper)+' — ближайшая подтверждённая вершина выше цены.'];
+-  if(selected.length)lines.push(selected.join(' '));
++  if(narrative.limitation)lines.push(narrative.limitation);
+   const map=result.liquidations;
+   if(map.map_mode==='WITHOUT_MAP')lines.push('Карта ликвидаций недоступна. Области входа и выхода определены по движению цены и объёму; текущая ликвидность проверена.');
+   else{lines.push('Ликвидации сверху: '+(map.zones_up.map(z=>mapLine(z,result.analysis_ts,compact)).join('; ')||'пригодных зон нет')+'.');lines.push('Ликвидации снизу: '+(map.zones_down.map(z=>mapLine(z,result.analysis_ts,compact)).join('; ')||'пригодных зон нет')+'.');if(map.status==='PARTIAL')lines.push('Карта неполная.');lines.push('Охват карты: только полученные данные источников.');}
+-  lines.push('Важно: пересмотреть план при цене ниже '+px(p.invalidation.price)+'.');
+-  if(result.wave_state==='SHARP_PULLBACK_UNCONFIRMED')lines.push('Возврат не подтверждён; предварительная область не является доказанным выкупом.');
++  lines.push('Важно: '+(narrative.warning?narrative.warning+'; ':'')+'пересмотреть план при цене ниже '+px(p.invalidation.price)+'.');
+   return wellFormed(lines.join('\n'));
+   }
+-  const full=make(false,context);if(full.length<=4096)return full;
+-  // Reserve the complete plan, position/invalidation limits, all selected map
+-  // prices, provenance and map status before fitting optional explanations.
+-  const notice='Краткая версия; полные сведения — в анализе.',required=make(true,[]);
+-  let remaining=4096-required.length-notice.length-2;const selected=[];
+-  if(remaining<0)throw Error('CARD_REQUIRED_FIELDS_EXCEED_LIMIT');
+-  for(const text of context){if(text.length+1<=remaining){selected.push(text);remaining-=text.length+1;}}
+-  const card=make(true,selected)+'\n'+notice;
++  const full=make(false);if(full.length<=4096)return full;
++  // Compact the unchanged map format, retaining every selected main reason
++  // and every mandatory plan, mode, growth, provenance and warning field.
++  const notice='Краткая версия; полные сведения — в анализе.',card=make(true)+'\n'+notice;
+   if(card.length>4096)throw Error('CARD_LENGTH_INVARIANT');
+   return card;
+ }
+@@ -114,7 +105,8 @@
+   result.growth_proof=selectGrowthProof(result,profile);
+   result.liquidations=selectZones(input.liquidations,instrument,result.reference_price,movement.normal_range,at,profile);
+   if(!movement.active){result.status=movement.reasons.some(r=>['CURRENT_VOLUME_REQUIRED','VOLUME_BASELINE_UNAVAILABLE','WAVE_PATH_INCOMPLETE','WAVE_VOLUME_COMPARISON_BASIS_CHANGED','VOLUME_BASELINE_ZERO_OR_UNKNOWN','IMPULSE_VOLUME_ZERO_OR_UNKNOWN','VOLUME_RATIO_NOT_FINITE'].includes(r))?'WAITING':'REJECTED';return result;}
+-  if(descriptions[movement.state])result.findings.push({code:movement.state,text:descriptions[movement.state],fact_ids:[facts.candles.fact_id]});
++  const stateText=movementStateText(result);if(stateText)result.findings.push({code:movement.state,text:stateText,fact_ids:[facts.candles.fact_id]});
++  const activityFinding=currentActivityFinding(result,[facts.candles.fact_id]);if(activityFinding)result.findings.push(activityFinding);
+   if(movement.impulse.baseline_status==='SHORT_HISTORY')result.findings.push({code:'SHORT_HISTORY',text:'История сравнения короче обычной; вывод основан только на доступных закрытых окнах.',fact_ids:[facts.candles.fact_id]});
+   if(!usable.orderbook)return result;
+   if(facts.orderbook.unit!=='USDT_PRICE_BASE_QUANTITY')return {...result,reasons:unique([...result.reasons,'ORDERBOOK_UNIT_UNQUALIFIED'])};
+@@ -134,7 +126,7 @@
+   const mapContext=explainMapPlan(result.plan,result.liquidations);
+   if(mapContext){result.plan_context={liquidation_confluence:mapContext.liquidation_confluence};result.findings.push(mapContext.finding);}
+   result.findings.push({code:'STRUCTURAL_PLAN',text:'Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.',fact_ids:[facts.candles.fact_id,facts.orderbook.fact_id]});
+-  result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids]);result.card_text=render(result);
++  result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids]);result.user_narrative=selectUserNarrative(result);result.card_text=render(result);
+   return result;
+ }
+ 

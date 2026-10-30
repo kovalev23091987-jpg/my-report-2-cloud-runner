@@ -1,0 +1,103 @@
+{
+  "schema": "telegram-info-proof-v1",
+  "head": "a6bb7658ebbd2117b4e10f723230bc5add9c64a9",
+  "source": "schedule",
+  "source_run_id": "1792407219331-1792407228098",
+  "lifecycle": {
+    "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+    "mode": "SHADOW_ONLY",
+    "network_send": false,
+    "dispatch_enabled": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "completed_handoffs": 2,
+    "transitions": [
+      {
+        "contract": "APR-USDT",
+        "wave_id": "EDW:APR-USDT:1792368316384:G9",
+        "direction": "LONG",
+        "status": "CLOSED",
+        "previous_status": "OBSERVE",
+        "current_status": "IDEA_REMOVED",
+        "reason": "DIRECTION_DESTROYED",
+        "removal_receipt": {
+          "schema": "LIFECYCLE_REMOVAL_RECEIPT_V1",
+          "contract": "APR-USDT",
+          "direction": "LONG",
+          "wave_id": "EDW:APR-USDT:1792368316384:G9",
+          "reason": "DIRECTION_DESTROYED",
+          "source_run_id": "1792407219331-1792407228098",
+          "observed_ts": 1792407315283,
+          "conditions": [
+            {
+              "source": "shadow_decision_log",
+              "row_id": "1792407315283:APR-USDT",
+              "field": "direction",
+              "value": "LONG",
+              "observed_ts": 1792407315283
+            },
+            {
+              "source": "v3_early_candidate_wave",
+              "row_id": "EDW:APR-USDT:1792368316384:G9",
+              "field": "direction",
+              "value": "SHORT",
+              "observed_ts": 1792407228248
+            }
+          ],
+          "market_snapshot": false
+        },
+        "dispatch": {
+          "state": "PENDING",
+          "idempotency_key": "APR-USDT|LONG|EDW:APR-USDT:1792368316384:G9|IDEA_REMOVED|v3-telegram-shadow-r6"
+        },
+        "score_0_100": 91
+      },
+      {
+        "contract": "BTW-USDT",
+        "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "current_status": null,
+        "dispatch": null
+      }
+    ],
+    "usage_delta": {
+      "rows_read": 139,
+      "rows_written": 7,
+      "requests": 9,
+      "unknown_ops": 0
+    }
+  },
+  "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+  "v3_telegram_network_enabled": true,
+  "output": {
+    "version": "telegram-output-v9-plain-text-explained-score",
+    "enabled": false,
+    "info_enabled": false,
+    "final_chain_auto": false,
+    "final_chain_threshold": 70,
+    "morning": {
+      "status": "INFO_DISABLED",
+      "sent": false
+    },
+    "early_info": {
+      "status": "INFO_DISABLED",
+      "sent": false,
+      "count": 0
+    },
+    "watch70": {
+      "status": "DISABLED_FINAL_CHAIN_ONLY",
+      "sent": 0
+    },
+    "shadow_decision": {
+      "status": "OUTPUT_DISABLED",
+      "sent": false,
+      "count": 0
+    }
+  },
+  "live_probability": null,
+  "validated_signal": false,
+  "execution": false,
+  "automatic_weight_tuning": false
+}

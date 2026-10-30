@@ -1,0 +1,3012 @@
+{
+  "schema": "PUMP_S_RETENTION_CONSUMER_MAP_V1",
+  "status": "PROPOSAL_NOT_EXECUTED",
+  "owner_override": "OWNER_NO_MARKET_COMPARISON",
+  "authority_main": "824c9fc6303d1631c4c3aa0b0e9973c0187204c0",
+  "snapshot_time_UTC": "2026-10-25T17:45:08.406Z",
+  "storage_table": "pump_report_state_v1(state_key PK,value_json,revision,updated_ts)",
+  "inspection_scope": "current local code pinned by SHA; main-exact or unpublished WIP classified separately; no private data read",
+  "registry": {
+    "path": "checkpoints/pump-report-20261025/FULL_TZ_TRACEABILITY.json",
+    "sha256": "1e5411f65db8c2eb85fdf1a604c376829a7dccfec566d28b2c4757b03aa7a96f",
+    "rows": 719,
+    "storage_atoms": [
+      {
+        "id": "TZ17.001",
+        "line": 752,
+        "text": "**17. Что хранить**",
+        "status": "CONTEXT"
+      },
+      {
+        "id": "TZ17.002",
+        "line": 754,
+        "text": "Хранение должно обеспечивать повторную проверку решения, а не бесконтрольное накопление всего подряд.",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.003",
+        "line": 756,
+        "text": "| Данные | Что сохранять |",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.004",
+        "line": 757,
+        "text": "|---|---|",
+        "status": "CONTEXT"
+      },
+      {
+        "id": "TZ17.005",
+        "line": 758,
+        "text": "| Каталог инструментов | Идентичность, статус, единицы, изменения |",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.006",
+        "line": 759,
+        "text": "| Широкий обзор | Компактные пакетные снимки цен и минимальные признаки |",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.007",
+        "line": 760,
+        "text": "| Активные кандидаты | Нужную короткую историю, состояние волны, свежие факты |",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.008",
+        "line": 761,
+        "text": "| Карта ликвидаций | Исходное происхождение, нормализованные зоны, время, ограничения |",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.009",
+        "line": 762,
+        "text": "| Основной сигнал | Неизменяемый снимок признаков, план и его основания, текст, версию правил, наличие/полноту карты и причину её отсутствия |",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.010",
+        "line": 763,
+        "text": "| Отправка | Намерение отправить, состояние, подтверждение, идентификатор сообщения |",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.011",
+        "line": 764,
+        "text": "| Результат | Цель, срок, достижение, откаты, полноту данных |",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.012",
+        "line": 765,
+        "text": "| Источники | Сводные показатели доступности, расходов и полезности |",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.013",
+        "line": 767,
+        "text": "Для каждого набора фиксируются:",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.014",
+        "line": 769,
+        "text": "**кто использует → за какой период → сколько хранить → когда можно удалять.**",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.015",
+        "line": 771,
+        "text": "До измерения фактической ёмкости нельзя назначать большие сроки хранения произвольно. Незавершённые исходы, неопределённые отправки и данные, необходимые для проверки отчёта, защищаются от очистки.",
+        "status": "PARTIAL"
+      },
+      {
+        "id": "TZ17.016",
+        "line": 773,
+        "text": "Старую сохранённую историю и подключения ради нового отчёта не удалять.",
+        "status": "PARTIAL"
+      }
+    ]
+  },
+  "global_rules": {
+    "automatic_delete_enabled": false,
+    "unresolved_outcome_send_audit_protected": true,
+    "freshness_is_not_retention": true,
+    "after4h_is_not_delete_permission": true,
+    "sample14days_is_floor_not_TTL": true,
+    "raw_records_immutable": true,
+    "summary_cursor_not_GC_watermark": true,
+    "old_ENTRY_followup_deferred": true,
+    "physical_capacity_tests_deferred": true,
+    "benchmark_new_TTL_and_reserve": null,
+    "native_HTTP": 0,
+    "native_SQL": 0,
+    "Telegram": 0
+  },
+  "protected_reference_graph": {
+    "schema": "PUMP_S_PROTECTED_REFERENCE_EDGES_V1",
+    "delete_enabled": false,
+    "external_reference_resolution": "NOT_IMPLEMENTED_IN_INSPECTED_RUNTIME_FAIL_CLOSED",
+    "edges": [
+      {
+        "id": "P01",
+        "from": "pump:latest-analysis:<instrument>.analysis_key",
+        "to": "pump:analysis:<hash>",
+        "kind": "CURRENT_POINTER",
+        "evidence_id": "E002",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P02",
+        "from": "pump:card:<id>.analysis.source_input_key",
+        "to": "pump:analysis:<hash>",
+        "kind": "DIRECT_DEREFERENCE_UNTIL_SEND_AND_AUDIT_CLOSED",
+        "evidence_id": "E019",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P03",
+        "from": "pump:journal:<instrument>:<wave>.analyses[].analysis_id",
+        "to": "pump:analysis:<hash>",
+        "kind": "ORIGINAL_SELECTION_AND_HASH_READBACK",
+        "evidence_id": "E005",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P04",
+        "from": "pump:journal:<instrument>:<wave>.frozen_anchor.analysis_id",
+        "to": "pump:analysis:<hash>",
+        "kind": "IMMUTABLE_ORIGINAL",
+        "evidence_id": "E010",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P05",
+        "from": "pump:journal:<instrument>:<wave>.publications[].card_id",
+        "to": "pump:card:<id>",
+        "kind": "PUBLICATION_BINDING",
+        "evidence_id": "E008",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P06",
+        "from": "pump:journal:<instrument>:<wave>.publications[].receipt_ref",
+        "to": "pump:card:<id>#receipt",
+        "kind": "SENT_OR_POSSIBLE_SEND_PROOF",
+        "evidence_id": "E008",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P07",
+        "from": "pump:signal:<instrument>:<wave>.analysis_key",
+        "to": "pump:analysis:<hash>",
+        "kind": "ORIGINAL_SCENARIO_AND_AUDIT",
+        "evidence_id": "E011",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P08",
+        "from": "pump:outcomes-pending[]",
+        "to": "pump:signal:<instrument>:<wave>",
+        "kind": "UNRESOLVED_WORK_ROOT",
+        "evidence_id": "E012",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P09",
+        "from": "pump:journal-index[]",
+        "to": "pump:journal:<instrument>:<wave>",
+        "kind": "UNFROZEN_OR_TERMINAL_WORK_ROOT",
+        "evidence_id": "E007",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P10",
+        "from": "pump:delivery-queue[]",
+        "to": "pump:card:<id>",
+        "kind": "UNSETTLED_DELIVERY_ROOT",
+        "evidence_id": "E018",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P11",
+        "from": "pump:delivery-wave:<instrument>:<wave>.primary_card_id/updates[].card_id/card_by_hash{}",
+        "to": "pump:card:<id>",
+        "kind": "DEDUPE_OR_UPDATE_IDENTITY",
+        "evidence_id": "E017",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P12",
+        "from": "pump:summary-ordered-head:v1.pending.id",
+        "to": "pump:summary-record:<hash>",
+        "kind": "PENDING_ALLOCATION_RECOVERY",
+        "evidence_id": "E042",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P13",
+        "from": "pump:summary-ordered:v1:<seq>.id",
+        "to": "pump:summary-record:<hash>",
+        "kind": "SOURCE_REPLAY_DEREFERENCE",
+        "evidence_id": "E044",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P14",
+        "from": "pump:summary-member:v1:<hash>.id",
+        "to": "pump:summary-record:<hash>",
+        "kind": "DEDUP_APPEND_REPAIR",
+        "evidence_id": "E041",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P15",
+        "from": "pump:materialized-summary:production-v2.source_cursor",
+        "to": "pump:summary-ordered:v1:<seq>",
+        "kind": "CURSOR_NOT_GC_WATERMARK",
+        "evidence_id": "E040",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P16",
+        "from": "pump:materialized-wave:production-v2:<wave>.first/last/valid/hit/miss/sent/invalid.*",
+        "to": "pump:summary-record:<hash>",
+        "kind": "EMBEDDED_WITNESS_AND_SOURCE_PROVENANCE",
+        "evidence_id": "E047",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P17",
+        "from": "pump:analysis:<hash>.analysis.plan.*.basis_fact_ids[]",
+        "to": "same analysis.input.facts.*.fact_id",
+        "kind": "INTRA_ORIGINAL_PROVENANCE_NOT_STATE_KEY",
+        "evidence_id": "E026",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P18",
+        "from": "pump:analysis:<hash>.input.facts.*.evidence_ref",
+        "to": "external original receipt/archive locator",
+        "kind": "UNRESOLVED_EXTERNAL_REF_REQUIRES_PROTECTION",
+        "evidence_id": "E054",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      },
+      {
+        "id": "P19",
+        "from": "acceptance240 exact preserved contract IDs",
+        "to": "original pump:analysis/card/receipt and frozen purpose sidecar",
+        "kind": "HISTORICAL_OWNER_PROTECTED_ORIGINAL",
+        "evidence_id": "E059",
+        "expire_only_when": "No live/pending/unknown/audit/model reference; readers support verified archive/tombstone if raw moved"
+      }
+    ]
+  },
+  "rows": [
+    {
+      "id": "S01",
+      "dataset": "Original saved analysis identity and immutable origin",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<sha256(analysis)>"
+        ],
+        "locations": [
+          "pump:analysis:<sha256(analysis)>"
+        ],
+        "fields": [
+          "analysis.schema/contract/rules/profile_version",
+          "instrument identity/evidence",
+          "analysis_ts=P0 clock",
+          "reference_price",
+          "run_id,mode,run_purpose",
+          "wave_id,ready,status,reasons"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E001",
+        "E005",
+        "E010",
+        "E019",
+        "E054"
+      ],
+      "consumer_window": {
+        "event": "as originally known at t0",
+        "horizon_ms": 14400000
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "journal.analyses[].analysis_id",
+          "frozen_anchor.analysis_id/analysis_sha256",
+          "signal.analysis_key",
+          "card.analysis.source_input_key",
+          "paired/audit manifest"
+        ],
+        "protected_references": [
+          "journal.analyses[].analysis_id",
+          "frozen_anchor.analysis_id/analysis_sha256",
+          "signal.analysis_key",
+          "card.analysis.source_input_key",
+          "paired/audit manifest"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Retain exact hashed analysis until every reader can dereference a verified immutable archive; a scalar counter is insufficient"
+      ]
+    },
+    {
+      "id": "S02",
+      "dataset": "Normalized input fact envelope and source knowledge",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>.input.facts.*"
+        ],
+        "locations": [
+          "pump:analysis:<hash>.input.facts.*"
+        ],
+        "fields": [
+          "fact_id,instrument_id,kind,status,reason,unit,origin",
+          "source,primary_provider,venue",
+          "event_ts,received_ts,expires_ts,evidence_ref,coverage"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E021",
+        "E020",
+        "E005",
+        "E054",
+        "E058"
+      ],
+      "consumer_window": {
+        "knowledge": "received/known <= original t0; later facts not initial features"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "analysis hash/input audit and active revalidation roots",
+          "original fact_id/evidence_ref/source clock bindings"
+        ],
+        "protected_references": [
+          "analysis hash/input audit and active revalidation roots",
+          "original fact_id/evidence_ref/source clock bindings"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Compact per-feature provenance only after an actual immutable feature writer and archive reader exist"
+      ]
+    },
+    {
+      "id": "S03",
+      "dataset": "Current price and orderbook raw detail",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>.input.facts.price",
+          "pump:analysis:<hash>.input.facts.orderbook"
+        ],
+        "locations": [
+          "pump:analysis:<hash>.input.facts.price",
+          "pump:analysis:<hash>.input.facts.orderbook"
+        ],
+        "fields": [
+          "last value/unit/source clocks",
+          "bids/asks prices and qualified base sizes"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E020",
+        "E022",
+        "E019",
+        "E058"
+      ],
+      "consumer_window": {
+        "freshness": {
+          "price_ms": 30000,
+          "orderbook_ms": 15000
+        },
+        "delivery": "revalidate original scenario before card expiry"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": 15000,
+        "minimum_rule": [
+          "READY/SENDING/RETRYABLE/UNKNOWN card and original analysis audit"
+        ],
+        "protected_references": [
+          "READY/SENDING/RETRYABLE/UNKNOWN card and original analysis audit"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Keep liquidity scalars spread/slippage/position_limit with clocks; do not claim raw depth replay from scalars"
+      ]
+    },
+    {
+      "id": "S04",
+      "dataset": "Closed candidate OHLC and comparable volume detail",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>.input.facts.candles"
+        ],
+        "locations": [
+          "pump:analysis:<hash>.input.facts.candles"
+        ],
+        "fields": [
+          "open_ts,close_ts,closed,OHLC",
+          "volume_base/turnover_quote OR native reported quantity/comparison_key",
+          "gap/grid/time basis/coverage/evidence"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E020",
+        "E025",
+        "E024",
+        "E026",
+        "E074"
+      ],
+      "consumer_window": {
+        "current_activity_ms": 300000,
+        "baseline_before_current_ms": 3600000,
+        "growth_windows_ms": [
+          300000,
+          900000,
+          3600000
+        ],
+        "impulse_search_ms": 3600000,
+        "full_baseline_for_earliest_search_end_ms": 7500000,
+        "actual_source_rows": 121,
+        "continuity": "previous.covered_until_ts..current end"
+      },
+      "freshness_max_age_ms": 90000,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": 3900000,
+        "minimum_rule": [
+          "retained wave continuation until its original expiry",
+          "original plan pivots and original analysis/pair/audit refs"
+        ],
+        "protected_references": [
+          "retained wave continuation until its original expiry",
+          "original plan pivots and original analysis/pair/audit refs"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Do not invent full125min coverage from121 returned minutes; SHORT_HISTORY remains explicit",
+        "Keep original impulse baseline/confirmed pivots rather than require all old bars for each update"
+      ]
+    },
+    {
+      "id": "S05",
+      "dataset": "Exact24h growth scalar and provenance",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>.input.facts.growth_24h"
+        ],
+        "locations": [
+          "pump:analysis:<hash>.input.facts.growth_24h",
+          "analysis.growth_windows/growth_proof"
+        ],
+        "fields": [
+          "open,last,start_ts,end_ts,window_ms",
+          "1440row coverage/time grid/derived_from receipt",
+          "qualified return/threshold/fact_ids/known clock"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E032",
+        "E027",
+        "E023"
+      ],
+      "consumer_window": {
+        "closed_price_window_ms": 86400000,
+        "quantity_used": false
+      },
+      "freshness_max_age_ms": 90000,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": 86400000,
+        "minimum_rule": [
+          "first qualification retained in wave.qualification",
+          "original daily source receipt/evidence archive refs"
+        ],
+        "protected_references": [
+          "first qualification retained in wave.qualification",
+          "original daily source receipt/evidence archive refs"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Boundaries/return/proof are sufficient for downstream threshold evaluation; raw1440 audit evidence still needs original receipt/archive"
+      ]
+    },
+    {
+      "id": "S06",
+      "dataset": "Executed trade raw rows and sampled Block2 output",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>.input.facts.trades"
+        ],
+        "locations": [
+          "pump:analysis:<hash>.input.facts.trades",
+          "analysis.trade_context"
+        ],
+        "fields": [
+          "stable trade_id,event_ts,price,quantity_base,aggressor_side",
+          "buy_usdt,sell_usdt,netflow_usdt",
+          "price_response five scalars/reason",
+          "sample_start/end,dedup/conflict/exclusion coverage/provenance"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E030",
+        "E029",
+        "E058",
+        "E055"
+      ],
+      "consumer_window": {
+        "qualified_sample_age_ms": 30000,
+        "scope": "returned unique sample only"
+      },
+      "freshness_max_age_ms": 30000,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": 30000,
+        "minimum_rule": [
+          "original statement and future source-utility/feature audit",
+          "no full-market/absorption inference"
+        ],
+        "protected_references": [
+          "original statement and future source-utility/feature audit",
+          "no full-market/absorption inference"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Freeze sample scalars/provenance/dedup reasons; new feature schema required for Q price-response fields not in old whitelist"
+      ]
+    },
+    {
+      "id": "S07",
+      "dataset": "Optional futures snapshot",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>.input.facts.open_interest/funding"
+        ],
+        "locations": [
+          "pump:analysis:<hash>.input.facts.open_interest/funding",
+          "analysis.optional_context.open_interest/funding"
+        ],
+        "fields": [
+          "OI value/unit",
+          "funding rate/actual period",
+          "fact provenance/null reason"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E029",
+        "E055",
+        "E058"
+      ],
+      "consumer_window": {
+        "OI_fresh_ms": 120000,
+        "funding_fresh_ms": 300000,
+        "snapshot": "no inferred side or change"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "original feature audit and paired comparison"
+        ],
+        "protected_references": [
+          "original feature audit and paired comparison"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Freeze qualified snapshot, units, period, clocks; no historical path manufactured from one snapshot"
+      ]
+    },
+    {
+      "id": "S08",
+      "dataset": "Liquidation map normalized zones and components",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>.input.liquidations"
+        ],
+        "locations": [
+          "pump:analysis:<hash>.input.liquidations",
+          "analysis.liquidations"
+        ],
+        "fields": [
+          "map_mode/status/absence reason/coverage",
+          "zone lower/upper/magnitude/relative scale",
+          "basis/model/version/source/venue/market ids",
+          "components/original clocks/limitations/evidence"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E031",
+        "E028",
+        "E005",
+        "E058"
+      ],
+      "consumer_window": {
+        "freshness_observed_ms": 120000,
+        "freshness_model_ms": 300000,
+        "initial_only": "later map cannot become original feature"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "original map cohort/plan/explanation proof and paired audit",
+          "open signal original features"
+        ],
+        "protected_references": [
+          "original map cohort/plan/explanation proof and paired audit",
+          "open signal original features"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Retain normalized selected zones+component provenance and absence reason; scalar map_mode alone cannot prove map usefulness"
+      ]
+    },
+    {
+      "id": "S09",
+      "dataset": "Block findings and chosen user explanation",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>.analysis"
+        ],
+        "locations": [
+          "pump:analysis:<hash>.analysis"
+        ],
+        "fields": [
+          "findings[].code/text/fact_ids/zone_ids",
+          "user_narrative reasons/warning/limitation",
+          "activity/proof/liquidity/trade and plan_context"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E028",
+        "E029",
+        "E058"
+      ],
+      "consumer_window": {
+        "known_at": "original analysis_ts"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "exact original report text/analysis digest and explanatory audit"
+        ],
+        "protected_references": [
+          "exact original report text/analysis digest and explanatory audit"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Retain chosen codes/provenance and actual text hash; unused duplicate strings may be projected only into a new versioned derived namespace"
+      ]
+    },
+    {
+      "id": "S10",
+      "dataset": "Independent plan and its prior levels",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>",
+          "pump:signal:<instrument>:<wave>",
+          "pump:card:<card_id>"
+        ],
+        "locations": [
+          "analysis.plan",
+          "signal.plan",
+          "card.analysis.plan"
+        ],
+        "fields": [
+          "entry_zones lower/upper,basis_fact_ids,basis_level event/known times",
+          "exit_zone and basis",
+          "invalidation,potential_pct.minimum/basis",
+          "position_limit/internal liquidity"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E026",
+        "E028",
+        "E019",
+        "E035",
+        "E036"
+      ],
+      "consumer_window": {
+        "validity": "same scenario; original wave lifetime is not outcome evidence expiry",
+        "outcome_horizon_ms": 14400000
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "card revalidation",
+          "signal scenario outcome/entry-area lower-bound",
+          "original plan hash and immutable source levels"
+        ],
+        "protected_references": [
+          "card revalidation",
+          "signal scenario outcome/entry-area lower-bound",
+          "original plan hash and immutable source levels"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Do not delete plan after send or after HIT if scenario/late evidence/audit remains"
+      ]
+    },
+    {
+      "id": "S11",
+      "dataset": "Continuation wave and latched qualification",
+      "storage": {
+        "actual_keys": [
+          "pump:wave:<instrument_id>"
+        ],
+        "locations": [
+          "pump:wave:<instrument_id>"
+        ],
+        "fields": [
+          "created_ts,expires_ts,wave_id,instrument_id",
+          "qualification,qualification_known_ts",
+          "impulse original volume/baseline/normal_range/unit/comparison key",
+          "covered_until_ts,peak,confirmed_pivots,reclaim/invalidation/cancelled"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E003",
+        "E023",
+        "E024",
+        "E027"
+      ],
+      "consumer_window": {
+        "lifetime_from_created_ms": 14400000,
+        "no_clock_refresh": true
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": 14400000,
+        "minimum_rule": [
+          "active wave/candidate and linked original analyses/signals",
+          "qualified clock and previous pivots"
+        ],
+        "protected_references": [
+          "active wave/candidate and linked original analyses/signals",
+          "qualified clock and previous pivots"
+        ],
+        "safe_expiration_conditions": [
+          "Operational latest wave can be retired only after terminal/original expiry AND no active reader; preserve referenced historical snapshot",
+          "No ENTRY followup schedule changes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Keep compact wave state for continuation; reject gaps rather than reset impulse/known clock"
+      ]
+    },
+    {
+      "id": "S12",
+      "dataset": "Latest-analysis duplicate",
+      "storage": {
+        "actual_keys": [
+          "pump:latest-analysis:<instrument_id>"
+        ],
+        "locations": [
+          "pump:latest-analysis:<instrument_id>"
+        ],
+        "fields": [
+          "analysis_key",
+          "analysis duplicate full object"
+        ],
+        "status": "WRITER_ONLY"
+      },
+      "actual_consumer_evidence_ids": [
+        "E002"
+      ],
+      "consumer_window": {
+        "current_reader": "No get(latest-analysis) consumer found in inspected active runtime/analytics"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "external debug/audit reference check still required"
+        ],
+        "protected_references": [
+          "external debug/audit reference check still required"
+        ],
+        "safe_expiration_conditions": [
+          "Writer-only is not deletion authority",
+          "After ROOT decides API policy, prefer validated pointer to immutable analysis instead of duplicate analysis"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "analysis_key plus minimal current status/clock; projection proposed, not installed"
+      ]
+    },
+    {
+      "id": "S13",
+      "dataset": "Journal ready-analysis ledger",
+      "storage": {
+        "actual_keys": [
+          "pump:journal:<instrument_id>:<wave_id>.analyses[]"
+        ],
+        "locations": [
+          "pump:journal:<instrument_id>:<wave_id>.analyses[]"
+        ],
+        "fields": [
+          "analysis_id,analysis_sha256,recorded_ts,features_known_ts",
+          "origin instrument/asset/wave/signal/t0/P0/rules/profile/mode/map/evidence/purpose/ready"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E005",
+        "E009",
+        "E010"
+      ],
+      "consumer_window": {
+        "selection": "first ready or first possible/confirmed publication; original expiry closes never-sent wave"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "all candidate original selection and immutable anchor conflict checks",
+          "late publication/unknown resolution"
+        ],
+        "protected_references": [
+          "all candidate original selection and immutable anchor conflict checks",
+          "late publication/unknown resolution"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Unbounded analyses[] must become append-only bounded pages/references while retaining ordering/ties; never keep only newest before anchor chosen"
+      ]
+    },
+    {
+      "id": "S14",
+      "dataset": "Publication ledger",
+      "storage": {
+        "actual_keys": [
+          "pump:journal:<instrument>:<wave>.publications[]"
+        ],
+        "locations": [
+          "pump:journal:<instrument>:<wave>.publications[]"
+        ],
+        "fields": [
+          "event_id,analysis_id,event_ts,recorded_ts,state,possible_send",
+          "message_id,receipt_ref,card_id"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E008",
+        "E009"
+      ],
+      "consumer_window": {
+        "ordering": "event_ts,recorded_ts,event_id; tie ambiguity retained"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "first possible send and later receipt resolution",
+          "card receipt binding"
+        ],
+        "protected_references": [
+          "first possible send and later receipt resolution",
+          "card receipt binding"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Paged immutable event rows + per-wave head/cursor; UNKNOWN not expiry or failed-send permission"
+      ]
+    },
+    {
+      "id": "S15",
+      "dataset": "Frozen anchor, terminal and quarantine",
+      "storage": {
+        "actual_keys": [
+          "pump:journal:<instrument>:<wave>.frozen_anchor/terminal/wave_expires_ts",
+          "pump:quarantine:<journal_key>"
+        ],
+        "locations": [
+          "pump:journal:<instrument>:<wave>.frozen_anchor/terminal/wave_expires_ts",
+          "pump:quarantine:<journal_key>"
+        ],
+        "fields": [
+          "anchor analysis_id/hash/origin/selection/immutable",
+          "terminal state/event/recorded times",
+          "quarantine reason/evidence"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E009",
+        "E010",
+        "E077"
+      ],
+      "consumer_window": {
+        "anchor": "immutable once first possible send or never-sent wave closed"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "unresolved audit/quarantine",
+          "original signal and calibration anchor"
+        ],
+        "protected_references": [
+          "unresolved audit/quarantine",
+          "original signal and calibration anchor"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "No arbitrary terminal-age TTL; receipt or origin conflicts require explicit resolution"
+      ]
+    },
+    {
+      "id": "S16",
+      "dataset": "Journal work index",
+      "storage": {
+        "actual_keys": [
+          "pump:journal-index"
+        ],
+        "locations": [
+          "pump:journal-index"
+        ],
+        "fields": [
+          "pending journal keys"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E007"
+      ],
+      "consumer_window": {
+        "scan": "all current index array loaded before resourcesAvailable break"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "unanchored/terminal journal to sync and frozen-anchor cleanup recovery"
+        ],
+        "protected_references": [
+          "unanchored/terminal journal to sync and frozen-anchor cleanup recovery"
+        ],
+        "safe_expiration_conditions": [
+          "Remove only after frozen anchor/signal/summary registration durably read back; retain journal data separately"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Replace array with ordered per-key membership/paged due refs; max_records is a work bound, not retention cap"
+      ]
+    },
+    {
+      "id": "S17",
+      "dataset": "Card immutable content and delivery state",
+      "storage": {
+        "actual_keys": [
+          "pump:card:<card_id>"
+        ],
+        "locations": [
+          "pump:card:<card_id>"
+        ],
+        "fields": [
+          "text,text_hash,recipient,analysis including source_input_key,mode,created/expires",
+          "state,send_started_ts,owner,claim_until,attempts,retry_after",
+          "message_id,receipt with card/text/recipient/confirmed_ts"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E013",
+        "E014",
+        "E015",
+        "E016",
+        "E008",
+        "E019"
+      ],
+      "consumer_window": {
+        "send_window": "expires=min mandatory fact expiries; AUTO10–20MSK",
+        "claim_ms": 30000
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "UNKNOWN/SENDING possible send",
+          "SENT receipt and source-input original",
+          "delivery-wave dedup and publication journal"
+        ],
+        "protected_references": [
+          "UNKNOWN/SENDING possible send",
+          "SENT receipt and source-input original",
+          "delivery-wave dedup and publication journal"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Claim expiry changes state, never deletes evidence",
+        "SENT/UNKNOWN receipts remain until audit/reference policy is explicit"
+      ]
+    },
+    {
+      "id": "S18",
+      "dataset": "Wave delivery dedup and delivery queue",
+      "storage": {
+        "actual_keys": [
+          "pump:delivery-wave:<instrument>:<wave>",
+          "pump:delivery-queue"
+        ],
+        "locations": [
+          "pump:delivery-wave:<instrument>:<wave>",
+          "pump:delivery-queue"
+        ],
+        "fields": [
+          "primary_card_id,updates[],card_by_hash{}",
+          "queued card IDs"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E017",
+        "E015",
+        "E018"
+      ],
+      "consumer_window": {
+        "dedup": "same wave; substantial plan updates only"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "retries/possible sends and duplicate suppression",
+          "publication recovery after process stop"
+        ],
+        "protected_references": [
+          "retries/possible sends and duplicate suppression",
+          "publication recovery after process stop"
+        ],
+        "safe_expiration_conditions": [
+          "Queue membership may end after terminal observation recorded; do not remove unresolved SENDING/UNKNOWN evidence",
+          "Dedupe tombstone must survive any late enqueue/replay"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Bound queue pages and per-card/hash membership; current card_by_hash/updates can grow per wave"
+      ]
+    },
+    {
+      "id": "S19",
+      "dataset": "Original outcome signal",
+      "storage": {
+        "actual_keys": [
+          "pump:signal:<instrument>:<wave>"
+        ],
+        "locations": [
+          "pump:signal:<instrument>:<wave>"
+        ],
+        "fields": [
+          "origin immutable identity,t0,P0,rules/profile/purpose",
+          "instrument,signal_id,plan,analysis_key",
+          "publication,deadline_ts"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E011",
+        "E012",
+        "E033",
+        "E052"
+      ],
+      "consumer_window": {
+        "horizon_ms": 14400000,
+        "backfill": "next work window allowed; no hidden night collection"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": 14400000,
+        "minimum_rule": [
+          "outcomes-pending",
+          "summary/original anchor/audit and late updates"
+        ],
+        "protected_references": [
+          "outcomes-pending",
+          "summary/original anchor/audit and late updates"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "t0/P0/rules/deadline never age out merely at4h; resolving UNKNOWN may need later history"
+      ]
+    },
+    {
+      "id": "S20",
+      "dataset": "Outcome identity and in-period proof",
+      "storage": {
+        "actual_keys": [
+          "pump:outcome:<signal_id>"
+        ],
+        "locations": [
+          "pump:outcome:<signal_id>",
+          "summary-record.outcome"
+        ],
+        "fields": [
+          "signal_id,wave_id,t0,P0,target,deadline,rules,mode,map",
+          "status,hit_ts or hit_interval",
+          "coverage complete/no_hit_basis/counts/covered_until/reasons"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E034",
+        "E037",
+        "E052",
+        "E051"
+      ],
+      "consumer_window": {
+        "observations": "floor(t0)..ceil(t0+4h), boundary proof distinct",
+        "horizon_ms": 14400000
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "unresolved UNKNOWN or conflict",
+          "summary rebuild and temporal label-known time"
+        ],
+        "protected_references": [
+          "unresolved UNKNOWN or conflict",
+          "summary rebuild and temporal label-known time"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Preserve recorded_ts separately from target hit time; UNKNOWN neither win nor loss"
+      ]
+    },
+    {
+      "id": "S21",
+      "dataset": "Adverse path and price scenario scalars",
+      "storage": {
+        "actual_keys": [
+          "pump:outcome:<signal_id>"
+        ],
+        "locations": [
+          "pump:outcome:<signal_id>",
+          "summary-record.outcome"
+        ],
+        "fields": [
+          "drawdown_before_hit_pct,drawdown_total_pct,hit_after_invalidation with null reasons",
+          "scenario_outcome entry/exit/order/entry_first_interval",
+          "entry_area_excursion five bounded scalars/reason",
+          "execution_proven=false,user_profit=null"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E035",
+        "E036",
+        "E048"
+      ],
+      "consumer_window": {
+        "path": "original4h only; post-contact observed lower bound is not exact entry DD"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "raw outcome and scenario audit",
+          "aggregate only counts adverse known/unknown, not all values/scenario"
+        ],
+        "protected_references": [
+          "raw outcome and scenario audit",
+          "aggregate only counts adverse known/unknown, not all values/scenario"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Keep numeric adverse/scenario labels per wave; materialized counts alone cannot reconstruct distribution or entry-area statistics"
+      ]
+    },
+    {
+      "id": "S22",
+      "dataset": "Pending outcome work refs",
+      "storage": {
+        "actual_keys": [
+          "pump:outcomes-pending"
+        ],
+        "locations": [
+          "pump:outcomes-pending"
+        ],
+        "fields": [
+          "signal keys"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E012",
+        "E037"
+      ],
+      "consumer_window": {
+        "work": "mature signals only; budget can defer; UNKNOWN remains"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "all not-resolved production outcomes",
+          "nonproduction acceptance stays auditable outside production work view"
+        ],
+        "protected_references": [
+          "all not-resolved production outcomes",
+          "nonproduction acceptance stays auditable outside production work view"
+        ],
+        "safe_expiration_conditions": [
+          "Only remove resolved HIT/MISS after outcome+summary record readback; nonproduction skip is not data deletion"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Paged due references + membership + recoverable processing cursor; no fixed40-wave lifetime cap"
+      ]
+    },
+    {
+      "id": "S23",
+      "dataset": "Immutable scalar summary records",
+      "storage": {
+        "actual_keys": [
+          "pump:summary-record:<sha256(origin,publication,outcome)>"
+        ],
+        "locations": [
+          "pump:summary-record:<sha256(origin,publication,outcome)>"
+        ],
+        "fields": [
+          "record_id,recorded_ts",
+          "origin,publication,outcome"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E039",
+        "E040",
+        "E051",
+        "E045"
+      ],
+      "consumer_window": {
+        "replay": "append-only source history across materializations"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "ordered pointer/member/head.pending",
+          "source_cursor or future rebuild",
+          "materialized-wave selected witnesses and audit"
+        ],
+        "protected_references": [
+          "ordered pointer/member/head.pending",
+          "source_cursor or future rebuild",
+          "materialized-wave selected witnesses and audit"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Source cursor passed is insufficient for GC: append/repair/replay require raw row; need versioned archive/tombstone reader first"
+      ]
+    },
+    {
+      "id": "S24",
+      "dataset": "Ordered summary source index and legacy pointer array",
+      "storage": {
+        "actual_keys": [
+          "pump:summary-ordered-head:v1",
+          "pump:summary-ordered:v1:<16-digit-seq>",
+          "pump:summary-member:v1:<record-hash>",
+          "pump:summary-record-index"
+        ],
+        "locations": [
+          "pump:summary-ordered-head:v1",
+          "pump:summary-ordered:v1:<16-digit-seq>",
+          "pump:summary-member:v1:<record-hash>",
+          "pump:summary-record-index"
+        ],
+        "fields": [
+          "head count,pending,legacy_imported/hash/count",
+          "pointer seq/id",
+          "member id/seq",
+          "legacy ordered IDs"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E041",
+        "E042",
+        "E043",
+        "E044"
+      ],
+      "consumer_window": {
+        "page_limit": 40,
+        "legacy_max_items": 40,
+        "legacy_max_bytes": 10000,
+        "legacy_import_page": 4
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "pending allocation raw record/member/pointer",
+          "all materialization cursors and immutable legacy source proof"
+        ],
+        "protected_references": [
+          "pending allocation raw record/member/pointer",
+          "all materialization cursors and immutable legacy source proof"
+        ],
+        "safe_expiration_conditions": [
+          "No active sequence gaps or re-numbering",
+          "Legacy source remains until explicit verified migration/archive policy"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Already implemented ROOT ordered index: do not replay accepted5+2 checks; adopt pattern for other work indexes"
+      ]
+    },
+    {
+      "id": "S25",
+      "dataset": "Per-wave materialized witnesses and replay guards",
+      "storage": {
+        "actual_keys": [
+          "pump:materialized-wave:production-v2:<JSON([instrument_id,wave_id])>"
+        ],
+        "locations": [
+          "pump:materialized-wave:production-v2:<JSON([instrument_id,wave_id])>"
+        ],
+        "fields": [
+          "origin,event/state revisions,last_recorded_ts,observed_as_of_ts",
+          "first,last,valid,hit,miss,sent,invalid reason witnesses",
+          "record_digests{},contribution counters/adverse"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E047",
+        "E046",
+        "E045",
+        "E048"
+      ],
+      "consumer_window": {
+        "scope": "one independent wave, all applied source record identities"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "aggregate replacement requires old contribution",
+          "replay conflict/dedup guard and source record refs"
+        ],
+        "protected_references": [
+          "aggregate replacement requires old contribution",
+          "replay conflict/dedup guard and source record refs"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "record_digests grows with all unique updates; paged immutable receipt membership or acknowledged closed-wave capsule needed before compaction"
+      ]
+    },
+    {
+      "id": "S26",
+      "dataset": "Materialized counters, cohort and maturity state",
+      "storage": {
+        "actual_keys": [
+          "pump:materialized-summary:production-v2",
+          "pump:summary-latest"
+        ],
+        "locations": [
+          "pump:materialized-summary:production-v2",
+          "pump:summary-latest"
+        ],
+        "fields": [
+          "version/materialization_id/revision/updated_ts/source_cursor",
+          "counters/cohorts/reason and publication/adverse known counts",
+          "instrument_assets,pending_deadlines",
+          "excluded_records_by_purpose"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E050",
+        "E045",
+        "E049",
+        "E053"
+      ],
+      "consumer_window": {
+        "cohort_dimensions": [
+          "mode",
+          "publication",
+          "map_mode",
+          "rules_version",
+          "profile_version",
+          "evidence_class"
+        ],
+        "maturity": "original t0+4h"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "per-wave contribution/source replay cursor",
+          "due maturity refs until atomically transitioned"
+        ],
+        "protected_references": [
+          "per-wave contribution/source replay cursor",
+          "due maturity refs until atomically transitioned"
+        ],
+        "safe_expiration_conditions": [
+          "summary-latest is derived cache only; can regenerate when current aggregate/cursors intact",
+          "Global aggregate cannot replace per-wave feature/outcome labels"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Pending deadlines need bounded due-key iteration; cohorts/instrument identity map need explicit version scope, not silent eviction"
+      ]
+    },
+    {
+      "id": "S27",
+      "dataset": "Initial feature capsule for calibration",
+      "storage": {
+        "actual_keys": [
+          "pump:analysis:<hash>"
+        ],
+        "locations": [
+          "ACTUAL: pump:analysis:<hash>.analysis + .input",
+          "NO_CURRENT_FEATURE_SIDECAR_WRITER"
+        ],
+        "fields": [
+          "per-feature value OR null+absence_reason",
+          "source_event_ts,received_ts,known_ts,evidence_ref",
+          "feature_schema_version,implementation_sha256,analysis_sha256,origin_anchor",
+          "original features from blocks1/2/3/4/6 only"
+        ],
+        "status": "MISSING_WRITER"
+      },
+      "actual_consumer_evidence_ids": [
+        "E055",
+        "E054",
+        "E057"
+      ],
+      "consumer_window": {
+        "training": "labels mature and known before predeclared split; last100 holdout is proposed floor, not TTL"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "train/holdout manifests and model references",
+          "immutable original features and code/rule version"
+        ],
+        "protected_references": [
+          "train/holdout manifests and model references",
+          "immutable original features and code/rule version"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Sidecar projection is proposed, not currently persisted; until writer+archive reader verified retain original analysis/input"
+      ]
+    },
+    {
+      "id": "S28",
+      "dataset": "Forecast and declared training/audit metadata",
+      "storage": {
+        "actual_keys": [],
+        "locations": [
+          "NO_CURRENT_FORECAST_OR_AUDIT_META_WRITER"
+        ],
+        "fields": [
+          "forecast value/model/train manifest/cutoff/trained-through/created clocks/cohort",
+          "split_plan split_ts,declared_ts,plan_ref",
+          "unsent terminal/possible send refs"
+        ],
+        "status": "MISSING_WRITER"
+      },
+      "actual_consumer_evidence_ids": [
+        "E054",
+        "E057"
+      ],
+      "consumer_window": {
+        "proposed_floors": {
+          "episodes": 300,
+          "assets": 20,
+          "calendar_days": 14,
+          "holdout": 100
+        },
+        "no_probability_now": true
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "any referenced published model/holdout/rollback audit"
+        ],
+        "protected_references": [
+          "any referenced published model/holdout/rollback audit"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Do not invent forecast or TTL14days;14 days is sample diversity floor, not retention duration"
+      ]
+    },
+    {
+      "id": "S29",
+      "dataset": "Paired source-utility comparison snapshots",
+      "storage": {
+        "actual_keys": [],
+        "locations": [
+          "NO_CURRENT_DURABLE_PAIR_WRITER; bounded API input to auditPairedAnalyses"
+        ],
+        "fields": [
+          "pair_id,contrast,baseline/enriched analysis and input",
+          "implementation_sha256,evidence_class,origin equality",
+          "known-at clocks and receipts"
+        ],
+        "status": "OFFLINE_API_ONLY"
+      },
+      "actual_consumer_evidence_ids": [
+        "E058"
+      ],
+      "consumer_window": {
+        "audit_bounds": {
+          "pairs": 64,
+          "records": 2048,
+          "bytes": 2000000
+        }
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "specific paired-audit/model manifest until closed"
+        ],
+        "protected_references": [
+          "specific paired-audit/model manifest until closed"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Preserve only prospectively known supported contrasts MAP/TRADES/FUTURES; market comparison disabled by owner"
+      ]
+    },
+    {
+      "id": "S30",
+      "dataset": "Discovery overview and compact queue evidence",
+      "storage": {
+        "actual_keys": [
+          "pump:overview:<minute-slot>",
+          "pump:overview-index",
+          "pump:candidate-queue",
+          "pump:active-instruments"
+        ],
+        "locations": [
+          "pump:overview:<minute-slot>",
+          "pump:overview-index",
+          "pump:candidate-queue",
+          "pump:active-instruments"
+        ],
+        "fields": [
+          "id,last,event_ts,reported_change_pct,status",
+          "first_seen,last_seen,last_checked/next_check",
+          "entry_distance,price/core expiry,confirmed_core_count,movement clock",
+          "active flags/entry zone bounds"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E060",
+        "E061",
+        "E062",
+        "E063",
+        "E004"
+      ],
+      "consumer_window": {
+        "overview_lookback_ms": 3600000,
+        "role": "prequeue only; exactgrowth requires core candles"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": 3600000,
+        "minimum_rule": [
+          "active candidate/wave queue roots",
+          "overview copy referenced by acceptance/audit if any"
+        ],
+        "protected_references": [
+          "active candidate/wave queue roots",
+          "overview copy referenced by acceptance/audit if any"
+        ],
+        "safe_expiration_conditions": [
+          "Current code prunes overview-index only, not old overview rows",
+          "After validated successor and outside1h, unreferenced compact body can be candidate for ROOT GC policy"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Bound queue membership/pages; no expiry that resets waiting age or auto changes selection"
+      ]
+    },
+    {
+      "id": "S31",
+      "dataset": "Manual jobs, results and run diagnostics",
+      "storage": {
+        "actual_keys": [
+          "pump:manual:<request_id>",
+          "pump:manual-queue",
+          "pump:manual-result:<request_id>",
+          "pump:run:<run_id>"
+        ],
+        "locations": [
+          "pump:manual:<request_id>",
+          "pump:manual-queue",
+          "pump:manual-result:<request_id>",
+          "pump:run:<run_id>"
+        ],
+        "fields": [
+          "job symbol,publish,created/status/owner/start/complete",
+          "manual result analysis/delivery/coverage",
+          "run checked/manual/resources/errors/outcomes"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E064",
+        "E065",
+        "E066"
+      ],
+      "consumer_window": {
+        "manual": "same core; no auto prolonged observation",
+        "run_reader": "pump:run writer only in inspected runtime"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "pending/processing manual request",
+          "manual-result retrieval and referenced run/audit/native receipt"
+        ],
+        "protected_references": [
+          "pending/processing manual request",
+          "manual-result retrieval and referenced run/audit/native receipt"
+        ],
+        "safe_expiration_conditions": [
+          "Unresolved jobs never age out silently",
+          "Result/diagnostic delivery retention has no approved duration; protect audit refs first"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Compact run coverage/cost scalars rather than duplicate full analyses; derive pointer-based manual response only under ROOT API contract"
+      ]
+    },
+    {
+      "id": "S32",
+      "dataset": "Raw request caches and exact-route negatives",
+      "storage": {
+        "actual_keys": [
+          "pump:cache:<provider:cache_key:url>",
+          "pump:negative-cache:<provider:cache_key:url>"
+        ],
+        "locations": [
+          "pump:cache:<provider:cache_key:url>",
+          "pump:negative-cache:<provider:cache_key:url>"
+        ],
+        "fields": [
+          "response.data/headers/received_ts/receipt_id/semantic_status",
+          "negative reason/expires_ts"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E067",
+        "E068",
+        "E069",
+        "E070"
+      ],
+      "consumer_window": {
+        "cache_hit": "received_ts+request ttl_ms; not refreshed source event time",
+        "time_keyed_route": "each candle start/end may create a new body key"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "original evidence_ref/receipt and immutable-analysis audit refs if same body is sole evidence",
+          "outstanding/unknown cost receipt protection separate"
+        ],
+        "protected_references": [
+          "original evidence_ref/receipt and immutable-analysis audit refs if same body is sole evidence",
+          "outstanding/unknown cost receipt protection separate"
+        ],
+        "safe_expiration_conditions": [
+          "Past cache-hit TTL and no evidence/audit roots and a verified retained projection/archive",
+          "Remove stale cache row only with ROOT admitted GC; never call receipt-free cache expiry cost0"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Expose cache expiry metadata for bounded GC; current store has no deletion API/retention job"
+      ]
+    },
+    {
+      "id": "S33",
+      "dataset": "Provider/account cost and source reliability scalars",
+      "storage": {
+        "actual_keys": [
+          "pump:resources",
+          "report2_runner_budget_ledger_shadow"
+        ],
+        "locations": [
+          "pump:resources",
+          "report2_runner_budget_ledger_shadow"
+        ],
+        "fields": [
+          "provider day/month/recent/qualification_totals/backoff",
+          "outstanding/unknown request identities/costs",
+          "native original envelope/measured usage/unknown_ops/state/receipt"
+        ],
+        "status": "CURRENT"
+      },
+      "actual_consumer_evidence_ids": [
+        "E071",
+        "E072",
+        "E073"
+      ],
+      "consumer_window": {
+        "minute_ms": 60000,
+        "day": "UTC",
+        "month": "UTC",
+        "unknown": "does not reset at day rollover"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "all outstanding/UNKNOWN and original grants spent/reserves",
+          "native ACK/account reconciliation and external proof"
+        ],
+        "protected_references": [
+          "all outstanding/UNKNOWN and original grants spent/reserves",
+          "native ACK/account reconciliation and external proof"
+        ],
+        "safe_expiration_conditions": [
+          "No quota refund or lost-receipt erasure",
+          "Only separate owner/ROOT ledger archival protocol after day/month/account reconciliation"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Availability/freshness/coverage/latency/usefulness need separate bounded aggregates; spend counters alone are not source quality"
+      ]
+    },
+    {
+      "id": "S34",
+      "dataset": "Catalog identity and source coverage",
+      "storage": {
+        "actual_keys": [
+          "pump:run:<run_id>",
+          "pump:manual-result:<request_id>"
+        ],
+        "locations": [
+          "code registry and qualified catalog facts",
+          "source coverage in process / run.source_coverage / manual result"
+        ],
+        "fields": [
+          "instrument/asset/native symbol/type/settle/status/unit evidence",
+          "classification UNKNOWN/excluded reasons",
+          "fact family status/freshness/gaps/cost/source identity"
+        ],
+        "status": "CURRENT",
+        "code_registry_path": "pump-report/registry/index.mjs"
+      },
+      "actual_consumer_evidence_ids": [
+        "E021",
+        "E076",
+        "E066"
+      ],
+      "consumer_window": {
+        "identity": "versioned evidence;934 catalog is not crypto N"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "saved original instruments/analysis evidence and changed taxonomy proof"
+        ],
+        "protected_references": [
+          "saved original instruments/analysis evidence and changed taxonomy proof"
+        ],
+        "safe_expiration_conditions": [
+          "No deletion in S; ROOT must first implement/version reference resolution and readback",
+          "No unresolved send/outcome/audit or model/split manifest refers to these bytes"
+        ],
+        "policy_status": "CONDITIONAL_MINIMUM_NO_DELETE_AUTHORITY",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": [
+        "Persist needed provider/family reliability scalars before pruning runs; current coverage map is not a long-term utility series"
+      ]
+    },
+    {
+      "id": "S35",
+      "dataset": "Removed benchmark fields and cancelled R",
+      "storage": {
+        "actual_keys": [],
+        "locations": [
+          "historical original analyses may contain market_context",
+          "S historical-r/*.txt and frozen R manifest"
+        ],
+        "fields": [
+          "market_context/RELATIVE_RETURN/relative_context_diagnostic",
+          "relative_return_btc_pct,relative_return_eth_pct"
+        ],
+        "status": "OWNER_DISABLED"
+      },
+      "actual_consumer_evidence_ids": [],
+      "consumer_window": {
+        "owner_override": "comparison removed regardless of TZ; no new benchmark reads/requests"
+      },
+      "freshness_max_age_ms": null,
+      "retention": {
+        "approved_delete_ttl_ms": null,
+        "minimum_consumer_span_ms": null,
+        "minimum_rule": [
+          "historical originals, frozen hash/audit only"
+        ],
+        "protected_references": [
+          "historical originals, frozen hash/audit only"
+        ],
+        "safe_expiration_conditions": [
+          "No new collection, TTL or reserve for these fields",
+          "Do not rewrite/delete historical originals to implement owner removal"
+        ],
+        "policy_status": "NO_NEW_RETENTION_OR_RESERVE",
+        "automatic_delete_enabled": false
+      },
+      "minimum_projection": []
+    }
+  ],
+  "feature_scalars": [
+    {
+      "name": "wave_state",
+      "current_value_path": "analysis.wave_state",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "growth_5m_pct",
+      "current_value_path": "analysis.growth_windows[exact window].return_pct",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "growth_15m_pct",
+      "current_value_path": "analysis.growth_windows[exact window].return_pct",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "growth_60m_pct",
+      "current_value_path": "analysis.growth_windows[exact window].return_pct",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "growth_24h_pct",
+      "current_value_path": "analysis.growth_windows[exact window].return_pct",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "current_to_impulse_volume_ratio",
+      "current_value_path": "analysis.activity.current_to_impulse_volume_ratio",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "position_limit_usdt",
+      "current_value_path": "analysis.liquidity.position_limit_usdt",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "spread_pct",
+      "current_value_path": "analysis.liquidity.spread_pct",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "slippage_buy_pct",
+      "current_value_path": "analysis.liquidity.sizes[notional_usdt=position_limit_usdt].entry_slippage_pct",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "slippage_sell_pct",
+      "current_value_path": "analysis.liquidity.sizes[notional_usdt=position_limit_usdt].exit_slippage_pct",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "trade_buy_usdt",
+      "current_value_path": "analysis.trade_context.buy_usdt",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "trade_sell_usdt",
+      "current_value_path": "analysis.trade_context.sell_usdt",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "open_interest",
+      "current_value_path": "analysis.optional_context.open_interest.value",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "funding_rate",
+      "current_value_path": "analysis.optional_context.funding.value.rate",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "funding_period_ms",
+      "current_value_path": "analysis.optional_context.funding.value.period_ms",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "relative_return_btc_pct",
+      "current_value_path": "OWNER_REMOVED_BENCHMARK",
+      "allowed_for_new_report": false,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "No new consumer/TTL/reserve. Legacy offline schema is historical only."
+    },
+    {
+      "name": "relative_return_eth_pct",
+      "current_value_path": "OWNER_REMOVED_BENCHMARK",
+      "allowed_for_new_report": false,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "No new consumer/TTL/reserve. Legacy offline schema is historical only."
+    },
+    {
+      "name": "map_mode",
+      "current_value_path": "origin.map_mode",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "map_nearest_up_distance_pct",
+      "current_value_path": "NOT_PERSISTED_AS_SCALAR; derive from originally qualified zones and P0",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "map_nearest_down_distance_pct",
+      "current_value_path": "NOT_PERSISTED_AS_SCALAR; derive from originally qualified zones and P0",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "consumer_evidence_id": "E056",
+      "retention_ttl_ms": null,
+      "rule": "Preserve immutable known-at value or null+reason with original clocks/evidence; new writer required"
+    },
+    {
+      "name": "trade_netflow_usdt",
+      "current_value_path": "analysis.trade_context.netflow_usdt",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "current_cohort_schema_support": false,
+      "rule": "Proposed future schema extension only; not silently add to pump-initial-features-v1",
+      "retention_ttl_ms": null
+    },
+    {
+      "name": "trade_price_first",
+      "current_value_path": "analysis.trade_context.price_response.first_price",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "current_cohort_schema_support": false,
+      "rule": "Proposed future schema extension only; not silently add to pump-initial-features-v1",
+      "retention_ttl_ms": null
+    },
+    {
+      "name": "trade_price_last",
+      "current_value_path": "analysis.trade_context.price_response.last_price",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "current_cohort_schema_support": false,
+      "rule": "Proposed future schema extension only; not silently add to pump-initial-features-v1",
+      "retention_ttl_ms": null
+    },
+    {
+      "name": "trade_price_min",
+      "current_value_path": "analysis.trade_context.price_response.min_price",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "current_cohort_schema_support": false,
+      "rule": "Proposed future schema extension only; not silently add to pump-initial-features-v1",
+      "retention_ttl_ms": null
+    },
+    {
+      "name": "trade_price_max",
+      "current_value_path": "analysis.trade_context.price_response.max_price",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "current_cohort_schema_support": false,
+      "rule": "Proposed future schema extension only; not silently add to pump-initial-features-v1",
+      "retention_ttl_ms": null
+    },
+    {
+      "name": "trade_price_return_pct",
+      "current_value_path": "analysis.trade_context.price_response.first_to_last_return_pct",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "current_cohort_schema_support": false,
+      "rule": "Proposed future schema extension only; not silently add to pump-initial-features-v1",
+      "retention_ttl_ms": null
+    },
+    {
+      "name": "trade_price_response_reason",
+      "current_value_path": "analysis.trade_context.price_response_reason",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "current_cohort_schema_support": false,
+      "rule": "Proposed future schema extension only; not silently add to pump-initial-features-v1",
+      "retention_ttl_ms": null
+    },
+    {
+      "name": "entry_area_below_floor_pct_lower_bound",
+      "current_value_path": "outcome.scenario_outcome.entry_area_excursion.below_area_pct_lower_bound",
+      "allowed_for_new_report": true,
+      "current_feature_writer": false,
+      "current_cohort_schema_support": false,
+      "rule": "Proposed future schema extension only; not silently add to pump-initial-features-v1",
+      "retention_ttl_ms": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E001",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "rememberAnalysis",
+      "line": 72,
+      "needle": "const fingerprint=await textHash(JSON.stringify(analysis))",
+      "excerpt": "  async function rememberAnalysis(analysis,input){\n    const fingerprint=await textHash(JSON.stringify(analysis)),key='pump:analysis:'+fingerprint;\n    await store.atomic(key,current=>({state:current??{analysis,input,saved_ts:clock()},result:true}));\n    await store.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E002",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "rememberAnalysis",
+      "line": 74,
+      "needle": "'pump:latest-analysis:'",
+      "excerpt": "    await store.atomic(key,current=>({state:current??{analysis,input,saved_ts:clock()},result:true}));\n    await store.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});\n    const wave=analysis.next_wave??analysis.previous_wave??null;\n    if(wave)await store.set('pump:wave:'+instrumentKey(input.instrument),wave);",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E003",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "rememberAnalysis",
+      "line": 76,
+      "needle": "'pump:wave:'",
+      "excerpt": "    const wave=analysis.next_wave??analysis.previous_wave??null;\n    if(wave)await store.set('pump:wave:'+instrumentKey(input.instrument),wave);\n    await store.atomic('pump:active-instruments',current=>{\n      const set=new Set(current??[]);if(wave&&analysis.wave_state!=='CANCELLED'&&(wave.expires_ts??0)>clock()){if(input.mode==='AUTO'||set.has(instrumentKey(input.instrument)))set.add(instrumentKey(input.instrument));}else set.delete(instrumentKey(input.instrument));",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E004",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "updateDiscovery",
+      "line": 44,
+      "needle": "'pump:active-instruments'",
+      "excerpt": "    await store.set('pump:overview:'+slot,compact);await store.set('pump:overview-index',[...recent,slot]);\n    const active=await store.get('pump:active-instruments')??[];\n    await store.atomic('pump:candidate-queue',queue=>{\n      queue??={};",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E005",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "remember",
+      "line": 30,
+      "needle": "const row={analysis_id,analysis_sha256",
+      "excerpt": "    const origin={instrument_id:analysis.instrument.instrument_id,asset_id:analysis.instrument.asset_id,wave_id:analysis.wave_id,signal_id:signalKey(analysis),t0:analysis.analysis_ts,reference_price:analysis.reference_price,rules_version:analysis.rules_version,profile_version:analysis.profile_version,mode:analysis.mode,map_mode:mapMode(analysis),evidence_class,run_purpose:input.run_purpose??analysis.run_purpose??'UNCLASSIFIED',ready:true};\n    const row={analysis_id,analysis_sha256:sha,recorded_ts:at,features_known_ts:known.length?Math.max(...known):null,origin};\n    const pending=await store.atomic(key,j=>{\n      j??={schema:'PUMP_OUTCOME_JOURNAL_V1',analyses:[],publications:[],wave_expires_ts:analysis.next_wave?.expires_ts??analysis.analysis_ts+profile.wave_max_age_ms,terminal:null,frozen_anchor:null};",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    },
+    {
+      "id": "E006",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "remember",
+      "line": 32,
+      "needle": "schema:'PUMP_OUTCOME_JOURNAL_V1'",
+      "excerpt": "    const pending=await store.atomic(key,j=>{\n      j??={schema:'PUMP_OUTCOME_JOURNAL_V1',analyses:[],publications:[],wave_expires_ts:analysis.next_wave?.expires_ts??analysis.analysis_ts+profile.wave_max_age_ms,terminal:null,frozen_anchor:null};\n      const previous=j.analyses.find(r=>r.analysis_id===analysis_id);\n      if(previous&&(!equal(previous.origin,row.origin)||previous.analysis_sha256!==sha))throw Error('IMMUTABLE_ANALYSIS_JOURNAL_CONFLICT');",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    },
+    {
+      "id": "E007",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "syncTerminal",
+      "line": 60,
+      "needle": "async function syncTerminal()",
+      "excerpt": "  }\n  async function syncTerminal(){const ids=await store.get('pump:journal-index')??[],results=[];for(const key of ids){if(!resourcesAvailable())break;const j=await store.get(key);if(j?.frozen_anchor){await store.atomic('pump:journal-index',ids=>({state:(ids??[]).filter(id=>id!==key),result:true}));continue;}if(j&&(j.terminal||j.wave_expires_ts<=clock()))results.push(await sync(key));}return results;}\n  async function record(signal,outcome){\n    if(!signal?.origin)return;",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    },
+    {
+      "id": "E008",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "publication",
+      "line": 43,
+      "needle": "const event={event_id:'PUMP_PUBLICATION:'",
+      "excerpt": "    const event_ts=card.receipt?.confirmed_ts??card.updated_ts??card.created_ts,recorded_ts=clock();\n    const event={event_id:'PUMP_PUBLICATION:'+card_id+':'+state+':'+event_ts,analysis_id:a.source_input_key,event_ts,recorded_ts,state,possible_send:state==='UNKNOWN',message_id:card.message_id??null,receipt_ref:state==='SENT'?'pump:card:'+card_id+'#receipt':null,card_id};\n    await store.atomic(key,j=>{if(!j)throw Error('SAVED_ANALYSIS_JOURNAL_REQUIRED');if(!j.publications.some(e=>e.event_id===event.event_id))j.publications.push(event);return {state:j,result:true};});\n    return sync(key);",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    },
+    {
+      "id": "E009",
+      "file": "pump-report/analytics/anchors.mjs",
+      "function": "selectOutcomeAnchor",
+      "line": 14,
+      "needle": "export function selectOutcomeAnchor",
+      "excerpt": "// the original wave expiry and (on subsequent calls) the saved immutable published anchor.\nexport function selectOutcomeAnchor({analyses,publications,as_of_ts,wave_expires_ts,terminal=null,frozen_anchor=null}){\n  if(!Array.isArray(analyses)||!Array.isArray(publications)||!validTime(as_of_ts)||!validTime(wave_expires_ts))throw Error('ANCHOR_INPUT_REQUIRED');\n  const finish=(status,reason,anchor=null,publication=null)=>({version:ANCHOR_POLICY_VERSION,status,reason,eligible:status==='ELIGIBLE',anchor:structuredClone(anchor),",
+      "source_sha256": "b2c34fdde0dcdf90a1e8b79c900f3f9313440470e737745ba94a2e0102dc6fdf"
+    },
+    {
+      "id": "E010",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "sync",
+      "line": 51,
+      "needle": "ANCHOR_SAVED_BYTES_READBACK_FAILED",
+      "excerpt": "    if(!selected.eligible){if(selected.status==='QUARANTINED')await store.set('pump:quarantine:'+key,selected);return selected;}\n    const saved=await store.get(selected.anchor.analysis_id);if(!saved?.analysis||await textHash(JSON.stringify(saved.analysis))!==selected.anchor.analysis_sha256)throw Error('ANCHOR_SAVED_BYTES_READBACK_FAILED');\n    await store.atomic(key,j=>{if(j.frozen_anchor&&!equal(j.frozen_anchor,selected.anchor))throw Error('FROZEN_ANCHOR_CONFLICT');return {state:{...j,frozen_anchor:selected.anchor},result:true};});\n    const a=saved.analysis,o=selected.summary_origin,publication=selected.publication;",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    },
+    {
+      "id": "E011",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "sync",
+      "line": 54,
+      "needle": "const signal={...o,instrument:a.instrument",
+      "excerpt": "    const a=saved.analysis,o=selected.summary_origin,publication=selected.publication;\n    const signal={...o,instrument:a.instrument,mode:o.mode,map_mode:o.map_mode==='NO_MAP'?'WITHOUT_MAP':'WITH_MAP',plan:a.plan,analysis_key:selected.anchor.analysis_id,origin:o,publication,deadline_ts:o.t0+profile.horizon_ms};\n    await store.atomic(o.signal_id,current=>{if(current?.origin&&!equal(current.origin,o))throw Error('ORIGINAL_SIGNAL_IMMUTABLE');return {state:current?{...current,publication}:signal,result:true};});\n    await store.atomic('pump:outcomes-pending',ids=>({state:[...new Set([...(ids??[]),o.signal_id])],result:true}));",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    },
+    {
+      "id": "E012",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "checkOutcomes",
+      "line": 131,
+      "needle": "const pending=await store.get('pump:outcomes-pending')",
+      "excerpt": "    budget.setMode('STATISTICS');\n    const pending=await store.get('pump:outcomes-pending')??[],results=[];\n    for(const key of pending){\n      const summary=budget.summary();if(summary.lanes.statistics>=summary.limits.lanes.statistics||summary.total>=summary.limits.http_per_run){results.push({status:'DEFERRED',reason:'STATISTICS_HTTP_BUDGET_EXHAUSTED'});break;}",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E013",
+      "file": "pump-report/runtime/delivery.mjs",
+      "function": "enqueue",
+      "line": 17,
+      "needle": "const card={delivery_schema:'PUMP_DELIVERY_V2'",
+      "excerpt": "    const hash=await textHash(analysis.card_text),id='PUMP:'+await textHash(analysis.instrument.instrument_id+'|'+analysis.wave_id+'|'+hash);\n    const card={delivery_schema:'PUMP_DELIVERY_V2',card_id:id,text:analysis.card_text,text_hash:hash,recipient:String(recipient),mode,analysis,created_ts:clock(),expires_ts,state:'READY',message_id:null,owner:null,claim_until:null,send_started_ts:null,attempts:0};\n    // Save immutable content before the wave pointer. A lost queue ACK is\n    // repaired by the next enqueue, while a sent card remains immutable.",
+      "source_sha256": "382d64c962e87d8bcd34394708c532d8d4cb2ff4a3a62bb76d05f848d6ef2118"
+    },
+    {
+      "id": "E014",
+      "file": "pump-report/runtime/delivery.mjs",
+      "function": "enqueue",
+      "line": 21,
+      "needle": "IMMUTABLE_CARD_CONFLICT",
+      "excerpt": "    await store.atomic('pump:card:'+id,current=>{\n      if(current&&(current.text!==card.text||current.text_hash!==hash||current.recipient!==card.recipient))throw new BudgetRefusal('IMMUTABLE_CARD_CONFLICT');\n      return {state:current??card,result:true};\n    });",
+      "source_sha256": "382d64c962e87d8bcd34394708c532d8d4cb2ff4a3a62bb76d05f848d6ef2118"
+    },
+    {
+      "id": "E015",
+      "file": "pump-report/runtime/delivery.mjs",
+      "function": "dispatch",
+      "line": 46,
+      "needle": "if(current.state==='SENDING'",
+      "excerpt": "      if(!current)return {state:current,result:{skip:'CARD_NOT_FOUND'}};\n      if(current.state==='SENDING'&&current.claim_until<=now){const possible=current.delivery_schema!=='PUMP_DELIVERY_V2'||Number.isSafeInteger(current.send_started_ts);current.state=possible?'UNKNOWN':'ERROR';current.updated_ts=now;current.reason=possible?'SENDER_INTERRUPTED_AFTER_POSSIBLE_SEND':'SENDER_INTERRUPTED_BEFORE_SEND';return {state:current,result:{skip:current.state}};}\n      if(!['READY','RETRYABLE'].includes(current.state))return {state:current,result:{skip:current.state}};\n      const refusal=ownerPublicationRefusal(current.analysis);",
+      "source_sha256": "382d64c962e87d8bcd34394708c532d8d4cb2ff4a3a62bb76d05f848d6ef2118"
+    },
+    {
+      "id": "E016",
+      "file": "pump-report/runtime/delivery.mjs",
+      "function": "dispatch",
+      "line": 66,
+      "needle": "const receipt={message_id:String(id)",
+      "excerpt": "    if(reply?.ok===true&&reply.body?.ok===true&&positiveMessageId(id)&&String(message.chat?.id)===card.recipient){\n      const receipt={message_id:String(id),recipient:card.recipient,card_id,text_hash:card.text_hash,confirmed_ts:clock(),telegram_date:message.date??null};\n      await finish(card,{state:'SENT',message_id:String(id),receipt});\n      const saved=await store.get('pump:card:'+card_id);",
+      "source_sha256": "382d64c962e87d8bcd34394708c532d8d4cb2ff4a3a62bb76d05f848d6ef2118"
+    },
+    {
+      "id": "E017",
+      "file": "pump-report/runtime/delivery.mjs",
+      "function": "enqueue",
+      "line": 29,
+      "needle": "current??={primary_card_id:null,updates:[],card_by_hash:{}}",
+      "excerpt": "    const decision=await store.atomic(waveKey,current=>{\n      current??={primary_card_id:null,updates:[],card_by_hash:{}};\n      if(current.card_by_hash[hash])return {state:current,result:{duplicate:true,card_id:current.card_by_hash[hash]}};\n      const knownPrevious=previousCard?.card_id===current.primary_card_id;",
+      "source_sha256": "382d64c962e87d8bcd34394708c532d8d4cb2ff4a3a62bb76d05f848d6ef2118"
+    },
+    {
+      "id": "E018",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "recordPublished",
+      "line": 126,
+      "needle": "'pump:delivery-queue'",
+      "excerpt": "    if(['SENT','UNKNOWN','ERROR','STALE'].includes(card.state))await observations.publication(card_id);\n    if(['SENT','UNKNOWN','ERROR','STALE','SUPPRESSED'].includes(card.state))await store.atomic('pump:delivery-queue',ids=>({state:(ids??[]).filter(id=>id!==card_id),result:true}));\n  }\n  async function checkOutcomes({run_id}){",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E019",
+      "file": "pump-report/runtime/worker.mjs",
+      "function": "revalidatePumpCard",
+      "line": 26,
+      "needle": "const saved=await store.get(card.analysis.source_input_key)",
+      "excerpt": "  if(!card.analysis.ready||!card.analysis.plan)return {valid:false,reason:'PLAN_NOT_READY'};\n  const saved=await store.get(card.analysis.source_input_key);if(!saved?.input)return {valid:false,reason:'ORIGINAL_INPUT_NOT_SAVED'};\n  const fresh=await sources.getCore({instrument:card.analysis.instrument,run_id:card.analysis.run_id,mode:card.mode,purpose:'DELIVERY',force_refresh:true,only_facts:['price','orderbook']});\n  const facts={...saved.input.facts,...fresh.facts};if(!['price','orderbook'].every(key=>factUsable(facts[key],clock())))return {valid:false,reason:'MANDATORY_FACT_RECHECK_FAILED'};",
+      "source_sha256": "0338681f26e7766f3ab98f2febe9b072cf8a4c770e390aed3d4a6ab8b21597f0"
+    },
+    {
+      "id": "E020",
+      "file": "pump-report/analytics/index.mjs",
+      "function": "analyzeCore",
+      "line": 93,
+      "needle": "const normalized=closedCandles",
+      "excerpt": "  const native=facts.candles.unit===CANDLE_NATIVE_RELATIVE_UNIT;\n  const normalized=closedCandles(facts.candles.value,at,profile.candle_interval_ms,native?{native_comparison_key:candleNativeComparisonKey(instrument,profile.candle_interval_ms)}:{}),rows=normalized.rows;\n  if(normalized.reason||!rows.length||at-rows.at(-1).close_ts>profile.freshness_ms.candles)return {...result,reasons:unique([...result.reasons,normalized.reason??'CLOSED_CANDLES_STALE_OR_MISSING'])};\n  const ticker=currentFact(facts.ticker_24h,at,profile.freshness_ms.price)&&facts.ticker_24h.unit==='USDT_ROLLING_24H'?facts.ticker_24h:null;",
+      "source_sha256": "e25dedc87048dc4fcbabc3b43c3bf6b7bd056e8102fca1e6c65834e48eee3ebd"
+    },
+    {
+      "id": "E021",
+      "file": "pump-report/contracts/index.mjs",
+      "function": "assertInput",
+      "line": 71,
+      "needle": "CROSS_INSTRUMENT_FACT",
+      "excerpt": "  for (const fact of Object.values(input.facts)) {\n    if (fact != null && fact.instrument_id !== input.instrument.instrument_id) throw Error('CROSS_INSTRUMENT_FACT');\n  }\n  return input;",
+      "source_sha256": "613f27ae01465f03bc451ee9e0deedaf30966a2a2e4d16facd9f84fe00c09eee"
+    },
+    {
+      "id": "E022",
+      "file": "pump-report/analytics/liquidity.mjs",
+      "function": "measureLiquidity",
+      "line": 25,
+      "needle": "export function measureLiquidity",
+      "excerpt": "}\nexport function measureLiquidity(book, instrument, profile) {\n  const unavailable=reason=>({status:'UNAVAILABLE',reason,unit:'USDT',sizes:[],position_limit_usdt:null,spread_pct:null,snapshot_only:true});\n  if(!validSide(book?.asks,true)||!validSide(book?.bids,false)||book.bids[0][0]>=book.asks[0][0])return unavailable('INVALID_OR_CROSSED_ORDERBOOK');",
+      "source_sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a"
+    },
+    {
+      "id": "E023",
+      "file": "pump-report/analytics/movement.mjs",
+      "function": "analyzeMovement",
+      "line": 70,
+      "needle": "export function analyzeMovement",
+      "excerpt": "}\nexport function analyzeMovement(input, rows, price, ticker, profile, observedDay=null) {\n  const windows=growthWindows(rows,ticker,profile,observedDay).map(w=>{\n    if(!positive(w.start_price)||!positive(w.end_price))return w;",
+      "source_sha256": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0"
+    },
+    {
+      "id": "E024",
+      "file": "pump-report/analytics/movement.mjs",
+      "function": "analyzeMovement",
+      "line": 111,
+      "needle": "const continuityStart=previous?.covered_until_ts",
+      "excerpt": "    volume_basis:basis,current_to_impulse_volume_ratio:null,current_to_impulse_volume_ratio_reason:'IMPULSE_VOLUME_ZERO_OR_UNKNOWN',reasons:['IMPULSE_VOLUME_ZERO_OR_UNKNOWN']};\n  const continuityStart=previous?.covered_until_ts??impulse.start_ts;\n  if(!completeInterval(rows,continuityStart,end))return {...base,state:previous?.state??null,next_wave:previous?{...previous}:null,reasons:['WAVE_PATH_INCOMPLETE']};\n  const invalidation=previous?.invalidation_price??impulse.low;",
+      "source_sha256": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0"
+    },
+    {
+      "id": "E025",
+      "file": "pump-report/analytics/movement.mjs",
+      "function": "volumeComparison",
+      "line": 44,
+      "needle": "function volumeComparison",
+      "excerpt": "}\nfunction volumeComparison(rows, end, profile,input) {\n  const duration=profile.impulse_window_ms,interval=profile.candle_interval_ms,current=windowRows(rows,end,duration,interval);\n  if(!current)return null;",
+      "source_sha256": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0"
+    },
+    {
+      "id": "E026",
+      "file": "pump-report/analytics/movement.mjs",
+      "function": "constructPlan",
+      "line": 147,
+      "needle": "export function constructPlan",
+      "excerpt": "\nexport function constructPlan(movement, price, liquidity, fact_id, tick, profile) {\n  const {pivots,impulse,normal_range}=movement;\n  if(!impulse||!positive(normal_range)||!positive(liquidity.position_limit_usdt))return null;",
+      "source_sha256": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0"
+    },
+    {
+      "id": "E027",
+      "file": "pump-report/analytics/presentation.mjs",
+      "function": "selectGrowthProof",
+      "line": 41,
+      "needle": "export function selectGrowthProof",
+      "excerpt": "}\nexport function selectGrowthProof(result,profile){\n  const at=result.analysis_ts,allowed=[...profile.automatic_growth.short_windows_ms,86400000];\n  function qualify(w){",
+      "source_sha256": "4db478513ec9c927c92bea68e2a799a3dd3dfaaad122403d1f733378a4a180b4"
+    },
+    {
+      "id": "E028",
+      "file": "pump-report/analytics/index.mjs",
+      "function": "render",
+      "line": 55,
+      "needle": "function render(result)",
+      "excerpt": "}\nfunction render(result){\n  const p=result.plan,narrative=result.user_narrative,selected=narrative.reasons.map(f=>wellFormed(f.text));\n  function make(compact){",
+      "source_sha256": "e25dedc87048dc4fcbabc3b43c3bf6b7bd056e8102fca1e6c65834e48eee3ebd"
+    },
+    {
+      "id": "E029",
+      "file": "pump-report/analytics/context.mjs",
+      "function": "explainOptionalFacts",
+      "line": 57,
+      "needle": "export function explainOptionalFacts",
+      "excerpt": "\nexport function explainOptionalFacts(facts,at,profile){\n  const findings=[],used=[],optional_context={},out={findings,fact_ids:used,optional_context};\n  const add=(code,text,f)=>{findings.push({code,text,fact_ids:[f.fact_id]});used.push(f.fact_id);};",
+      "source_sha256": "e8debb726aa8175e9a6dfc1b4aaa0c32df5355b9d6518bbf129d4a564f2ed30a"
+    },
+    {
+      "id": "E030",
+      "file": "pump-report/analytics/context.mjs",
+      "function": "summarizeTradeSample",
+      "line": 7,
+      "needle": "function summarizeTradeSample",
+      "excerpt": "\nfunction summarizeTradeSample(f,at,ttl){\n  const empty=()=>({first_price:null,last_price:null,min_price:null,max_price:null,first_to_last_return_pct:null});\n  const provenance={fact_id:f.fact_id,instrument_id:f.instrument_id,source:f.source,venue:f.venue,origin:f.origin,unit:f.unit,",
+      "source_sha256": "e8debb726aa8175e9a6dfc1b4aaa0c32df5355b9d6518bbf129d4a564f2ed30a"
+    },
+    {
+      "id": "E031",
+      "file": "pump-report/analytics/zones.mjs",
+      "function": "selectZones",
+      "line": 31,
+      "needle": "export function selectZones",
+      "excerpt": "  (a.magnitude_unit!=='RELATIVE_INTENSITY'||provider(a)===provider(b)&&a.relative_scale?.scale_id&&a.relative_scale.scale_id===b.relative_scale?.scale_id);}\nexport function selectZones(map, instrument, reference, normalRange, at, profile){\n  const rejected=[],kept=[],rows=Array.isArray(map?.zones)?map.zones:[];\n  for(const z of rows){",
+      "source_sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6"
+    },
+    {
+      "id": "E032",
+      "file": "pump-report/analytics/day-growth.mjs",
+      "function": "consumeObservedDayGrowth",
+      "line": 9,
+      "needle": "export function consumeObservedDayGrowth",
+      "excerpt": "// here, and reported ticker percentages cannot fill missing window evidence.\nexport function consumeObservedDayGrowth(fact,{instrument,as_of_ts,profile=START_PROFILE,rows=[]}){\n  const reject=reason=>({usable:false,reason,window:null,fact_id:null});\n  if(!fact)return reject('DAY_FACT_UNAVAILABLE');",
+      "source_sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1"
+    },
+    {
+      "id": "E033",
+      "file": "pump-report/analytics/outcome.mjs",
+      "function": "evaluateOutcome",
+      "line": 55,
+      "needle": "export function evaluateOutcome",
+      "excerpt": "}\nexport function evaluateOutcome({signal,price_points=[],candles=[],as_of_ts}={}) {\n  const valid=signal&&typeof signal.signal_id==='string'&&typeof signal.wave_id==='string'&&validTime(signal.t0)&&positive(signal.reference_price)&&validTime(as_of_ts)&&as_of_ts>=signal.t0;\n  const p=signal?.reference_price,start=signal?.t0,deadline=valid?start+14400000:null;",
+      "source_sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753"
+    },
+    {
+      "id": "E034",
+      "file": "pump-report/analytics/outcome.mjs",
+      "function": "evaluateOutcome",
+      "line": 89,
+      "needle": "const result={...base,status:hit?",
+      "excerpt": "  const firstExact=pointHit&&(!barHit||pointHit.event_ts<=barHit.open_ts);\n  const result={...base,status:hit?'HIT':complete||noHitCovered?'MISS':'UNKNOWN',hit_ts:firstExact?pointHit.event_ts:null,\n    hit_interval:hit&&!firstExact?{start_ts:barHit.open_ts,end_ts:barHit.close_ts}:null,\n    coverage:{complete,no_hit_period_covered:noHitCovered,no_hit_basis:noHitBasis,basis:complete?'EXACT_CLOSED_MINUTE_INTERVAL':noHitBasis??'INSUFFICIENT_OR_BOUNDARY_AMBIGUOUS',",
+      "source_sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753"
+    },
+    {
+      "id": "E035",
+      "file": "pump-report/analytics/outcome.mjs",
+      "function": "scenario",
+      "line": 42,
+      "needle": "function scenario(",
+      "excerpt": "}\nfunction scenario(plan,rows,points,complete,context){\n  const excursion=entryAreaExcursion(plan,rows,points,context);\n  if(!plan||!Array.isArray(plan.entry_zones)||!plan.exit_zone)return {status:plan?'PLAN_SHAPE_UNAVAILABLE':'NO_PLAN',entry_touched:null,exit_touched:null,execution_proven:false,user_profit:null,entry_area_excursion:excursion};",
+      "source_sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753"
+    },
+    {
+      "id": "E036",
+      "file": "pump-report/analytics/outcome.mjs",
+      "function": "entryAreaExcursion",
+      "line": 14,
+      "needle": "function entryAreaExcursion",
+      "excerpt": "}\nfunction entryAreaExcursion(plan,rows,points,{start,boundary}){\n  const unknown=reason=>({area_floor_price:null,contact_confirmed_by_ts:null,post_confirmation_low_observed:null,below_area_pct_lower_bound:null,reason});\n  if(!plan||!Array.isArray(plan.entry_zones)||!plan.exit_zone)return unknown('PLAN_UNAVAILABLE');",
+      "source_sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753"
+    },
+    {
+      "id": "E037",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "checkOutcomes",
+      "line": 142,
+      "needle": "await store.set('pump:outcome:'",
+      "excerpt": "      const outcome=evaluateOutcome({signal,candles:history.facts?.candles?.value??[],price_points:[],as_of_ts:clock()});\n      await store.set('pump:outcome:'+signal.signal_id,outcome);await observations.record(signal,outcome);results.push(outcome);\n      await store.atomic('pump:outcomes-pending',ids=>{const rest=(ids??[]).filter(id=>id!==key);return {state:['HIT','MISS'].includes(outcome.status)?rest:[...rest,key],result:true};});\n    }",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E038",
+      "file": "pump-report/sources/index.mjs",
+      "function": "getOutcomeHistory",
+      "line": 288,
+      "needle": "const history = createFact(",
+      "excerpt": "      // cannot feed this no-expiry history fact into a current core decision.\n      const history = createFact({fact_id: `${SOURCE_VERSION}:${instrument.instrument_id}:outcome:${start_ts}:${end_ts}:${response.receipt_id}`,\n        instrument_id: instrument.instrument_id, asset_id: instrument.asset_id, kind: 'candles', value, unit: 'OHLC_USDT',\n        event_ts: parsed.event_ts, received_ts: response.received_ts, expires_ts: null,",
+      "source_sha256": "eefb723ba490ce266720b8dfe34d9cf5b9cf62efe536ee0d5c4bdbf1c3f16ce5"
+    },
+    {
+      "id": "E039",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "record",
+      "line": 64,
+      "needle": "const payload={origin:signal.origin",
+      "excerpt": "    if(!(await sourceIndex.initialize()).ready)throw Error('SUMMARY_INDEX_MIGRATING');\n    const payload={origin:signal.origin,publication:signal.publication,outcome:outcome??null},hash=await textHash(JSON.stringify(payload)),key='pump:summary-record:'+hash;\n    await store.atomic(key,current=>({state:current??{record_id:key,recorded_ts:clock(),...payload},result:true}));\n    await sourceIndex.append(key);",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    },
+    {
+      "id": "E040",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "catchUp",
+      "line": 79,
+      "needle": "SUMMARY_RECORD_CONTENT_HASH_MISMATCH",
+      "excerpt": "      const {origin,publication,outcome}=row;\n      if(key!=='pump:summary-record:'+await textHash(JSON.stringify({origin,publication,outcome})))throw Error('SUMMARY_RECORD_CONTENT_HASH_MISMATCH');\n      if(!productionRecord(row)){\n        const purpose=recordPurpose(row),reason=purpose==='PRODUCTION'?'NON_OBSERVED':purpose;",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    },
+    {
+      "id": "E041",
+      "file": "pump-report/runtime/summary-index.mjs",
+      "function": "createSummaryRecordIndex",
+      "line": 2,
+      "needle": "const HEAD='pump:summary-ordered-head:v1'",
+      "excerpt": "import {textHash} from './delivery.mjs';\nconst HEAD='pump:summary-ordered-head:v1',PREFIX='pump:summary-ordered:v1:',MEMBER='pump:summary-member:v1:',LEGACY='pump:summary-record-index';\nconst validId=id=>typeof id==='string'&&/^pump:summary-record:[a-f0-9]{64}$/.test(id);\nconst pointerKey=seq=>PREFIX+String(seq).padStart(16,'0');",
+      "source_sha256": "ac3b624eca88161682098fdea1195e74eea33f3a2a1d8cc83ee4ff455e26e5f0"
+    },
+    {
+      "id": "E042",
+      "file": "pump-report/runtime/summary-index.mjs",
+      "function": "recover",
+      "line": 10,
+      "needle": "const head=await store.get(HEAD)",
+      "excerpt": "  async function recover(){\n    const head=await store.get(HEAD)??empty(),pending=head.pending;if(!pending)return head;\n    if(!validId(pending.id)||pending.seq!==head.count+1)throw Error('SUMMARY_INDEX_PENDING_CONFLICT');\n    const row=await store.get(pending.id);if(row?.record_id!==pending.id)throw Error('SUMMARY_INDEX_PENDING_RECORD_MISSING');",
+      "source_sha256": "ac3b624eca88161682098fdea1195e74eea33f3a2a1d8cc83ee4ff455e26e5f0"
+    },
+    {
+      "id": "E043",
+      "file": "pump-report/runtime/summary-index.mjs",
+      "function": "initialize",
+      "line": 41,
+      "needle": "store.boundedArray(LEGACY",
+      "excerpt": "    let head=await recover();if(head.legacy_imported)return {ready:true,head};\n    const ids=await store.boundedArray(LEGACY,{max_items:40,max_bytes:10000});\n    if(new Set(ids).size!==ids.length||ids.some(id=>!validId(id)))throw Error('LEGACY_SUMMARY_INDEX_IDENTITY_CONFLICT');\n    const hash=await textHash(JSON.stringify(ids));",
+      "source_sha256": "ac3b624eca88161682098fdea1195e74eea33f3a2a1d8cc83ee4ff455e26e5f0"
+    },
+    {
+      "id": "E044",
+      "file": "pump-report/runtime/summary-index.mjs",
+      "function": "page",
+      "line": 57,
+      "needle": "store.scanPrefix(PREFIX",
+      "excerpt": "    const head=await recover();if(after>head.count)throw Error('SUMMARY_APPEND_ONLY_INDEX_RECONCILIATION_REQUIRED');\n    const rows=await store.scanPrefix(PREFIX,{after_key:after?pointerKey(after):PREFIX,limit});\n    const items=rows.map(r=>r.value);for(let i=0;i<items.length;i++)if(items[i].seq!==after+i+1||!validId(items[i].id))throw Error('SUMMARY_INDEX_SEQUENCE_GAP');\n    if(after<head.count&&!items.length)throw Error('SUMMARY_INDEX_SEQUENCE_GAP');",
+      "source_sha256": "ac3b624eca88161682098fdea1195e74eea33f3a2a1d8cc83ee4ff455e26e5f0"
+    },
+    {
+      "id": "E045",
+      "file": "pump-report/analytics/materialized-summary.mjs",
+      "function": "foldPreparedOutcomeRecord",
+      "line": 85,
+      "needle": "export function foldPreparedOutcomeRecord",
+      "excerpt": "// events are transient, frozen and not persisted; retry against fresh states.\nexport function foldPreparedOutcomeRecord({aggregate,wave=null,prepared_event,as_of_ts}={}){\n  context(aggregate,wave,as_of_ts);\n  if(!preparedEvents.has(prepared_event))throw Error('PREPARED_EVENT_FROM_THIS_MODULE_REQUIRED');",
+      "source_sha256": "09bf72e16e73b1471db4309788fb2494477d241919da92278f1fe73427db8cce"
+    },
+    {
+      "id": "E046",
+      "file": "pump-report/analytics/materialized-summary.mjs",
+      "function": "foldPreparedOutcomeRecord",
+      "line": 107,
+      "needle": "next.record_digests[id]=fingerprint",
+      "excerpt": "  if(single.publication_counts.sent===1&&!next.sent)next.sent=clone(r);\n  next.record_digests[id]=fingerprint;next.event_revision=revision;next.state_revision++;next.last_recorded_ts=r.recorded_ts;next.observed_as_of_ts=as_of_ts;\n  next.contribution=contribution(next,as_of_ts);\n  const updated=replace(aggregate,wave,next,as_of_ts);updated.records_applied++;updated.instrument_assets[instrument]=r.origin.asset_id;",
+      "source_sha256": "09bf72e16e73b1471db4309788fb2494477d241919da92278f1fe73427db8cce"
+    },
+    {
+      "id": "E047",
+      "file": "pump-report/analytics/materialized-summary.mjs",
+      "function": "witnesses",
+      "line": 38,
+      "needle": "function witnesses(wave)",
+      "excerpt": "const counters=q=>Object.fromEntries([...scalarFields,...objectFields].map(k=>[k,clone(q[k])]));\nfunction witnesses(wave){const rows=[wave.first,wave.last,wave.valid,wave.hit,wave.miss,wave.sent,...Object.values(wave.invalid)];const byId=new Map();for(const r of rows)if(r)byId.set(r.record_id,r);return [...byId.values()].sort(order);}\nfunction selected(wave){return wave.hit??wave.miss??wave.valid??wave.last;}\nfunction contribution(wave,at){",
+      "source_sha256": "09bf72e16e73b1471db4309788fb2494477d241919da92278f1fe73427db8cce"
+    },
+    {
+      "id": "E048",
+      "file": "pump-report/analytics/materialized-summary.mjs",
+      "function": "contribution",
+      "line": 46,
+      "needle": "const adverse={drawdown_total_pct",
+      "excerpt": "  const drawdown_before_hit_pct=status==='HIT'&&validTime(o?.hit_ts)&&!(o.reasons??[]).some(r=>['PRE_HIT_COVERAGE_INCOMPLETE','INTRABAR_FIRST_HIT_TIME_AND_ORDER_UNKNOWN'].includes(r))?number(o?.drawdown_before_hit_pct):null;\n  const adverse={drawdown_total_pct,drawdown_before_hit_pct,hit_after_invalidation:typeof o?.hit_after_invalidation==='boolean'?o.hit_after_invalidation:null,\n    source_record_id:selected(wave)?.record_id??null,outcome_conflicted:q.outcome_conflict_waves>0,execution_proven:false,user_profit:null};\n  const totals=counters(q);totals.adverse={total_drawdown_known:drawdown_total_pct===null?0:1,total_drawdown_unknown:drawdown_total_pct===null?1:0,",
+      "source_sha256": "09bf72e16e73b1471db4309788fb2494477d241919da92278f1fe73427db8cce"
+    },
+    {
+      "id": "E049",
+      "file": "pump-report/analytics/materialized-summary.mjs",
+      "function": "dueMaturityWaves",
+      "line": 123,
+      "needle": "Object.entries(aggregate.pending_deadlines)",
+      "excerpt": "  context(aggregate,null,as_of_ts);if(!Number.isSafeInteger(limit)||limit<1||limit>40)throw Error('MATURITY_PAGE_BOUND_REQUIRED');\n  return Object.entries(aggregate.pending_deadlines).filter(([,v])=>v.deadline_ts<=as_of_ts).sort(([a,x],[b,y])=>x.deadline_ts-y.deadline_ts||(a<b?-1:a>b?1:0)).slice(0,limit).map(([wave_key,v])=>({wave_key,...v}));\n}\nexport function readMaterializedSummary(aggregate,{as_of_ts}={}){",
+      "source_sha256": "09bf72e16e73b1471db4309788fb2494477d241919da92278f1fe73427db8cce"
+    },
+    {
+      "id": "E050",
+      "file": "pump-report/analytics/materialized-summary.mjs",
+      "function": "createMaterializedSummary",
+      "line": 74,
+      "needle": "instrument_assets:{},pending_deadlines:{}",
+      "excerpt": "  if(!text(materialization_id)||!validTime(as_of_ts))throw Error('MATERIALIZATION_ID_AND_CLOCK_REQUIRED');\n  return {version:MATERIALIZED_VERSION,materialization_id,revision:0,updated_ts:as_of_ts,records_applied:0,counters:emptyCounters(),cohorts:{},instrument_assets:{},pending_deadlines:{}};\n}\n",
+      "source_sha256": "09bf72e16e73b1471db4309788fb2494477d241919da92278f1fe73427db8cce"
+    },
+    {
+      "id": "E051",
+      "file": "pump-report/analytics/summary.mjs",
+      "function": "summarizeOutcomes",
+      "line": 58,
+      "needle": "export function summarizeOutcomes",
+      "excerpt": "}\nexport function summarizeOutcomes(records,options={}){\n  if(!Array.isArray(records))throw Error('SUMMARY_RECORD_ARRAY_REQUIRED');\n  const now=options.as_of_ts;if(!validTime(now))throw Error('SUMMARY_AS_OF_REQUIRED');",
+      "source_sha256": "3a34c86dc1df257eb845d41f847d7db753a2dd008d13ae8cdfda9d48d2b265ff"
+    },
+    {
+      "id": "E052",
+      "file": "pump-report/analytics/summary.mjs",
+      "function": "outcomeIssue",
+      "line": 24,
+      "needle": "OUTCOME_TARGET_OR_HORIZON_MISMATCH",
+      "excerpt": "  const map=s.map_mode==='NO_MAP'?'WITHOUT_MAP':'WITH_MAP';if(o.map_mode!==map)return 'OUTCOME_MAP_MODE_MISMATCH';\n  if(o.target_price!==plusTenPrice(s.reference_price)||o.deadline_ts!==s.t0+14400000)return 'OUTCOME_TARGET_OR_HORIZON_MISMATCH';\n  const noHitProof=o.coverage?.no_hit_period_covered===true&&o.coverage?.no_hit_basis==='ENCLOSING_CLOSED_MINUTE_BARS_ALL_HIGHS_BELOW_TARGET';\n  if(o.status==='MISS'&&(recorded<o.deadline_ts||o.coverage?.complete!==true&&!noHitProof))return 'MISS_WITHOUT_MATURE_COMPLETE_COVERAGE';",
+      "source_sha256": "3a34c86dc1df257eb845d41f847d7db753a2dd008d13ae8cdfda9d48d2b265ff"
+    },
+    {
+      "id": "E053",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "summary",
+      "line": 111,
+      "needle": "await store.set('pump:summary-latest'",
+      "excerpt": "    result.status_text_ru=result.status==='CURRENT'?'Независимых волн: '+result.independent_waves+'. Зрелых: '+result.mature_waves+'; HIT '+m.hit+', MISS '+m.miss+', UNKNOWN '+m.unknown+'. Ещё не завершены: '+result.pending_waves+'. Процент успешности и вероятность пока не оценены.':'Сводка обновляется; текущие счётчики неполны. Процент успешности и вероятность пока не оценены.';\n    await store.set('pump:summary-latest',result);return result;\n  }\n  return {remember,publication,sync,syncTerminal,record,summary,catchUp};",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    },
+    {
+      "id": "E054",
+      "file": "pump-report/analytics/cohort-audit.mjs",
+      "function": "metadataIssues",
+      "line": 19,
+      "needle": "const m=row.audit_meta,o=row.origin",
+      "excerpt": "function metadataIssues(row){\n  const m=row.audit_meta,o=row.origin,issues=[];\n  if(!digest(m?.analysis_sha256))issues.push('SAVED_ANALYSIS_DIGEST_MISSING');\n  if(!digest(m?.implementation_sha256))issues.push('IMPLEMENTATION_VERSION_MISSING');",
+      "source_sha256": "f70266950a6b39cdfa71895bd8fc489a176895d85e09167126cdb464034a6ae8"
+    },
+    {
+      "id": "E055",
+      "file": "pump-report/analytics/cohort-audit.mjs",
+      "function": "metadataIssues",
+      "line": 31,
+      "needle": "if(!Array.isArray(m?.features)",
+      "excerpt": "  if(m?.feature_schema_version!==FEATURE_SCHEMA_VERSION)issues.push('FEATURE_SCHEMA_UNQUALIFIED');\n  if(!Array.isArray(m?.features)||!m.features.length)issues.push('INITIAL_FEATURE_SNAPSHOT_MISSING');\n  else{\n    if(m.features.length>AUDIT_BOUNDS.features_per_record)issues.push('FEATURE_BOUND_EXCEEDED');",
+      "source_sha256": "f70266950a6b39cdfa71895bd8fc489a176895d85e09167126cdb464034a6ae8"
+    },
+    {
+      "id": "E056",
+      "file": "pump-report/analytics/cohort-audit.mjs",
+      "function": "fields",
+      "line": 8,
+      "needle": "const fields=new Set(",
+      "excerpt": "export const AUDIT_BOUNDS=Object.freeze({records:2048,bytes:2000000,features_per_record:64,pairs:64});\nconst fields=new Set(['wave_state','growth_5m_pct','growth_15m_pct','growth_60m_pct','growth_24h_pct','current_to_impulse_volume_ratio','position_limit_usdt','spread_pct','slippage_buy_pct','slippage_sell_pct','trade_buy_usdt','trade_sell_usdt','open_interest','funding_rate','funding_period_ms','relative_return_btc_pct','relative_return_eth_pct','map_mode','map_nearest_up_distance_pct','map_nearest_down_distance_pct']);\nconst text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=512;\nconst digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);",
+      "source_sha256": "f70266950a6b39cdfa71895bd8fc489a176895d85e09167126cdb464034a6ae8"
+    },
+    {
+      "id": "E057",
+      "file": "pump-report/analytics/cohort-audit.mjs",
+      "function": "auditCohortSample",
+      "line": 98,
+      "needle": "else if(resolved.recorded_ts>split)",
+      "excerpt": "    else if(deadline>split)partition='PURGED_HORIZON_CROSSES_SPLIT';\n    else if(resolved.recorded_ts>split)partition='PURGED_LABEL_NOT_KNOWN_AT_SPLIT';\n    else partition='TRAIN';\n    if(!planValid)issues.push('SPLIT_NOT_PREDECLARED');",
+      "source_sha256": "f70266950a6b39cdfa71895bd8fc489a176895d85e09167126cdb464034a6ae8"
+    },
+    {
+      "id": "E058",
+      "file": "pump-report/analytics/cohort-audit.mjs",
+      "function": "auditPairedAnalyses",
+      "line": 141,
+      "needle": "export function auditPairedAnalyses",
+      "excerpt": "}\nexport function auditPairedAnalyses(pairs,{as_of_ts}={}){\n  bounded(pairs,AUDIT_BOUNDS.pairs);if(!validTime(as_of_ts))throw Error('AUDIT_AS_OF_REQUIRED');\n  const seenIds=new Map(),waves=new Set(),results=[];let replays=0;",
+      "source_sha256": "f70266950a6b39cdfa71895bd8fc489a176895d85e09167126cdb464034a6ae8"
+    },
+    {
+      "id": "E059",
+      "file": "pump-report/contracts/run-purpose.mjs",
+      "function": "recordPurpose",
+      "line": 14,
+      "needle": "export function recordPurpose",
+      "excerpt": "});\nexport function recordPurpose(row){\n  const o=row?.origin??row??{};\n  if(o.instrument_id===ACCEPTANCE_240.instrument_id&&o.wave_id===ACCEPTANCE_240.wave_id&&o.t0===ACCEPTANCE_240.t0)return 'ACCEPTANCE_TEST';",
+      "source_sha256": "edb8d8cf4e13cacf2fb3c70585a18c59a2668f7210c746514cd53d73908b55c3"
+    },
+    {
+      "id": "E060",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "updateDiscovery",
+      "line": 41,
+      "needle": "const index=await store.get('pump:overview-index')",
+      "excerpt": "    const compact=overview.observations.map(o=>{const usable=factUsable(o.facts.price,now);return {id:o.instrument.instrument_id,last:usable?o.facts.price.value:null,event_ts:o.facts.price?.event_ts??null,reported_change_pct:usable?o.reported_change_pct??null:null,status:o.facts.price?.status??'ABSENT'};});\n    const index=await store.get('pump:overview-index')??[],recent=index.filter(t=>t>=now-3600000&&t<slot),history=[];\n    for(const ts of recent)history.push({ts,rows:await store.get('pump:overview:'+ts)??[]});\n    await store.set('pump:overview:'+slot,compact);await store.set('pump:overview-index',[...recent,slot]);",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E061",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "updateDiscovery",
+      "line": 43,
+      "needle": "await store.set('pump:overview:'+slot",
+      "excerpt": "    for(const ts of recent)history.push({ts,rows:await store.get('pump:overview:'+ts)??[]});\n    await store.set('pump:overview:'+slot,compact);await store.set('pump:overview-index',[...recent,slot]);\n    const active=await store.get('pump:active-instruments')??[];\n    await store.atomic('pump:candidate-queue',queue=>{",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E062",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "selectAutomatic",
+      "line": 64,
+      "needle": "const queue=await store.get('pump:candidate-queue')",
+      "excerpt": "  async function selectAutomatic(catalog){\n    const queue=await store.get('pump:candidate-queue')??{},now=clock();\n    const candidates=Object.values(queue).filter(r=>(r.next_check_ts??0)<=now);\n    const score=r=>candidatePriority(r,now,{profile}).score;",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E063",
+      "file": "pump-report/runtime/candidate-priority.mjs",
+      "function": "candidatePriority",
+      "line": 5,
+      "needle": "export function candidatePriority",
+      "excerpt": "// otherwise eligible coin cannot monopolize every future turn.\nexport function candidatePriority(row,now,{profile=START_PROFILE}={}){\n  const since=row.last_checked_ts??row.first_seen;\n  const age=Number.isSafeInteger(since)&&since<=now?(now-since)/60000:0;",
+      "source_sha256": "a2c161cbfe0c5cd3d01a18e63b59f72291c9445e7e6d91d21025a648bb328274"
+    },
+    {
+      "id": "E064",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "finishManual",
+      "line": 34,
+      "needle": "async function finishManual(",
+      "excerpt": "  }\n  async function finishManual(job,result){await store.set(manualResultKey(job.request_id),result);await store.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));await store.atomic('pump:manual-queue',ids=>({state:(ids??[]).filter(id=>id!==job.request_id),result:true}));}\n  async function getManualResult(id){return store.get(manualResultKey(id));}\n",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E065",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "getManualResult",
+      "line": 35,
+      "needle": "async function getManualResult(",
+      "excerpt": "  async function finishManual(job,result){await store.set(manualResultKey(job.request_id),result);await store.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));await store.atomic('pump:manual-queue',ids=>({state:(ids??[]).filter(id=>id!==job.request_id),result:true}));}\n  async function getManualResult(id){return store.get(manualResultKey(id));}\n\n  async function updateDiscovery(catalog,run_id){",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E066",
+      "file": "pump-report/runtime/runner.mjs",
+      "function": "execute",
+      "line": 209,
+      "needle": "await store.set('pump:run:'+run_id",
+      "excerpt": "      result.discovery_result=result.status==='INCOMPLETE'?'INCOMPLETE_COVERAGE_OR_RESOURCES':ready?'READY_IDEAS_FOUND':'NO_READY_IDEAS_IN_CHECKED_SCOPE';\n      result.resources=budget.summary();await store.set('pump:run:'+run_id,result);return manual?{...result,request_id:manual.request_id,manual_result:await getManualResult(manual.request_id)}:result;\n    }finally{await store.atomic('pump:executor',current=>({state:current?.owner===owner?{owner:null,run_id,released_ts:clock()}:current,result:true}));}\n  }",
+      "source_sha256": "99f949af6838541ea20f243456c5d66fc746e4469e3b2d622bf205a1cc911661"
+    },
+    {
+      "id": "E067",
+      "file": "pump-report/runtime/budget.mjs",
+      "function": "createRequestBroker.request",
+      "line": 120,
+      "needle": "cached.received_ts+ttl_ms>=clock()",
+      "excerpt": "      const cached=ttl_ms>0?await store.get('pump:cache:'+key):null;\n      if(cached&&cached.received_ts+ttl_ms>=clock())return {...cached,cache_hit:true};\n      return paced(provider,async()=>{\n      const remaining=deadline-clock();if(remaining<=0)throw new BudgetRefusal('SOURCE_DEADLINE_EXPIRED');",
+      "source_sha256": "6a393beffd1f80901e534d976ad24f4b5b351b8e6ee8aae492d599bf795a97a1"
+    },
+    {
+      "id": "E068",
+      "file": "pump-report/runtime/budget.mjs",
+      "function": "createRequestBroker.request",
+      "line": 141,
+      "needle": "store.set('pump:cache:'",
+      "excerpt": "        if(disposition==='ROUTE_UNAVAILABLE')await store.set('pump:negative-cache:'+key,{reason:'EXACT_ROUTE_UNAVAILABLE_NOT_ASSET_CLASSIFICATION',expires_ts:result.received_ts+SOURCE_ERROR_PROFILE.negative_ttl_ms,result});\n        if(disposition==='SUCCESS'&&ttl_ms>0)await store.set('pump:cache:'+key,result);\n        return result;\n      } catch(error) {",
+      "source_sha256": "6a393beffd1f80901e534d976ad24f4b5b351b8e6ee8aae492d599bf795a97a1"
+    },
+    {
+      "id": "E069",
+      "file": "pump-report/runtime/budget.mjs",
+      "function": "createRequestBroker.request",
+      "line": 118,
+      "needle": "negative&&negative.expires_ts>clock()",
+      "excerpt": "      const negative=await store.get('pump:negative-cache:'+key);\n      if(negative&&negative.expires_ts>clock())return {...negative.result,cache_hit:true,negative_cache_hit:true,negative_reason:negative.reason,negative_expires_ts:negative.expires_ts};\n      const cached=ttl_ms>0?await store.get('pump:cache:'+key):null;\n      if(cached&&cached.received_ts+ttl_ms>=clock())return {...cached,cache_hit:true};",
+      "source_sha256": "6a393beffd1f80901e534d976ad24f4b5b351b8e6ee8aae492d599bf795a97a1"
+    },
+    {
+      "id": "E070",
+      "file": "pump-report/runtime/budget.mjs",
+      "function": "createRequestBroker.request",
+      "line": 140,
+      "needle": "store.set('pump:negative-cache:'",
+      "excerpt": "        const result={ok:response.ok,status:response.status,data,headers:{date:response.headers.get('date'),'retry-after':retry},received_ts:clock(),cache_hit:false,receipt_id:request_id,semantic_status:disposition};\n        if(disposition==='ROUTE_UNAVAILABLE')await store.set('pump:negative-cache:'+key,{reason:'EXACT_ROUTE_UNAVAILABLE_NOT_ASSET_CLASSIFICATION',expires_ts:result.received_ts+SOURCE_ERROR_PROFILE.negative_ttl_ms,result});\n        if(disposition==='SUCCESS'&&ttl_ms>0)await store.set('pump:cache:'+key,result);\n        return result;",
+      "source_sha256": "6a393beffd1f80901e534d976ad24f4b5b351b8e6ee8aae492d599bf795a97a1"
+    },
+    {
+      "id": "E071",
+      "file": "pump-report/runtime/budget.mjs",
+      "function": "reserve",
+      "line": 44,
+      "needle": "state??={schema:'PUMP_SHARED_RESOURCE_V1'",
+      "excerpt": "    try {row=await store.atomic('pump:resources',state=>{\n      state??={schema:'PUMP_SHARED_RESOURCE_V1',days:{},providers:{},outstanding:{},unknown:{}};\n      if(state.outstanding[request_id]||state.unknown[request_id])throw new BudgetRefusal('REQUEST_ALREADY_RESERVED');\n      const p=state.providers[provider]??={days:{},months:{},recent:[]};",
+      "source_sha256": "6a393beffd1f80901e534d976ad24f4b5b351b8e6ee8aae492d599bf795a97a1"
+    },
+    {
+      "id": "E072",
+      "file": "pump-report/runtime/budget.mjs",
+      "function": "finalize",
+      "line": 78,
+      "needle": "current.unknown[receipt.request_id]",
+      "excerpt": "      // Counts are monotonic: no HTTP attempt is refunded, including errors.\n      if(state==='UNKNOWN')current.unknown[receipt.request_id]={...held,http_status};\n      delete current.outstanding[receipt.request_id];\n      const p=current.providers[receipt.provider];",
+      "source_sha256": "6a393beffd1f80901e534d976ad24f4b5b351b8e6ee8aae492d599bf795a97a1"
+    },
+    {
+      "id": "E073",
+      "file": "pump-report/runtime/native-budget.mjs",
+      "function": "reserveNativeRun",
+      "line": 21,
+      "needle": "INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow",
+      "excerpt": "  const protectedW=policy.bootstrap_or_external_floor.rows_written+policy.outcomes_protected.rows_written+policy.delivery_protected.rows_written+policy.next_full.rows_written;\n  const sql=`INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow(reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state,started_ts)\n    SELECT ?1,?2,?3,?4,'RESERVED',?5 FROM (\n      SELECT COALESCE(SUM(MAX(reserve_rows_read,COALESCE(measured_rows_read,0)+CASE WHEN state='FINALIZED' THEN 1 ELSE 0 END)),0) AS r,",
+      "source_sha256": "6cf207f04a4ddcb124d2d55b16b50141f2ddf7d905e1140e660f81dbd6d8322c"
+    },
+    {
+      "id": "E074",
+      "file": "pump-report/sources/index.mjs",
+      "function": "candles",
+      "line": 151,
+      "needle": "const count = Math.ceil((profile.volume_baseline_ms",
+      "excerpt": "    if (step !== 60000) fail('PACKAGE_A_ONE_MINUTE_INTERVAL_REQUIRED');\n    const count = Math.ceil((profile.volume_baseline_ms + Math.max(...profile.automatic_growth.short_windows_ms)) / step) + 1;\n    if (count > 1440) fail('BINGX_CANDLE_WINDOW_EXCEEDS_REQUEST_LIMIT');\n    const end = Math.floor(now() / step) * step, start = end - count * step;",
+      "source_sha256": "eefb723ba490ce266720b8dfe34d9cf5b9cf62efe536ee0d5c4bdbf1c3f16ce5"
+    },
+    {
+      "id": "E075",
+      "file": "pump-report/profile/start-v1.mjs",
+      "function": "START_PROFILE",
+      "line": 7,
+      "needle": "freshness_ms:",
+      "excerpt": "  outcome_growth_pct: 10,\n  freshness_ms: {price: 30000, orderbook: 15000, candles: 90000, trades: 30000, open_interest: 120000, funding: 300000, observed_positions: 120000, model_map: 300000},\n  candle_interval_ms: 60000,\n  volume_baseline_ms: 3600000,",
+      "source_sha256": "8e7100655d96a9b550e8a8c6debdfb9164280259394823e5c596d70c847d16ce"
+    },
+    {
+      "id": "E076",
+      "file": "pump-report/sources/coverage.mjs",
+      "function": "normalizeSourceCoverage",
+      "line": 6,
+      "needle": "export function normalizeSourceCoverage",
+      "excerpt": "const hash=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x);\nexport function normalizeSourceCoverage({registry,as_of_ts,observations=[],reports=[],summary=null,universe={},delivery_policy={}}){\n  if(!Array.isArray(registry)||!time(as_of_ts))throw Error('COVERAGE_REGISTRY_AND_ASOF_REQUIRED');\n  const instruments=registry.map(e=>e.instrument??e),ids=new Set(instruments.map(i=>i.instrument_id));",
+      "source_sha256": "d4a3ccf58c08e80f83fb240c7a9a54407b645e6344b33c8b2b7d71afd925ba3f"
+    },
+    {
+      "id": "E077",
+      "file": "pump-report/runtime/outcome-journal.mjs",
+      "function": "sync",
+      "line": 50,
+      "needle": "'pump:quarantine:'",
+      "excerpt": "    const selected=selectOutcomeAnchor({...journal,as_of_ts:clock()});\n    if(!selected.eligible){if(selected.status==='QUARANTINED')await store.set('pump:quarantine:'+key,selected);return selected;}\n    const saved=await store.get(selected.anchor.analysis_id);if(!saved?.analysis||await textHash(JSON.stringify(saved.analysis))!==selected.anchor.analysis_sha256)throw Error('ANCHOR_SAVED_BYTES_READBACK_FAILED');\n    await store.atomic(key,j=>{if(j.frozen_anchor&&!equal(j.frozen_anchor,selected.anchor))throw Error('FROZEN_ANCHOR_CONFLICT');return {state:{...j,frozen_anchor:selected.anchor},result:true};});",
+      "source_sha256": "534660d21d076822ecc376af7824a0cb6088819ac02eadf826daa23bfa86e488"
+    }
+  ]
+}

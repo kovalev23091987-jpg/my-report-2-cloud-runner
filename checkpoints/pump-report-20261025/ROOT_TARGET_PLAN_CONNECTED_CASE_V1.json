@@ -1,0 +1,73 @@
+{
+  "schema": "ROOT_TARGET_PLAN_CONNECTED_CASE_V1",
+  "status": "FAILED_PRESERVED_NO_AUTO_RETRY",
+  "authority_main": "ca3491de3e30675f2f72b38ee52e5becb4ab5aba",
+  "case_count": 1,
+  "Node_processes": 1,
+  "engine_calls": 2,
+  "pure_plan_calls": 0,
+  "pure_target_selector_calls": 1,
+  "builds": 1,
+  "mock_controller_calls": 0,
+  "mock_Telegram_calls": 0,
+  "native_SQL": 0,
+  "Cloudflare_HTTP": 0,
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "installed": false,
+  "real_AUTO_SENT": false,
+  "stages": [
+    {
+      "stage": "BUILD_EXACT_PROPOSED_GRAPH",
+      "artifact_sha256": "a799fe2fb70b3a2b71332acc5ba89d80352851394767e58bd16569f81fc21154",
+      "implementation_sha256": "930905e4840003ab8e28ac2482d2915980bba2b3c4d9ccce0a103cb48a286531",
+      "changed_modules": [
+        "analytics/index.mjs",
+        "analytics/movement.mjs",
+        "analytics/presentation.mjs",
+        "runtime/implementation-pin.mjs",
+        "runtime/runner.mjs"
+      ],
+      "unchanged_modules": 71,
+      "qualified_v7_runner_reused_exactly": true,
+      "profile_same_bytes": true
+    },
+    {
+      "stage": "SAME_SAVED_INIT_IDOL_NEW_TARGET_POLICY",
+      "outcomes": [
+        {
+          "ticker": "INIT",
+          "wave_state": "CALM_PULLBACK",
+          "current_threshold_passed": false,
+          "automatic_eligible": false,
+          "ready": false,
+          "reasons": [
+            "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
+          ],
+          "target": 0.21913,
+          "minimum_potential_pct": null,
+          "plan_code": "NO_ENTRY_MEETS_OWNER_MINIMUM"
+        },
+        {
+          "ticker": "IDOL",
+          "wave_state": "CALM_PULLBACK",
+          "current_threshold_passed": true,
+          "automatic_eligible": true,
+          "ready": false,
+          "reasons": [
+            "INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED"
+          ],
+          "target": 0.01355,
+          "minimum_potential_pct": null,
+          "plan_code": "NO_ENTRY_MEETS_OWNER_MINIMUM"
+        }
+      ],
+      "counterfactual": true,
+      "not_a_new_native_event": true,
+      "immutable_originals_unchanged": true
+    }
+  ],
+  "failed_stage": "INDEPENDENT_TARGET_AND_OBSTACLE_BOUNDARIES",
+  "error_type": "AssertionError",
+  "error_message": "HISTORICAL_RANGE_WITH_MINOR"
+}

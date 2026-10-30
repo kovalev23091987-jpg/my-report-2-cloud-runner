@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: NEW connected CG existing SQL/helper replies reach bounded completion, old results and exact SQL/HTTP unchanged
+ok 1 - NEW connected CG existing SQL/helper replies reach bounded completion, old results and exact SQL/HTTP unchanged
+  ---
+  duration_ms: 11.275875
+  type: 'test'
+  ...
+# Subtest: NEW CP reports only existing day cuts, no synthetic minute/month/manual counters
+ok 2 - NEW CP reports only existing day cuts, no synthetic minute/month/manual counters
+  ---
+  duration_ms: 0.709709
+  type: 'test'
+  ...
+# Subtest: NEW existing denial/unknown path unchanged {"day":224}
+ok 3 - NEW existing denial/unknown path unchanged {"day":224}
+  ---
+  duration_ms: 0.319416
+  type: 'test'
+  ...
+# Subtest: NEW existing denial/unknown path unchanged {"dailyAllowed":false}
+ok 4 - NEW existing denial/unknown path unchanged {"dailyAllowed":false}
+  ---
+  duration_ms: 0.456292
+  type: 'test'
+  ...
+# Subtest: NEW existing denial/unknown path unchanged {"rollingBefore":9}
+ok 5 - NEW existing denial/unknown path unchanged {"rollingBefore":9}
+  ---
+  duration_ms: 0.369417
+  type: 'test'
+  ...
+# Subtest: NEW existing denial/unknown path unchanged {"minuteAllowed":false,"rollingAfter":9}
+ok 6 - NEW existing denial/unknown path unchanged {"minuteAllowed":false,"rollingAfter":9}
+  ---
+  duration_ms: 0.426792
+  type: 'test'
+  ...
+# Subtest: NEW existing denial/unknown path unchanged {"unknown":1}
+ok 7 - NEW existing denial/unknown path unchanged {"unknown":1}
+  ---
+  duration_ms: 0.115459
+  type: 'test'
+  ...
+# Subtest: NEW cached reference has no current budget observations; source clock/body/cache payload unchanged
+not ok 8 - NEW cached reference has no current budget observations; source clock/body/cache payload unchanged
+  ---
+  duration_ms: 0.790959
+  type: 'test'
+  location: '/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/provider-budget.test.mjs:64:1'
+  failureType: 'testCodeFailure'
+  error: 'UNEXPECTED_MOCK_SQL:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.first (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/provider-budget.test.mjs:24:9)
+    readEvidenceSourceCache (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/.baseline/src/evidence-source-store.mjs:71:208)
+    Object.get (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/.baseline/src/provider-reference-cache.mjs:33:24)
+    async flow (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/provider-budget.test.mjs:35:17)
+    async TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/provider-budget.test.mjs:65:15)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: NEW fresh reference cache write payload bytes and SQL params stay exact, no technical metadata persisted in source cache
+not ok 9 - NEW fresh reference cache write payload bytes and SQL params stay exact, no technical metadata persisted in source cache
+  ---
+  duration_ms: 1.087583
+  type: 'test'
+  location: '/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/provider-budget.test.mjs:68:1'
+  failureType: 'testCodeFailure'
+  error: 'UNEXPECTED_MOCK_SQL:SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.first (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/provider-budget.test.mjs:24:9)
+    readEvidenceSourceCache (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/.baseline/src/evidence-source-store.mjs:71:208)
+    Object.get (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/.baseline/src/provider-reference-cache.mjs:33:24)
+    async flow (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/provider-budget.test.mjs:35:17)
+    async TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-sources-worker/checkpoints/source-worker-provider-budget-cut-20261019/provider-budget.test.mjs:69:15)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: NEW optional diagnostic exception cannot deny or alter existing transport/reservation/return
+ok 10 - NEW optional diagnostic exception cannot deny or alter existing transport/reservation/return
+  ---
+  duration_ms: 0.597125
+  type: 'test'
+  ...
+# Subtest: NEW absent/invalid native day scalar is NULL in metadata, not fabricated measured zero
+ok 11 - NEW absent/invalid native day scalar is NULL in metadata, not fabricated measured zero
+  ---
+  duration_ms: 1.087291
+  type: 'test'
+  ...
+# Subtest: NEW capture keeps duplicate/earlier query observations distinct; never latest-wins or sums them as balances
+ok 12 - NEW capture keeps duplicate/earlier query observations distinct; never latest-wins or sums them as balances
+  ---
+  duration_ms: 0.124667
+  type: 'test'
+  ...
+# Subtest: NEW invocation/root run binding omits foreign data and does not resurrect an old capture
+ok 13 - NEW invocation/root run binding omits foreign data and does not resurrect an old capture
+  ---
+  duration_ms: 0.073792
+  type: 'test'
+  ...
+# Subtest: NEW safe bounds and privacy: unknown/private fields are not exported, status cannot contain a URL
+ok 14 - NEW safe bounds and privacy: unknown/private fields are not exported, status cannot contain a URL
+  ---
+  duration_ms: 0.076167
+  type: 'test'
+  ...
+# Subtest: NEW malformed context/native date/native guard gives partial diagnostic, never an exception or budget authority
+ok 15 - NEW malformed context/native date/native guard gives partial diagnostic, never an exception or budget authority
+  ---
+  duration_ms: 0.115125
+  type: 'test'
+  ...
+# Subtest: NEW capacity overflow is explicit, diagnostic-only and bounded; reservations/facts are not refunded or evicted
+ok 16 - NEW capacity overflow is explicit, diagnostic-only and bounded; reservations/facts are not refunded or evicted
+  ---
+  duration_ms: 0.20025
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 14
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 85.686125

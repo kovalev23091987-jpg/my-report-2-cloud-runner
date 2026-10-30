@@ -1,0 +1,211 @@
+--- a/tools/rollout-correlated-sql-bridge-20261022.mjs
++++ b/tools/rollout-correlated-sql-bridge-20261022.mjs
+@@ -240,4 +240,207 @@
+  console.log(JSON.stringify({status:stageProof?.status??'NATIVE_STAGE_NOT_STARTED',reason:outerReason,head,github_HTTP,cloudflare_HTTP,activation_attempts:0,settings_mutations:0,native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0}));return stageProof;
+ }
+ 
+-if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)await(process.env.EXECUTE_CORRELATED_COST_STAGE==='true'?runCorrelatedBridgeStageOnly():rolloutCorrelatedBridge());
++const EXISTING_ACTIVATION_SOURCE_BINDING=Object.freeze({"module_path":"runner/retention-bridge-provenance.mjs","module_sha256":"f25b2e35e30a6457e5322b72b069c904c3bc2ce9de1956eb292d6238036f79c2","consumer_sha256":{"tools/run-paid-sliding-history-20261018.mjs":"d6e1d3ffb5b011d1686536521a2abf80ecc9dec23f9b86b41745e043899b177c","tools/recover-lossless-retained-history-20261014.mjs":"1335612c4b492cb75142f523e864aa4cc98c81b3dd32a64da850f6891f76b2f4"}});
++// PROPOSED append to the existing CLI. Author execution: ZERO.
++// SOURCE binding is a frozen literal in source-binding.mjs.txt, never a caller option.
++import activationPath from 'node:path';
++import {attestRetentionSQLBridgeCompatibility,observeRetentionSQLBridge} from '../runner/retention-bridge-provenance.mjs';
++const EXISTING_ACTIVATION_IDENTITIES=Object.freeze({
++ old_version:'7011c257-4bdc-4244-a858-42c30e8532ab',old_deployment:'8cd9ba38-b819-49ce-9ff2-e1e7f3e8541b',old_module:'06603b69686f7f14b62d1ab551af18555d4f506c4edd7cb7cee3ca58a1e904bf',old_etag:'faf47729620694c0e12f5c439fd5f22a15d42dbee42bc66625ff9c7e57ad8836',
++ new_version:'86f1bdc5-c7d7-4bbd-917b-cf60babc5a3e',new_module:'c327b49eb1ebb6a48ac86e1a99d55a3d861f6bc5a2c76dfd0c0d90be88026063',new_etag:'ac9d474832fa5a166a92032b19f42ee85bd4fb91b5066fd75da1877a8f051e29',
++ settings:'05120adabd88e1efd64749dafe2b4749a971068ad740f86e816084d1198a6ded',crons:'4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945',runtime:'cf3bca9e631f2fa26b3bb242b9784c8ea557bf8ed64d00fdc87bf6c9d64b144a',
++ binding_names:Object.freeze(['DATA_DB','REPORT2_CLOUD_BRIDGE_TOKEN','REPORT2_DENO_BRIDGE_TOKEN']),stage_summary:'f010dc6368027ecc789d85d53609c96018fb7da961e9fad4a9e91e69996ac4a7'
++});
++export async function activateExistingCorrelatedBridge({plan,repo_root,adapter,guard,save,clock=Date.now}={}){
++ const I=EXISTING_ACTIVATION_IDENTITIES,B=EXISTING_ACTIVATION_SOURCE_BINDING;
++ const id=x=>typeof x==='string'&&/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(x),hex=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x),time=x=>Number.isSafeInteger(x)&&x>=1e12&&x<=8640000000000000;
++ const fail=code=>{throw Object.assign(Error(code),{activation_code:code});};
++ const p={schema:'EXISTING_CORRELATED_BRIDGE_ACTIVATION_V1',status:'EXISTING_ACTIVATION_NOT_STARTED',head:null,owner:null,operation_id:null,compatibility:null,before:null,prospective_logging_settings:null,staged:null,pre_activation:null,intent:null,activation_attempts:0,known_activation_ACK:false,activation_ownership_verified:false,after:null,unknown_ACK_observation:null,rollback_attempts:0,rollback:null,reason:null,proof_persisted:false,upload_attempts:0,settings_mutations:0,delete_attempts:0,native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0,logging_settings_changed:false,old_unknown_recovered:false,day_hold_removed:false,global_crash_durable_once_qualified:false,transient_changes_excluded:false};
++ let previous=null,phase='PLAN',attempted=false,known=false,postVerified=false,finalGuardAttempted=false;
++ const now=()=>{let n;try{n=clock();}catch{fail('EXISTING_ACTIVATION_CLOCK_REQUIRED');}if(!time(n)||previous!==null&&n<previous)fail('EXISTING_ACTIVATION_CLOCK_REQUIRED');previous=n;return n;};
++ const persist=async()=>{try{const c=structuredClone({...p,proof_persisted:true});if(Buffer.byteLength(JSON.stringify(c))>24576)throw Error('BOUND');await save(c);p.proof_persisted=true;}catch{p.proof_persisted=false;fail('EXISTING_ACTIVATION_SAVE_NOT_CLOSED');}};
++ const boundary=async(label,minimum_CF,minimum_GH,final_fresh=false)=>{phase=label;if(final_fresh)finalGuardAttempted=true;const min_headroom_ms=Math.max(30000,(minimum_CF+minimum_GH)*2000+30000);if(plan.lease_expires_ts-now()<min_headroom_ms)fail('EXISTING_ACTIVATION_SCOPE_OR_TAIL_REQUIRED');try{await guard({phase:label,minimum_CF,minimum_GH,min_headroom_ms,final_fresh});}catch{fail('EXISTING_ACTIVATION_SCOPE_OR_TAIL_REQUIRED');}if(plan.lease_expires_ts-now()<min_headroom_ms)fail('EXISTING_ACTIVATION_SCOPE_OR_TAIL_REQUIRED');};
++ const safe=x=>{
++  if(!x||!id(x.version_id)||!id(x.deployment_id)||!['settings_sha256','crons_sha256','runtime_sha256','immutable_script_etag'].every(k=>hex(x[k]))||x.module_sha256!==null&&!hex(x.module_sha256)||x.latest_uploaded_version!==null&&!id(x.latest_uploaded_version)||!Array.isArray(x.binding_names)||x.binding_names.length!==3||x.binding_names.some(n=>typeof n!=='string'||n.length>64))fail('EXISTING_ACTIVATION_SAFE_METADATA_REQUIRED');
++  return Object.fromEntries(['version_id','deployment_id','module_sha256','module_readback_basis','settings_sha256','crons_sha256','runtime_sha256','immutable_script_etag','latest_uploaded_version','binding_names'].map(k=>[k,k==='binding_names'?[...x[k]].sort():k==='module_readback_basis'?(['SAME_IMMUTABLE_VERSION_AND_ETAG_AS_PRIOR_EXACT_NATIVE_MODULE','SAME_IMMUTABLE_VERSION_AND_ETAG_AS_PREACTIVATION_NATIVE_SOURCE','EXACT_LATEST_UPLOAD_SOURCE_BYTES','UNKNOWN_VERSION_NO_MODULE_CLAIM'].includes(x[k])?x[k]:null):x[k]]));
++ };
++ const matches=(x,kind,latest=true)=>x?.version_id===I[kind+'_version']&&x.module_sha256===I[kind+'_module']&&x.immutable_script_etag===I[kind+'_etag']&&x.settings_sha256===I.settings&&x.crons_sha256===I.crons&&x.runtime_sha256===I.runtime&&rolloutDigest(x.binding_names)===rolloutDigest(I.binding_names)&&(!latest||x.latest_uploaded_version===I.new_version);
++ const ack=(x,target)=>{if(!id(x?.deployment_id)||x.version_id!==target||x.response_basis!=='EXACT_OWN_POST_DEPLOYMENTS_RESPONSE')return null;return{deployment_id:x.deployment_id,version_id:x.version_id,response_basis:x.response_basis};};
++ const reason=e=>typeof e?.activation_code==='string'&&/^EXISTING_ACTIVATION_[A-Z0-9_]+$/.test(e.activation_code)?e.activation_code:'EXISTING_ACTIVATION_CONTROL_NOT_CLOSED';
++ async function conditionalRollback(){
++  p.rollback={status:'OWN_ROLLBACK_NOT_STARTED',ownership_verified:false};
++  try{
++   await boundary('ROLLBACK_PRECHECK',11,12);const current=safe(await adapter.readActive());p.rollback.precheck=current;
++   if(!matches(current,'new')||current.deployment_id!==p.activation_ack.deployment_id){p.status='EXISTING_ACTIVATION_FOREIGN_CHANGE_STOP';p.rollback.status='FOREIGN_OR_CHANGED_STATE_NOT_OVERWRITTEN';return;}
++   p.rollback.intent={target_version:I.old_version,only_own_deployment:p.activation_ack.deployment_id,owner:p.owner,head:p.head,operation_id:p.operation_id,saved_before_transport_ts:now()};await persist();
++   await boundary('ROLLBACK_DEPLOY',6,7);p.rollback_attempts=1;let r=null;
++   try{r=ack(await adapter.deploy({action:'ROLLBACK_OWN',version_id:I.old_version,intent:structuredClone(p.rollback.intent)}),I.old_version);}catch{p.rollback.ACK_unknown=true;}
++   if(!r)p.rollback.ACK_unknown=true;else p.rollback.ack=r;
++   await boundary('ROLLBACK_READBACK',5,6);p.rollback.after=safe(await adapter.readActive());
++   if(!r){p.status='EXISTING_ACTIVATION_ROLLBACK_ACK_UNKNOWN_STOP';p.rollback.status='ROLLBACK_ACK_UNKNOWN_NO_RETRY';p.rollback.old_version_observed=matches(p.rollback.after,'old');return;}
++   if(!matches(p.rollback.after,'old')||p.rollback.after.deployment_id!==r.deployment_id){p.status='EXISTING_ACTIVATION_ROLLBACK_NOT_CLOSED';p.rollback.status='EXACT_ROLLBACK_READBACK_NOT_CLOSED';return;}
++   p.rollback.status='EXACT_OWN_OLD_VERSION_RESTORED';p.rollback.ownership_verified=true;p.status='EXISTING_ACTIVATION_OWN_ROLLBACK_VERIFIED';
++  }catch(e){p.rollback.reason=reason(e);p.rollback.status=p.rollback_attempts?'ROLLBACK_NOT_CLOSED_STOP':'ROLLBACK_GUARD_OR_OBSERVATION_STOP';p.status=p.rollback.ACK_unknown?'EXISTING_ACTIVATION_ROLLBACK_ACK_UNKNOWN_STOP':'EXISTING_ACTIVATION_KNOWN_ACK_NOT_CLOSED';}
++ }
++ try{
++  const start=now();
++  if(!plan||!/^[a-f0-9]{40}$/.test(plan.head||'')||!/^CODEX:ACTIVE105_SOURCE_RELIABILITY:\d{13}$/.test(plan.owner||'')||!/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(plan.operation_id||'')||!time(plan.lease_expires_ts)||plan.lease_expires_ts-start>90*60000||plan.lease_expires_ts-start<600000||typeof repo_root!=='string'||typeof guard!=='function'||typeof save!=='function'||!['before','readStaged','recheckBefore','deploy','readActive'].every(k=>typeof adapter?.[k]==='function'))fail('EXISTING_ACTIVATION_PLAN_REQUIRED');
++  Object.assign(p,{head:plan.head,owner:plan.owner,operation_id:plan.operation_id,started_ts:start});
++  // This real filesystem attestation executes before any adapter/CF call.
++  phase='REAL_SOURCE_COMPATIBILITY';const root=await fs.realpath(repo_root),moduleBytes=await fs.readFile(activationPath.join(root,B.module_path));
++  if(rolloutDigest(moduleBytes)!==B.module_sha256)fail('EXISTING_ACTIVATION_SOURCE_MODULE_PIN_CHANGED');
++  const a=await attestRetentionSQLBridgeCompatibility({repo_root:root});
++  if(a?.status!=='EXACT_TWO_CONSUMERS_CODE_ACTIVE_COMPATIBILITY'||a.compatibility_module_sha256!==B.module_sha256||rolloutDigest(a.consumer_sha256)!==rolloutDigest(B.consumer_sha256)||a.stage_receipt_sha256!==I.stage_summary||a.logging_settings_allowed!==false||a.admission!==false||a.old_identity?.version_id!==I.old_version||a.old_identity?.module_sha256!==I.old_module||a.new_identity?.version_id!==I.new_version||a.new_identity?.module_sha256!==I.new_module)fail('EXISTING_ACTIVATION_SOURCE_COMPATIBILITY_NOT_CLOSED');
++  p.compatibility={status:a.status,compatibility_module_sha256:a.compatibility_module_sha256,consumer_sha256:structuredClone(a.consumer_sha256),stage_receipt_sha256:a.stage_receipt_sha256,logging_settings_allowed:false,admission:false};
++  await boundary('BEFORE_METADATA',33,34);const before=await adapter.before();p.before=safe(before);if(!matches(p.before,'old',false)||p.before.deployment_id!==I.old_deployment)fail('EXISTING_ACTIVATION_OLD_PAID_METADATA_REQUIRED');
++  const projected=before.prospective_logging_settings;
++  if(projected?.selected_version===p.before.version_id&&projected.baseline_settings_sha256===p.before.settings_sha256&&hex(projected.prospective_settings_sha256)&&projected.projected_not_native_poststate===true&&projected.logging_settings_admitted===false)p.prospective_logging_settings={selected_version:p.before.version_id,baseline_settings_sha256:p.before.settings_sha256,prospective_settings_sha256:projected.prospective_settings_sha256,projected_not_native_poststate:true,logging_settings_admitted:false};
++  else p.prospective_logging_projection_unavailable=true;
++  await boundary('READ_STAGED',28,29);const staged=await adapter.readStaged();
++  if(!staged||staged.version_id!==I.new_version||staged.latest_uploaded_version!==I.new_version||staged.module_sha256!==I.new_module||staged.module_readback_basis!=='EXACT_LATEST_UPLOAD_SOURCE_BYTES'||staged.immutable_script_etag!==I.new_etag||staged.settings_sha256!==I.settings||staged.runtime_sha256!==I.runtime||staged.crons_sha256!==I.crons||rolloutDigest(staged.binding_names)!==rolloutDigest(I.binding_names))fail('EXISTING_ACTIVATION_STAGED_SOURCE_NOT_CLOSED');
++  p.staged={version_id:I.new_version,latest_uploaded_version:I.new_version,module_sha256:I.new_module,module_readback_basis:staged.module_readback_basis,immutable_script_etag:I.new_etag,settings_sha256:I.settings,runtime_sha256:I.runtime,crons_sha256:I.crons,binding_names:[...I.binding_names],ownership_basis:'PRIOR_KNOWN_UPLOAD_ACK_AND_EXACT_NATIVE_STAGE_SUMMARY',stage_summary_sha256:I.stage_summary};
++  await boundary('PRE_ACTIVATION',22,23);p.pre_activation=safe(await adapter.recheckBefore());
++  if(!matches(p.pre_activation,'old')||p.pre_activation.deployment_id!==p.before.deployment_id)fail('EXISTING_ACTIVATION_PRESTATE_MOVED');
++  p.intent={target_version:I.new_version,module_sha256:I.new_module,source_stage_summary_sha256:I.stage_summary,expected_previous_deployment:p.before.deployment_id,owner:p.owner,head:p.head,operation_id:p.operation_id,saved_before_transport_ts:now(),retry_unknown:false};p.status='EXISTING_ACTIVATION_DEPLOY_INTENT';await persist();
++  await boundary('DEPLOY_EXISTING',17,18);attempted=true;p.activation_attempts=1;let response=null;
++  try{response=ack(await adapter.deploy({action:'ACTIVATE_EXISTING',version_id:I.new_version,intent:structuredClone(p.intent)}),I.new_version);}catch{p.activation_ACK_unknown=true;}
++  if(!response||response.deployment_id===p.before.deployment_id){
++   p.activation_ACK_unknown=true;p.status='EXISTING_ACTIVATION_ACK_UNKNOWN_STOP';
++   try{await boundary('OBSERVE_UNKNOWN_DEPLOY',5,6);p.unknown_ACK_observation=safe(await adapter.readActive());}catch{p.unknown_ACK_observation_not_closed=true;}
++  }else{
++   known=true;p.known_activation_ACK=true;p.activation_ack=response;await persist();
++   await boundary('POST_ACTIVATION',16,17);p.after=safe(await adapter.readActive());
++   if(!matches(p.after,'new')||p.after.deployment_id!==response.deployment_id)fail('EXISTING_ACTIVATION_POSTSTATE_NOT_CLOSED');
++   postVerified=true;p.activation_ownership_verified=true;p.status='EXISTING_CORRELATED_VERSION_ACTIVATED_NATIVE_METADATA_VERIFIED';
++  }
++  await boundary('FINAL',0,1,true);p.completed_ts=now();await persist();return structuredClone(p);
++ }catch(e){
++  p.reason=reason(e);p.failed_phase=phase;p.activation_ownership_verified=false;
++  if(!attempted)p.status='EXISTING_ACTIVATION_NOT_STARTED';else if(!known)p.status='EXISTING_ACTIVATION_ACK_UNKNOWN_STOP';else p.status='EXISTING_ACTIVATION_KNOWN_ACK_NOT_CLOSED';
++  if(known&&!postVerified)await conditionalRollback();
++  if(!finalGuardAttempted){try{await boundary('FINAL_UNCLOSED',0,1,true);}catch{p.final_scope_not_closed=true;}}
++  try{p.completed_ts=now();}catch{p.completed_ts=null;}
++  try{await persist();}catch{p.proof_persisted=false;}
++  return structuredClone(p);
++ }
++}
++
++export function createExistingCorrelatedActivationNativeAdapter({cf,configured_bridge_url,saveTransportIntent}={}){
++ if(typeof cf!=='function'||typeof configured_bridge_url!=='string'||typeof saveTransportIntent!=='function')throw Error('EXISTING_ACTIVATION_ADAPTER_BINDING_REQUIRED');
++ const I=EXISTING_ACTIVATION_IDENTITIES,reader=createVersionBoundWorkerReader({call:(name,route,options)=>{if(name!==SQL_BRIDGE_SCRIPT)throw Error('EXISTING_ACTIVATION_EXACT_WORKER_REQUIRED');return cf(route,options);}});
++ let capture={};
++ const call=async(name,route)=>{if(name!==SQL_BRIDGE_SCRIPT)throw Error('EXISTING_ACTIVATION_EXACT_WORKER_REQUIRED');const x=await cf(route);if(route==='/deployments')capture.d=x;else if(route==='/settings')capture.s=x;else if(route==='/schedules')capture.c=x;else if(route.startsWith('/versions/'))capture.v=x;return x;};
++ const describe=(active,settings,schedules,version,latest)=>{
++  const effective=selectedVersionSettings(settings,version),crons=(Array.isArray(schedules)?schedules:schedules?.schedules)?.map(x=>x.cron).sort();if(!Array.isArray(crons)||version.id!==active.version_id)throw Error('EXISTING_ACTIVATION_METADATA_BINDING_REQUIRED');
++  const old=version.id===I.old_version&&version.resources?.script?.etag===I.old_etag,next=version.id===I.new_version&&version.resources?.script?.etag===I.new_etag;
++  return{...active,module_sha256:old?I.old_module:next?I.new_module:null,module_readback_basis:old?'SAME_IMMUTABLE_VERSION_AND_ETAG_AS_PRIOR_EXACT_NATIVE_MODULE':next?'SAME_IMMUTABLE_VERSION_AND_ETAG_AS_PREACTIVATION_NATIVE_SOURCE':'UNKNOWN_VERSION_NO_MODULE_CLAIM',settings_sha256:workerSettingsFingerprint(effective),crons_sha256:rolloutDigest(crons),runtime_sha256:rolloutDigest(version.resources.script_runtime),binding_names:effective.bindings.map(x=>x.name).sort(),immutable_script_etag:version.resources?.script?.etag??null,latest_uploaded_version:latest};
++ };
++ async function old(stage,latest){
++  capture={};await observeRetentionSQLBridge({expected:RETENTION_SQL_BRIDGE_PROOF,call,configured_bridge_url,stage});
++  const state=describe(singleActiveVersion(capture.d),capture.s,capture.c,capture.v,latest?(await cf('/versions?per_page=1')).items?.[0]?.id:null);
++  if(stage==='before_SQL'){
++   try{const effective=selectedVersionSettings(capture.s,capture.v),observability=correlatedLogsIntent(effective);state.prospective_logging_settings={selected_version:state.version_id,baseline_settings_sha256:state.settings_sha256,prospective_settings_sha256:workerSettingsFingerprint({...effective,observability}),projected_not_native_poststate:true,logging_settings_admitted:false};}
++   catch{state.prospective_logging_settings=null;}
++  }
++  return state;
++ }
++ return{
++  before:()=>old('before_SQL',false),recheckBefore:()=>old('after_SQL',true),
++  async readStaged(){
++   const version=await cf('/versions/'+I.new_version),bytes=await reader.latestBytes(SQL_BRIDGE_SCRIPT,I.new_version),settings=await cf('/settings'),schedules=await cf('/schedules'),effective=selectedVersionSettings(settings,version),crons=(Array.isArray(schedules)?schedules:schedules?.schedules)?.map(x=>x.cron).sort();
++   if(version.id!==I.new_version||!Array.isArray(crons))throw Error('EXISTING_ACTIVATION_STAGED_METADATA_REQUIRED');
++   return{version_id:version.id,latest_uploaded_version:bytes.version_id,module_sha256:bytes.module_sha256,module_readback_basis:'EXACT_LATEST_UPLOAD_SOURCE_BYTES',immutable_script_etag:version.resources?.script?.etag??null,settings_sha256:workerSettingsFingerprint(effective),runtime_sha256:rolloutDigest(version.resources.script_runtime),crons_sha256:rolloutDigest(crons),binding_names:effective.bindings.map(x=>x.name).sort()};
++  },
++  async readActive(){const d=await cf('/deployments'),s=await cf('/settings'),c=await cf('/schedules'),active=singleActiveVersion(d),v=await cf('/versions/'+active.version_id),latest=(await cf('/versions?per_page=1')).items?.[0]?.id;return describe(active,s,c,v,latest);},
++  async deploy({action,version_id,intent}){
++   if(!['ACTIVATE_EXISTING','ROLLBACK_OWN'].includes(action)||version_id!==(action==='ACTIVATE_EXISTING'?I.new_version:I.old_version)||intent?.target_version!==version_id)throw Error('EXISTING_ACTIVATION_TRANSPORT_INTENT_REQUIRED');
++   const body={strategy:'percentage',versions:[{version_id,percentage:100}],annotations:{'workers/message':(action==='ACTIVATE_EXISTING'?'Activate existing ':'Rollback own ')+intent.operation_id}};
++   await saveTransportIntent({action,target_version:version_id,operation_id:intent.operation_id,owner:intent.owner,head:intent.head,expected_previous_deployment:intent.expected_previous_deployment??intent.only_own_deployment,request_JSON_sha256:rolloutDigest(body),transport_intent_saved_before_POST:true,annotations_NOT_ownership_proof:true});
++   const r=await cf('/deployments',{method:'POST',body}),a=singleActiveVersion({deployments:[r]});
++   if(a.version_id!==version_id)throw Error('EXISTING_ACTIVATION_TRANSPORT_ACK_UNKNOWN');return{...a,response_basis:'EXACT_OWN_POST_DEPLOYMENTS_RESPONSE'};
++  }
++ };
++}
++// Actual transport/control factory for the new path. Same factory is exercised
++// with CONTROLLED HTTP by the one new callable. No production identity override.
++import {fullRawBasis} from '../runner/github-four-mirror-cas.mjs';
++export async function existingActivationDeadlineResponse(fetch_impl,url,options={},limit=262144){
++ const deadline=AbortSignal.timeout(2000),signal=options.signal?AbortSignal.any([options.signal,deadline]):deadline;
++ let reader=null,abortListener;
++ const aborted=new Promise((resolve,reject)=>{abortListener=()=>{if(reader)void reader.cancel().catch(()=>{});reject(Error('EXISTING_ACTIVATION_TRANSPORT_DEADLINE'));};signal.addEventListener('abort',abortListener,{once:true});});
++ try{
++  signal.throwIfAborted();
++  const response=await Promise.race([fetch_impl(url,{...options,signal}),aborted]);signal.throwIfAborted();
++  const declared=response.headers.get('content-length');if(declared!==null&&(!/^\d+$/.test(declared)||Number(declared)>limit))throw Error('EXISTING_ACTIVATION_REPLY_BOUND');
++  if(!response.body)throw Error('EXISTING_ACTIVATION_REPLY_BODY_REQUIRED');reader=response.body.getReader();let size=0;const parts=[];
++  for(;;){const r=await Promise.race([reader.read(),aborted]);signal.throwIfAborted();if(r.done)break;size+=r.value.byteLength;if(size>limit)throw Error('EXISTING_ACTIVATION_REPLY_BOUND');parts.push(Buffer.from(r.value));}
++  return new Response(Buffer.concat(parts,size),{status:response.status,statusText:response.statusText,headers:response.headers});
++ }catch(error){if(signal.aborted)throw Error('EXISTING_ACTIVATION_TRANSPORT_DEADLINE');throw error;}
++ finally{signal.removeEventListener('abort',abortListener);if(reader){void reader.cancel().catch(()=>{});try{reader.releaseLock();}catch{}}}
++}
++export function createExistingActivationNativeControl({repo_root,head,owner,github_token,cloudflare_token,fetch_impl=globalThis.fetch,clock=Date.now}={}){
++ const repo='kovalev23091987-jpg/my-report-2-cloud-runner',scopePrefix='OWNER_FIVE_ACTIVE_DIRECTIONS.CORRELATED_BRIDGE_EXISTING_VERSION_ACTIVATION_20261022.',prefix='checkpoints/correlated-bridge-existing-version-activation-connected-20261022',I=EXISTING_ACTIVATION_IDENTITIES;
++ if(typeof repo_root!=='string'||!/^[a-f0-9]{40}$/.test(head||'')||!/^CODEX:ACTIVE105_SOURCE_RELIABILITY:\d{13}$/.test(owner||'')||typeof github_token!=='string'||typeof cloudflare_token!=='string'||typeof fetch_impl!=='function'||typeof clock!=='function')throw Error('EXISTING_ACTIVATION_CONTROL_BINDING_REQUIRED');
++ const budget=createUnifiedHttpBudget(P.http);let github_HTTP=0,cloudflare_HTTP=0,forward_attempts=0,rollback_attempts=0,forward_ACK_deployment=null,internal_deadline_ts=null;
++ const reserve=kind=>{const used=kind==='github'?github_HTTP:cloudflare_HTTP;if(used>=40||budget.summary().remaining<=24)throw Error('EXISTING_ACTIVATION_CONTROL_HTTP_BOUND');const lane=kind==='cloudflare'&&budget.summary().used.background<56?'background':'hot';if(!budget.reserve({logical_request_id:'EXISTING_BRIDGE_ACTIVATION:'+kind+':'+used,lane,attempts:1}).allowed)throw Error('EXISTING_ACTIVATION_CONTROL_HTTP_BOUND');if(kind==='github')github_HTTP++;else cloudflare_HTTP++;};
++ const gh=makeGithubControl({repository:repo,token:github_token,initial_raw_basis:fullRawBasis(repo_root),clock,fetch_impl:(url,opt)=>{if(opt.method!=='GET'&&!(url==='https://api.github.com/graphql'&&opt.method==='POST'&&!String(opt.body).includes('mutation')))throw Error('EXISTING_ACTIVATION_GITHUB_READ_ONLY');reserve('github');return existingActivationDeadlineResponse(fetch_impl,url,{...opt,redirect:'error'});}});
++ function check(context,{minimum_CF=0,minimum_GH=0,min_headroom_ms=30000}={}){
++  const x=assertMirrorOwner(context,owner,clock(),scopePrefix);
++  if(context.head!==head||!x.lease.scope.includes('NO_RETRY_UNKNOWN_DEPLOY')||x.lease.expires_ts-clock()<min_headroom_ms||internal_deadline_ts!==null&&internal_deadline_ts-clock()<min_headroom_ms||40-cloudflare_HTTP<minimum_CF||40-github_HTTP<minimum_GH||budget.summary().remaining-24<minimum_CF+minimum_GH)throw Error('EXISTING_ACTIVATION_OWN_SCOPE_OR_HEADROOM_REQUIRED');return x;
++ }
++ async function freshGuard(options={}){const c=await readMirrorContext(gh,{expected_main:head,maximum_blob_reads:0,now:clock()});return check(c,options);}
++ // This local check is expressly NOT a new fresh snapshot. Every CF below gets
++ // its own freshGuard before reserve/transport. The final check is fresh too.
++ async function phaseGuard(options={}){if(internal_deadline_ts===null)throw Error('EXISTING_ACTIVATION_EXECUTION_START_REQUIRED');check(gh.mirror_context,options);if(options.final_fresh)await freshGuard({min_headroom_ms:options.min_headroom_ms});}
++ async function initialize({connected_run,execution_run}={}){
++  await freshGuard({min_headroom_ms:600000});
++  if(!/^\d+$/.test(String(connected_run||''))||!/^\d+$/.test(String(execution_run||'')))throw Error('EXISTING_ACTIVATION_COMMON_AND_EXECUTION_RUN_REQUIRED');
++  const q=JSON.parse(await fs.readFile(activationPath.join(repo_root,prefix,'qualification-receipt.json'),'utf8')),pins=JSON.parse(await fs.readFile(activationPath.join(repo_root,prefix,'qualification-scope.json'),'utf8'));
++  const [run,wf,automatic,execution]=await Promise.all([gh.call('actions/runs/'+connected_run),gh.call('actions/workflows/liq-assembled-offline-20261012.yml'),gh.call('actions/runs?head_sha='+head+'&per_page=30'),gh.call('actions/runs/'+execution_run)]);
++  if(q.run_id!==run.id||q.head!==run.head_sha||run.workflow_id!==wf.id||run.status!=='completed'||run.conclusion!=='success'||q.actual_SPEC_pass!==1||q.actual_SPEC_fail!==0||!automatic.workflow_runs?.some(x=>x.workflow_id===wf.id&&x.event==='push'&&x.head_sha===head&&x.status==='completed'&&x.conclusion==='success'))throw Error('EXISTING_ACTIVATION_CURRENT_COMMON_AND_AUTOMATIC_MAIN_REQUIRED');
++  const started=typeof execution?.run_started_at==='string'&&execution.run_started_at.length<=64?Date.parse(execution.run_started_at):NaN;
++  if(String(execution?.id)!==String(execution_run)||execution.head_sha!==head||execution.head_branch!=='main'||execution.path!=='.github/workflows/current-bridge-module-inspection-20261016.yml'||execution.event!=='workflow_dispatch'||execution.run_attempt!==1||execution.status!=='in_progress'||!Number.isSafeInteger(started)||started>clock()||clock()>=started+300000)throw Error('EXISTING_ACTIVATION_EXECUTION_START_REQUIRED');
++  internal_deadline_ts=started+300000;
++  for(const path of ['current-generation/files/runner-main.mjs','runner/report2-d1-adapter.mjs','runner/native-query-cost-journal.mjs','runner/sql-bridge-counter-repair.mjs','runner/cloudflare-version-bound-readback.mjs','runner/retention-bridge-provenance.mjs','tools/run-paid-sliding-history-20261018.mjs','tools/recover-lossless-retained-history-20261014.mjs','tools/rollout-correlated-sql-bridge-20261022.mjs','.github/workflows/current-bridge-module-inspection-20261016.yml'])if(rolloutDigest(await fs.readFile(activationPath.join(repo_root,path)))!==pins.files?.[path])throw Error('EXISTING_ACTIVATION_QUALIFIED_SOURCE_PIN_CHANGED');
++  return check(gh.mirror_context).lease;
++ }
++ async function cf(route,{method='GET',body,raw=false}={}){
++  if(internal_deadline_ts===null)throw Error('EXISTING_ACTIVATION_EXECUTION_START_REQUIRED');
++  const read=/^\/(?:deployments|settings|schedules|subdomain|versions\?per_page=1|versions\/[a-f0-9-]{36}|content\/v2)$/.test(route),post=route==='/deployments'&&body?.strategy==='percentage'&&body.versions?.length===1&&body.versions[0]?.percentage===100&&[I.new_version,I.old_version].includes(body.versions[0].version_id)&&Object.keys(body).every(k=>['strategy','versions','annotations'].includes(k))&&Object.keys(body.annotations??{}).every(k=>k==='workers/message');
++  if(!(method==='GET'&&read&&body===undefined||method==='POST'&&post))throw Error('EXISTING_ACTIVATION_CONTROL_ROUTE_DENIED');
++  const target=method==='POST'?body.versions[0].version_id:null;
++  if(target===I.new_version&&(forward_attempts!==0||rollback_attempts!==0)||target===I.old_version&&(!forward_ACK_deployment||rollback_attempts!==0))throw Error('EXISTING_ACTIVATION_NO_RETRY_OR_UNOWNED_ROLLBACK');
++  await freshGuard({minimum_CF:1});reserve('cloudflare');
++  if(target===I.new_version)forward_attempts++;if(target===I.old_version)rollback_attempts++;
++  const url=`https://api.cloudflare.com/client/v4/accounts/${P.account}/workers${route==='/subdomain'?'/subdomain':'/scripts/'+SQL_BRIDGE_SCRIPT+route}`;
++  const r=await existingActivationDeadlineResponse(fetch_impl,url,{method,headers:{authorization:'Bearer '+cloudflare_token,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),redirect:'error'},raw?6500000:262144);
++  if(!r.ok){await r.body?.cancel();throw Error('EXISTING_ACTIVATION_HTTP_NOT_CLOSED');}const bytes=await boundedControlBody(r,raw?6500000:262144);
++  if(raw)return new Response(bytes,{headers:{'content-type':r.headers.get('content-type')||'application/octet-stream'}});
++  let j;try{j=JSON.parse(bytes.toString('utf8'));}catch{throw Error('EXISTING_ACTIVATION_REPLY_JSON_NOT_CLOSED');}if(j.success!==true||j.result===undefined||j.result===null)throw Error('EXISTING_ACTIVATION_REPLY_ACK_REQUIRED');
++  if(target===I.new_version){try{const a=singleActiveVersion({deployments:[j.result]});if(a.version_id===I.new_version)forward_ACK_deployment=a.deployment_id;}catch{}}
++  return j.result;
++ }
++ return{initialize,cf,guard:phaseGuard,metrics:()=>({github_HTTP,cloudflare_HTTP,forward_attempts,rollback_attempts,whole_HTTP:budget.summary(),manual_HTTP_reserved:24,internal_run_started_plus_5min_deadline_ts:internal_deadline_ts,internal_deadline_NOT_platform_kill_guarantee:true,new_path_transport_deadline_ms:2000,local_phase_checks_are_not_fresh_snapshots:true,every_CF_attempt_has_separate_fresh_GH_guard:true})};
++}
++
++export async function runExistingCorrelatedBridgeActivation(){
++ const repo='kovalev23091987-jpg/my-report-2-cloud-runner',dir='audit-output/bridge-existing-version-activation',head=process.env.EXPECTED_MAIN,owner=process.env.BORROW_EXISTING_OWNER;
++ let control=null,activation=null,transport_intent=null,outerReason=null;
++ await fs.mkdir(dir,{recursive:true});
++ const save=async value=>{
++  if(value)activation=structuredClone(value);
++  const receipt={schema:'EXISTING_CORRELATED_BRIDGE_NATIVE_ACTIVATION_CONTROL_V1',head,owner,status:activation?.status??'EXISTING_ACTIVATION_NOT_STARTED',activation,transport_intent,reason:outerReason,...control?.metrics(),native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0,upload_attempts:0,settings_mutations:0,delete_attempts:0,logging_settings_changed:false,old_unknown_recovered:false,day_hold_removed:false,current_Telegram_restored:false,source_body_exported:false,secret_values_exported:false,local_intent_crash_durability_qualified:false,global_crash_durable_once_qualified:false};
++  const text=JSON.stringify(receipt,null,2)+'\n';if(Buffer.byteLength(text)>131072)throw Error('EXISTING_ACTIVATION_PROOF_BOUND');await fs.writeFile(dir+'/proof.tmp',text);await fs.rename(dir+'/proof.tmp',dir+'/proof.json');
++ };
++ try{
++  if(process.env.GITHUB_REPOSITORY!==repo||process.env.GITHUB_REF!=='refs/heads/main'||process.env.GITHUB_SHA!==head||process.env.GITHUB_EVENT_NAME!=='workflow_dispatch'||process.env.GITHUB_RUN_ATTEMPT!=='1'||process.env.EXECUTE_CORRELATED_EXISTING_ACTIVATION!=='true'||['EXECUTE_CORRELATED_COST_STAGE','EXECUTE_CORRELATED_COST_RELEASE','EXECUTE_SQL_BRIDGE_REPAIR','READ_ONLY_BRIDGE_INSPECTION'].some(k=>process.env[k]==='true')||!process.env.CLOUDFLARE_API_TOKEN||!process.env.GITHUB_TOKEN)throw Error('EXISTING_ACTIVATION_EXACT_CURRENT_MODE_REQUIRED');
++  control=createExistingActivationNativeControl({repo_root:process.cwd(),head,owner,github_token:process.env.GITHUB_TOKEN,cloudflare_token:process.env.CLOUDFLARE_API_TOKEN});
++  const lease=await control.initialize({connected_run:process.env.CONNECTED_RUN,execution_run:process.env.GITHUB_RUN_ID});
++  const adapter=createExistingCorrelatedActivationNativeAdapter({cf:control.cf,configured_bridge_url:process.env.REPORT2_D1_BRIDGE_URL,saveTransportIntent:async value=>{transport_intent=structuredClone(value);await save();}});
++  activation=await activateExistingCorrelatedBridge({plan:{head,owner,lease_expires_ts:lease.expires_ts,operation_id:globalThis.crypto.randomUUID()},repo_root:process.cwd(),adapter,guard:control.guard,save});
++  await save();if(activation.status!=='EXISTING_CORRELATED_VERSION_ACTIVATED_NATIVE_METADATA_VERIFIED')process.exitCode=1;
++ }catch(e){outerReason=/^EXISTING_ACTIVATION_[A-Z0-9_]+$/.test(e?.message||'')?e.message:'EXISTING_ACTIVATION_CONTROL_NOT_CLOSED';try{await save();}catch{}process.exitCode=1;}
++ console.log(JSON.stringify({status:activation?.status??'EXISTING_ACTIVATION_NOT_STARTED',head,...control?.metrics(),native_SQL:0,Worker_invocations:0,sourceHTTP:0,MAIN:0,Telegram:0,upload_attempts:0,settings_mutations:0}));return activation;
++}
++
++if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){if(process.env.EXECUTE_CORRELATED_EXISTING_ACTIVATION==='true'&&['EXECUTE_CORRELATED_COST_STAGE','EXECUTE_CORRELATED_COST_RELEASE','EXECUTE_SQL_BRIDGE_REPAIR','READ_ONLY_BRIDGE_INSPECTION'].some(k=>process.env[k]==='true'))throw Error('EXISTING_ACTIVATION_MIXED_MODE_REFUSED');await(process.env.EXECUTE_CORRELATED_EXISTING_ACTIVATION==='true'?runExistingCorrelatedBridgeActivation():process.env.EXECUTE_CORRELATED_COST_STAGE==='true'?runCorrelatedBridgeStageOnly():rolloutCorrelatedBridge());}

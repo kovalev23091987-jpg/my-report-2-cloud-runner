@@ -1,0 +1,81 @@
+✖ frozen general native Coin review reaches real Source and liquidity for ordinary exact tuples while package ambiguities stay unqualified (9.293083ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71.478417
+
+✖ failing tests:
+
+test at pump-report/tests/sources/native-coin-general-connected.test.mjs:13:1
+✖ frozen general native Coin review reaches real Source and liquidity for ordinary exact tuples while package ambiguities stay unqualified (9.293083ms)
+  AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+  
+  ... Skipped lines
+  {
+    family: 'USDT_M',
+    instrument: {
+      asset_id: 'BINGX_UNDERLYING:ADA',
+      base: 'ADA',
+      canonical_cross_venue_identity_qualified: false,
+      classification_status: 'VERIFIED_CRYPTO',
+      contract_multiplier: null,
+      identity_evidence_ref: 'PUMP_SAVED_NATIVE100004_ADA_CRYPTO_DOCS_V1:sha256:2f931d6fab2b3afcdfe62c2fcb7280bceb23dd5ea3fb5fb4977f6f8c9be36ea7',
+      instrument_id: 'BINGX:USDT_M:100004:ADA-USDT',
+      margin: 'USDT',
+      market_type: 'PERPETUAL',
+      native_symbol: 'ADA-USDT',
+      price_tick: null,
+      quantity_step: null,
+      quote: 'USDT',
+      settle: 'USDT',
+      venue: 'BINGX'
+    },
+    liquidations: {
+      routes: []
+    },
+    native_base: 'ADA',
+    native_contract_id: '100004',
+    qualifications: {
+      candles: {
+        mode: 'OWNER_APPROVED_NATIVE_RELATIVE_V1',
+        owner_decision_git_blob: '8004c6b4b8b646558b8fa0f774cdf985667324a1',
+        owner_decision_ref: 'checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json',
+        time: {
+          basis: 'CCXT_CONSUMER_OPEN_TIME',
+          evidence_ref: 'pump-report/handoffs/sources/CCXT_PINNED_NATIVE_CANDLE_REVIEW_V1.json',
+          independent_vendor_guarantee_claimed: false,
+          pinned_commit: 'd3159f7036f93db086cd0414642132fba5401710',
+          semantics: 'OPEN_TIME'
+        },
+        volume: {
+          absolute_amounts_qualified: false,
+          asset_id: 'BINGX_UNDERLYING:ADA',
+          comparison_key: 'BINGX|USDT_M|BINGX:USDT_M:100004:ADA-USDT|/openApi/swap/v3/quote/klines|volume|60000',
+          comparison_kind: 'SAME_NATIVE_REPORTED_QUANTITY',
+          evidence_ref: 'checkpoints/pump-report-20261025/OWNER_CANDLE_SEMANTICS_ACCEPTED.json',
+          family: 'USDT_M',
+          field: 'volume',
+          identity_evidence_ref: 'PUMP_SAVED_NATIVE100004_ADA_CRYPTO_DOCS_V1:sha256:2f931d6fab2b3afcdfe62c2fcb7280bceb23dd5ea3fb5fb4977f6f8c9be36ea7',
+          instrument_id: 'BINGX:USDT_M:100004:ADA-USDT',
+          interval_ms: 60000,
+          native_quantity_unit: 'UNKNOWN',
+          native_symbol: 'ADA-USDT',
+          route: '/openApi/swap/v3/quote/klines',
+  ...}
+  
+      at TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-bingx-migration-20261024/pump-report/tests/sources/native-coin-general-connected.test.mjs:35:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { instrument: { instrument_id: 'BINGX:USDT_M:100004:ADA-USDT', asset_id: 'BINGX_UNDERLYING:ADA', venue: 'BINGX', native_symbol: 'ADA-USDT', market_type: 'PERPETUAL', base: 'ADA', quote: 'USDT', settle: 'USDT', margin: 'USDT', classification_status: 'VERIFIED_CRYPTO', identity_evidence_ref: 'PUMP_SAVED_NATIVE100004_ADA_CRYPTO_DOCS_V1:sha256:2f931d6fab2b3afcdfe62c2fcb7280bceb23dd5ea3fb5fb4977f6f8c9be36ea7', price_tick: null, quantity_step: null, contract_multiplier: null, canonical_cross_venue_identity_qualified: false }, native_contract_id: '100004', native_base: 'ADA', family: 'USDT_M', qualifications: { candles: [Object], orderbook: [Object] }, liquidations: { routes: [] } },
+    expected: { instrument: { instrument_id: 'BINGX:USDT_M:100004:ADA-USDT', asset_id: 'BINGX_UNDERLYING:ADA', venue: 'BINGX', native_symbol: 'ADA-USDT', market_type: 'PERPETUAL', base: 'ADA', quote: 'USDT', settle: 'USDT', margin: 'USDT', classification_status: 'VERIFIED_CRYPTO', identity_evidence_ref: 'PUMP_SAVED_NATIVE100004_ADA_CRYPTO_DOCS_V1:sha256:2f931d6fab2b3afcdfe62c2fcb7280bceb23dd5ea3fb5fb4977f6f8c9be36ea7', price_tick: null, quantity_step: null, contract_multiplier: null, canonical_cross_venue_identity_qualified: false }, native_contract_id: '100004', native_base: 'ADA', family: 'USDT_M', qualifications: { candles: [Object], orderbook: [Object] }, liquidations: { routes: [] } },
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

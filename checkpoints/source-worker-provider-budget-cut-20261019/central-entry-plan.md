@@ -1,0 +1,11 @@
+# Передача пяти-target proposal
+
+Текстpatch применяется только координатором к совместимым exact before hashes из `proposal-targets.json`. Targets: shared reader, CG/CP sector signatures/passthrough, existing run-budget context и current-generation/files/runner-main.mjs. Shared production этой веткой не меняется. `candidate-evidence-v2-runtime.mjs` уже передаёт `...params` collectors, его изменение не требуется. CP HTX identity/иные providers не подключаются новым observer автоматически.
+
+Новый callback private и синхронный. Runner создаёт capture один раз на invocation, принудительно передаёт его после `...params`, а completion читает только exact `cron.run_id`. Source callbacks добавляют свой exact contract/run. Никакой cross-run memory или source-cache storage нового payload. Значение `technical_provider_receipt_observations` находится отдельно от аналитических фактов и NULL provider balances.
+
+Source-only affected test сохраняет CONTROLLED сравнение original/proposed reader: изменение actual production/day capacity, native SQL metadata или native delivery этим не квалифицировано. Центральная новая проверка должна относиться к этому changed assembled path, не повторять старые493/31/18/52/12 suites ради общего PASS. Нет необходимости менять стратегия/лимиты/forms/reservation SQL.
+
+Новые serialized bytes completion context появляются в уже существующих output/493 carriers: один context может быть записан в нескольких existing artifacts. Это дополнительный диагностический payload, не бесплатный native persistence/CPU bound. Source cache payload и canonical FP должны оставаться byteexact. Ни один existing report fact не сокращается ради этой диагностики. Whole-day/native/account/month/manual headroom остаются непроверенными.
+
+Сохранённая source qualification: initial14PASS/2FAIL только mock-cache SQL matcher, затем исправлена одна строка fixture и выполнены только2failed NEW cache cases:2PASS/0FAIL. Patch/пять proposed targets byteexact между попытками. Первые14 cases не повторялись. Raw обеих попыток и оба controlled witnesses сохранены; это не объявляется новым full16PASS rerun. Не запускать их снова только ради оформления. Preparer строго требует fixed old source bytes и не предназначен перезаписывать уже изменённый центральный runtime.

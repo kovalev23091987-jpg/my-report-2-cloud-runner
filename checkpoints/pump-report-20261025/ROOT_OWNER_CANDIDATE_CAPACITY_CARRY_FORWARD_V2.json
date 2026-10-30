@@ -1,0 +1,74 @@
+{
+  "schema": "ROOT_OWNER_CANDIDATE_CAPACITY_CARRY_FORWARD_V2",
+  "owner_confirmed": "2026-10-26",
+  "status": "DEPLOYED_AND_FIRST_NORMAL_AUTO_NATIVE_CONFIRMED",
+  "scan_cadence_ms": 300000,
+  "window": "10:00–20:00 Europe/Moscow",
+  "candidate_selection": "TZ prequeue near/confirmed growth or retained active wave; exact growth/current wave/mandatory data/plan qualification before AUTO publication. Empty queue never generates checks.",
+  "capacity_not_required_work": true,
+  "allocation": "Fixed base N per hour computed once from actual remaining day/month and full selected route upper bounds after retained reserves/80percentplan; allocated at first scan even if queue empty.",
+  "carry": "Unused elapsed-hour places accrue for later hours, e.g.0 then4 with base2. Future-hour places cannot be borrowed. Spent candidate checks including cheap refusals are never refunded.",
+  "midday_migration": "No credit for hours before allocation creation; earlier actual spend/unknowns retained.",
+  "preliminary_model_only": {
+    "fresh_full_day_base_per_hour": 2,
+    "full_day_candidate_places": 20,
+    "all120discovery_scans_HTTP": 240,
+    "candidate_upper_HTTP": 12,
+    "max_candidate_total_HTTP": 240,
+    "max_full_day_planned_HTTP": 480,
+    "known_current_production_providers": [
+      "BINGX",
+      "TELEGRAM"
+    ],
+    "unassigned_map_allowance_per_candidate": 1,
+    "unqualified_extra_sources_count_as_connected": false
+  },
+  "protected": {
+    "future_scans": true,
+    "manual_checks": 3,
+    "delivery_and_outcomes": true,
+    "HTTPday": 900,
+    "HTTPrun": 164,
+    "BINGXmonth": 27900,
+    "BINGXperminute": 10,
+    "BINGXpersecond": 1,
+    "native_rows_day": [
+      3500000,
+      70000
+    ],
+    "unknowns_reset": false
+  },
+  "affected_validation": {
+    "command": "node --test pump-report/tests/runtime/even-day-candidate-budget-connected.test.mjs pump-report/tests/runtime/production-policy-connected.test.mjs",
+    "pass": 9,
+    "fail": 0,
+    "class": "ARTIFICIAL_BUDGET_AND_RUNNER_NOT_NATIVE",
+    "initial_fixture_error": "carry expectation11 corrected to13; maximum15 after nine remaining hours and three already issued places",
+    "coverage": [
+      "0→4 carry",
+      "no future borrowing",
+      "empty queue no CORE",
+      "new invocation no reset",
+      "concurrentCAS",
+      "120scans and20worstcase candidates",
+      "manual/monthly/80percent/day/unknown guards",
+      "deferred run saved/executor released"
+    ]
+  },
+  "TZ_strategy_changed": false,
+  "current_server_pacing_installed": true,
+  "static_review": {
+    "manifest": "pump-report/handoffs/analytics/package-av/PACKAGE_AV_STATIC_PACING_RUNNER_REVIEW_FINAL_V1.json",
+    "sha256": "b15047cc91e6bc7a07e75519e8e54fb970a999b81906bb51233c52c8ebfd482e",
+    "concrete_P1_P2": 0,
+    "native_proof": false
+  },
+  "server_implementation_sha256": "3f872be34da54d645ae7e12add0d0297f0f64c9f22cd24bbe571176ba16d7e93",
+  "native_confirmation_pending": false,
+  "today_remaining_preliminary_base_per_hour": 1,
+  "native_receipts_proof": "checkpoints/pump-report-20261025/ROOT_CANDIDATE_BANK_SAFE_MAINTENANCE_ACTUAL.json",
+  "current_hour_capacity_native": 1,
+  "remaining_hour_periods_native": 8,
+  "native_acceptance": "checkpoints/pump-report-20261025/ROOT_FIRST_NORMAL_AUTO_CANDIDATE_BANK_NATIVE_ACCEPTANCE.json",
+  "carry_behavior_validation": "Localconnectedtests/staticreview;no forcedquietnativehour"
+}

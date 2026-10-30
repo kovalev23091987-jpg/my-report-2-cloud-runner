@@ -1,0 +1,60 @@
+{
+  "schema": "F571_EXACT1_ECONOMIC_PROPOSAL_V1",
+  "status": "SINGLE_EXPLICIT_FX_NON_TARGET_PROPOSAL_READY_FOR_ROOT_REVIEW",
+  "current_ROOT_input_sha256": "ee9f96e2e3285938ec6e200487a7a4b8d63f06e6308594b0fc6030638c5d195f",
+  "actual2_capture_sha256": "74acbf924e7bdea1428d550db00841abd2130849d2d666c5e07e7758fccea189",
+  "native_tuple_sha256": "4d0f372641746988f53d9a9cdce8c7f5dd9e07b5e0abad4030a1028d849f1b8c",
+  "current_status": 1,
+  "saved_previous_status": 25,
+  "proposal": "KNOWN_NON_TARGET",
+  "economic_exposure": "FX",
+  "underlying_review": "Official native USDKRW display carries USD/KRW foreign-exchange exposure. Native USDT settlement is separate from underlying classification.",
+  "primary_evidence": {
+    "current_ROOT_exact_input_sha256": "ee9f96e2e3285938ec6e200487a7a4b8d63f06e6308594b0fc6030638c5d195f",
+    "current_capture_sha256": "74acbf924e7bdea1428d550db00841abd2130849d2d666c5e07e7758fccea189",
+    "current_receipt_and_original_clock_pointer": "Exact ROOT input unresolved row and capture evidence; no recapture clock substituted",
+    "native_saved_sha256": "7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5",
+    "display_info_sha256": "66c3afe4e3f2d967050fdfbb34fb09741b4612780f1ba264cf504410dc0a3cf9",
+    "metadata_endpoint": "https://api-app.acc-de.com/api/coin/v1/display-info/list",
+    "metadata_row_sha256": "2dd6220e91ebc2ffed250cf5cd659ca017f4f22ce15ab288b7428669b10e2c8f",
+    "unique_native_four_tuple_match": true,
+    "unique_native_asset_to_coinName_match": true,
+    "coinId_is_native_contractId_namespace": false,
+    "raw_coinType_not_decoded": 5
+  },
+  "metadata_exact_asset_matches": 1,
+  "saved_native_exact_matches": 1,
+  "economic_inference_explicit": true,
+  "no_generic_numeric_coinType_enum_or_name_prefix_classifier": true,
+  "private_outputs": [
+    {
+      "path": "/private/tmp/pump-f571-economic-proposal1-private.json",
+      "sha256": "44a31f6f9c6ad0a4509cb3ed18a044fff70a828d17d8ad21469a59f133b2acc5",
+      "bytes": 2869,
+      "mode": "0o600"
+    },
+    {
+      "path": "/private/tmp/pump-f571-negative1-bundle-private.json",
+      "sha256": "a16ad631070c5d0d9cccba2dd3b75b2354d4885d35f0e7bac8269c14e128e00e",
+      "bytes": 817,
+      "mode": "0o600"
+    }
+  ],
+  "new_affected_proposal_consistency": {
+    "executions": 1,
+    "result": "PASS",
+    "basis": "Actual exact retained single-row join, native four-tuple, current and old status, FX carrier and no automatic activation"
+  },
+  "formal_runtime_tests": 0,
+  "old_tests_replayed": 0,
+  "F571_initial_capture_selection_failed_stays_failed": true,
+  "initial_exact_join_path_resolution_failure_before_input_read": true,
+  "completed_exact_metadata_joins": 1,
+  "current_capture_rereads": 0,
+  "old550_prices_CORE_reader_or_old53_reclassification_reruns": 0,
+  "new_provider_metadata_docs_RPC_SQL_TG_deploy": 0,
+  "new_crypto_or_unit_or_crossvenue_proofs": 0,
+  "SOURCE_registry_changes": 0,
+  "whole_scope_count_claim": "Not recomputed; ROOT owns adoption and whole current coverage",
+  "minimum_missing_primary_input_for_this_single_economic_proposal": null
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "ORIGINAL_OUTCOME_SOURCE_STATIC_PEER_V1",
+  "reviewer_thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+  "reviewed_head": "321a6c28a9799ca0624399b87cc7e935eea6fae6",
+  "scope": "checkpoints/source-worker-anomaly-original-outcome-windows-20261022/",
+  "status": "ZERO_STATIC_FINDINGS_WITH_LIMITS",
+  "API_LOCK": "PER_CELL_V1_16",
+  "source_function_sha256": "71948259314e443de04b40926b14fd38d50907d9df8520ea84d302dbd90f421d",
+  "connected_case_sha256": "805d533e0a24bf3ec0c15718e860b071d3ae6f35aa9fe83930e8a836c50e5383",
+  "manifest_payloads_full_bytes_verified": 9,
+  "source_only_exact_delta_text_reconstructed": true,
+  "checks": [
+    "same completed capture only, body digest and native record compatibility",
+    "original-event-end exact closed minute grid, 16 original-plan directions and horizons",
+    "1h/4h stale endpoint is historical, current capture TTL remains unchanged",
+    "null facts for missing/incomplete/unbound/nonmature/unsupported windows",
+    "stable physical window hash excludes direction and capture receipt clocks",
+    "summary and provenance separate; raw-body wire SHA remains null",
+    "2000 minute and 16384 DTO bounds; no raw minutes output",
+    "new actual assembled 618/617 case pin checks before imports; no old test exports",
+    "new original inactive-watch counterexample in case; no claim of author execution"
+  ],
+  "concrete_findings": [],
+  "limits": [
+    "Static source and fixture review only; no JavaScript parser/import/runtime/SQL execution.",
+    "Root must rebind combined target SHA and exact source insertion assertion once THIRD consumer is composed, before first common execution.",
+    "No native epoch, global first-knowledge, source admission, success or PnL qualification."
+  ],
+  "author_Node": 0,
+  "author_SQL": 0,
+  "author_semantics": 0,
+  "provider_HTTP": 0,
+  "native_calls": 0,
+  "MAIN": 0,
+  "Telegram": 0
+}

@@ -1,0 +1,5 @@
+Prepare baseline runtime/src from exact7579cf78 and apply ONLY early-lower-bound.proposed.patch to the new assembled runtime. Preserve coordinator uncommitted PRIMARYprojection files. Target before1c3ad1e6 -> afterf03237d8; do not touch CURRENT_CANONICAL67 query or retained helper.
+
+Inside ONE NEW central combined testcase, call runEarlyLowerBoundConnected({runtime_root:<assembled src or files root>,baseline_runtime_root:<exact baseline src>,repo_root:<repo>}). No test registration/top-level runtime import or automatic invocation. The caller may emit its returned bounded witness in the existing artifact. No source-worker invocation.
+
+Expected preparation only:18 controlled vectors inside one callable, not18pastPASS claims. Local fixture creates saved tables/indexes and real retained view; rejected canonical contexts prevent persistence/dispatch. Legacy omitted-now is clock-controlled within try/finally and restored. Exact old/new consumer probes and other4SQL/results compare, stale-tail case preserves WAVE_NOT_CURRENT; all future aliases remain. No native cost/headroom/delivery/ENTRY proof, no forcedrun.

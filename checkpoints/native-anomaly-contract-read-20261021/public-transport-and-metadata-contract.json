@@ -1,0 +1,26 @@
+{
+  "Node_adapter": {
+    "file": "runner/report2-d1-adapter.mjs",
+    "sha256": "8bedac9d543a1ac6d5b11c1a83a47900e60b2ce1a96970f2ea97de9d2c999614",
+    "lines": "112–120",
+    "finding": "Same-db prepared statements encoded into one batch request"
+  },
+  "existing_bridge_fixture": {
+    "file": "current-generation/tests/fixtures/actual-d1-bridge-20261008.mjs",
+    "sha256": "70c3b56e3c93612379e5d344ba9e856e0150d0be83e2fb9b66acdfc62dc99df8",
+    "lines": "114–117",
+    "finding": "Calls native DATA_DB.batch; accepted06603b counter repair preserves operation and SQL/params, not a fresh nativeinspection"
+  },
+  "official_D1_batch_contract": {
+    "url": "https://developers.cloudflare.com/d1/worker-api/d1-database/#batch",
+    "read_utc": "2026-10-21T13:35:06.904700+00:00",
+    "paraphrase": "Batch is transactional and a failing statement rolls back the sequence; a successful zero-row conditional update needs separate explicit domain conflict handling.",
+    "native_commit_qualified": false
+  },
+  "official_HTX_catalog_contract": {
+    "url": "https://huobiapi.github.io/docs/usdt_swap/v1/en/#general-query-swap-info",
+    "read_utc": "2026-10-21T13:35:06.904700+00:00",
+    "raw_create_date": "Official string Listing Date, YYYYMMDD example; does not prove exact timestamp/timezone or unique native epoch",
+    "no_epoch_gate_relaxed": true
+  }
+}

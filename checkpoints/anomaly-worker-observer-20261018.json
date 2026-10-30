@@ -1,0 +1,84 @@
+{
+  "schema": "ANOMALY_WORKER_ISOLATED_OBSERVER_V1",
+  "base": "51fd34e564f926c1e2f4a226acdd9e691df69047",
+  "lease": {
+    "lease_ref_sha": "45177d22bacc07d393a5694b1b50edd78531bfd4",
+    "lease": {
+      "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
+      "status": "ACTIVE",
+      "owner": "CODEX:OFFLINE_ANOMALIES:1792329923711",
+      "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+      "acquired_ts": 1792329923711,
+      "expires_ts": 1792335023711,
+      "expected_main": "6f2610f30942b4eddbb0829d1ec5a5eb912d77a7",
+      "scope": "OFFLINE only anomaly-research/** and checkpoints/anomaly-worker-*; audit/replay/detector/event/watch/outcomes/cost; no production imports, provider, SQL, deploy, MAIN, Telegram or shared mutation",
+      "guard_sha256": {
+        "AGENTS.md": "30b81a178c822f5b5af3a964f73bd4f463b7048a4b0795c42dff1ecdac6e2897",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "9584f05ca2994ea79ee01ef2520c853a84db686b9264ddfc0fb37cabdc175843",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+        "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "40f5dc076e69635160b2bc80b0977d3cb33a090faee2873244524d9e16007ef2",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "b88526812c88b1cd113db1a0b6ad124426278e3dfa1c13262a6fddfc9c8a74ec"
+      }
+    },
+    "exact_readback": true
+  },
+  "files": [
+    {
+      "path": "anomaly-research/observer/README_RU.md",
+      "sha256": "47b44fa2e8efea0f000de1585eb95ce473c56f1b88a694df4838e7e8994df8b7"
+    },
+    {
+      "path": "anomaly-research/observer/fixtures.mjs",
+      "sha256": "c46fb0702f6975c3565fac61dfa5b403d54bd501799bba83feca0fc73f7b0b4a"
+    },
+    {
+      "path": "anomaly-research/observer/observer.mjs",
+      "sha256": "d5dcccbb0b53295b1a68a382d97e25c3f30162910511d96583e8bbfaf81694a2"
+    },
+    {
+      "path": "anomaly-research/observer/observer.test.mjs",
+      "sha256": "556559a54f7f5def6b1cab9cd33b181e5c765d6e5d4ab8748db25df5cc2b71bb"
+    },
+    {
+      "path": "anomaly-research/observer/retained-input-boundary.test.mjs",
+      "sha256": "b3a327a5f4450266d615ddb61f6974ecddc17f60f89e5e5392b2b2821ca4e85b"
+    }
+  ],
+  "validation": {
+    "command": "node --test anomaly-research/observer/observer.test.mjs anomaly-research/observer/retained-input-boundary.test.mjs",
+    "pass": 26,
+    "fail": 0,
+    "controlled_cases": 24,
+    "retained_missing_input_boundary_cases": 2,
+    "raw_TAP_file_retained": false,
+    "accepted_CT_BR_decomposition_repeated": false
+  },
+  "behavior": [
+    "6closednative timeframes with exact past-only baseline and explicit offset",
+    "immutablefirstknown/backfill/eventid with conflict-safe capture",
+    "independentwatch/due/defer/caps,7dneverautoexpiry,32dconfirmation/90dnomove",
+    "price touch separated from closed candleconfirmation; LONGandSHORT",
+    "restartserialization/cardhash/snapshotdedup/gaps",
+    "protectedreferencesandDRAFToutbox/shortRussianmessage;no network"
+  ],
+  "not_qualified": [
+    "nativeproviderhash/bindingmustcomeverifiedfromfutureadapter",
+    "empiricaldetectoraccuracy",
+    "atomicD1store/readback/CASrevision/schema",
+    "productionretentionhooks",
+    "networkdelivery/exactlyonce/Telegramfinalform",
+    "actualresidual/headroom/CPU/dayandmonthadmission"
+  ],
+  "effects": {
+    "provider_HTTP": 0,
+    "production_SQL": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "deploy": 0,
+    "production_imports": 0,
+    "main_score_effect": 0,
+    "strategy_weights_forms_caps_pauses_changed": false
+  },
+  "next": "Isolated horizon/path coverage and outcome classifications + prospective/backfill/control denominators + source utility + ordinary/peak queue/bytes/admission; no changes to main weights."
+}

@@ -1,0 +1,113 @@
+{
+  "schema": "F596_BOUNDED_PRIMARY_DOCUMENTATION_PROOFS_V1",
+  "grant_id": "ROOT_F596_0X_GEOMETRY_SAVED_HYPE_ID_2SEARCH3READ_20261026",
+  "reads": [
+    {
+      "id": "OPERATION",
+      "url": "https://docs.0xarchive.io/api-reference/hyperliquid--liquidations/get-hyperliquid-liquidation-levels",
+      "tool_ref": "turn137view0",
+      "claims": {
+        "method": "GET",
+        "path": "/v1/hyperliquid/liquidations/{symbol}/levels",
+        "price": "bucket center",
+        "notional_currency": "USD",
+        "request": {
+          "range_pct": [
+            1,
+            50
+          ],
+          "buckets": [
+            10,
+            200
+          ]
+        },
+        "auth": "X-API-Key"
+      },
+      "line_ranges": [
+        "390-538"
+      ],
+      "limits": [
+        "No authoritative output-edge formula established from this operation page."
+      ],
+      "returned_text_sha256": "fb7e20ee367877038b6d378854d68d24e583ccaf86037662be5ab7e40fe666e7",
+      "returned_text_chars": 17189
+    },
+    {
+      "id": "OPERATION_SCHEMA",
+      "url": "https://docs.0xarchive.io/schemas/operations/get-hyperliquid-liquidation-levels",
+      "tool_ref": "turn139view0",
+      "claims": {
+        "openapi": "1.8.0",
+        "operationId": "getHyperliquidLiquidationLevels",
+        "data_properties": [
+          "block_number",
+          "flagged_notional",
+          "levels",
+          "mid_price",
+          "snapshot_ts",
+          "source",
+          "source_bin_width",
+          "total_long",
+          "total_short"
+        ],
+        "level_properties": [
+          "long_count",
+          "long_notional",
+          "price",
+          "short_count",
+          "short_notional"
+        ],
+        "optional_source_bin_width": "stored histogram resolution only",
+        "type_per_route": "level price and notionals: number",
+        "range_semantics": "around snapshot mid/mark",
+        "at": "newest snapshot at or before UTC milliseconds",
+        "cost": "Premium per-request credit cost; numeric amount not supplied (line173)."
+      },
+      "line_ranges": [
+        "172-184",
+        "235-269",
+        "291-385"
+      ],
+      "limits": [
+        "No lower/upper/output-width/alignment or price-currency field is specified in reviewed response properties.",
+        "raw/histogram describe storage; both remain projected models.",
+        "Provider 2-hour staleness guidance does not prove base-position freshness.",
+        "Current numeric credit cost conflicts with definite 1-credit carry-forward; unresolved."
+      ],
+      "returned_text_sha256": "d3fe0417b3d43b8241a802fb255064ca0cb6d111e39ef85052ccd386d85f1d4a",
+      "returned_text_chars": 27904
+    },
+    {
+      "id": "DATA_CONVENTIONS",
+      "url": "https://docs.0xarchive.io/rest-api/conventions",
+      "tool_ref": "turn140view0",
+      "claims": {
+        "types": "Use route-specific types; preserve decimal precision.",
+        "symbols": "Preserve native symbol shape and venue.",
+        "timestamps": "UTC; do not silently reinterpret clocks."
+      },
+      "line_ranges": [
+        "116-145"
+      ],
+      "limits": [
+        "This generic page does not close the core-liquidation price-currency or bucket-edge gaps.",
+        "HIP-4 probability prices do not establish Hyperliquid Core HYPE quote units."
+      ],
+      "returned_text_sha256": "5bb1d815b04b161c6c8d22ba249f986a9f76c7841611c3c9bf85c04e575f46e4",
+      "returned_text_chars": 6358
+    }
+  ],
+  "retained_F590": {
+    "url": "https://docs.0xarchive.io/rest-api/liquidation-levels",
+    "new_read": false,
+    "model_cadence": "about 5 minutes",
+    "base_state_lag_documented_minutes": [
+      30,
+      65
+    ],
+    "base_timestamp_in_actual": "UNKNOWN",
+    "core_roll_forward": "partial fills; not a complete fresh-position snapshot",
+    "prior_credit_claim": "1 REST snapshot credit; conflict with new operation premium language remains unresolved"
+  },
+  "scope": "Published documentation only. No source MCP/API, key, account, SDK runtime, current snapshot, or source budget admission."
+}

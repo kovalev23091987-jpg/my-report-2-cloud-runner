@@ -1,0 +1,75 @@
+{
+  "schema": "LINKED_COMPACT_CATALOG_INITIAL_PRIMARY_CARRIERS_QUALIFICATION_V1",
+  "semantic_status": "UNEXECUTED",
+  "base_main": "96e4c11ed2a35a65d9d86d22396581ada1986e4d",
+  "frozen_originals": {
+    "591": "c75ea4afdb14d4e0fea0df8af1892fd0981e7f47",
+    "592": "c4e0dd103a7e6b005c3d696f7264e24b802f6298"
+  },
+  "runtime_targets": [
+    {
+      "component": "catalog",
+      "path": "current-generation/files/src/approved-htx-analysis-scope.mjs",
+      "runtime_relative": "src/approved-htx-analysis-scope.mjs",
+      "baseline_path": "checkpoints/source-worker-catalog-compact-fallback-20261021/scope.before.mjs",
+      "before_sha256": "fd8c8e07f8a30e0df07df8a6490b5a830e9eb56e7f2bb4253fcb6b1c526441dd",
+      "after_sha256": "1344eb0c20f74e62e7967afec0f4bc4df33097055d8f4e77a949cf36b0b326f8"
+    },
+    {
+      "component": "primary",
+      "path": "current-generation/files/src/worker.js",
+      "runtime_relative": "src/worker.js",
+      "baseline_path": "anomaly-research/partial-canonical-metadata-carrier-20261021/worker.before.js",
+      "before_sha256": "885553691d783ca8a57b6a8a45e22a07e23208d7467b0ac300fdf38080008950",
+      "after_sha256": "f1a94a5eb91c3d8cdd871f05b8946197bf537eb60ff2823a7c315c01a71764f5"
+    }
+  ],
+  "components": [
+    {
+      "name": "catalog",
+      "path": "checkpoints/source-worker-catalog-compact-fallback-20261021/catalog-compact-fallback-connected.mjs",
+      "entry": "runCatalogCompactFallbackConnected",
+      "expected": {
+        "status": "CONTROLLED_COMPONENT_COMPLETED",
+        "control_count": 7,
+        "new_SQL": 0,
+        "provider_HTTP": 0,
+        "native_SQL": 0,
+        "Telegram": 0,
+        "V1_when_fitting_unchanged": true,
+        "old_scope_outputs_and_gates_unchanged": true,
+        "actual395777_discarded_payload_recovered": false,
+        "old_accepted_cases_replayed": false
+      },
+      "group_count_key": "control_count"
+    },
+    {
+      "name": "primary",
+      "path": "anomaly-research/partial-canonical-metadata-carrier-20261021/connected.mjs",
+      "entry": "runPartialCanonicalMetadataCarrierConnected",
+      "expected": {
+        "status": "CONTROLLED_COMPONENT_COMPLETED",
+        "control_count": 8,
+        "new_SQL": 0,
+        "provider_HTTP": 0,
+        "native_SQL": 0,
+        "MAIN": 0,
+        "Telegram": 0,
+        "canonical_resolver_or_score_recomputed": false,
+        "old_projection_selection_fields_unchanged": true,
+        "existing_runner_changed": false,
+        "source_clock_refreshes": 0,
+        "native_persistence_or_fingerprint_ACK_qualified": false,
+        "old_565_588_589_semantic_reexecution": 0,
+        "actual395777_missing_metadata_recovered": false,
+        "initial_direction_cause_or_SENT_fixed": false
+      },
+      "group_count_key": "control_count"
+    }
+  ],
+  "new_common_cases": 1,
+  "CONTROLLED_groups_expected": 15,
+  "old_accepted_cases_manually_replayed": 0,
+  "native_SQL_providerHTTP_MAIN_Telegram": 0,
+  "actual395777_payload_or_primary_recovered": false
+}

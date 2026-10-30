@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: L01 AUTO shows the confirmed past crossing separately from the unestimated future +10/4h event
+ok 1 - L01 AUTO shows the confirmed past crossing separately from the unestimated future +10/4h event
+  ---
+  duration_ms: 40.776666
+  type: 'test'
+  ...
+# Subtest: L02 a manual acceptance review below the auto growth threshold is labelled MANUAL and TEST without inventing a crossing
+ok 2 - L02 a manual acceptance review below the auto growth threshold is labelled MANUAL and TEST without inventing a crossing
+  ---
+  duration_ms: 2.734875
+  type: 'test'
+  ...
+# Subtest: L03 retained wave names the earlier crossing with original clocks/evidence and never borrows a current fact
+ok 3 - L03 retained wave names the earlier crossing with original clocks/evidence and never borrows a current fact
+  ---
+  duration_ms: 4.738666
+  type: 'test'
+  ...
+# Subtest: L04 a PARTLY plan below minimum 10% becomes a plain manual refusal without extending its exit
+ok 4 - L04 a PARTLY plan below minimum 10% becomes a plain manual refusal without extending its exit
+  ---
+  duration_ms: 4.455
+  type: 'test'
+  ...
+# Subtest: L05 complete six-zone, three-entry native/Unicode/opaque cards retain TEST, historical growth evidence and future-event labels under4096
+ok 5 - L05 complete six-zone, three-entry native/Unicode/opaque cards retain TEST, historical growth evidence and future-event labels under4096
+  ---
+  duration_ms: 18.126458
+  type: 'test'
+  ...
+# Subtest: L06 true SOURCE 24h day proof is displayed as past +20% while its separate plan still meets notification minimum
+ok 6 - L06 true SOURCE 24h day proof is displayed as past +20% while its separate plan still meets notification minimum
+  ---
+  duration_ms: 13.5015
+  type: 'test'
+  ...
+# Subtest: L07 cohort calibration inputs exclude acceptance, unknown, artificial claims and conflicting-wave promotion while raw summary stays unchanged
+not ok 7 - L07 cohort calibration inputs exclude acceptance, unknown, artificial claims and conflicting-wave promotion while raw summary stays unchanged
+  ---
+  duration_ms: 5.233333
+  type: 'test'
+  location: '/Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011 3/report2-bingx-migration-20261024/pump-report/tests/analytics/owner-presentation.test.mjs:80:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-bingx-migration-20261024/pump-report/tests/analytics/owner-presentation.test.mjs:82:166)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: L08 paired feature audit admits only explicit OBSERVED production claims, and excludes acceptance/unknown without rewriting saved analyses
+ok 8 - L08 paired feature audit admits only explicit OBSERVED production claims, and excludes acceptance/unknown without rewriting saved analyses
+  ---
+  duration_ms: 14.920417
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 159.004083

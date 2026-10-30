@@ -1,0 +1,124 @@
+{
+  "evidence_class": "ARTIFICIAL",
+  "context": {
+    "findings": [
+      {
+        "code": "TRADE_SAMPLE",
+        "text": "В полученной выборке сделок BINGX_OFFICIAL_PUBLIC_API / BINGX: покупки 12 USDT, продажи 0 USDT; это не доказательство поглощения продаж.",
+        "fact_ids": [
+          "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:trades:ARTIFICIAL_BF_RECEIPT_1"
+        ]
+      },
+      {
+        "code": "FUNDING_SNAPSHOT",
+        "text": "Фандинг BINGX_OFFICIAL_PUBLIC_API / BINGX: -1% за 2 ч; это контекст, а не направление будущей цены.",
+        "fact_ids": [
+          "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:funding:ARTIFICIAL_BF_RECEIPT_2"
+        ]
+      }
+    ],
+    "fact_ids": [
+      "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:trades:ARTIFICIAL_BF_RECEIPT_1",
+      "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:funding:ARTIFICIAL_BF_RECEIPT_2"
+    ],
+    "optional_context": {
+      "funding": {
+        "value": {
+          "rate": -0.01,
+          "period_ms": 7200000
+        },
+        "unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+        "source": "BINGX_OFFICIAL_PUBLIC_API",
+        "venue": "BINGX",
+        "origin": "OBSERVED",
+        "event_ts": 1793015999000,
+        "received_ts": 1793015999900,
+        "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:funding:ARTIFICIAL_BF_RECEIPT_2"
+      }
+    },
+    "trade_context": {
+      "buy_usdt": 12,
+      "sell_usdt": 0,
+      "netflow_usdt": 12,
+      "amount_basis": "OBSERVED_USDT_QUOTE_NOTIONAL",
+      "base_quantity_qualified": false,
+      "direction_coverage": "ALL_RETURNED_TRADES",
+      "sample_start_ts": 1793015999800,
+      "sample_end_ts": 1793015999800,
+      "unique_executions": 1,
+      "price_response": {
+        "first_price": 2,
+        "last_price": 2,
+        "min_price": 2,
+        "max_price": 2,
+        "first_to_last_return_pct": null
+      },
+      "price_response_reason": "SAMPLE_HAS_NO_TIME_SPAN",
+      "coverage": {
+        "scope": "QUALIFIED_UNIQUE_RETURNED_TRADES_ONLY",
+        "returned_rows": 1,
+        "qualified_unique_rows": 1,
+        "duplicate_rows": 0,
+        "conflicting_ids": 0,
+        "excluded_returned_rows": 0,
+        "exclusion_reasons": [],
+        "provider_coverage": {
+          "sample_kind": "LATEST_RETURNED_BOUNDED_SAMPLE",
+          "requested_limit": 100,
+          "response_rows_max": 1000,
+          "returned_rows": 1,
+          "returned_more_than_requested": false,
+          "response_bound_evidence_ref": "pump-report/handoffs/sources/F553_ACTUAL1000_EVIDENCE_V1.json",
+          "trade_id_field": "id_OR_ROOT_REVIEWED_fillId",
+          "fillId_alias_accepted": true,
+          "id_mapping_evidence_ref": "pump-report/handoffs/sources/F555_FILLID_ROOT_REVIEW_ACCEPTED_V1.json",
+          "vendor_ID_uniqueness_guaranteed": false,
+          "qualified_before_dedup": 1,
+          "invalid_id": 0,
+          "invalid_clock": 0,
+          "invalid_price": 0,
+          "invalid_notional": 0,
+          "unknown_side": 0,
+          "identity_mismatch": 0,
+          "id_field_rows": 0,
+          "fillId_field_rows": 1,
+          "consistent_id_and_fillId_rows": 0,
+          "conflicting_id_fields": 0,
+          "counts_are_before_consumer_dedup": true,
+          "duplicate_and_conflicting_ids_preserved": true,
+          "complete": false,
+          "full_window_coverage": false,
+          "complete_window_start": null,
+          "complete_window_end": null,
+          "qualified_sample_start": 1793015999800,
+          "qualified_sample_end": 1793015999800,
+          "amount_field": "quoteQty",
+          "amount_unit": "USDT_PRICE_QUOTE_NOTIONAL",
+          "base_quantity_unit": "UNKNOWN",
+          "base_quantity_derived": false,
+          "maker_field": "isBuyerMaker",
+          "buyerMaker_alias_accepted": false,
+          "unit_and_maker_evidence_ref": "pump-report/handoffs/sources/T3_RECENT_TRADES_PRIMARY_PROOFS_V1.json",
+          "event_clock_basis": "NATIVE_TRADE_TIME_UNIX_MS",
+          "receipt_time_used_as_trade_time": false
+        },
+        "full_market_coverage": false
+      },
+      "provenance": {
+        "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101207:DOOD-USDT:trades:ARTIFICIAL_BF_RECEIPT_1",
+        "instrument_id": "BINGX:USDT_M:101207:DOOD-USDT",
+        "source": "BINGX_OFFICIAL_PUBLIC_API",
+        "venue": "BINGX",
+        "origin": "OBSERVED",
+        "unit": "USDT_PRICE_QUOTE_NOTIONAL",
+        "event_ts": 1793015999800,
+        "received_ts": 1793015999900,
+        "expires_ts": 1793016029800,
+        "evidence_ref": "ARTIFICIAL_BF_RECEIPT_1"
+      },
+      "absorption_proven": false,
+      "market_path_proven": false,
+      "causation_proven": false
+    }
+  }
+}

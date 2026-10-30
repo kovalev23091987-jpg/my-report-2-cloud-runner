@@ -1,0 +1,21 @@
+{
+  "schema": "RUNNER_ANOMALY_PARENT_TEXT_RECIPE_V1",
+  "target": "current-generation/files/runner-main.mjs",
+  "before_sha256": "480faff4a63cfc8a9a5aecb90b9beabf28b28fd8c954517f5a8b79850f06be57",
+  "before_bytes": 157651,
+  "after_sha256": "685e4fc0f5f1556f5e3da7f199578e9722af47d6bc4189cab789df5aa7bae3b1",
+  "after_bytes": 175689,
+  "insertion_file": "runner-parent.insertion.txt",
+  "insertion_sha256": "e813edcb5ac4fb2882530d24defb887e14b635e419ce65bd091dfb5817b139d1",
+  "imports_prefix": "import {readAnomalyOrigin,commitAnomalyBundle,ORIGIN_SQL,COMMIT_SQL,READBACK_SQL} from './src/anomaly-native-domain.mjs';\n",
+  "insertion_before": "async function main() {",
+  "callsite_before": "  await worker.scheduled({ scheduledTime: started, cron: source === \"schedule\" ? \"ROTATING_EXACT_20_MINUTES\" : \"manual\" }, env, ctx);",
+  "callsite_after": "  const anomalyParentCapability=installRunnerAnomalyParentCapability({\n    env,db:env.DATA_DB,reservation:d1RunReservation,reservation_id:d1ReservationId,\n    receipt:d1ReservationReceipt,day_admission:d1DayAdmission,http_budget:unifiedHttpBudget,\n    post_v7:postV7UnifiedEnabled,cost_bounds:process.env.REPORT2_ANOMALY_DOMAIN_COST_BOUNDS,\n  });\n  try {\n    await worker.scheduled({ scheduledTime: started, cron: source === \"schedule\" ? \"ROTATING_EXACT_20_MINUTES\" : \"manual\" }, env, ctx);\n  } finally { await anomalyParentCapability.close(); }",
+  "author_execution": false,
+  "runtime_layout": {
+    "count": 617,
+    "non_target_equal": 616,
+    "both_roots_end": "src",
+    "baseline_contains_all_third_changes": true
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "schema": "ANOMALY_WORKER_OUTCOME_COHORT_CAPACITY_V1",
+  "fresh_main_guards_read": "693a6383b188df8c76663138366dadbb59cbc25b",
+  "dependency_PR": 458,
+  "base": "1251d4b4f16d9fe4a15370eab0e2c3146ad78ed6",
+  "lease": {
+    "lease_ref_sha": "45177d22bacc07d393a5694b1b50edd78531bfd4",
+    "lease": {
+      "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
+      "status": "ACTIVE",
+      "owner": "CODEX:OFFLINE_ANOMALIES:1792329923711",
+      "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+      "acquired_ts": 1792329923711,
+      "expires_ts": 1792335023711,
+      "expected_main": "6f2610f30942b4eddbb0829d1ec5a5eb912d77a7",
+      "scope": "OFFLINE only anomaly-research/** and checkpoints/anomaly-worker-*; audit/replay/detector/event/watch/outcomes/cost; no production imports, provider, SQL, deploy, MAIN, Telegram or shared mutation",
+      "guard_sha256": {
+        "AGENTS.md": "30b81a178c822f5b5af3a964f73bd4f463b7048a4b0795c42dff1ecdac6e2897",
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "9584f05ca2994ea79ee01ef2520c853a84db686b9264ddfc0fb37cabdc175843",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+        "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "40f5dc076e69635160b2bc80b0977d3cb33a090faee2873244524d9e16007ef2",
+        "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "b88526812c88b1cd113db1a0b6ad124426278e3dfa1c13262a6fddfc9c8a74ec"
+      }
+    },
+    "exact_readback": true
+  },
+  "files": [
+    {
+      "path": "anomaly-research/statistics/STATISTICS_AND_CAPACITY_RU.md",
+      "sha256": "e8e7aa3e96ea96018b9338a30ad85d9ad15753605af1ec0e9151819cca75d9eb"
+    },
+    {
+      "path": "anomaly-research/statistics/capacity.mjs",
+      "sha256": "fda377dbf5daecd3b267cbcfcecb68f9e4113337e03afc0585ab12fa74f135f5"
+    },
+    {
+      "path": "anomaly-research/statistics/capacity.test.mjs",
+      "sha256": "799118e543a5643c8e71ca0ff31b61cef950b86aecda754abd7c5acceaeab6a6"
+    },
+    {
+      "path": "anomaly-research/statistics/measured-scenarios.json",
+      "sha256": "6d7aeb01c7c141a5116d0b2e7a5a21aca87b95bb6b236cbeb96c44f807602f2c"
+    },
+    {
+      "path": "anomaly-research/statistics/outcomes.mjs",
+      "sha256": "da9ff05288c1e54927f89035117f18e5225682c10af7965e50d9742295981c72"
+    },
+    {
+      "path": "anomaly-research/statistics/outcomes.test.mjs",
+      "sha256": "510dd3f6d0d23041ddd8f8b728d7d156686dbc4b5ca98cd839b2080f44609550"
+    },
+    {
+      "path": "anomaly-research/statistics/replay-and-capacity.mjs",
+      "sha256": "d99b636690c32a09b4cce82a35992e531c03d2a8bddc8c39a008fb0fa7af6cc6"
+    },
+    {
+      "path": "anomaly-research/statistics/validation.txt",
+      "sha256": "30cb8963de4f507483d146f9a51c3091fdd0ee405b7b73930861646fc1b76962"
+    }
+  ],
+  "checks": {
+    "new_controlled_tests": 23,
+    "pass": 23,
+    "fail": 0,
+    "raw_output": "anomaly-research/statistics/validation.txt",
+    "new_integrated_card_watch_cost_measurement": [
+      10,
+      104,
+      128
+    ],
+    "accepted_26_observer_tests_and_CT_BR_replay_repeated": false
+  },
+  "actual_eligible_prospective_events": 0,
+  "actual_empirical_prediction_accuracy": null,
+  "ordinary_scenario": {
+    "D": 10,
+    "F": 20,
+    "expected_active": 104,
+    "HTTP_day": 121,
+    "one_event_row_W_day": 30132,
+    "checkpoint32_logical_W_day": 1332,
+    "serialized_estimate_bytes": 9081784
+  },
+  "peak_scenario": {
+    "D": 100,
+    "F": 200,
+    "expected_active": 1040,
+    "HTTP_day": 1201,
+    "one_event_row_W_day": 301320,
+    "checkpoint32_logical_W_day": 11304,
+    "serialized_estimate_bytes": 90817840
+  },
+  "capacity_limitations": [
+    "All event arrival/lifetime/page/rawbody/writecoefficients are scenario assumptions, not native measurements",
+    "Normal104active fits128 but900cards over90d exceed512prototypecardlimit",
+    "Actual common/provider/day/month/minute/manual residual and native SQL/CPU/physicalbytes unknown; no admission/activation grant",
+    "Pure reducer clones whole memory per event: O(E^2) per tick; do not port as production storage adapter"
+  ],
+  "effects": {
+    "provider_HTTP": 0,
+    "production_SQL": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "deploy": 0,
+    "production_imports": 0,
+    "main_weights_forms_limits_pauses_changed": false
+  },
+  "next": "Separate persistence/CAS/outbox/unknown-send/retention protection protocol proposal with controlled crash-boundary checks; no production schema/store activation. Coordinator owns real native persistence/admission and qualified firstknown/later-path evidence."
+}

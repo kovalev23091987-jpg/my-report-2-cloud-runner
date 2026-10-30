@@ -1,0 +1,137 @@
+{
+  "schema": "PUMP_ANALYTICS_H_QUALIFICATION_V1",
+  "base_main": "93faf0b17b3bd7018ef419d665a21819d2589056",
+  "code_head": null,
+  "ROOT_integrates": true,
+  "tests_pass": 27,
+  "tests_fail": 0,
+  "logical_42_wave_counter_oracle": true,
+  "saved_18_record_18_cohort_oracle_exact": true,
+  "actual_ROOT_MemoryStore_atomicPair_sync_callback_tested": true,
+  "commands": [
+    "node --test --test-reporter=tap pump-report/tests/analytics/materialized-summary.test.mjs",
+    "node pump-report/handoffs/analytics/package-h/run-control.mjs",
+    "node --check pump-report/tests/analytics/runtime-acceptance.test.mjs"
+  ],
+  "E_final_assembled_NOT_run": true,
+  "E_remaining_cases_adapted_to_public_summary_origin": true,
+  "G_E_test_baseline_exact": true,
+  "whole_A_to_G_replayed": false,
+  "api": [
+    "createMaterializedSummary",
+    "prepareOutcomeRecordEvent",
+    "foldPreparedOutcomeRecord",
+    "foldOutcomeRecord",
+    "dueMaturityWaves",
+    "advanceWaveMaturity",
+    "readMaterializedSummary"
+  ],
+  "wiring": "ROOT_WIRING_RU.md",
+  "readonly_dependencies": [
+    {
+      "path": "pump-report/analytics/summary.mjs",
+      "bytes": 11984,
+      "sha256": "3a34c86dc1df257eb845d41f847d7db753a2dd008d13ae8cdfda9d48d2b265ff"
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 4222,
+      "sha256": "b8d235eb79a13532006e1b28a0474e993e3f390e476ed5b068a6c0ea210ce169"
+    },
+    {
+      "path": "pump-report/runtime/store.mjs",
+      "bytes": 7530,
+      "sha256": "e94a8af042d00a6dea200229841712aeb2f6b9cdd5e969ff4b9dc31637ae1382"
+    }
+  ],
+  "files": [
+    {
+      "path": "pump-report/analytics/materialized-summary.mjs",
+      "bytes": 13470,
+      "sha256": "09bf72e16e73b1471db4309788fb2494477d241919da92278f1fe73427db8cce"
+    },
+    {
+      "path": "pump-report/tests/analytics/materialized-summary.test.mjs",
+      "bytes": 17424,
+      "sha256": "af01d5f2a21740a49d0185c959892aae687f318000d7be1ef009f0942d87d7bc"
+    },
+    {
+      "path": "pump-report/tests/analytics/runtime-acceptance.test.mjs",
+      "bytes": 15408,
+      "sha256": "1eb0b077891f55981af9af1a8a704a57ce9405c1ccfd2c2d34e7e7b5c6a358be"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/README_RU.md",
+      "bytes": 7358,
+      "sha256": "f555608b57033b863526060006ba7f301a56f43f8838977beacc15790266869d"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/ROOT_WIRING_RU.md",
+      "bytes": 13361,
+      "sha256": "f180ee80af96056fcd15b0390e0ce10b57d0c2169b85576087c0814becdf6265"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/adverse-affected.tap",
+      "bytes": 703,
+      "sha256": "1de574c157b39728e6fe4b1ad701b5139acaeb7f531dafbff34d0ad5a7a24a01"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/atomic-pair-affected.tap",
+      "bytes": 1692,
+      "sha256": "32c0b72d4905d97626198e40116699ed56993bbd54ba2489bbbbf5270b349b3b"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/authority.json",
+      "bytes": 3653,
+      "sha256": "26b0c4d0993f797bcf121a8d95e7c2f479cd06ae3432998dcdc80e3f73ac6533"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/baseline/runtime-acceptance.before-h.mjs",
+      "bytes": 13703,
+      "sha256": "48810e7e913680e5754e13cc63ca55e7aac583f6c27d6d284cc1b1a40a3a20d3"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/control-results.json",
+      "bytes": 75201,
+      "sha256": "d896f8f125605e634d163bbe592e061552c5ab49525fdcc99116473f6fafcd2c"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/run-control.mjs",
+      "bytes": 2639,
+      "sha256": "4f20fb4f197f0d8a7303a4a9197f048a2012864c8159d0806f985f4a323faa0b"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/runtime-acceptance.diff",
+      "bytes": 9139,
+      "sha256": "c6f693ec471201a428fa1e06992f215f4c49369cbb60779db063cd538427dad6"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/test-results-final.tap",
+      "bytes": 6852,
+      "sha256": "0a0a0d7e2973699a58c1c021fd787da52baf4d509eedeb76d151b982f9680852"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/test-results-initial.tap",
+      "bytes": 5277,
+      "sha256": "d972e4f627ccb72758863c0cacecb564c9a9bc8ec3a215cfd36acb94203c5a8c"
+    }
+  ],
+  "unsupported_batch_trace_fields": [
+    "full wave_keys list",
+    "input_records/invalid_record_details for every historical observation",
+    "readiness/holdout/training lists"
+  ],
+  "protocol_conflicts_rejected_without_state_mutation": [
+    "origin",
+    "instrument-asset",
+    "record ID byte conflict",
+    "explicit revision gap",
+    "clock rewind"
+  ],
+  "native_IO": 0,
+  "native_capacity_or_cost_proven": false,
+  "probability_pct": null,
+  "calibration_validated": false,
+  "runtime_source_contract_profile_mutated": false,
+  "status": "OFFLINE_H_CONSUMER_READY_FOR_ROOT_WIRING_AND_ASSEMBLED_E"
+}

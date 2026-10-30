@@ -1,0 +1,542 @@
+{
+  "schema": "REPORT2_REMAINING_VENUE_EXACT_FACT_PLAN_V1",
+  "working_base": "998020c564e0ff1d81046150df00d9ca2b1aedfe",
+  "state": "OFFLINE_PREFLIGHT_ONLY",
+  "assets": [
+    {
+      "contract": "TIA-USDT",
+      "project_identity": "celestia:native:mainnet",
+      "priority": 1
+    },
+    {
+      "contract": "APR-USDT",
+      "project_identity": "ethereum:0x5a9610919f5e81183823a2be4bd1beb2b4da2a20",
+      "priority": 2,
+      "conditional": true
+    }
+  ],
+  "prior_evidence": {
+    "documentation": "checkpoints/source-worker-global-source-docs-20261018/documentation-receipts.json",
+    "documentation_head": "14f9a82ccfb70b25c5ff28bb5c774299d165beef",
+    "asset_window_PR459": "f58b7e749c060e225ecd2075e716cb129d8d16d2",
+    "other_preflight_PR463": "a1e6ed22a3409825003802ddf971589a30f16bcc",
+    "accepted_original_reader_runtime_census_or_replay_repeated": false
+  },
+  "providers": [
+    {
+      "id": "BITMART",
+      "upstream": "BITMART_OFFICIAL",
+      "documentation_ids": [
+        "bitmartFutures",
+        "bitmartSpot"
+      ],
+      "symbol_candidates": {
+        "TIA": "TIAUSDT",
+        "APR": "APRUSDT"
+      },
+      "exact_listing_and_binding": false,
+      "metadata": {
+        "base": "https://api-cloud-v2.bitmart.com",
+        "path": "/contract/public/details",
+        "params": {
+          "symbol": "ONE_EXACT_CANDIDATE"
+        },
+        "per_asset_HTTP": 1,
+        "shared_all_catalog_not_default": true,
+        "fields": [
+          "symbol",
+          "product_type",
+          "base_currency",
+          "quote_currency",
+          "contract_size",
+          "price_precision",
+          "volume_precision",
+          "status",
+          "delist_time"
+        ],
+        "requirements": "product_type1 perpetual, exact crypto asset and USDT quote, statusTrading; not sampleDelisted, not name-only mapping.",
+        "rate": "12requests/2s/IP"
+      },
+      "identity": {
+        "base": "https://api-cloud.bitmart.com",
+        "path": "/account/v1/currencies",
+        "params": {
+          "currencies": "TIA,APR"
+        },
+        "max_explicit_currencies": 20,
+        "attempts_shared": 1,
+        "fields": [
+          "currency",
+          "name",
+          "network",
+          "contract_address"
+        ],
+        "documentation_access": "No KEYED label, no-key curl example and IP2/2s rate versus neighboring X-BM-KEY routes; actual unsigned access not tested.",
+        "rate": "2requests/2s/IP",
+        "binding_rule": "APR exactEthereum address; TIA explicit nativeCelestia relation. Null native contract alone is not acceptance/failure. Responses with aliases must explicitly bind to the futures base; network variants are not silently merged.",
+        "actual_binding": false
+      },
+      "native": {
+        "path": "/contract/public/kline",
+        "kind": "MARKET_PRICE_NOT_MARK_PRICE",
+        "params": {
+          "symbol": "VERIFIED_MARKET",
+          "step": 15,
+          "start_time": "REQUEST_PADDED24BAR_START_SECONDS",
+          "end_time": "E15_SECONDS"
+        },
+        "query_unit": "SECONDS_EXPLICIT",
+        "row_limit": 500,
+        "limit_parameter_documented": false,
+        "steps_minutes": [
+          1,
+          3,
+          5,
+          15,
+          30,
+          60,
+          120,
+          240,
+          360,
+          720,
+          1440,
+          4320,
+          10080
+        ],
+        "required_closed_rows": 21,
+        "response_fields": [
+          "timestamp",
+          "open_price",
+          "close_price",
+          "high_price",
+          "low_price",
+          "volume"
+        ],
+        "volume": "Described Turnover without unit; not base volume or USDT until actual units close.",
+        "clock": "Response timestamp is Time Window; query seconds explicit, actual returned unit/grid still require validation. Illustrative1662518160/1662518161 rows do not prove closed step5 grid.",
+        "rate": "12requests/2s/IP"
+      },
+      "minute": {
+        "same_path": true,
+        "step": 1,
+        "target_union_max": 29,
+        "padding_limit_rows": 40,
+        "params": "Start two minutes before earliest exact target window, bounded endE1 seconds; do not send an undocumented limit40."
+      },
+      "optional_trades": {
+        "path": "/contract/public/market-trade",
+        "limit": 100,
+        "fields": [
+          "symbol",
+          "price",
+          "qty",
+          "quote_qty",
+          "time",
+          "is_buyer_maker"
+        ],
+        "units": "qty is coin, quote_qty is USDT explicitly; never apply contract_size again.",
+        "side": "is_buyer_maker true means buyer passive, taker sell; false means taker buy, only actual boolean accepted.",
+        "time_unit": "UNQUALIFIED_IN_READ_FIELD_TABLE",
+        "individual_fill_ID": false,
+        "response_trace_not_fill_ID": true,
+        "rate": "12requests/2s/IP",
+        "whole_window": false
+      },
+      "optional_OI": {
+        "path": "/contract/public/open-interest",
+        "rate": "2requests/2s/IP",
+        "source_clock_and_units_unqualified": true,
+        "no_LIQ_level_claim": true
+      },
+      "first_N10_conditional_HTTP": 4,
+      "second_asset_increment_if_identity_batch_exact_fresh": 3,
+      "complete_first_HTTP_bound": null,
+      "native_SQL_R_W_bound": null,
+      "disposition": "Second promising documented identity route after CoinEx; metadata/identity are not current market facts. Candles may first provide OHLC only; turnover units and recent trade time remain open."
+    },
+    {
+      "id": "BITUNIX",
+      "upstream": "BITUNIX_OFFICIAL",
+      "documentation_ids": [
+        "bitunixKline"
+      ],
+      "new_documentation_ids": [
+        "bitunixPairsDoc",
+        "bitunixIntroDoc"
+      ],
+      "symbol_candidates": {
+        "TIA": "TIAUSDT",
+        "APR": "APRUSDT"
+      },
+      "exact_listing_and_binding": false,
+      "metadata": {
+        "base": "https://fapi.bitunix.com",
+        "path": "/api/v1/futures/market/trading_pairs",
+        "params": {
+          "symbols": "TIAUSDT,APRUSDT"
+        },
+        "attempts_shared": 1,
+        "fields": [
+          "symbol",
+          "base",
+          "quote",
+          "basePrecision",
+          "quotePrecision",
+          "symbolStatus",
+          "isApiSupported",
+          "launchTime",
+          "delistTime"
+        ],
+        "requirements": "Exact crypto identity and quoteUSDT; symbolStatusOPEN, notCANCEL_ONLY/STOP; API flag preserved. No chain/token address in this schema.",
+        "rate": "10requests/s/IP"
+      },
+      "identity": {
+        "route": null,
+        "actual_binding": false,
+        "complete_HTTP_cost": null
+      },
+      "access": "Public-interface section explicitly permits requests without auth; broad all-header section must not cause a key request for a public route. Actual access not tested.",
+      "native": {
+        "base": "https://fapi.bitunix.com",
+        "path": "/api/v1/futures/market/kline",
+        "params": {
+          "symbol": "VERIFIED_MARKET",
+          "interval": "15m",
+          "limit": 24,
+          "type": "LAST_PRICE",
+          "startTime": "REQUEST_PADDED24BAR_START_MS",
+          "endTime": "E15_MS"
+        },
+        "query_unit": "MILLISECONDS_EXPLICIT",
+        "row_limit": 200,
+        "required_closed_rows": 21,
+        "closed_only_documented": true,
+        "open_time_not_close_time": true,
+        "native3m": false,
+        "fields": [
+          "open",
+          "high",
+          "low",
+          "close",
+          "baseVol",
+          "quoteVol",
+          "time"
+        ],
+        "unit_contract": "Table baseVol=base volume,quoteVol=quote turnover. Exampleprice60000/baseVol60000/quoteVol1 is inconsistent. Preserve raw fields; do not invert by example or assert volume closure.",
+        "rate": "10requests/s/IP"
+      },
+      "minute": {
+        "same_path": true,
+        "interval": "1m",
+        "limit": 40,
+        "type": "LAST_PRICE",
+        "target_union_max": 29,
+        "startTime": "TWO_MINUTES_BEFORE_EARLIEST_EXACT_TARGET_MS"
+      },
+      "trades": {
+        "documented_route_in_read_material": null,
+        "individual_fill_ID": null,
+        "first_packet_HTTP": 0,
+        "no_fabricated_taker_or_OI": true
+      },
+      "first_N10_conditional_HTTP": 4,
+      "second_asset_increment_if_metadata_batch_exact_fresh": 3,
+      "complete_first_HTTP_bound": null,
+      "native_SQL_R_W_bound": null,
+      "disposition": "Potential independent closed OHLC first; exact native identity and actual contradictory volume field behavior unresolved. No trade/OI capability manufactured."
+    },
+    {
+      "id": "WHITEBIT",
+      "upstream": "WHITEBIT_OFFICIAL",
+      "documentation_ids": [
+        "whitebitOverview",
+        "whitebitRate",
+        "whitebitKline",
+        "whitebitTrades",
+        "whitebitIndex"
+      ],
+      "new_documentation_ids": [
+        "whitebitMarketDoc",
+        "whitebitAssetDoc",
+        "whitebitFuturesListDoc"
+      ],
+      "symbol_candidates": null,
+      "exact_listing_and_binding": false,
+      "metadata": {
+        "base": "https://whitebit.com",
+        "path": "/api/v4/public/markets",
+        "attempts_shared": 1,
+        "fields": [
+          "name",
+          "stock",
+          "money",
+          "type",
+          "isTradFiFutures",
+          "tradesEnabled",
+          "minAmount",
+          "stockPrec",
+          "moneyPrec"
+        ],
+        "requirements": "Select exact actual metadata name, crypto futures type, moneyUSDT, trading enabled, isTradFiFuturesfalse. Do not construct TIA_USDT or TIA_PERP or count omitted regionalTradFi as missingcrypto.",
+        "rate": "Endpoint2000requests/10s/IP; broader20000 is not this endpoint grant."
+      },
+      "identity": {
+        "auxiliary_path": "/api/v4/public/assets",
+        "attempts_if_admitted": 1,
+        "fields": [
+          "name",
+          "unified_cryptoasset_id",
+          "networks"
+        ],
+        "chain_contract_address_in_read_schema": false,
+        "status": "AUXILIARY_NAME_UCID_NETWORKS_NOT_YET_EXACT_NATIVE_BINDING",
+        "complete_HTTP_cost": null,
+        "actual_binding": false
+      },
+      "futures_auxiliary": {
+        "path": "/api/v4/public/futures",
+        "separate_optional_attempt": 1,
+        "fields": [
+          "ticker_id",
+          "stock_currency",
+          "money_currency",
+          "product_type",
+          "open_interest",
+          "mark_price",
+          "index_price"
+        ],
+        "not_default_duplicate_metadata": true,
+        "source_clock_for_fresh_OI_not_presumed": true
+      },
+      "native": {
+        "path": "/api/v1/public/kline",
+        "method": "GET",
+        "params": {
+          "market": "EXACT_VERIFIED_METADATA_NAME",
+          "interval": "15m",
+          "end": "E15_SECONDS",
+          "limit": 24
+        },
+        "query_unit": "SECONDS_EXPLICIT",
+        "row_limit": 1440,
+        "required_closed_rows": 21,
+        "limit_semantics": "When limit set, server derives start=end-limit*interval; do not claim separately supplied start wins.",
+        "response_order": [
+          "time_seconds",
+          "open",
+          "close",
+          "high",
+          "low",
+          "volume_stock",
+          "volume_money"
+        ],
+        "ordinary_OHLC_array_order_not_binance": true,
+        "native3m": true,
+        "rate": "1000requests/10s/IP",
+        "failure": "HTTP200 can carry successfalse/resultnull validationerror; never accept that as empty valid facts."
+      },
+      "minute": {
+        "same_path": true,
+        "interval": "1m",
+        "end": "E1_SECONDS",
+        "limit": 40,
+        "target_union_max": 29
+      },
+      "optional_trades": {
+        "path": "/api/v4/public/trades/{market}",
+        "limit_parameter": false,
+        "fixed_max_rows": 100,
+        "individual_fill_ID": "tradeID",
+        "clock": "trade_timestamp secondsUTC",
+        "standard_base_quantity": "quote_volume",
+        "standard_quote_quantity": "base_volume",
+        "side": "buy removes ask/sell removes bid per document",
+        "rpi": "Trades may include RPI; publicbook excludesRPI. Do not force equality or call missingbookquantity fake.",
+        "rate": "2000requests/10s/IP",
+        "whole_window": false
+      },
+      "first_N10_conditional_HTTP": 4,
+      "second_asset_increment_if_shared_metadata_exact_fresh": 3,
+      "complete_first_HTTP_bound": null,
+      "native_SQL_R_W_bound": null,
+      "disposition": "Strong documented candle/trade units and realID for limited sample, but exact crypto market identity first. Public snapshots/reference caching does not supply publication clocks. Regional451 is a result, not a license to switch geographic domains automatically."
+    },
+    {
+      "id": "BITSTAMP",
+      "upstream": "BITSTAMP_OFFICIAL",
+      "documentation_ids": [
+        "bitstampDocs"
+      ],
+      "symbol_candidates": null,
+      "exact_listing_and_binding": false,
+      "metadata": {
+        "base": "https://www.bitstamp.net",
+        "path": "/api/v2/markets/",
+        "attempts_shared": 1,
+        "fields": [
+          "market_symbol",
+          "base_currency",
+          "counter_currency",
+          "market_type",
+          "trading",
+          "payoff_type",
+          "contract_size",
+          "underlying_asset",
+          "asset_class"
+        ],
+        "requirements": "Read actual market_symbol/type/quote and crypto underlying. Catalog includes market_type metadata; do not assume allspot or that our USDT futures exist. USD/EUR/USDC remain distinct context, no USDT substitution."
+      },
+      "identity": {
+        "auxiliary_path": "/api/v2/currencies/",
+        "attempts_if_admitted": 1,
+        "fields": [
+          "currency",
+          "name",
+          "type",
+          "networks.network"
+        ],
+        "contract_address_in_read_response": false,
+        "actual_binding": false,
+        "complete_HTTP_cost": null
+      },
+      "native": {
+        "path": "/api/v2/ohlc/{market_symbol}/",
+        "params": {
+          "step": 900,
+          "end": "E15_SECONDS",
+          "limit": 24,
+          "exclude_current_candle": true
+        },
+        "query_unit": "SECONDS_EXPLICIT",
+        "row_limit": 1000,
+        "required_closed_rows": 21,
+        "steps_seconds": [
+          60,
+          180,
+          300,
+          900,
+          1800,
+          3600,
+          7200,
+          14400,
+          21600,
+          43200,
+          86400,
+          259200
+        ],
+        "start_end_semantics": "If both start and end posted, end is used. Choose end+limit; retain exact local target closed grid.",
+        "response_fields": [
+          "timestamp",
+          "open",
+          "high",
+          "low",
+          "close",
+          "volume"
+        ],
+        "volume_unit_status": "Generic volume field does not by itself close unknown derivative multiplier/base/quote mapping.",
+        "native3m": true,
+        "native_weekly": false
+      },
+      "minute": {
+        "same_path": true,
+        "step": 60,
+        "limit": 40,
+        "end": "E1_SECONDS",
+        "exclude_current_candle": true,
+        "target_union_max": 29
+      },
+      "optional_trades": {
+        "path": "/api/v2/transactions/{market_symbol}/",
+        "params": {
+          "time": "minute"
+        },
+        "time_enum": [
+          "minute",
+          "hour",
+          "day"
+        ],
+        "individual_fill_ID": "tid",
+        "raw_fields": [
+          "date",
+          "tid",
+          "price",
+          "amount",
+          "type"
+        ],
+        "taker_side_and_exact_time_unit_not_qualified_from_sample": true,
+        "row_upper_bound_not_documented": true,
+        "HTTP_attempt_max_if_admitted": 1,
+        "whole_window": false
+      },
+      "weekly_alternative": {
+        "enabled_in_first_packet": false,
+        "kind": "EXPLICIT_UTC_CALENDAR_AGGREGATE_NOT_PROVIDER_NATIVE_WEEK",
+        "daily_rows_for21weeks": 147,
+        "daily_rows_to_cover_weekly_and_current_daily_baseline_with_padding": 154,
+        "request_count_if_history_available": 1,
+        "requires": "Exact7consecutive closed daily bars per week, explicit UTC research boundary and units, no claiming provider-native weeklyoffset or earliestfirstknown."
+      },
+      "rate": {
+        "HTTP_per_second": 400,
+        "HTTP_per_10minutes": 10000,
+        "both_apply": true,
+        "daily_monthly_project_budget": null
+      },
+      "first_N10_conditional_HTTP": 4,
+      "second_asset_increment_if_shared_metadata_exact_fresh": 3,
+      "complete_first_HTTP_bound": null,
+      "native_SQL_R_W_bound": null,
+      "disposition": "Only exact current crypto/quote/market role if actually available. Useful alternatequote spot context is separately labeled and NONBLOCKING; no guessed USDT future or nativeweekly. Commercialdata terms in frozen documentation are retained; no agreement/account/payment made."
+    }
+  ],
+  "time_contract": {
+    "E1": "Admitted client cutoff floored minute, not provider publication.",
+    "E15": "floor(E1/900000)*900000 nativeboundary separate fromsliding.",
+    "two_windows": "Nativeevent[E15-15m,E15) and sliding[E1-15m,E1), same1mreply may cover both, not2upstreams.",
+    "native_baseline": "20prior+1event exactclosednativebars; historicalexamples never currentcoverage.",
+    "firstknown": "Original acquisition time retained. Later backfill cannot be assigned saved original canonical observation time.",
+    "timestamp_and_ID": "Raw decimal lexical strings/integers before unsafeNumber; timestamps never substituted as IDs.",
+    "weekly": "Validate actual grid/timezone/native offset; a derived researchUTC week is labeled separately."
+  },
+  "cost": {
+    "default_first": "ONE_PROVIDER_TIA_FUTURES_ONLY_AFTER_CENTRAL_ADMISSION",
+    "conditional_minimal_N10_HTTP": 4,
+    "formula": "metadata1+identity1_if_one_boundedroute_exists+native15m1+minute1; conditional only.",
+    "optional_trade_HTTP": 1,
+    "optional_spot_nonblocking": true,
+    "all_four_oneasset_minimal_conditional_HTTP": 16,
+    "all_four_with_one_optional_trade_conditional_HTTP": 20,
+    "full_actual_HTTP_upper_bound": null,
+    "SQL": null,
+    "R": null,
+    "W": null,
+    "execution_allowed": false,
+    "retries": 0,
+    "pagination": 0,
+    "source_provider_IP_common_daily_monthly_manual_qualified": false,
+    "BitMart_identity_different_host_same_upstream_and_quota": true,
+    "protected_main_manual_first": true,
+    "old15unknown_and_spent_reserves_preserved": true,
+    "new_native_unknown_stops_all_followups": true
+  },
+  "consumer": {
+    "N10": "Potential exact separate native and sliding candle facts after actualbinding/schema/clocks and connectedconsumer qualification.",
+    "N12": "Only bounded documented sample where side/ID/time/units close; partialsample is not fullCVD.",
+    "N05": "First packet not exact4h raw flow; never reduce completeness guard to consume it.",
+    "N15": "Asset metadata and sectorlabels are not independent peer-return cohort.",
+    "LIQ": "OI/volume/book not future positions or proof of liquidation levels; main LIQ remains integrated.",
+    "third_worker": "Only sourcefact proposal; anomaly/history/statistics/watch/outbox paths untouched.",
+    "main_score_direction_entry_effect": 0
+  },
+  "effects": {
+    "market_provider_HTTP": 0,
+    "native_SQL": 0,
+    "runtime_or_shared_changes": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "new_numeric_facts": 0,
+    "accepted_tests_or_census_repeated": 0,
+    "strategy_weights_forms_pauses_caps_changed": false
+  }
+}

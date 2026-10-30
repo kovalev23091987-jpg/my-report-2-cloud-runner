@@ -1,0 +1,11 @@
+# ONE future connected entry
+
+Current source factory: `loadRunnerAnomalyDueParentCapability({runtime_root,baseline_runtime_root,repo_root})` returns `{install,kernel,guard,http,adapter,binding}`. It does not run any component or create IO. Both roots END `src`; parents FULL618 staged trees with exact agreedTHIRD Worker+consumer+emitter both, only proposed runner differs. Installs existing API plus optional DUE and typed defer; THIRD new consumer case uses this NEW factory, never SOURCE run component as helper and never old604/605 components.
+
+ONE prepared source export: `await runAnomalyDueParentConnected({runtime_root,baseline_runtime_root,repo_root})`. No test registration/autorun.12 NEW CONTROLLED groups. Actual RemoteD1→LocalSQLite only at future root qualification; no native/provider/MAIN/TG. Same global Date.now/fetch restored finally; invoke serially. Save returned JSON immediately before expected12/assert/next component. On error save `completed_new_due_parent_groups`; don't hide partial list. No author execution/Node/syntax/import/gitapply.
+
+Source before is current606 c72f8f26, NOT old480f. All public runtime dependencies and fullROOT retained/privatecanonical pinned before imports; no private payload imports or extraction. Public migration is a CONTROLLED fixture.
+
+THIRD actual consumer adds `src/anomaly-native-due-watch.mjs` and Worker callsite. This NEW SOURCE factory is prebound BEFORE publication to FULL618 pair/617otherssame and exactthird Worker5d97133c/consumer224a90f1/emitter82f051eb. ROOT can use this original newfactory directly if agreedbytes unchanged. Any later root/third target change requires explicit own-scope pre-FIRST fullrecipe/pins/link rebind preserving immutable originals; never count/hash waiver or old component replay. Sourcefunction logic exact unless concrete new defect.
+
+One common combines SOURCE due capability and THIRD actual due consumer, each componentJSON saved BEFORE wrapper assertions/later component, final cleanup receipt outside artifact. Source12 once, THIRD new groups once. Accepted60620/12/8/59916/LIQ12/56/empty10/read4 and suites are not imported or replayed. Policy absent/defaultOFF remains no DUE/no shaping/SQL; this case can't authorize native install/cost/pendingjournal/independent105/TG/SENT.

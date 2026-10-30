@@ -1,0 +1,49 @@
+-- PROPOSAL ONLY. NOT EXECUTED, NOT APPLIED, NOT NATIVE-QUALIFIED.
+-- Target: concrete stale-A/B-before-fresh-C counterexample. Keep LIMIT 2,
+-- current partial index, per-day 288 polls /3 kicks and every shared cap.
+-- Moving clock checks before LIMIT may scan more indexed candidates.
+-- Keeping LIMIT 2 does not prove the same physical scan cost.
+-- Numeric JSON integers also accept real/exponent spellings with an exact
+-- integer value; string clocks remain rejected. BETWEEN bounds ensure JS-safe
+-- range because now_ts is already checked as Number.isSafeInteger.
+-- Native read/write/CPU, index plan, day/manual reserve admission remain OPEN.
+-- Retain the existing JavaScript identity/price/SENT validators after selection.
+
+-- A. Insert these predicates in claimTriggerKick's EXISTING SELECT WHERE,
+-- before ORDER BY expires_ts,due_ts LIMIT 2. Parameter ?1 stays now_ts.
+AND json_extract(t.last_result,'$.source')='HTX_OFFICIAL_COLLECTOR'
+AND json_type(t.last_result,'$.checked_ts') IN ('integer','real')
+AND json_extract(t.last_result,'$.checked_ts')=CAST(json_extract(t.last_result,'$.checked_ts') AS INTEGER)
+AND json_type(t.last_result,'$.source_ts') IN ('integer','real')
+AND json_extract(t.last_result,'$.source_ts')=CAST(json_extract(t.last_result,'$.source_ts') AS INTEGER)
+AND json_type(t.last_result,'$.observed_ts') IN ('integer','real')
+AND json_extract(t.last_result,'$.observed_ts')=CAST(json_extract(t.last_result,'$.observed_ts') AS INTEGER)
+AND json_extract(t.last_result,'$.checked_ts') BETWEEN ?1-180000 AND ?1
+AND json_extract(t.last_result,'$.source_ts') BETWEEN ?1-180000 AND ?1
+AND json_extract(t.last_result,'$.observed_ts') BETWEEN ?1-180000 AND ?1
+AND json_extract(t.last_result,'$.checked_ts')>=t.created_ts
+AND json_extract(t.last_result,'$.source_ts')>=t.created_ts
+AND json_extract(t.last_result,'$.observed_ts')>=t.created_ts
+
+-- B. Analogous insertion in admitTriggeredRecheck's EXISTING SELECT WHERE.
+-- Keep all exact original-SENT lifecycle/binding predicates, NOT EXISTS
+-- consumed admission, optional exact task_id and ORDER BY/LIMIT 2.
+-- Its original lower clock anchor is b.observed_ts, not t.created_ts.
+AND json_extract(t.last_result,'$.source')='HTX_OFFICIAL_COLLECTOR'
+AND json_type(t.last_result,'$.checked_ts') IN ('integer','real')
+AND json_extract(t.last_result,'$.checked_ts')=CAST(json_extract(t.last_result,'$.checked_ts') AS INTEGER)
+AND json_type(t.last_result,'$.source_ts') IN ('integer','real')
+AND json_extract(t.last_result,'$.source_ts')=CAST(json_extract(t.last_result,'$.source_ts') AS INTEGER)
+AND json_type(t.last_result,'$.observed_ts') IN ('integer','real')
+AND json_extract(t.last_result,'$.observed_ts')=CAST(json_extract(t.last_result,'$.observed_ts') AS INTEGER)
+AND json_extract(t.last_result,'$.checked_ts') BETWEEN ?1-180000 AND ?1
+AND json_extract(t.last_result,'$.source_ts') BETWEEN ?1-180000 AND ?1
+AND json_extract(t.last_result,'$.observed_ts') BETWEEN ?1-180000 AND ?1
+AND json_extract(t.last_result,'$.checked_ts')>=b.observed_ts
+AND json_extract(t.last_result,'$.source_ts')>=b.observed_ts
+AND json_extract(t.last_result,'$.observed_ts')>=b.observed_ts
+
+-- These are two ALTERNATIVE insertion sites, not one runnable SQL script.
+-- This repairs the demonstrated stale-clock blockage only. Two fresh but
+-- invalid identity/publication candidates could still consume LIMIT 2.
+-- No global queue-fairness or native cost claim follows from this proposal.

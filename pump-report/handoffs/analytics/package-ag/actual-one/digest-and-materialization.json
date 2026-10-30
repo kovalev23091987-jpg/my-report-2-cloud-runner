@@ -1,0 +1,145 @@
+{
+  "schema": "AG_ACTUAL_DIGEST_AND_PURE_MATERIALIZATION_V1",
+  "exact_private_digests": {
+    "envelope": {
+      "sha256": "35de0e81d44b3468dd6b4ec80d885753cf01070550c247871185818d305f2de2",
+      "bytes": 1306692
+    },
+    "confirmation": {
+      "sha256": "9b83f8149eb32068a356c07e9da59f83769d507d63beeb8b92eb26d1c904c13e",
+      "bytes": 5120
+    },
+    "bodies": {
+      "sha256": "864dd1c1adf969dc58431121171fd492f4455e4872b615ffe19118c03ccba3f5",
+      "bytes": 667428
+    },
+    "artifact": {
+      "sha256": "796d01a0bbac4adaf6b481f4c2847eb4fc03b0a99b69964d2364f01b3eec984d",
+      "bytes": 2385588
+    }
+  },
+  "implementation_sha256": "b784243c8865ff1567e84bc4d5be2bb4517eb0776ed8f11383095844af693b5e",
+  "original_hashes": {
+    "analysis": "761b9688e7445409e8acd9e0f532422f787eb28d7618c25c10d22564096b08ee",
+    "input": "90f695fdd9d3797483fcc2159882c9f45efbfff6ec7b3352bbabba3e8a827a4d",
+    "original": "983a902ac64d68ef1ddc3d3d7c712ec0ca3f9cdd1619ed38d979f6a4287a3ba1"
+  },
+  "source_body_basis": "CANONICAL_JSON_STRINGIFY_OF_ACTUAL_SAVED_BROKER_PARSED_FULL_ENVELOPE_NOT_ORIGINAL_WIRE_BYTES",
+  "supplied_analysis_count": 1,
+  "source_binding_count": 5,
+  "private_body_count": 4,
+  "modules": [
+    {
+      "path": "profile/start-v1.mjs",
+      "sha256": "cfec445eb226f2bb109817474d0c0280adc70209fb2ec125288e44f1213ecdf2",
+      "bytes": 1774,
+      "imports": []
+    },
+    {
+      "path": "analytics/index.mjs",
+      "sha256": "f04b32435237c5adae628f47928e8325378a162955cf586264be24e70e5d234a",
+      "bytes": 16404,
+      "imports": [
+        "../contracts/index.mjs",
+        "../profile/start-v1.mjs",
+        "./math.mjs",
+        "./movement.mjs",
+        "./liquidity.mjs",
+        "./zones.mjs",
+        "./context.mjs",
+        "./day-growth.mjs",
+        "./manual-text.mjs",
+        "./presentation.mjs",
+        "./outcome.mjs"
+      ]
+    },
+    {
+      "path": "analytics/outcome.mjs",
+      "sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753",
+      "bytes": 9914,
+      "imports": [
+        "../contracts/index.mjs",
+        "./math.mjs"
+      ]
+    },
+    {
+      "path": "analytics/math.mjs",
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "bytes": 4477,
+      "imports": [
+        "../contracts/index.mjs"
+      ]
+    },
+    {
+      "path": "contracts/index.mjs",
+      "sha256": "955515b1709ace83b196dad1c09452d873fe3a6ac03e89b3406b8585dfd0fa08",
+      "bytes": 6230,
+      "imports": []
+    },
+    {
+      "path": "analytics/presentation.mjs",
+      "sha256": "376942638c3e6aefe9d638a199b70820eb648a2a1b2951e20867d45ac61c1451",
+      "bytes": 9770,
+      "imports": [
+        "../contracts/index.mjs",
+        "./math.mjs"
+      ]
+    },
+    {
+      "path": "analytics/manual-text.mjs",
+      "sha256": "9bd30e2665f159e4077fad8c02d4b19596d195472e45d560e983321ff755248f",
+      "bytes": 6627,
+      "imports": [
+        "../contracts/index.mjs",
+        "./presentation.mjs"
+      ]
+    },
+    {
+      "path": "analytics/day-growth.mjs",
+      "sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1",
+      "bytes": 3782,
+      "imports": [
+        "../contracts/index.mjs",
+        "../profile/start-v1.mjs",
+        "./math.mjs"
+      ]
+    },
+    {
+      "path": "analytics/context.mjs",
+      "sha256": "6b63bf171033e945fd5f2f58c5a144209f83f9973b87d30077f9e1bb1c111673",
+      "bytes": 9360,
+      "imports": [
+        "../contracts/index.mjs"
+      ]
+    },
+    {
+      "path": "analytics/zones.mjs",
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+      "bytes": 7668,
+      "imports": [
+        "../contracts/index.mjs",
+        "./math.mjs"
+      ]
+    },
+    {
+      "path": "analytics/liquidity.mjs",
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a",
+      "bytes": 3326,
+      "imports": [
+        "../contracts/index.mjs"
+      ]
+    },
+    {
+      "path": "analytics/movement.mjs",
+      "sha256": "a472e038a54ca2518f0660a9d7d22d1258f1e862202ead010a23e79c3f1604a5",
+      "bytes": 25341,
+      "imports": [
+        "../contracts/index.mjs",
+        "./math.mjs"
+      ]
+    }
+  ],
+  "runtime_SOURCE_store_budget_delivery_imports": 0,
+  "source_provider_SQL_TG_deploy": 0,
+  "raw_private_output": false
+}

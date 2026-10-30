@@ -1,0 +1,63 @@
+{
+  "schema": "PUBLIC_VENUE_HEALTH_RETAINED_RAW_REPLAY_V1",
+  "contract": "DASH-USDT",
+  "original_source_run": 38138608166,
+  "window_end_ts": 1791720960000,
+  "observed_ts": 1791720978000,
+  "source_files": [
+    {
+      "role": "catalog",
+      "path": "checkpoints/n05-bitfinex-pilot-38138499328/BITFINEX-CURRENT-CATALOG.json.gz",
+      "body_sha256": "13404655b75ab9df0bb9b209efb03417ea13677cdf94259d57fa64f2f46b20fc"
+    },
+    {
+      "role": "candles",
+      "path": "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-DASH-CANDLES1M.json.gz",
+      "body_sha256": "54b8d1d67d8402e50fad6bbac90af3d6f65074f74de538fa17b994100da0a908"
+    },
+    {
+      "role": "trades",
+      "path": "checkpoints/n05-bitfinex-pilot-38138608166/BITFINEX-DASH-TRADES10000.json.gz",
+      "body_sha256": "3417b696ab15426ac150e93e0df621115b76731fc410330ed08f682f1b877641"
+    },
+    {
+      "role": "identity",
+      "path": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+      "body_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+    }
+  ],
+  "controlled_original_source_count_replay": true,
+  "venue_rows": [
+    {
+      "source_id": "N05_PUBLIC_VENUE:BINANCE",
+      "status": "NO_CURRENT_FLOW",
+      "actual_http": 2,
+      "evidence_rows": 0,
+      "valid_rows": 0,
+      "decision_usable_rows": 0
+    },
+    {
+      "source_id": "N05_PUBLIC_VENUE:BITFINEX",
+      "status": "CLOSED",
+      "actual_http": 3,
+      "evidence_rows": 1,
+      "valid_rows": 1,
+      "decision_usable_rows": 0
+    }
+  ],
+  "aggregate": {
+    "source_id": "EXTERNAL_N05_FLOW",
+    "status": "CLOSED",
+    "actual_http": 5,
+    "operational_class": "CONTEXT_AVAILABLE",
+    "evidence_rows": 1,
+    "valid_rows": 1,
+    "decision_usable_rows": 0
+  },
+  "live_sourceHTTP": 0,
+  "live_D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "clocks_refreshed": false,
+  "new_current105_coverage_proven": false
+}

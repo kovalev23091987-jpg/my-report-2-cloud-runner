@@ -1,0 +1,69 @@
+--- runtime-acceptance.before-h.mjs
++++ pump-report/tests/analytics/runtime-acceptance.test.mjs
+@@ -41,41 +41,47 @@
+ const signalKey=a=>'pump:signal:'+a.instrument.instrument_id+':'+a.wave_id;
+ async function dueSignal(f){
+   const key='pump:signal:ARTIFICIAL_E_DUE',t0=f.clock()-5*60*MINUTE;
+-  await f.store.set(key,{signal_id:key,instrument:f.instruments[0],wave_id:'ARTIFICIAL_E_DUE',t0,reference_price:100,rules_version:'ARTIFICIAL',mode:'AUTO',map_mode:'WITHOUT_MAP',deadline_ts:t0+4*60*MINUTE});
++  const origin={instrument_id:f.instruments[0].instrument_id,asset_id:f.instruments[0].asset_id,signal_id:key,wave_id:'ARTIFICIAL_E_DUE',t0,reference_price:100,rules_version:'ARTIFICIAL',profile_version:'ARTIFICIAL',mode:'AUTO',map_mode:'NO_MAP',evidence_class:'ARTIFICIAL',ready:true};
++  await f.store.set(key,{...origin,instrument:f.instruments[0],origin,publication:{state:'UNKNOWN'},map_mode:'WITHOUT_MAP',deadline_ts:t0+4*60*MINUTE});
+   await f.store.set('pump:outcomes-pending',[key]);
+ }
+ 
+ test('E01 real runner checks three ready candidates without a fixed-two ceiling',async()=>{
+   const f=harness({count:3}),r=await f.runner.execute({mode:'AUTO',run_id:'E01'});assert.equal(r.checked.length,3);assert.equal(r.checked.filter(x=>x.analysis.ready).length,3);assert.equal(f.sends.length,3);
+   assert.equal(new Set(r.checked.map(x=>x.analysis.instrument.instrument_id)).size,3);assert.equal(f.budget.summary().total,0,'sources are in-memory artificial facts, no provider attempt');
++  const summary=await f.runner.getSummary();assert.equal(summary.independent_waves,3);assert.equal(summary.publication_counts.sent,3);
+ });
+ test('E02 manual below every automatic threshold uses the real core and can publish a qualified plan',async()=>{
+   const f=harness({weak:[0]}),r=await f.runner.execute({mode:'MANUAL',symbol:'COIN0',request_id:'E02',run_id:'E02'}),a=r.manual_result.analysis;
+   assert.equal(a.current_threshold_passed,false);assert.equal(a.automatic_eligible,false);assert.equal(a.ready,true,JSON.stringify(a.reasons));assert.equal(r.manual_result.delivery.state,'SENT');assert.equal(f.sends.length,1);
++  const summary=await f.runner.getSummary();assert.equal(summary.cohorts.length,1);assert.equal(summary.cohorts[0].mode,'MANUAL');assert.equal(summary.cohorts[0].map_mode,'NO_MAP');
+ });
+ test('E03 retained wave survives a five-minute retreat below thresholds and preserves published original t0/P0',async()=>{
+   const f=harness(),first=await f.runner.execute({mode:'AUTO',run_id:'E03_FIRST'}),a=first.checked[0].analysis,original=await f.store.get(signalKey(a));
+   f.advance(5,105);f.models.get(f.instruments[0].instrument_id).dayGrowth=5;
+   const second=await f.runner.execute({mode:'AUTO',run_id:'E03_SECOND'}),b=second.checked[0].analysis,saved=await f.store.get(signalKey(b));
+   assert.equal(b.current_threshold_passed,false);assert.equal(b.automatic_eligible,true);assert.equal(b.ready,true,JSON.stringify(b.reasons));assert.equal(b.wave_id,a.wave_id);assert.equal(b.next_wave.expires_ts,a.next_wave.expires_ts);assert.equal(b.reference_price,105);
+-  assert.equal(saved.t0,original.t0);assert.equal(saved.reference_price,original.reference_price);assert.equal(saved.deadline_ts,original.deadline_ts);assert.equal(f.sends.length,1);
++  assert.equal(saved.origin.t0,original.origin.t0);assert.equal(saved.origin.reference_price,original.origin.reference_price);assert.equal(saved.origin.map_mode,original.origin.map_mode);assert.equal(saved.deadline_ts,original.deadline_ts);assert.equal(f.sends.length,1);assert.equal((await f.runner.getSummary()).independent_waves,1);
+ });
+ test('E04 no-map budget absence remains nonblocking through core, stored text, dispatch and receipt',async()=>{
+   const f=harness(),r=await f.runner.execute({mode:'AUTO',run_id:'E04'}),a=r.checked[0].analysis,id=r.checked[0].delivery.card_id,card=await f.store.get('pump:card:'+id);
+   assert.equal(a.ready,true);assert.equal(a.liquidations.map_mode,'WITHOUT_MAP');assert.equal(card.state,'SENT');assert.equal(card.text,f.sends[0].text);assert.equal(card.text_hash,f.sends[0].text_hash);assert.equal(card.receipt.message_id,'101');assert.match(card.text,/Карта ликвидаций недоступна/);
++  const summary=await f.runner.getSummary();assert.equal(summary.publication_counts.sent,1);assert.equal(summary.cohorts[0].map_mode,'NO_MAP');
+ });
+ test('E05 AUTO and statistics make zero source calls outside the Moscow daytime window',async()=>{
+   for(const time of ['2026-10-25T06:59:00Z','2026-10-25T17:00:00Z','2026-10-25T23:00:00Z']){
+-    const f=harness({start:Date.parse(time)});await dueSignal(f);const r=await f.runner.execute({mode:'AUTO',run_id:'E05'});assert.equal(r.status,'OUTSIDE_AUTOMATIC_WINDOW');assert.deepEqual(await f.runner.checkOutcomes({run_id:'E05_STATS'}),[]);assert.equal(f.calls.length,0);assert.equal(f.sends.length,0);
++    const f=harness({start:Date.parse(time)});await dueSignal(f);const r=await f.runner.execute({mode:'AUTO',run_id:'E05'});assert.equal(r.status,'OUTSIDE_AUTOMATIC_WINDOW');assert.deepEqual(await f.runner.checkOutcomes({run_id:'E05_STATS'}),[]);assert.equal(f.calls.length,0);assert.equal(f.sends.length,0);assert.equal((await f.store.get('pump:outcomes-pending')).length,1,'mature work remains pending for the day window');
+   }
+ });
+ test('E06 a manual night request may publish but cannot trigger automatic outcome collection',async()=>{
+   const f=harness({start:Date.parse('2026-10-25T23:00:00Z')});await dueSignal(f);const r=await f.runner.execute({mode:'MANUAL',symbol:'COIN0',request_id:'E06',run_id:'E06'});
+   assert.equal(r.manual_result.delivery.state,'SENT');assert.equal(f.sends.length,1);assert.equal(f.calls.filter(c=>c.kind==='outcome_history').length,0);assert.deepEqual(r.outcomes,[]);
++  const summary=await f.runner.getSummary();assert.ok(summary.cohorts.some(c=>c.mode==='MANUAL'&&c.publication==='SENT'));
+ });
+ test('E07 possible-send UNKNOWN is durable and never retried by the same or a later run',async()=>{
+   const f=harness({unknown:true}),first=await f.runner.execute({mode:'AUTO',run_id:'E07_FIRST'}),id=first.checked[0].delivery.card_id;
+   assert.equal(first.checked[0].delivery.state,'UNKNOWN');await f.delivery.dispatch(id);await f.runner.execute({mode:'AUTO',run_id:'E07_SECOND'});assert.equal(f.sends.length,1);assert.equal((await f.store.get('pump:card:'+id)).state,'UNKNOWN');
++  const summary=await f.runner.getSummary();assert.equal(summary.independent_waves,1);assert.deepEqual(summary.publication_counts,{sent:0,unsent:0,unknown:1});
+ });
+ test('E08 stale evening card is not sent at night and morning analysis recalculates a new wave',async()=>{
+   const evening=Date.parse('2026-10-25T16:59:00Z'),f=harness({start:evening}),r=await f.runner.checkInstrument(f.instruments[0],{run_id:'E08_EVENING',mode:'AUTO',publish:false}),a=r.analysis;
+@@ -83,6 +89,7 @@
+   f.setClock(Date.parse('2026-10-25T17:01:00Z'));assert.equal((await f.delivery.dispatch(old.card_id)).state,'STALE');assert.equal(f.sends.length,0);
+   const morning=Date.parse('2026-10-26T07:00:00Z');f.setClock(morning);f.reset(morning);const result=await f.runner.execute({mode:'AUTO',run_id:'E08_MORNING'}),b=result.checked[0].analysis;
+   assert.equal(b.ready,true);assert.equal(b.analysis_ts,morning);assert.notEqual(b.wave_id,a.wave_id);assert.notEqual(result.checked[0].delivery.card_id,old.card_id);assert.equal(f.sends.length,1);assert.equal((await f.store.get('pump:card:'+old.card_id)).state,'STALE');
++  const signal=await f.store.get(signalKey(b));assert.equal(signal.origin.t0,morning);assert.equal(signal.origin.reference_price,b.reference_price);assert.ok((await f.runner.getSummary()).cohorts.some(c=>c.mode==='AUTO'&&c.publication==='SENT'));
+ });
+ test('E09 REQUIREMENT possible-send UNKNOWN must register the immutable original for separate outcome tracking',async()=>{
+   const f=harness({unknown:true}),r=await f.runner.execute({mode:'AUTO',run_id:'E09'}),a=r.checked[0].analysis,signal=await f.store.get(signalKey(a));
+@@ -103,5 +110,6 @@
+   const f=harness({count:2,weak:[1],map:[1]}),auto=await f.runner.execute({mode:'AUTO',run_id:'E11_AUTO'});assert.equal(auto.checked.length,1);
+   const manual=await f.runner.execute({mode:'MANUAL',symbol:'COIN1',request_id:'E11_MANUAL',run_id:'E11_MANUAL'});
+   const a=await f.store.get(signalKey(auto.checked[0].analysis)),m=await f.store.get(signalKey(manual.manual_result.analysis));
+-  assert.equal(a.mode,'AUTO');assert.equal(a.map_mode,'WITHOUT_MAP');assert.equal(m.mode,'MANUAL');assert.equal(m.map_mode,'WITH_MAP');assert.equal(m.map_status,'PARTIAL');assert.equal((await f.store.get('pump:outcomes-pending')).length,2);
++  assert.equal(a.origin.mode,'AUTO');assert.equal(a.origin.map_mode,'NO_MAP');assert.equal(m.origin.mode,'MANUAL');assert.equal(m.origin.map_mode,'PARTIAL_MAP');
++  const summary=await f.runner.getSummary();assert.equal(summary.independent_waves,2);assert.equal(summary.publication_counts.sent,2);assert.ok(summary.cohorts.some(c=>c.mode==='AUTO'&&c.map_mode==='NO_MAP'));assert.ok(summary.cohorts.some(c=>c.mode==='MANUAL'&&c.map_mode==='PARTIAL_MAP'));
+ });

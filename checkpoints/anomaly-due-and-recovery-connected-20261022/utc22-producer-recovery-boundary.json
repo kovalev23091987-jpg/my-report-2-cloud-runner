@@ -1,0 +1,67 @@
+{
+  "schema": "UTC22_FIRST_UNKNOWN_PRODUCER_EXACT_RETAINED_BOUNDARY_V1",
+  "recorded_utc": "2026-10-22T08:46:59.218877+00:00",
+  "first_UTC22_run": 39699670604,
+  "run_number": 2665,
+  "head": "3d0e0589d0965a3c63d40621542e5ca17fac7943",
+  "predates_runtime606": true,
+  "artifact": {
+    "id": 12392726703,
+    "digest": "sha256:94a3e6d12c7dab25fdb6f543c1b5389a390e1fd1da44edeafeddb6fdf3e84cb4",
+    "whole_ZIP_verified": true,
+    "failure_accounting_member_sha256": "7cfaa4f3b3ba5b22ffa8e36d35e5f77a480934202790591ac138a8ce9eb7a9c4"
+  },
+  "original_failure_finalization": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "R2RUN:1792628797454:3c9e8e2ec2c5570d",
+    "source_run_id": "39699670604",
+    "measured_rows_read": 35211,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 229,
+    "measured_requests_accounted": 372,
+    "unknown_ops": 1
+  },
+  "original_unmeasured_operation": {
+    "operation": "first",
+    "target": "report2_evidence_source_cache",
+    "sql_kind": "SELECT",
+    "sql_sha256": "efce8b75818cc4b5e1d3f450e4a2cfd310840eac2016392f7ec21b4000e18ab7",
+    "http_status": null,
+    "failure_class": "BRIDGE_TRANSPORT_FAILURE",
+    "observed_ts": 1792628862606,
+    "params_or_SQL_text_exported": false
+  },
+  "public_cache_reader_SQL_hash_matches": true,
+  "caller_source_asset_key_params_or_exact_lost_cost": null,
+  "failed_step_log": {
+    "job": 119565617197,
+    "bytes": 281650,
+    "sha256": "2a367c2f8c489b04ac67e0e5d9093b2f930524eae5cc7f7077c0ddc3054fb7fc",
+    "first_CLI_read_did_not_export_ANSI_body": true,
+    "corrected_CLI_output_mode_only_no_rerun": true,
+    "terminal": "LIMITED_REPORT_PIPELINE_HEALTH_NOT_ADMITTED",
+    "Telegram_started": false,
+    "raw_masked_numbers_not_reconstructed": true
+  },
+  "later_preanalysis_refusal": {
+    "run": 39738732973,
+    "artifact": 12408107648,
+    "digest": "sha256:2cb98f034318c67f9fc391b0ffe271f43924c8ae05cd4591a455ff66b68334ce",
+    "day_UTC22_unknown": 1,
+    "native_run_count": 7,
+    "measured_rows_read": 35280,
+    "measured_rows_written": 253,
+    "reserved_rows_read": 58800,
+    "reserved_rows_written": 1032,
+    "attempt_usage_505R5W_unknown0_not_added_to_day": true
+  },
+  "native_failure_class": "BRIDGE_TRANSPORT_FAILURE_NO_HTTP_ACK",
+  "counter_or_actual_server_execution_reconstructed": false,
+  "causal_code_regression_commit_identified": false,
+  "new_D1_SQL_CF_provider_MAIN_Telegram_calls": 0,
+  "old_unknown_and_reservations_reset_refund_raised": false,
+  "raw_artifacts_SQL_params_or_logs_in_Git": false,
+  "recovery_missing_boundary": "Independent exact billable cost/received-or-not execution evidence for this lost transport operation; client NULL HTTP/unknown preserved, current day guard cannot be declared closed. No safe reset/zero/retry made."
+}

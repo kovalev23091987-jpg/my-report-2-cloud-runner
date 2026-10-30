@@ -1,0 +1,84 @@
+{
+  "id": "ROOT_F607_GLOBAL_NEW_FREE_SOURCES_3SEARCH6READ_20261026",
+  "search_max": 3,
+  "open_max": 6,
+  "search_spent": 3,
+  "open_spent": 6,
+  "state": "CLOSED_EXHAUSTED_NO_REARM",
+  "attempts": [
+    {
+      "kind": "targeted_search",
+      "provider": "SATORI",
+      "q": "Satori API 文档 公共 持仓 清算 免费 接口",
+      "state": "SUCCESS_SATORI_FINANCE_FOUND_NAME_NOISE_DISCARDED",
+      "non_English": true
+    },
+    {
+      "kind": "targeted_search",
+      "provider": "RABBITX",
+      "q": "RabbitX official API public markets open interest funding rate all markets rate limits",
+      "state": "NO_OFFICIAL_RABBITX_RESULT_IN_BUNDLE_SPENT"
+    },
+    {
+      "kind": "targeted_search",
+      "provider": "RABBITX",
+      "q": "RabbitX official API documentation GitHub public markets open_interest",
+      "state": "SUCCESS_REPOSITORY_LEADS_ONLY_AUTHORITY_UNPROVEN"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "SATORI_FINANCE",
+      "url": "https://docs.satori.finance/api-docs/openapi/introduce",
+      "state": "FAILED_TIMEOUT_SPENT_NO_RETRY"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "SATORI_FINANCE",
+      "url": "https://docs.satori.finance/",
+      "state": "FAILED_502_SPENT_NO_RETRY",
+      "purpose": "New primary index for public-query routes and URL; failed introduction not retried"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "RABBITX",
+      "url": "https://github.com/rabbitx-docs/apidocs",
+      "state": "DOC_REPOSITORY_READ_CURRENT_OFFICIAL_AUTHORITY_NOT_ESTABLISHED",
+      "purpose": "Inspect exact found documentation repository and provenance, no client execution"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "SATORI_FINANCE",
+      "url": "https://docs.satori.finance/api-docs/openapi/rest-api/public-query",
+      "state": "SUCCESS_PRIMARY_PUBLIC_QUERY_NAV_POSITION_PRIVATE_SEPARATION",
+      "purpose": "Documentation public-query index only; document navigation URL, no market endpoint"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "RABBITX",
+      "ref": "turn174view1:78",
+      "state": "DIRECTORY_READ_ONLY_NO_CURRENT_SCHEMA_ENTITLEMENT_PROOF",
+      "purpose": "Found documentation folder index, no SDK run or data call"
+    },
+    {
+      "kind": "new_primary_read",
+      "provider": "SATORI_FINANCE",
+      "ref": "turn175view0:47",
+      "state": "SUCCESS_PRIMARY_PUBLIC_PAIR_BATCH_TESTNET_EXAMPLE_PROD_LIMITS_GAPS",
+      "purpose": "Primary public pair-list batch fields/auth; last admitted read, no data request"
+    }
+  ],
+  "qualification_spent": 24,
+  "qualification_cap": 24,
+  "remaining": 0,
+  "new_qualification_calls": 0,
+  "old_grants_rearmed": false,
+  "selected_providers": [
+    "SATORI_FINANCE",
+    "RABBITX"
+  ],
+  "primary_parseable_pages": 4,
+  "primary_failed_reads": 2,
+  "full_current_market_schemas_qualified": 0,
+  "non_English_searches": 1,
+  "new_provider_count": 2
+}

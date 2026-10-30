@@ -1,0 +1,31 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {BINGX_IDENTITY_REGISTRY} from '../registry/index.mjs';
+const hash=v=>createHash('sha256').update(v).digest('hex');
+const parse=(path,expected)=>{const b=fs.readFileSync(path);if(hash(b)!==expected)throw Error('REVIEW_INPUT_SHA_MISMATCH:'+path);return JSON.parse(b);};
+const proposalSHA='a1d1d8b96f6cf7106ba4224e1fbf4fe52059f4448cc4667e0332976b692eb66c';
+const economicSHA='540111a3d30a4a76064b1124a8d904864a4c52f051642f75e83cbc3ca0559057';
+const catalogSHA='7b683509fea9d5b3aa1d2612ddb8ad259680a3bc33cc4df5cc97f23b4555e9f5';
+const negativeSHA='82007a6a9dd1581fcdbba5c98e63d2ff67281ed37f72373280db5f96f35c2896';
+const bundle=parse('pump-report/handoffs/sources/F552_PROPOSED_NATIVE_BINDINGS_550_V1.json',proposalSHA);
+const economic=parse('pump-report/handoffs/sources/U3_FULL_934_SCOPE_SELECTION_V1.json',economicSHA);
+const native=parse('/private/tmp/pump-report-native-catalog-corrected.json',catalogSHA).body.response.data.data;
+const negative=parse('pump-report/handoffs/sources/F552_KNOWN_NON_TARGET_380_V1.json',negativeSHA);
+const ref='checkpoints/pump-report-20261025/ROOT_F552_PER_TUPLE_NATIVE_REVIEW.json';
+if(bundle.expected!==550||bundle.proposed!==550||bundle.blocked!==0||bundle.proposals.length!==550||negative.count!==380)throw Error('EXACT_SELECTED_SCOPE_REQUIRED');
+const decisions=[],runtime=[],seen=new Set(),oldById=new Map(BINGX_IDENTITY_REGISTRY.map(e=>[e.instrument.instrument_id,e]));
+for(const p of bundle.proposals){
+ const rows=native.filter(n=>n.symbol===p.native_symbol),scope=economic.rows.filter(n=>n.symbol===p.native_symbol);if(rows.length!==1||scope.length!==1||p.status!=='PROPOSED_SAVED_NATIVE_BINDING'||p.reason_codes.length)throw Error('EXPLICIT_POSITIVE_PROOF_REQUIRED');
+ const n=rows[0],s=scope[0],t=p.tuple;
+ if(String(n.contractId)!==p.native_contract_id||n.asset!==t.base||n.symbol!==t.native_symbol||n.currency!=='USDT'||n.status!==1||s.selected_for_report_scope!==true||s.scope_reason!=='INCLUDE_CRYPTO_SCOPE'||s.crypto_economic_scope_before_owner_exclusion!==true||s.contract_id!==p.native_contract_id||s.native_asset!==t.base||s.metadata_coin_name!==t.base||s.classification_basis!==p.proof.selected_economic_basis||p.proof.catalog_file_sha256!==catalogSHA||p.proof.economic_scope_file_sha256!==economicSHA||seen.has(t.instrument_id)||['BTC','ETH','PAXG','XAUT'].includes(t.base))throw Error('PER_TUPLE_SCOPE_REVIEW_FAILED:'+p.native_symbol);
+ seen.add(t.instrument_id);
+ const retained=oldById.get(t.instrument_id),decision={proposal_id:p.proposal_id,tuple:t,native_contract_id:p.native_contract_id,decision:retained?'RETAIN_EXISTING_INDEPENDENT_IDENTITY_UNCHANGED':'ROOT_REVIEWED_NATIVE_SCOPE_PRICE_RELATIVE_ONLY',classification_evidence_kind:'OWNER_ACCEPTED_ECONOMIC_SCOPE_INFERENCE_WITH_EXACT_SAME_VENUE_NATIVE_TUPLE',classification_basis:s.classification_basis,catalog_file_sha256:catalogSHA,economic_scope_file_sha256:economicSHA,current_membership_proven:false,full_CORE_qualified:false,new_execution_units_qualified:false};
+ const sha=hash(JSON.stringify(decision));decisions.push({...decision,decision_sha256:sha});
+ if(!retained)runtime.push([p.native_contract_id,t.base,t.native_symbol,p.proposal_id,sha]);
+}
+if(decisions.length!==550||runtime.length!==539||BINGX_IDENTITY_REGISTRY.length!==13)throw Error('RETAINED13_NEW539_REQUIRED');
+const proof={schema:'ROOT_F552_PER_TUPLE_NATIVE_SCOPE_REVIEW_V1',authority_main:'2b844e956c57e1ad5d07bced13f3fc57e2172b6c',tz_sha256:'0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc',scope:'Explicit review of accepted saved selected550 economic inference and independently matched exact native tuples; no universal coinType or name classifier',source_proposal_sha256:proposalSHA,economic_scope_sha256:economicSHA,catalog_capture_sha256:catalogSHA,negative_decisions_sha256:negativeSHA,retained13_unchanged:true,new_explicit_identity_decisions:539,selected_report_scope:550,native_membership_capture_received_ts:1792931870932,current_native_membership_proven:false,current_bulk550_coverage:'SEPARATE_F551_ACTUAL_RECEIPT',new_qualifications:['EXACT_NATIVE_PRICE_BASE_USDT','OWNER_ACCEPTED_SAME_NATIVE_RELATIVE_CANDLES'],new_orderbook_OI_funding_map_multiplier_steps_qualified:false,full_CORE550_qualified:false,provider_native_IO_admission:false,all_old_caps_reserves_unknowns_preserved:true,decisions};
+fs.writeFileSync(ref,JSON.stringify(proof)+'\n');
+fs.writeFileSync('pump-report/registry/native-reviewed550-data.mjs',"// Generated from explicit ROOT per-tuple decisions; no new live qualification.\nexport const REVIEW_REF="+JSON.stringify(ref)+";\nexport const CATALOG_SHA="+JSON.stringify(catalogSHA)+";\nexport const ECONOMIC_SHA="+JSON.stringify(economicSHA)+";\nexport const REVIEWED_ROWS="+JSON.stringify(runtime)+";\n");
+fs.writeFileSync('pump-report/registry/native-nontarget380-data.mjs',"// Exact saved non-target tuples only. Changed or new tuple remains UNKNOWN.\nexport const NON_TARGET_BUNDLE="+JSON.stringify(negative)+";\n");
+console.log(JSON.stringify({selected:decisions.length,new_explicit:runtime.length,retained:13,negative:380,current_membership:false,full_CORE:false,newHTTP_SQL_TG:0,proof_sha256:hash(fs.readFileSync(ref))}));

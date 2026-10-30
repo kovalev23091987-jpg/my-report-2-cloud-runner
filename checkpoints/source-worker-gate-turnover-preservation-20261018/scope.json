@@ -1,0 +1,199 @@
+{
+  "schema": "SOURCE_WORKER_GATE_SPOT_AND_TURNOVER_FACT_PRESERVATION_OFFLINE_V1",
+  "recorded_utc": "2026-10-18T09:37:58.783221+00:00",
+  "parent_main": "344f1b468568ab218b1585b13f21a175e39f9f62",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "Retain existing Gate N05 SPOT components and Gate/Binance prior30d turnover baseline after optional cache errors; stop later source/SQL on native unknown. Existing providers only, no accepted Gate futures N12 change.",
+  "new_cases": 39,
+  "baseline": "12PASS27FAIL;12already passing guards/cache tests are not new defects.",
+  "tests": {
+    "baseline39": {
+      "path": "checkpoints/source-worker-gate-turnover-preservation-20261018/baseline39.tap.gz",
+      "raw_sha256": "4121e8ebf019797417c16d7455a401ead8a6e00b3e9daeefa066f2812203f6c8",
+      "gzip_sha256": "36a58258b94178dd7184dd27db65a3785612e071cc7ad233b01bc8777ba1cf15",
+      "counts": {
+        "tests": 39,
+        "pass": 12,
+        "fail": 27
+      }
+    },
+    "related": {
+      "path": "checkpoints/source-worker-gate-turnover-preservation-20261018/related.tap.gz",
+      "raw_sha256": "ad8d6728683268b143e999f8ffafbc1421b35e59e47e1dacb2ddc4bade8a44e9",
+      "gzip_sha256": "7f6316b4907298712b0a415da5c49ffe03deca867f72bf1421ceb0810ca5968f",
+      "counts": {
+        "tests": 64,
+        "pass": 64,
+        "fail": 0
+      }
+    }
+  },
+  "source_inputs": {
+    "checkpoints/n05-native-qualification-38052957545/native-summary.json": {
+      "file_sha256": "7361f30c49b902dce556a6bbb6df97ac920ae3df52cdc4c40fade4946a1e3d0a",
+      "raw_sha256": "7361f30c49b902dce556a6bbb6df97ac920ae3df52cdc4c40fade4946a1e3d0a"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-ALL-CURRENCY-IDENTITY.json.gz": {
+      "file_sha256": "b74ef586f4951455382b336b1abe998df295ce54ff10643e503f9b0f157c9b8b",
+      "raw_sha256": "c66180ff0c9665e6e4b7b304031652a8bc1b5a4a7a202900dd3410cac7d8d50b"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-PEOPLE-CANDLES.json.gz": {
+      "file_sha256": "f3b4d1c99ff8db71feb541f5b5d77ea7a0279a1a516e375e2d9baeb527c917c4",
+      "raw_sha256": "d1ab0d86376dc71a5e36b21ecdc09795539c6ddeeaca041687485cd543bdc6d7"
+    },
+    "checkpoints/n05-native-qualification-38052957545/GATE-PEOPLE-PAGE-1.json.gz": {
+      "file_sha256": "2151c43f1aa4b3436adb26d6fea66b728031a52ed264a4d7931a33fbd4db7c30",
+      "raw_sha256": "d23048cd12557ed81683218f81be92d9e8240e33e25fbef79d3175740828dca5"
+    },
+    "checkpoints/n05-native-qualification-38052957545/BINANCE-SMALL-CATALOG.json.gz": {
+      "file_sha256": "542b4cea4fd801e96352ac0d93a0fb2e735da2ba250a9a19ccb6d1d7798a9923",
+      "raw_sha256": "d78a84616b9a9d4c313a60c818b7f141130ed495b3a21090d4327272821145fe"
+    },
+    "checkpoints/n05-large-qualification-38063816181/large-summary.json": {
+      "file_sha256": "d001784fef0a8967599490a0d2c4a1d6e027b445a057865045cf6dd39561d3c9",
+      "raw_sha256": "d001784fef0a8967599490a0d2c4a1d6e027b445a057865045cf6dd39561d3c9"
+    },
+    "checkpoints/n05-large-qualification-38063816181/BINANCE-BTC-NATIVE-240.json.gz": {
+      "file_sha256": "30c3ff92960f8601d460771431faf9719c36f8f2def695bde291d252cc57862f",
+      "raw_sha256": "c1e6a5d983252bc374c45c3d7dd19d3bd5b0d3f66d106bb6d2a5206ad8a1762a"
+    },
+    "checkpoints/n05-large-qualification-38063816181/GATE-PEOPLE-PRIOR30D-HOURS.json.gz": {
+      "file_sha256": "1c09971ec379b46f9dc267572f95c3c79e912adbf6256b1448481b02253ba6cd",
+      "raw_sha256": "62fc99d8d5f99f4b37bcb6068b9908fb7cd890ce7be4811385de5ab634fdac79"
+    },
+    "checkpoints/n05-large-qualification-38063816181/BINANCE-BTC-PRIOR30D-HOURS.json.gz": {
+      "file_sha256": "6c6081d14b28f7b4c6d06be4372f5c34194ac7f3436af4e925a577b72ded317f",
+      "raw_sha256": "3b5ef86218ba86b66d4693b1c9f9e46b3ed6e4fe15d39ee089627699286c34ce"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/catalog-summary.json": {
+      "file_sha256": "5245240408a64398f8e4ccd429d15b50c1f93f6dc8d9a02ea6ee70f777a7ef53",
+      "raw_sha256": "5245240408a64398f8e4ccd429d15b50c1f93f6dc8d9a02ea6ee70f777a7ef53"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/catalog-GATE-SPOT.json.gz": {
+      "file_sha256": "14541e76582798fcf3f0ea10aca92fb3677e04786e2ab9c2b2a7657e44fee110",
+      "raw_sha256": "4e625fb2d29f837f055ebcc8b914be7b69f97e4c597f2ad3dfa779bc418e6a8f"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+    }
+  },
+  "original_count": 12,
+  "original_receipts": [
+    {
+      "run": "38052957545",
+      "name": "GATE-ALL-CURRENCY-IDENTITY",
+      "received_ts": 1791636178054,
+      "url": "https://api.gateio.ws/api/v4/spot/currencies",
+      "body_sha256": "c66180ff0c9665e6e4b7b304031652a8bc1b5a4a7a202900dd3410cac7d8d50b"
+    },
+    {
+      "run": "38052957545",
+      "name": "GATE-PEOPLE-CANDLES",
+      "received_ts": 1791636239894,
+      "url": "https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=PEOPLE_USDT&from=1791621720&to=1791636119&interval=1m",
+      "body_sha256": "d1ab0d86376dc71a5e36b21ecdc09795539c6ddeeaca041687485cd543bdc6d7"
+    },
+    {
+      "run": "38052957545",
+      "name": "GATE-PEOPLE-PAGE-1",
+      "received_ts": 1791636240904,
+      "url": "https://api.gateio.ws/api/v4/spot/trades?currency_pair=PEOPLE_USDT&from=1791621720&to=1791636119&limit=1000&page=1",
+      "body_sha256": "d23048cd12557ed81683218f81be92d9e8240e33e25fbef79d3175740828dca5"
+    },
+    {
+      "run": "38052957545",
+      "name": "BINANCE-SMALL-CATALOG",
+      "received_ts": 1791636172404,
+      "url": "https://data-api.binance.vision/api/v3/exchangeInfo?showPermissionSets=false&symbolStatus=TRADING&permissions=SPOT",
+      "body_sha256": "d78a84616b9a9d4c313a60c818b7f141130ed495b3a21090d4327272821145fe"
+    },
+    {
+      "run": "38063816181",
+      "name": "BINANCE-BTC-NATIVE-240",
+      "received_ts": 1791646209357,
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=1791631740000&endTime=1791646139999&limit=240",
+      "body_sha256": "c1e6a5d983252bc374c45c3d7dd19d3bd5b0d3f66d106bb6d2a5206ad8a1762a"
+    },
+    {
+      "run": "38063816181",
+      "name": "GATE-PEOPLE-PRIOR30D-HOURS",
+      "received_ts": 1791646204820,
+      "url": "https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=PEOPLE_USDT&from=1789027200&to=1791619199&interval=1h",
+      "body_sha256": "62fc99d8d5f99f4b37bcb6068b9908fb7cd890ce7be4811385de5ab634fdac79"
+    },
+    {
+      "run": "38063816181",
+      "name": "BINANCE-BTC-PRIOR30D-HOURS",
+      "received_ts": 1791646210336,
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1h&startTime=1789038000000&endTime=1791629999999&limit=720",
+      "body_sha256": "3b5ef86218ba86b66d4693b1c9f9e46b3ed6e4fe15d39ee089627699286c34ce"
+    },
+    {
+      "run": "38049404414",
+      "name": "catalog-GATE-SPOT",
+      "received_ts": 1791632615100,
+      "url": "https://api.gateio.ws/api/v4/spot/currency_pairs",
+      "body_sha256": "4e625fb2d29f837f055ebcc8b914be7b69f97e4c597f2ad3dfa779bc418e6a8f"
+    }
+  ],
+  "implementation_files": {
+    "current-generation/files/src/gate-flow-collector.mjs": "1fb56ebcdaff61963a9109d80ba460e3e6f028487fc7f30cb83cce2b016223ed",
+    "current-generation/files/src/flow-turnover-collector.mjs": "d22f122a4fbcbc0f91cb7187080d1c352bc90b46c9a01b3c8aad848b8087d513",
+    "current-generation/tests/gate-turnover-fact-preservation.test.mjs": "a7d6e22ad2c2cd94a05f88b7500ecaf90537c93f762b305638987c1d1d84c73d"
+  },
+  "shared_files_modified": false,
+  "shared_CI_proposal": {
+    "path": "checkpoints/source-worker-gate-turnover-preservation-20261018/shared-CI.proposed.patch",
+    "sha256": "0f61e574a67aa80576e8736741bfed03b7807e69869693dd48057d2162178f11",
+    "workflow_before_sha256": "4c6832339b04063e3db59d4614353952cb781cb51ff2c7601316f3926486ed3f",
+    "workflow_proposed_sha256": "6b1bccad289863bb89b7e287e3352eef2f6f1688ef64cade13b401878499b661",
+    "coordinator_resolves_current_branch_allowlist": true
+  },
+  "clock_controls": {
+    "Gate_PEOPLE_original_cutoff": 1791636120000,
+    "Gate_PEOPLE_original_final_response": 1791636240904,
+    "Gate_collector_start_control": 1791636121000,
+    "received_clock_rewritten": false,
+    "explanation": "Collector fixes original cutoff at invocation start; its final response arrived120904ms later. Manual and Telegram consume at exact original response clock. Do not floor the later response as a new window or relabel it as end+1000.",
+    "Gate_history_original_response": 1791646204820,
+    "Gate_history_new_current_flow_claim": false,
+    "Binance_BTC_flow_original_response": 1791646209357,
+    "Binance_BTC_history_original_response": 1791646210336
+  },
+  "consumer_scope": {
+    "Gate_N05": "Exact retained PEOPLE fact reaches existing available-flow consumer and manual/bothTelegram renderers after cache failure. Local controlled OBSERVE only; no network delivery.",
+    "turnover_baseline": "Exact saved Gate/Binance720hours/180prior4h windows retain original source/knowledge observation and survive optional cache failure; unchanged physical attachment in shared component diagnostic proven with BinanceBTC original pair.",
+    "turnover_rendered_fact": false,
+    "rendering_gap": "block-result-context and telegram-plain-facts do not consume turnover_baseline/ratio_to_median. No new displayed history fact or calibration is claimed. Gate original current flow is2h older than history retrieval, so no combined fresh report at later clock claimed.",
+    "next_consumer_work": "Separate source-backed proposal can expose a validated same-venue descriptive baseline within existing fields after original-clock/tuple validation. No strategy, large-holder or outcome calibration."
+  },
+  "limits": {
+    "new_source_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "normal_path_extra_SQL": 0,
+    "normal_path_extra_HTTP": 0,
+    "Gate_normal_flow_mock_calls": 4,
+    "history_mock_calls": 1,
+    "shared_venue_cap": 5,
+    "source_role_cap": 512,
+    "Gate_asset_reference_role_cap": 8,
+    "Gate_rolling60s_cap": 12,
+    "Binance_rolling60s_cap": 6,
+    "paid_policy_cursor710_pauses_limits_weights_forms_unchanged": true,
+    "unknown_not_cleared_reservations_not_refunded": true
+  },
+  "acceptance_limits": [
+    "Historical originals replayed for new cache/unknown defect only, no repeated provider qualification/current105/nativefull/SENT.",
+    "Native unknown/error injected into local SQLite; no native measured cost/throughput acceptance.",
+    "All inherited whole request/day/minute/backoff/asset-reference roles remain.",
+    "Shared runtime/orchestration/consumers are unchanged; unapplied CI proposal only.",
+    "Turnover exact requested cache receipt/asset binding is a next audit candidate, not accepted solely by source inspection.",
+    "Branch/main assembled verification pending with coordinator."
+  ],
+  "exact_next_action": "Coordinator reviews frozen provider PR and applies CI proposal on fresh main; one connected branch/main verification. Next independent source audit: turnover cached receipt tuple/clock binding before any proposed rendered baseline fact; do not repeat accepted providers or Gate futures N12."
+}

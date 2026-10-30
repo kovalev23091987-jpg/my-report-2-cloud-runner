@@ -1,0 +1,116 @@
+{
+  "schema": "BM_EXACT_RUN_PRIVATE_READER_REPLAY_INPUT_CONTRACT_V1",
+  "status": "PREPARED_NOT_ADMITTED_NOT_EXECUTED",
+  "scope": {
+    "run_id": "1372a2e6-3736-448e-b32d-846e37bafc80",
+    "schedule_context_MSK": "2026-10-26 18:00",
+    "actual_analysis_ts": "MUST_PRESERVE_ORIGINAL_UNKNOWN_UNTIL_READ",
+    "coin": "UNKNOWN_NOT_READ",
+    "expected_implementation_sha256": "d984187530314079e626b426bd2e356826369ba62d86224e840f5f752fa88daf"
+  },
+  "reader": {
+    "module": "pump-report/operator/saved-exact-auto-analysis.mjs",
+    "export": "readExactActivityAnalysis",
+    "sha256": "e1da00c86aa69abe1911573e72a8836e7a4055430725a4b7e246f6e6f55e732f",
+    "args": {
+      "run_id": "1372a2e6-3736-448e-b32d-846e37bafc80",
+      "implementation_sha256": "d984187530314079e626b426bd2e356826369ba62d86224e840f5f752fa88daf"
+    },
+    "store": "ROOT supplied existing separately admitted bounded store; no new reader or store construction here",
+    "logical_gets_max": 2,
+    "read1_key": "pump:run:1372a2e6-3736-448e-b32d-846e37bafc80",
+    "read2_key": "read1.checked[0].analysis_key ONLY_FROM_READ1",
+    "no_scans_or_current_wave_reads": true,
+    "physical_SQL_queries_rows_cost": "UNKNOWN until ROOT actual ACK accounting; logical2 not physical2 proof"
+  },
+  "preconditions": [
+    "Fresh main/allguards/all4/current ROOTown lease and precise positive provider/whole/native admissions for relevant IO",
+    "LOOKUP13 currently NOT AUTHORIZED; no relabel/family bypass of consumed12. ROOT must resolve exact owner exception/admission before execution if applicable.",
+    "Exact reader SHA verified, target implementation pin equals live69",
+    "Budget covers whole operation plus ACK/finalization/readback; no unknowns reset",
+    "Private destination chosen by ROOT; raw original input stays private, no Git/chat publication"
+  ],
+  "success_status": "EXACT_RUN_AND_ORIGINAL_ANALYSIS_BOUND",
+  "reader_failure_statuses": [
+    "EXACT_RUN_NOT_FOUND",
+    "EXACT_RUN_HAS_NO_BOUND_FIRST_ANALYSIS",
+    "ORIGINAL_ANALYSIS_BINDING_UNPROVEN"
+  ],
+  "reader_guards": [
+    "exact run id constant",
+    "first analysis key bounded prefix/no controls",
+    "original implementation equals requested live69",
+    "original evidence_class OBSERVED",
+    "original input same run_id and AUTO",
+    "original analysis same run_id/instrument",
+    "JSON equality original.analysis == run.checked[0].analysis"
+  ],
+  "private_capture": {
+    "required": [
+      "reader return status/run_id/implementation/analysis_key",
+      "private_evidence.run unchanged",
+      "private_evidence.original unchanged",
+      "original.input entire object, including all delivered facts.candles.value rows and previous_wave",
+      "original.analysis entire object",
+      "SHA256 of captured private record and reader module, receipt/actual native usage metadata"
+    ],
+    "do_not_invent": [
+      "coin",
+      "missing prior bars",
+      "unit conversion",
+      "new current wave",
+      "new market prices",
+      "wallclock18:00 as analysis_ts"
+    ]
+  },
+  "offline_replay_inputs": {
+    "implementation": "exact pinned live69 analytics/index+dependencies; never current unpinned runtime REV2",
+    "entry": "analyzePump(original.input, exact START_PROFILE)",
+    "profile": "pump-report-start-v1 SHA cfec445eb226f2bb109817474d0c0280adc70209fb2ec125288e44f1213ecdf2",
+    "clock": "original.input.analysis_ts unchanged",
+    "previous": "original.input.previous_wave unchanged, not current store wave",
+    "candles": "all saved delivered rows/coverage/provenance; do not truncate to latest5m; up to125 requested minutes not a guarantee125 delivered",
+    "native_relative": "preserve native decimal/unitUNKNOWN/comparison_kind/comparison_key exactly",
+    "no_IO_or_side_effects": [
+      "no source/provider calls",
+      "no SQL beyond admitted initial reader",
+      "no Telegram/deploy/orders",
+      "no retiming/re-freshening facts",
+      "no synthetic replacement of originals"
+    ]
+  },
+  "derive_in_memory_only": [
+    "mandatory fact identity/status/time/unit validation at original clock",
+    "closedCandles exact normalization and window gaps",
+    "E and every candidate end in [E-3600000,E]",
+    "for each5m candidate: volume field, current sum, prior window sums/count/median, finite ratio and return_pct",
+    "previous usable/terminal/expired/qualification-clock predicate terms and retained impulse eligibility",
+    "selected impulse and precise branch responsible for reason",
+    "current growth proof vs retained qualification; AUTO eligible independently of ready",
+    "path/invalidation/pivots with known_ts, preliminary/confirmed plan and liquidity/potential gates"
+  ],
+  "compare_outputs": [
+    "ready/status/reasons",
+    "wave_id/state/automatic_eligible/current_threshold_passed",
+    "activity.impulse/current_volume/volume_basis/volume_diagnostics",
+    "next_wave/qualification/qualification_known_ts",
+    "plan/notification_eligibility only when constructed"
+  ],
+  "decision_outcomes": {
+    "MATCHED_EXPECTED_REFUSAL": "Originals and pinned replay agree on valid absence of qualifying impulse/retained wave; no change",
+    "CONCRETE_RUNTIME_DISCREPANCY": "Originals expose exact violated predicate or output mismatch; send exact private reproducer ROOT, do not edit runtime here",
+    "CONCRETE_INPUT_OR_RETENTION_DISCREPANCY": "Saved input lacks/corrupts usable retained context or source clocks/basis; exact evidence ROOT, not a threshold fix",
+    "INDETERMINATE": "Binding/profile/original fields incomplete; no new provider search/read or forcedREADY under this contract"
+  },
+  "BM_actual": {
+    "originals_read": false,
+    "Node": 0,
+    "tests": 0,
+    "SQL": 0,
+    "HTTP": 0,
+    "MCP": 0,
+    "TG": 0,
+    "deploy": 0,
+    "code_edits": 0
+  }
+}

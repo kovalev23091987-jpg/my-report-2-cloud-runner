@@ -1,0 +1,7 @@
+# Границы новой узкой полосы
+
+Owner queue5 и отдельное сообщение ROOT23Oct разрешают минимальное исправление draft fan-out в существующем consumer. Own CAS refs/heads/leases/report2-anomalies commit8d55f722d27527a97e297002efec90c011abeed4, ownerCODEX:OFFLINE_ANOMALIES:1792756395249, acquired1792756395249, expires1792761495249 (85min). FULL exact readback. Новый checkout report2-anomaly-outbox-worker, ветка work/report2-anomalies-grouped-watch-draft-20261023. Старые frozen628848d/15 и626de70/12 остаются неизменными.
+
+ONLY anomaly-research/grouped-watch-draft-20261023/** TEXT/доказательства/ONEnewcallableUNEXECUTED. Before every write/commit/push/CAS/publication hosttime<expiry в том же процессе. Перед lease прочитаны fresh main7e6fd/8guards/status/resume; current3proof FULL прочитаны на том же7e6fd в предыдущем пакете, их точные указатели не менялись. Fencefalse; узкая ownexception разрешает параллельный ROOTphaseowner1792755252300. Чужие locks не снимать, не продлевать истёкшие.
+
+No provider acquisition/nativeSQL/schema/CF/deploy/MAIN/manual/TG/Node/import/syntax/tests/SQLite/application semantics. No new backend/framework/sender/formapproval/grant/capraise. No oldkernel/DUE/outcome/journal cases. Mainreport/LIQ/strategyweightsforms/1051229/70/MAGIC106/Paid/unknownholds/reserves/twoOWNERdeferrals unchanged. Следующее действие только ROOT oneNEWaffected component, отдельная оценка реальных расходов/допуска перед будущим включением. Только OWN release после frozenPR/fullGitHubreadback.

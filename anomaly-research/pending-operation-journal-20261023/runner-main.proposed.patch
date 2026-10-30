@@ -1,0 +1,280 @@
+--- a/current-generation/files/runner-main.mjs
++++ b/current-generation/files/runner-main.mjs
+@@ -1,5 +1,5 @@
+ import {types as nodeUtilTypes} from "node:util";
+-import {readAnomalyOrigin,commitAnomalyBundle,readDueAnomalyBundles,ORIGIN_SQL,COMMIT_SQL,READBACK_SQL,DUE_SQL} from './src/anomaly-native-domain.mjs';
++import {readAnomalyOrigin,commitAnomalyBundle,readDueAnomalyBundles,prepareAnomalyCommit,verifyAnomalyReadback,canonical as canonicalAnomalyJSON,ORIGIN_SQL,COMMIT_SQL,READBACK_SQL,DUE_SQL} from './src/anomaly-native-domain.mjs';
+ import {approvedHtxLimitedReportAdmitted,approvedHtxLimitedCronAdmitted} from './src/approved-htx-analysis-scope.mjs';
+ import {createFailedD1RunAccounting} from './src/failed-d1-run-accounting.mjs';
+ import {buildSameRunDeliveryProof} from './src/same-run-delivery-proof.mjs';
+@@ -680,11 +680,12 @@
+   receipt.status='CURRENT_NATIVE_INDEX_AND_SAME_INPUT_PLAN_RECORDED';receipt.usage_after=receipt.native_queries.at(-1)?.usage_after??null;receipt.native_current_cost_or_index_saving_proven=false;await save();
+ }
+ 
+-async function persistRunnerAnomalyReceipts(snapshot) {
++async function persistRunnerAnomalyReceipts(snapshot,{pending_checkpoint=null}={}) {
+   if (snapshot?.schema !== 'ANOMALY_PARENT_BOUNDED_RECEIPTS_V1') throw Error('ANOMALY_RECEIPT_SCHEMA_REQUIRED');
++  if(pending_checkpoint!==null&&(pending_checkpoint.schema!=='RUNNER_ANOMALY_PENDING_CHECKPOINT_V1'||Buffer.byteLength(JSON.stringify(pending_checkpoint),'utf8')>2048))throw Error('ANOMALY_PENDING_CHECKPOINT_BOUND');
+   const body = JSON.stringify(snapshot);
+   if (Buffer.byteLength(body,'utf8') > 16384) throw Error('ANOMALY_RECEIPT_METADATA_BOUND');
+-  const envelope = {schema:'RUNNER_ANOMALY_RECEIPT_ARTIFACT_V1',head:process.env.GITHUB_SHA||null,cloud_run_id:process.env.GITHUB_RUN_ID||null,recorded_ts:Date.now(),scope:'BOUND_OPERATION_METADATA_NOT_NATIVE_EVENT_FIRST_KNOWLEDGE_OR_DELIVERY',receipts:snapshot,additional_SQL:0,provider_HTTP:0,native_qualification_claimed:false,filesystem_durability_qualified:false};
++  const envelope = {schema:'RUNNER_ANOMALY_RECEIPT_ARTIFACT_V1',head:process.env.GITHUB_SHA||null,cloud_run_id:process.env.GITHUB_RUN_ID||null,recorded_ts:Date.now(),scope:'BOUND_OPERATION_METADATA_NOT_NATIVE_EVENT_FIRST_KNOWLEDGE_OR_DELIVERY',receipts:snapshot,pending_checkpoint,additional_SQL:0,provider_HTTP:0,native_qualification_claimed:false,filesystem_durability_qualified:false};
+   const text = JSON.stringify(envelope);
+   if (Buffer.byteLength(text,'utf8') > 20480) throw Error('ANOMALY_RECEIPT_ARTIFACT_BOUND');
+   const file = 'report2-anomaly-domain-receipts.json';
+@@ -693,8 +694,136 @@
+   return {bytes:Buffer.byteLength(text,'utf8'),sha256:crypto.createHash('sha256').update(text).digest('hex'),native_qualification_claimed:false};
+ }
+ 
++// Same runner filesystem seam; private local continuity is NOT native ACK.
++const RUNNER_ANOMALY_PENDING_JOURNALS=new WeakSet();
++async function preflightRunnerAnomalyPendingJournal({file,expected_sha256,generation,source_head,cloud_run_id}) {
++  const need=(v,m)=>{if(!v)throw Error(m);};
++  need(typeof generation==='string'&&generation.length>0&&generation.length<=160&&/^[a-f0-9]{40}$/.test(source_head||'')&&/^[1-9]\d{0,15}$/.test(cloud_run_id||''),'ANOMALY_JOURNAL_CURRENT_EXECUTION_IDENTITY_REQUIRED');
++  if(expected_sha256==='INITIALIZE_EMPTY'){
++    for(const name of [file,file+'.next',file+'.step-001'])try{await fs.lstat(name);throw Error('ANOMALY_JOURNAL_TRUSTED_INIT_TARGET_NOT_EMPTY');}catch(e){if(e.code!=='ENOENT')throw e;}
++    return{status:'EXPLICIT_EMPTY_TARGET_CHECKED_NOT_CREATED',SQL:0,native_admission:false};
++  }
++  need(typeof expected_sha256==='string'&&/^[a-f0-9]{64}$/.test(expected_sha256),'ANOMALY_JOURNAL_INDEPENDENT_EXPECTED_SHA_REQUIRED');
++  const st=await fs.lstat(file);need(st.isFile()&&!st.isSymbolicLink()&&(st.mode&0o077)===0&&st.size<=16*1048576+65536&&await fs.realpath(file)===file,'ANOMALY_JOURNAL_REAL_FILE_REQUIRED');
++  const text=await fs.readFile(file,'utf8');need(Buffer.byteLength(text,'utf8')===st.size&&crypto.createHash('sha256').update(text).digest('hex')===expected_sha256,'ANOMALY_JOURNAL_EXPECTED_SHA_CONFLICT');
++  // Identity is read only AFTER independent full-byte expectation matches.
++  const identity=JSON.parse(text).identity;
++  need(identity?.generation===generation&&identity.source_head===source_head&&identity.cloud_run_id===cloud_run_id,'ANOMALY_JOURNAL_CURRENT_EXECUTION_IDENTITY_CONFLICT');
++  const journal=await openRunnerAnomalyPendingJournal({file,identity,expected_sha256});
++  need(!journal.blocked(),'ANOMALY_PENDING_RESTART_STOPS_BEFORE_NEW_PARENT_SQL');
++  return{status:'CLOSED_PRIOR_JOURNAL_PRECHECKED',checkpoint:journal.checkpoint(),SQL:0,native_admission:false};
++}
++async function openRunnerAnomalyPendingJournal({file,identity,expected_sha256,initialize_empty=false}) {
++  const need=(v,m)=>{if(!v)throw Error(m);},hex=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x);
++  const canon=canonicalAnomalyJSON,hash=s=>crypto.createHash('sha256').update(s).digest('hex'),size=s=>Buffer.byteLength(s,'utf8');
++  const FILE_BOUND=16*1048576+65536,ENTRY_BOUND=1048576,MAX_RECORDS=16;
++  need(typeof file==='string'&&file===resolve(file)&&await fs.realpath(resolve(file,'..'))===resolve(file,'..'),'ANOMALY_JOURNAL_REAL_PARENT_REQUIRED');
++  const identityKeys=['cloud_run_id','day_utc','generation','reservation_id','source_head'];
++  need(identity&&Object.keys(identity).sort().join('|')===identityKeys.join('|')&&typeof identity.generation==='string'&&identity.generation.length>0&&identity.generation.length<=160&&/^[a-f0-9]{40}$/.test(identity.source_head||'')&&/^[1-9]\d{0,15}$/.test(identity.cloud_run_id||'')&&/^R2RUN:\d+:[a-f0-9]{16}$/.test(identity.reservation_id||'')&&/^\d{4}-\d{2}-\d{2}$/.test(identity.day_utc||''),'ANOMALY_JOURNAL_TRUSTED_IDENTITY_REQUIRED');
++  const boundIdentity=JSON.parse(canon(identity)),identity_sha256=hash(canon(boundIdentity));
++  const tmp=file+'.next';let state,head=null,broken=false,active_operation=null,recovered_blocked=false;
++  const usageCut=u=>u&&['requests','rows_read','rows_written','unknown_ops'].every(k=>Number.isSafeInteger(u[k])&&u[k]>=0)?Object.fromEntries(['requests','rows_read','rows_written','unknown_ops'].map(k=>[k,u[k]])):null;
++  const restoredPrepared=e=>{
++    need(typeof e.prepared_text==='string'&&size(e.prepared_text)<=131072,'ANOMALY_JOURNAL_PREPARED_BOUND');
++    const r=JSON.parse(e.prepared_text),p=prepareAnomalyCommit({logical_event_id:r.logical_event_id,operation_id:r.operation_id,expected_revision:r.expected_revision,card:JSON.parse(r.card_json),descriptor:JSON.parse(r.descriptor_json),plan:JSON.parse(r.plan_json),state:JSON.parse(r.state_json)});
++    need(p.text===e.prepared_text&&r.logical_event_id===e.logical_event_id&&r.operation_id===e.operation_id&&r.expected_revision===e.expected_revision&&r.request_sha256===e.request_sha256&&r.first_known_ts===e.first_known_ts,'ANOMALY_JOURNAL_IMMUTABLE_REQUEST_CONFLICT');Object.freeze(p.request);return p;
++  };
++  const closed=e=>{
++    if(e.phase!=='RETURNED'||typeof e.result_text!=='string')return false;
++    const r=JSON.parse(e.result_text);let receipt;try{receipt=verifyAnomalyReadback(restoredPrepared(e),JSON.parse(e.readback_reply_text));}catch{return false;}
++    return receipt?.status==='COMMITTED_RECEIPT_READBACK'&&r.status==='COMMITTED_RECEIPT_READBACK'&&r.cost_status==='WITHIN_CALLER_PROJECTION'&&r.new_operation_id_allowed!==false&&e.write_reply_text!==null&&e.readback_reply_text!==null&&e.usage_after?.unknown_ops===0;
++  };
++  const checked=s=>{
++    need(s?.schema==='RUNNER_ANOMALY_PENDING_LOCAL_V1'&&canon(s.identity)===canon(boundIdentity)&&s.identity_sha256===identity_sha256&&Number.isSafeInteger(s.sequence)&&s.sequence>=0&&s.sequence<=MAX_RECORDS*6&&Array.isArray(s.records)&&s.records.length<=MAX_RECORDS,'ANOMALY_JOURNAL_IDENTITY_OR_SHAPE_CONFLICT');
++    const ids=new Set(),logical=new Set();
++    for(const e of s.records){
++      need(e&&size(canon(e))<=ENTRY_BOUND&&!ids.has(e.operation_id)&&['PREPARED','WRITE_STARTED','WRITE_REPLY','READBACK_STARTED','READBACK_REPLY','RETURNED'].includes(e.phase),'ANOMALY_JOURNAL_RECORD_CONFLICT');ids.add(e.operation_id);logical.add(e.logical_event_id);restoredPrepared(e);
++      for(const [name,max]of [['write_reply_text',65536],['readback_reply_text',196608],['result_text',16384]])need(e[name]===null||typeof e[name]==='string'&&size(e[name])<=max&&canon(JSON.parse(e[name]))===e[name],'ANOMALY_JOURNAL_REPLY_BOUND_OR_ENCODING');
++      need((e.phase!=='RETURNED'||e.result_text!==null)&&(!['WRITE_REPLY','READBACK_STARTED','READBACK_REPLY'].includes(e.phase)||e.write_reply_text!==null)&&(e.phase!=='READBACK_REPLY'||e.readback_reply_text!==null),'ANOMALY_JOURNAL_PHASE_REPLY_CONFLICT');
++      need(e.usage_before===null||canon(usageCut(e.usage_before))===canon(e.usage_before),'ANOMALY_JOURNAL_USAGE_CONFLICT');
++      need(e.usage_after===null||canon(usageCut(e.usage_after))===canon(e.usage_after),'ANOMALY_JOURNAL_USAGE_CONFLICT');
++    }
++    need(logical.size<=2,'ANOMALY_JOURNAL_LOGICAL_CAPACITY');return s;
++  };
++  const noPartial=async()=>{try{await fs.lstat(tmp);throw Error('ANOMALY_JOURNAL_UNRESOLVED_NEXT_FILE');}catch(e){if(e.code!=='ENOENT')throw e;}};
++  const readExact=async()=>{
++    const st=await fs.lstat(file);need(st.isFile()&&!st.isSymbolicLink()&&(st.mode&0o077)===0&&st.size<=FILE_BOUND&&await fs.realpath(file)===file,'ANOMALY_JOURNAL_REAL_FILE_REQUIRED');
++    const text=await fs.readFile(file,'utf8');need(size(text)===st.size&&size(text)<=FILE_BOUND,'ANOMALY_JOURNAL_FILE_BOUND');return text;
++  };
++  const syncParent=async()=>{const h=await fs.open(resolve(file,'..'),'r');try{await h.sync();}finally{await h.close();}};
++  const writeHandle=async(name,text)=>{const h=await fs.open(name,'wx',0o600);try{await h.writeFile(text,'utf8');await h.sync();}finally{await h.close();}};
++  const encode=s=>{checked(s);const text=canon(s);need(size(text)<=FILE_BOUND,'ANOMALY_JOURNAL_FILE_BOUND');return text;};
++  const claimFile=sequence=>file+'.step-'+String(sequence).padStart(3,'0');
++  const noNextClaim=async sequence=>{try{await fs.lstat(claimFile(sequence+1));throw Error('ANOMALY_JOURNAL_UNRESOLVED_SEQUENCE_CLAIM');}catch(e){if(e.code!=='ENOENT')throw e;}};
++  await noPartial();
++  if(initialize_empty){
++    await noNextClaim(0);
++    need(expected_sha256===null,'ANOMALY_JOURNAL_EXPLICIT_EMPTY_INIT_REQUIRED');
++    state={schema:'RUNNER_ANOMALY_PENDING_LOCAL_V1',identity:boundIdentity,identity_sha256,sequence:0,records:[]};
++    const text=encode(state);await writeHandle(file,text);await syncParent();need(await readExact()===text,'ANOMALY_JOURNAL_CREATE_READBACK_REQUIRED');head=hash(text);
++  }else{
++    need(hex(expected_sha256),'ANOMALY_JOURNAL_INDEPENDENT_EXPECTED_SHA_REQUIRED');
++    const text=await readExact();need(hash(text)===expected_sha256,'ANOMALY_JOURNAL_EXPECTED_SHA_CONFLICT');state=checked(JSON.parse(text));need(canon(state)===text,'ANOMALY_JOURNAL_CANONICAL_FILE_REQUIRED');head=hash(text);
++  }
++  await noNextClaim(state.sequence);
++  if(state.sequence>0){
++    const last=claimFile(state.sequence),st=await fs.lstat(last);need(st.isFile()&&!st.isSymbolicLink()&&(st.mode&0o077)===0&&st.size<=1024,'ANOMALY_JOURNAL_LAST_SEQUENCE_CLAIM_REQUIRED');
++    const text=await fs.readFile(last,'utf8'),claim=JSON.parse(text);
++    need(text===canon(claim)&&claim.schema==='ANOMALY_PENDING_SEQUENCE_CLAIM_V1'&&claim.sequence===state.sequence&&claim.identity_sha256===identity_sha256&&claim.next_sha256===head&&hex(claim.previous_sha256),'ANOMALY_JOURNAL_SEQUENCE_BINDING_CONFLICT');
++  }
++  const restored=state.records.filter(e=>!closed(e)).map(e=>JSON.parse(canon(e)));recovered_blocked=restored.length>0;
++  const save=async next=>{
++    need(!broken,'ANOMALY_JOURNAL_IO_PREVIOUSLY_UNCLOSED');
++    try{
++      await noPartial();need(hash(await readExact())===head,'ANOMALY_JOURNAL_LOCAL_CAS_CONFLICT');
++      const sequence=state.sequence+1,text=encode({...next,sequence});
++      // The immutable exclusive claim remains after rename: a delayed writer
++      // cannot reuse the same sequence after another writer has removed .next.
++      const claim=canon({schema:'ANOMALY_PENDING_SEQUENCE_CLAIM_V1',identity_sha256,sequence,previous_sha256:head,next_sha256:hash(text)});
++      await writeHandle(claimFile(sequence),claim);await syncParent();
++      need(hash(await readExact())===head,'ANOMALY_JOURNAL_LOCAL_CAS_CONFLICT');
++      await writeHandle(tmp,text);await fs.rename(tmp,file);await syncParent();need(await readExact()===text,'ANOMALY_JOURNAL_REPLACE_READBACK_REQUIRED');state=JSON.parse(text);head=hash(text);
++    }catch(e){broken=true;throw e;}
++  };
++  const record=()=>{const e=state.records.find(x=>x.operation_id===active_operation);need(e,'ANOMALY_JOURNAL_ACTIVE_OPERATION_REQUIRED');return e;};
++  const update=async delta=>{const e=record();await save({...state,records:state.records.map(x=>x.operation_id===e.operation_id?{...x,...delta}:x)});};
++  const restoredResult=e=>{
++    const result=e.result_text?JSON.parse(e.result_text):{status:'ANOMALY_PENDING_RESTORED_RECONCILIATION_REQUIRED',new_operation_id_allowed:false,native_admission_qualified:false,event_first_knowledge_qualified:false,native_epoch_qualified:false,SENT_claimed:false};
++    if(e.result_had_write_reply&&e.write_reply_text!==null)result.write_reply=JSON.parse(e.write_reply_text);
++    if(e.result_had_readback&&e.readback_reply_text!==null)result.retained_readback=JSON.parse(e.readback_reply_text);
++    return{...result,operation_id:e.operation_id,request_sha256:e.request_sha256,effective_prepared:restoredPrepared(e),original_origin_revision:e.expected_revision===0?null:e.expected_revision,new_operation_id_allowed:false,restored_pending_phase:e.phase,local_recovery_only:true,known_write_reply:e.write_reply_text===null?null:JSON.parse(e.write_reply_text),known_readback_reply:e.readback_reply_text===null?null:JSON.parse(e.readback_reply_text),retained_prior_usage:e.usage_after??e.usage_before,costs_not_reset:true,automatic_SQL_retry:false};
++  };
++  const journal={
++    identity:Object.freeze(boundIdentity),blocked:()=>broken||recovered_blocked,
++    checkpoint:()=>Object.freeze({schema:'RUNNER_ANOMALY_PENDING_CHECKPOINT_V1',identity_sha256,file_sha256:head,sequence:state.sequence,records:state.records.length,private_payload_exported:false,filesystem_durability_qualified:false,native_ACK_qualified:false}),
++    restored:()=>restored.map(restoredResult),
++    begin:async(prepared,u)=>{
++      need(!journal.blocked()&&active_operation===null,'ANOMALY_JOURNAL_RESTORED_OR_ACTIVE_PENDING_BLOCKS_SQL');
++      const r=prepared.request;need(!state.records.some(e=>e.operation_id===r.operation_id),'ANOMALY_JOURNAL_OPERATION_ALREADY_RECORDED');
++      const e={operation_id:r.operation_id,logical_event_id:r.logical_event_id,expected_revision:r.expected_revision,request_sha256:r.request_sha256,first_known_ts:r.first_known_ts,prepared_text:prepared.text,phase:'PREPARED',write_reply_text:null,readback_reply_text:null,result_text:null,result_had_write_reply:false,result_had_readback:false,usage_before:usageCut(u),usage_after:null};restoredPrepared(e);
++      need(state.records.length<MAX_RECORDS&&new Set([...state.records.map(x=>x.logical_event_id),r.logical_event_id]).size<=2,'ANOMALY_JOURNAL_CAPACITY_NO_DROP');await save({...state,records:[...state.records,e]});active_operation=r.operation_id;
++    },
++    beforeIO:async(payload,u)=>{
++      need(!journal.blocked(),'ANOMALY_JOURNAL_RESTORED_PENDING_BLOCKS_SQL');const e=record(),write=payload.sql===COMMIT_SQL;
++      need(write?payload.op==='run'&&payload.params?.length===1&&payload.params[0]===e.prepared_text&&e.phase==='PREPARED':payload.sql===READBACK_SQL&&payload.op==='first'&&payload.params?.length===1&&payload.params[0]===e.operation_id&&e.phase==='WRITE_REPLY','ANOMALY_JOURNAL_EXACT_IO_REQUIRED');
++      await update({phase:write?'WRITE_STARTED':'READBACK_STARTED',usage_after:usageCut(u)});
++    },
++    afterIO:async(payload,reply,u)=>{
++      const e=record(),write=payload.sql===COMMIT_SQL,text=canon(reply);
++      need(e.phase===(write?'WRITE_STARTED':'READBACK_STARTED')&&size(text)<=(write?65536:196608),'ANOMALY_JOURNAL_KNOWN_REPLY_BOUND');
++      await update({phase:write?'WRITE_REPLY':'READBACK_REPLY',[write?'write_reply_text':'readback_reply_text']:text,usage_after:usageCut(u)});
++    },
++    finish:async(result,u)=>{
++      const copy={...result};delete copy.effective_prepared;delete copy.write_reply;delete copy.retained_readback;const text=canon(copy);need(size(text)<=16384,'ANOMALY_JOURNAL_RESULT_BOUND');
++      await update({phase:'RETURNED',result_text:text,result_had_write_reply:Object.hasOwn(result,'write_reply'),result_had_readback:Object.hasOwn(result,'retained_readback'),usage_after:usageCut(u)});
++      if(!closed(record()))recovered_blocked=true;active_operation=null;
++    },
++  };
++  RUNNER_ANOMALY_PENDING_JOURNALS.add(journal);return Object.freeze(journal);
++}
++
+ // Optional capability; no numeric native policy is inferred from old fixtures.
+-function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id,receipt,day_admission,http_budget,post_v7,cost_bounds,on_receipt}) {
++function installRunnerAnomalyParentCapability({env,db,reservation,reservation_id,receipt,day_admission,http_budget,post_v7,cost_bounds,on_receipt,pending_journal}) {
+   const keys=['requests','rows_read','rows_written','unknown_ops'];
+   const integer=n=>typeof n==='number'&&Number.isSafeInteger(n)&&n>=0;
+   const plain=x=>x&&typeof x==='object'&&!Array.isArray(x)&&[Object.prototype,null].includes(Object.getPrototypeOf(x));
+@@ -714,6 +843,7 @@
+   } catch { return absent(); }
+   if(!env||env.DATA_DB!==db||typeof db?._request!=='function'||typeof db?.usageSnapshot!=='function'||typeof http_budget?.reserve!=='function'||typeof post_v7!=='boolean'||(Object.hasOwn(env,'REPORT2_ANOMALY_DOMAIN_COMMIT')||due_policy&&Object.hasOwn(env,'REPORT2_ANOMALY_DOMAIN_DUE')))return absent();
+   if(!plain(reservation)||!integer(reservation.rows_read)||!reservation.rows_read||!integer(reservation.rows_written)||!reservation.rows_written||typeof reservation_id!=='string'||!/^R2RUN:\d+:[a-f0-9]{16}$/.test(reservation_id))return absent();
++  if(!RUNNER_ANOMALY_PENDING_JOURNALS.has(pending_journal)||pending_journal.identity.reservation_id!==reservation_id||pending_journal.identity.day_utc!==receipt?.day_utc)return absent();
+   // No overlap proof exists: retain the SUM of the two declared future envelopes.
+   const protected_budget=Object.freeze({
+     rows_read:4500+4500+(post_v7?V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read+BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read:0),
+@@ -722,7 +852,7 @@
+   const caps=Object.freeze({rows_read:reservation.rows_read,rows_written:reservation.rows_written});
+   const request_descriptor=Object.getOwnPropertyDescriptor(db,'_request');
+   const original_request=db._request;
+-  let active=true,unsafe=false,stopped=false,in_prepare=false,reentrant=false,sequence=0,ticket=null,last_usage=null,last_reported_usage=null;
++  let active=true,unsafe=false,stopped=false,in_prepare=false,reentrant=false,sequence=0,ticket=null,last_usage=null,last_reported_usage=null,journal_reply_save_failed=false;
+   let tail=Promise.resolve();
+   const reconciliation=new Map();
+   const due_requests=new Map();
+@@ -753,13 +883,26 @@
+   // rendering/JSON and before any runner cleanup/finalizer may issue SQL.
+   const wrapped_request=async function(payload){
+     if(in_prepare){reentrant=true;usage();throw Error('ANOMALY_PREPARE_SQL_REFUSED');}
++    if(pending_journal.blocked()){fence();throw Error('ANOMALY_PENDING_JOURNAL_BLOCKS_NATIVE_SQL');}
+     const before=usage();if(!before)throw Error('ANOMALY_NATIVE_USAGE_NOT_CLOSED');
+     const domain=payload?.sql===ORIGIN_SQL||payload?.sql===COMMIT_SQL||payload?.sql===READBACK_SQL||payload?.sql===DUE_SQL;
++    let admitted_ticket=null;
+     if(domain){
+-      const t=ticket;ticket=null;
++      const t=ticket;ticket=null;admitted_ticket=t;
+       if(!t||!parent_closed()||!same_usage(before,t.usage)||JSON.stringify(payload)!==t.wire||project(t.phase,before)?.allowed!==true)throw Error('ANOMALY_PARENT_WIRE_NOT_ADMITTED');
+     }
+-    try {return await original_request.call(this,payload);}
++    const journalled=payload?.sql===COMMIT_SQL||payload?.sql===READBACK_SQL;
++    try {
++      if(journalled){
++        await pending_journal.beforeIO(payload,before);
++        const current=usage();
++        if(!parent_closed()||!same_usage(current,before)||project(admitted_ticket.phase,current)?.allowed!==true)throw Error('ANOMALY_PARENT_CHANGED_DURING_PENDING_IO');
++      }
++      const reply=await original_request.call(this,payload);
++      // Fence unknown usage immediately on settle, before asynchronous fs work.
++      if(journalled){usage();try{await pending_journal.afterIO(payload,reply,last_reported_usage);}catch{journal_reply_save_failed=true;fence();}}
++      return reply;
++    }catch(error){if(journalled)fence();throw error;}
+     finally {usage();}
+   };
+   try {Object.defineProperty(db,'_request',{value:wrapped_request,writable:true,configurable:true,enumerable:request_descriptor?.enumerable??false});}
+@@ -812,6 +955,7 @@
+     const id=input?.logical_event_id,prepare=input?.prepare_from_origin;
+     if(typeof id!=='string'||!/^OPAQUE_ANOM:[a-f0-9]{64}$/.test(id)||typeof prepare!=='function'||prepare.constructor?.name==='AsyncFunction')return refusal('ANOMALY_TYPED_INPUT_REQUIRED');
+     if(reconciliation.has(id))return reconciliation.get(id);
++    if(pending_journal.blocked())return{...refusal('ANOMALY_PENDING_JOURNAL_RECONCILIATION_REQUIRED'),new_operation_id_allowed:false};
+     if(!parent_closed())return refusal('ANOMALY_PARENT_NOT_ADMITTED');
+     if(!usage())return refusal('ANOMALY_NATIVE_USAGE_NOT_CLOSED');
+     const invocation=++sequence;
+@@ -852,15 +996,17 @@
+         if(!origin||prepared.logical_event_id!==id||prepared.expected_revision!==origin.revision||prepared.first_known_ts!==origin.first_known_ts||['card','descriptor','plan'].some(n=>prepared[n+'_sha256']!==origin[n+'_sha256'])||prepared.write_required!==false||prepared.durable_new_observation!==false||!['DUE_REVISION_CHANGED','NO_SAME_COMPLETED_CAPTURE','CLOSED_WINDOW_UNAVAILABLE','CAPTURE_RECORD_MISMATCH','CLOSED_WINDOW_ALREADY_OBSERVED','WATCH_INACTIVE_PENDING_OUTCOMES'].includes(prepared.reason))throw Error('ANOMALY_DUE_DEFER_NOT_BOUND');
+         return{...refusal('DUE_DEFERRED'),reason:prepared.reason,logical_event_id:id,revision:origin.revision,first_known_ts:origin.first_known_ts,write_required:false,durable_new_observation:false,origin_receipt:read};
+       }
+-      effective=validate_prepared(prepared,id,origin);expected_phase='WRITE';
++      effective=validate_prepared(prepared,id,origin);
++      await pending_journal.begin(effective,preparation_usage);expected_phase='WRITE';
+       const result=await commitAnomalyBundle({db,prepared:effective,admit,cost_bounds:policy});
+       const u=usage();
+-      const uncertain=!u||result.cost_status==='PROJECTION_EXCEEDED_OR_UNKNOWN'||result.new_operation_id_allowed===false||['UNKNOWN_COMMIT_ACK','COMMIT_REPLY_RETAINED_RECONCILIATION_REQUIRED','READBACK_CONFLICT_OR_UNKNOWN_USAGE'].includes(result.status);
++      const uncertain=journal_reply_save_failed||!u||result.cost_status==='PROJECTION_EXCEEDED_OR_UNKNOWN'||result.new_operation_id_allowed===false||['UNKNOWN_COMMIT_ACK','COMMIT_REPLY_RETAINED_RECONCILIATION_REQUIRED','READBACK_CONFLICT_OR_UNKNOWN_USAGE'].includes(result.status);
+       if(uncertain)stopped=true;
+-      const returned={...result,effective_prepared:effective,original_origin_revision:origin?.revision??null,native_admission_qualified:false,event_first_knowledge_qualified:false,native_epoch_qualified:false,SENT_claimed:false};
++      const returned={...result,effective_prepared:effective,original_origin_revision:origin?.revision??null,known_reply_persistence_failed:journal_reply_save_failed,native_admission_qualified:false,event_first_knowledge_qualified:false,native_epoch_qualified:false,SENT_claimed:false};
+       if(uncertain||result.status!=='COMMITTED_RECEIPT_READBACK'&&result.status!=='COMMIT_NOT_ADMITTED'){
+         stopped=true;returned.new_operation_id_allowed=false;reconciliation.set(id,returned);
+       }
++      try{await pending_journal.finish(returned,db.usageSnapshot());}catch{fence();returned.status='ANOMALY_PENDING_JOURNAL_FINALIZATION_NOT_CLOSED';returned.new_operation_id_allowed=false;reconciliation.set(id,returned);}
+       return returned;
+     } catch {
+       stopped=true;const returned={...refusal('ANOMALY_PARENT_OR_CALLBACK_NOT_CLOSED'),effective_prepared:effective,new_operation_id_allowed:false};
+@@ -949,6 +1095,8 @@
+     if(due_policy)Object.defineProperty(env,'REPORT2_ANOMALY_DOMAIN_DUE',{value:due_hook,writable:false,configurable:true,enumerable:false});
+   }
+   catch{if(env.REPORT2_ANOMALY_DOMAIN_COMMIT===hook)delete env.REPORT2_ANOMALY_DOMAIN_COMMIT;if(env.REPORT2_ANOMALY_DOMAIN_DUE===due_hook)delete env.REPORT2_ANOMALY_DOMAIN_DUE;if(request_descriptor)Object.defineProperty(db,'_request',request_descriptor);else delete db._request;return absent();}
++  for(const recovered of pending_journal.restored())reconciliation.set(recovered.effective_prepared.request.logical_event_id,freeze(recovered));
++  if(pending_journal.blocked())fence();
+   return {installed:true,due_installed:!!due_policy,status:'ANOMALY_PARENT_OPTIONAL_CAPABILITY',protected_budget,receipts,retained_reconciliation:()=>[...reconciliation.values()],close:async()=>{
+     active=false;await tail;
+     if(env.REPORT2_ANOMALY_DOMAIN_COMMIT===hook)delete env.REPORT2_ANOMALY_DOMAIN_COMMIT;
+@@ -965,6 +1113,7 @@
+   let source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
+   const generation=envText("REPORT2_CURRENT_GENERATION");
+   if(generation!=="MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
++  if(process.env.REPORT2_ANOMALY_DOMAIN_COST_BOUNDS)await preflightRunnerAnomalyPendingJournal({file:resolve('report2-anomaly-domain-pending.private'),expected_sha256:process.env.REPORT2_ANOMALY_PENDING_EXPECTED_SHA256,generation,source_head:process.env.GITHUB_SHA,cloud_run_id:process.env.GITHUB_RUN_ID});
+   const started = Date.now();
+   const nativeDayReconciliation=loadVerifiedNativeDayReconciliation({root:resolve('..'),now_ts:started,generation});
+   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
+@@ -1443,16 +1592,23 @@
+   };
+   const stage0HttpGrant=unifiedHttpBudget.reserve({logical_request_id:`STAGE0:${started}`,lane:'hot',attempts:4});
+   if(!stage0HttpGrant.allowed)throw new Error('STAGE0_HTTP_NOT_ADMITTED');
++  let anomalyPendingJournal=null;
++  if(process.env.REPORT2_ANOMALY_DOMAIN_COST_BOUNDS&&process.env.REPORT2_ANOMALY_PENDING_EXPECTED_SHA256){
++    try{
++      const expected=process.env.REPORT2_ANOMALY_PENDING_EXPECTED_SHA256;
++      anomalyPendingJournal=await openRunnerAnomalyPendingJournal({file:resolve('report2-anomaly-domain-pending.private'),identity:{generation,source_head:process.env.GITHUB_SHA,cloud_run_id:process.env.GITHUB_RUN_ID,reservation_id:d1ReservationId,day_utc:d1ReservationReceipt?.day_utc},expected_sha256:expected==='INITIALIZE_EMPTY'?null:expected,initialize_empty:expected==='INITIALIZE_EMPTY'});
++    }catch{env.DATA_DB.beforeRequest=()=>({allowed:false});throw Error('ANOMALY_PENDING_JOURNAL_NOT_OPEN_FAIL_CLOSED');}
++  }
+   const anomalyParentCapability=installRunnerAnomalyParentCapability({
+     env,db:env.DATA_DB,reservation:d1RunReservation,reservation_id:d1ReservationId,
+     receipt:d1ReservationReceipt,day_admission:d1DayAdmission,http_budget:unifiedHttpBudget,
+-    post_v7:postV7UnifiedEnabled,cost_bounds:process.env.REPORT2_ANOMALY_DOMAIN_COST_BOUNDS,on_receipt:persistRunnerAnomalyReceipts,
++    post_v7:postV7UnifiedEnabled,cost_bounds:process.env.REPORT2_ANOMALY_DOMAIN_COST_BOUNDS,pending_journal:anomalyPendingJournal,on_receipt:snapshot=>persistRunnerAnomalyReceipts(snapshot,{pending_checkpoint:anomalyPendingJournal?.checkpoint()??null}),
+   });
+   try {
+     await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);
+   } finally {
+     try { await anomalyParentCapability.close(); }
+-    finally { if(anomalyParentCapability.installed)try{await persistRunnerAnomalyReceipts(anomalyParentCapability.receipts());}catch{console.error("ANOMALY_RECEIPT_ARTIFACT_NOT_SAVED");} }
++    finally { if(anomalyParentCapability.installed)try{await persistRunnerAnomalyReceipts(anomalyParentCapability.receipts(),{pending_checkpoint:anomalyPendingJournal?.checkpoint()??null});}catch{console.error("ANOMALY_RECEIPT_ARTIFACT_NOT_SAVED");} }
+   }
+   const leaseAfterWorker=await assertAnalyticsFence(env.DATA_DB,analyticsLease,{now:Date.now()});
+   if(!leaseAfterWorker.allowed)throw new Error(`ANALYTICS_FENCE_LOST_AFTER_WORKER:${leaseAfterWorker.status}`);

@@ -1,6 +1,6 @@
 import {approvedHtxAnalysisAssetForContract} from './approved-htx-analysis-scope.mjs';
 
-const number=value=>value!==null&&value!==undefined&&value!==''&&Number.isFinite(Number(value))?Number(value):null;
+const number=value=>(typeof value==='number'||typeof value==='string'&&value.trim()!=='')&&Number.isFinite(Number(value))?Number(value):null;
 const tier=amount=>amount>=1_000_000?'огромная':amount>=100_000?'крупная':amount>=10_000?'средняя':'небольшая';
 const no=(contract,status,reason,network_calls=0)=>({source:'COINBOSS_CEX_MODEL',contract,status,reason,network_calls,scenarios:[],internal_only:true});
 // The original exact requests returned BTC for these four assets. Retain the
@@ -30,7 +30,7 @@ export function normalizeCoinBossLiquidationLevels(payload,{contract,reference_p
   for(const [side,field,amountField] of [['LONG','longPrice','longIntensity'],['SHORT','shortPrice','shortIntensity']]){
    const price=number(row?.[field]),intensity=number(row?.[amountField]);
    if(!(price>0)||!(intensity>0)||side==='LONG'&&price>=sourcePrice||side==='SHORT'&&price<=sourcePrice)continue;
-   scenarios.push({source:'CoinBoss',venue:null,independence_group:'COINBOSS_AGGREGATED_CEX_MODEL',evidence_class:'AGGREGATED_CEX_MODELED_LEVELS',kind:'PROJECTED',status:'CLOSED',source_ts:sourceTs,native_reference_price:sourcePrice,native_price:price,price_quote:'USD',notional_usd:intensity,notional_unit:'USD',liquidated_side:side,price_semantics:'COINBOSS_AGGREGATED_LEVERAGE_MODEL',model_version:'COINBOSS_PUBLIC_API_2026',leverage_scenarios:[Number(leverage)],amount_semantics:'MODELED_INTENSITY_NOT_OBSERVED_OPEN_POSITION',scenario_estimated_size_tier:tier(intensity),source_backed_calculated:true,scenario_only:true,estimated:true,decision_target_eligible:false});
+   scenarios.push({htx_contract:contract,source:'CoinBoss',venue:null,independence_group:'COINBOSS_AGGREGATED_CEX_MODEL',evidence_class:'AGGREGATED_CEX_MODELED_LEVELS',kind:'PROJECTED',status:'CLOSED',source_ts:sourceTs,native_reference_price:sourcePrice,native_price:price,price_quote:'USD',notional_usd:intensity,notional_unit:'USD',liquidated_side:side,price_semantics:'COINBOSS_AGGREGATED_LEVERAGE_MODEL',model_version:'COINBOSS_PUBLIC_API_2026',leverage_scenarios:[Number(leverage)],amount_semantics:'MODELED_INTENSITY_NOT_OBSERVED_OPEN_POSITION',scenario_estimated_size_tier:tier(intensity),source_backed_calculated:true,scenario_only:true,estimated:true,decision_target_eligible:false});
   }
  }
  if(!scenarios.some(z=>z.liquidated_side==='LONG')||!scenarios.some(z=>z.liquidated_side==='SHORT'))return no(contract,'SCHEMA_NOT_CLOSED','BOTH_FUTURE_SIDES_REQUIRED');

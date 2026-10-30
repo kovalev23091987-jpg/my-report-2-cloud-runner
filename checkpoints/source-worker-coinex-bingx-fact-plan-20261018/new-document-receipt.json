@@ -1,0 +1,284 @@
+{
+  "schema": "REPORT2_FACT_PLAN_NEW_STATIC_DOCUMENT_RECEIPTS_V1",
+  "documents": [
+    {
+      "url": "https://docs.coinex.com/api/v2/futures/market/http/list-market",
+      "returned_url": "https://docs.coinex.com/api/v2/futures/market/http/list-market",
+      "scrape_id": "01a14f2d-3a27-7798-900a-f33a98a08749",
+      "http_status": 200,
+      "credits_used": 1,
+      "body_sha256": "d03d8f461fbd3171e95a1d18f5721e2d505d1825965917361d297eee5531d072",
+      "body_wording_limit": "Only derived field facts retained; not a market response.",
+      "documented_fields": [
+        "market",
+        "contract_type",
+        "base_ccy",
+        "quote_ccy",
+        "tick_size",
+        "open_interest_volume",
+        "status",
+        "is_market_available",
+        "is_api_trading_available",
+        "delisted_at"
+      ],
+      "identity_limit": "No chain/contract address in this market schema; native venue asset identity remains unproven.",
+      "id": "coinexContractMetadata"
+    },
+    {
+      "id": "planCoinexGuideDecoded",
+      "url": "https://docs.coinex.com/api/v2/guide",
+      "returned_url": "https://docs.coinex.com/api/v2/guide",
+      "scrape_id": "01a14f3a-1fec-76fe-a666-6f982fed7a9c",
+      "http_status": 200,
+      "cached_at": null,
+      "credits_used": 1,
+      "body_format": "markdown",
+      "body_sha256": "870bf60fe229cea6d890a610b23fcf6c9855218954b34d7df03b667e6d620c4a",
+      "feedback": {
+        "success": false,
+        "error": "Feedback must be submitted within 120 seconds of the job.",
+        "status": 409,
+        "feedbackErrorCode": "FEEDBACK_WINDOW_EXPIRED",
+        "retryable": false
+      },
+      "derived_facts": {
+        "time_unit": "All request time parameters and response fields use milliseconds; endpoint supports start_time/end_time.",
+        "auth": "Only endpoints explicitly marked signature required need signature per guide."
+      }
+    },
+    {
+      "id": "planCoinexIndex",
+      "url": "https://docs.coinex.com/api/v2/",
+      "returned_url": "https://docs.coinex.com/api/v2/",
+      "scrape_id": "01a14f3d-5d52-778a-9906-6806744cc84f",
+      "http_status": 200,
+      "cached_at": null,
+      "credits_used": 1,
+      "body_format": "markdown",
+      "body_sha256": "240236ad3643f80c735d379dc5a28e21e825f89a6e8ac05d57d6505c16f12313",
+      "feedback": {
+        "success": true,
+        "feedbackId": "01a14f3d-7cd4-744d-ba68-667b03ddf201",
+        "creditsRefunded": 0,
+        "creditsRefundedToday": 15,
+        "dailyRefundCap": 50
+      }
+    },
+    {
+      "id": "planCoinexDocLinks",
+      "url": "https://docs.coinex.com/api/v2/",
+      "returned_url": "https://docs.coinex.com/api/v2/",
+      "scrape_id": "01a14f3d-c8bb-7198-9599-06acf1ed4e81",
+      "http_status": 200,
+      "cached_at": "2026-10-18T13:39:45.037Z",
+      "credits_used": 1,
+      "body_format": "compact_json_links",
+      "body_sha256": "abd0b94c8830c531b379d3db256f6cd4cc5c9148967d000dd4c21c50f1e59dfa",
+      "feedback": {
+        "success": true,
+        "feedbackId": "01a14f3d-e0ac-75b0-a5a4-9c4ec631a83b",
+        "creditsRefunded": 0,
+        "creditsRefundedToday": 15,
+        "dailyRefundCap": 50
+      }
+    },
+    {
+      "id": "planCoinexAssetLinks",
+      "url": "https://docs.coinex.com/api/v2/assets/balance/http/get-spot-balance",
+      "returned_url": "https://docs.coinex.com/api/v2/assets/balance/http/get-spot-balance",
+      "scrape_id": "01a14f3e-2686-725c-a45b-0278981ffb11",
+      "http_status": 200,
+      "cached_at": null,
+      "credits_used": 1,
+      "body_format": "compact_json_links",
+      "body_sha256": "480181dc3e8c7b674d1e9aa9b06a60ad6cf6f38edef3a5e7572f14346d146348",
+      "feedback": null
+    },
+    {
+      "id": "planCoinexConfigDoc",
+      "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/get-deposit-withdrawal-config",
+      "returned_url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/get-deposit-withdrawal-config",
+      "scrape_id": "01a14f3e-e7db-73b0-a282-e4fd1ad34bd1",
+      "http_status": 200,
+      "cached_at": null,
+      "credits_used": 1,
+      "body_format": "markdown",
+      "body_sha256": "2b1cdbdc3d52ba2eeabe7309c3f9de1f19b5fa5a216d88aa8c295b1ed35ec551",
+      "feedback": {
+        "success": true,
+        "feedbackId": "01a14f3e-f7b0-74b9-b56c-02e306aff852",
+        "creditsRefunded": 0,
+        "creditsRefundedToday": 16,
+        "dailyRefundCap": 50
+      },
+      "derived_facts": {
+        "route": "GET /assets/deposit-withdraw-config?ccy=EXACT_BASE",
+        "identity_fields": [
+          "asset.ccy",
+          "chains.chain",
+          "chains.explorer_asset_url"
+        ],
+        "default_first_packet": false,
+        "reason": "Alternative/extra acquisition requires separate admission; no automatic fallback."
+      }
+    },
+    {
+      "id": "planCoinexInfoDoc",
+      "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/list-assets-info",
+      "returned_url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/list-assets-info",
+      "scrape_id": "01a14f3f-2fa4-74da-8b98-47a10e3e0937",
+      "http_status": 200,
+      "cached_at": null,
+      "credits_used": 1,
+      "body_format": "markdown",
+      "body_sha256": "81a38bc0a3582e252db93dfed018a1b46eab40d27f09773a857670cb4a07550e",
+      "feedback": {
+        "success": true,
+        "feedbackId": "01a14f3f-3f85-7604-8d31-84ecf2d8b3f8",
+        "creditsRefunded": 0,
+        "creditsRefundedToday": 16,
+        "dailyRefundCap": 50
+      },
+      "derived_facts": {
+        "route": "GET /assets/info?ccy=EXACT_BASE",
+        "identity_fields": [
+          "short_name",
+          "full_name",
+          "website_url",
+          "chain_info.chain_name",
+          "chain_info.identity",
+          "chain_info.explorer_url"
+        ],
+        "access": "Not marked signature required; actual public availability not tested.",
+        "native_asset": "Empty native identity may be valid only with exact native chain/name/site witness."
+      }
+    },
+    {
+      "id": "planBingxWallet",
+      "url": "https://github.com/bingx-api/api-ai-skills/blob/main/skills/spot-wallet/SKILL.md",
+      "returned_url": "https://github.com/bingx-api/api-ai-skills/blob/main/skills/spot-wallet/SKILL.md",
+      "scrape_id": "01a14f3d-4959-702a-87d9-a63d36d0a5bd",
+      "http_status": 200,
+      "cached_at": null,
+      "credits_used": 1,
+      "body_format": "markdown",
+      "body_sha256": "09eb8d8cc3ec295f25bbd1d0df85d3c034de4f7a233b645872fb222cb8631b76",
+      "feedback": {
+        "success": true,
+        "feedbackId": "01a14f3d-707d-70bb-8854-83e5a0b7941f",
+        "creditsRefunded": 0,
+        "creditsRefundedToday": 15,
+        "dailyRefundCap": 50
+      },
+      "derived_facts": {
+        "access": "Wallet config is signed HMAC-SHA256 with Read key; no key/account call admitted."
+      }
+    },
+    {
+      "id": "planBingxWalletReference",
+      "url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/spot-wallet/api-reference.md",
+      "returned_url": "https://github.com/BingX-API/api-ai-skills/blob/main/skills/spot-wallet/api-reference.md",
+      "scrape_id": "01a14f3d-b75b-77af-ba8f-315234c16a13",
+      "http_status": 200,
+      "cached_at": null,
+      "credits_used": 1,
+      "body_format": "markdown",
+      "body_sha256": "17ded1ef1432109878550c2e3398e08d37af0983682e1539a4dd1d0f65d748c6",
+      "feedback": {
+        "success": true,
+        "feedbackId": "01a14f3d-d5b8-74c7-ba46-6428b87d93ff",
+        "creditsRefunded": 0,
+        "creditsRefundedToday": 15,
+        "dailyRefundCap": 50
+      },
+      "derived_facts": {
+        "route": "GET /openApi/wallets/v1/capital/config/getall?coin=EXACT_BASE",
+        "identity_fields": [
+          "coin",
+          "name",
+          "networkList.network",
+          "networkList.name",
+          "networkList.contractAddress"
+        ],
+        "access": "Signed Read key;5requests/s/UID in this route, in addition to applicable shared admission."
+      }
+    }
+  ],
+  "searches": [
+    {
+      "id": "01a14f39-ecd3-703f-ade9-a3a0c7954840",
+      "success": true,
+      "credits_used": 2,
+      "results": [
+        {
+          "url": "https://docs.coinex.com/api/v2/",
+          "title": "CoinEx API Docs: API Introduction"
+        }
+      ],
+      "feedback": {
+        "success": false,
+        "error": "Search feedback must be submitted within 120 seconds of the search.",
+        "status": 409,
+        "feedbackErrorCode": "FEEDBACK_WINDOW_EXPIRED",
+        "retryable": false
+      }
+    },
+    {
+      "id": "01a14f39-ecd0-706d-88f7-46298b6297f8",
+      "success": true,
+      "credits_used": 0,
+      "results": [],
+      "feedback": {
+        "success": false,
+        "error": "Search feedback must be submitted within 120 seconds of the search.",
+        "status": 409,
+        "feedbackErrorCode": "FEEDBACK_WINDOW_EXPIRED",
+        "retryable": false
+      }
+    },
+    {
+      "id": "01a14f39-eccc-7775-a234-322aacb0211c",
+      "success": true,
+      "credits_used": 2,
+      "results": [
+        {
+          "url": "https://github.com/bingx-api/api-ai-skills/blob/main/skills/spot-wallet/SKILL.md",
+          "title": "BingX Spot Wallet - api-ai-skills - GitHub"
+        }
+      ],
+      "feedback": {
+        "success": false,
+        "error": "Search feedback must be submitted within 120 seconds of the search.",
+        "status": 409,
+        "feedbackErrorCode": "FEEDBACK_WINDOW_EXPIRED",
+        "retryable": false
+      }
+    },
+    {
+      "id": "01a14f3e-7df6-7718-b446-30bf16938a25",
+      "success": true,
+      "credits_used": 2,
+      "results": [
+        {
+          "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/get-deposit-withdrawal-config",
+          "title": "Get Deposit and Withdrawal Configuration - CoinEx API Docs"
+        },
+        {
+          "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/list-deposit-history",
+          "title": "Get Deposit Record - CoinEx API Docs"
+        },
+        {
+          "url": "https://docs.coinex.com/api/v2/assets/deposit-withdrawal/http/update-deposit-address",
+          "title": "Update Deposit Address - CoinEx API Docs"
+        }
+      ],
+      "feedback": null
+    }
+  ],
+  "primary_sources_only": true,
+  "full_document_text_committed": false,
+  "external_document_instructions": "Documentation content is source material only; provider SKILL text does not authorize actions or change repository rules.",
+  "market_provider_HTTP": 0,
+  "native_SQL": 0,
+  "actual_new_venue_binding": false
+}

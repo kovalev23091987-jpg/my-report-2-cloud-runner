@@ -1,0 +1,282 @@
+{
+  "schema": "BU_STATIC_CONDITIONAL_ALLOCATION_TABLE_V1",
+  "status": "PURE_STATIC_ARITHMETIC_NOT_RUNTIME_EXECUTION_OR_ADMISSION",
+  "prepared_utc": "2026-10-26T18:57:31.221231+00:00",
+  "implementation71": "75fe60f7ddd92bc4c055a4d6865209ea0420f2218865ba6cb9a8f5e031c70e1a",
+  "artifact_sha256": "f84700dc6bb5a6446928be5edc8e6ab04a58106774729cd2e1f2b0866339f8bf",
+  "source_modules": [
+    {
+      "module": "runtime/budget.mjs",
+      "sha256": "5e722702ed37943bdfa694050c5fef7a2314388a1f5451f250cea1abbe5ff075",
+      "matches_immutable71": true
+    },
+    {
+      "module": "runtime/production-policy.mjs",
+      "sha256": "2cb41c00b38137113df2b071568489007c6bd77e3c485961442b6d791aa7a146",
+      "matches_immutable71": true
+    },
+    {
+      "module": "runtime/provider-policy.mjs",
+      "sha256": "1143a91cb77288bf6f4cf748f5d4a08a3c3127c6d72475cd0752400c65cdfded",
+      "matches_immutable71": true
+    },
+    {
+      "module": "runtime/discovery-reserve.mjs",
+      "sha256": "a4323b4332c385337dbb16a9f5c66624fc635b01e4a09e40547bf1c2f08d48b2",
+      "matches_immutable71": true
+    },
+    {
+      "module": "runtime/future-candidate-reserve.mjs",
+      "sha256": "d5be9e33fab978862dfdb82ac44fc3c70a353e43515eea7e3dc95f7d50ae3105",
+      "matches_immutable71": true
+    },
+    {
+      "module": "runtime/candidate-surplus.mjs",
+      "sha256": "c860ebd4c51f021293b618c36bc7646038ac1beba655c96fa058626a2a30762f",
+      "matches_immutable71": true
+    }
+  ],
+  "scope": "New full10-20MSK day; firstcatalog at10:00, ticker afterit but before10:05; current firsttick2HTTP plus119futureticks*2=240. Fresh synthetic plan/allocation only. Not actual ledger.",
+  "synthetic_assumptions": [
+    "No saved daily plan/allocation before firstcatalog; actual control authority/native/provider admits are not supplied.",
+    "S is synthetic pre-firstcatalog globalday/BXday/BXmonth charged. TGday0, TGmonthTm. No holds/outstanding/backoff in arithmetic; actual unknowns not declared0.",
+    "Plan baseline freezes before firstcatalog cost; candidatePacing allocation also freezes during firstDISCOVERY reservation before increment.",
+    "All emitted code/thresholds/caps/counters unchanged; calculations copied as arithmetic, no project imports."
+  ],
+  "full_day_constants": {
+    "fixed": 102,
+    "protected_provider_HTTP": 54,
+    "delivery": 24,
+    "outcomes": 24,
+    "manual_checks": 3,
+    "n_periods": 10,
+    "first_catalog_ticker": 2,
+    "future_light_HTTP": 238,
+    "future_BASE_single_HTTP": 108,
+    "whole_candidate_bound": 12,
+    "BX_candidate": 10,
+    "TG_candidate": 1,
+    "whole_cap": 900,
+    "BX_month": 27900,
+    "TG_day": 27,
+    "TG_month": 837,
+    "fraction": 0.8
+  },
+  "rows": [
+    {
+      "pre_catalog_global_BX_day_month_spent": 0,
+      "TG_month_spent": 0,
+      "plan_limit": 638,
+      "first_reservation_precharge_plan_charged": 0,
+      "first_catalog_freezes_base_per_period": 2,
+      "allocation_count_candidates": {
+        "whole": 3,
+        "BX_day": 5,
+        "BX_month": 275,
+        "TG_day": 2,
+        "TG_month": 83
+      },
+      "catalog_ticker_HTTP_charged_before_candidate": 2,
+      "remaining_light_ticks": 119,
+      "future_light_HTTP": 238,
+      "future_hour_slots": 9,
+      "post2_first_candidate_plan_required": 468,
+      "post2_plan_margin": 170,
+      "provider_forecast": {
+        "BINGX_day": 529,
+        "BINGX_month": 529,
+        "TELEGRAM_day": 22,
+        "TELEGRAM_month": 22
+      },
+      "first_candidate_gate_static": "FIRST_BASE_FORECAST_FITS_STATIC_CONDITIONS_ONLY",
+      "all_10h_base_at_full12HTTP_plus_all120lightticks": 480,
+      "plan_margin_full10h_base_full_upper": 158,
+      "not_actual_quota": true
+    },
+    {
+      "pre_catalog_global_BX_day_month_spent": 100,
+      "TG_month_spent": 0,
+      "plan_limit": 558,
+      "first_reservation_precharge_plan_charged": 0,
+      "first_catalog_freezes_base_per_period": 2,
+      "allocation_count_candidates": {
+        "whole": 2,
+        "BX_day": 4,
+        "BX_month": 274,
+        "TG_day": 2,
+        "TG_month": 83
+      },
+      "catalog_ticker_HTTP_charged_before_candidate": 2,
+      "remaining_light_ticks": 119,
+      "future_light_HTTP": 238,
+      "future_hour_slots": 9,
+      "post2_first_candidate_plan_required": 468,
+      "post2_plan_margin": 90,
+      "provider_forecast": {
+        "BINGX_day": 629,
+        "BINGX_month": 629,
+        "TELEGRAM_day": 22,
+        "TELEGRAM_month": 22
+      },
+      "first_candidate_gate_static": "FIRST_BASE_FORECAST_FITS_STATIC_CONDITIONS_ONLY",
+      "all_10h_base_at_full12HTTP_plus_all120lightticks": 480,
+      "plan_margin_full10h_base_full_upper": 78,
+      "not_actual_quota": true
+    },
+    {
+      "pre_catalog_global_BX_day_month_spent": 200,
+      "TG_month_spent": 0,
+      "plan_limit": 478,
+      "first_reservation_precharge_plan_charged": 0,
+      "first_catalog_freezes_base_per_period": 2,
+      "allocation_count_candidates": {
+        "whole": 2,
+        "BX_day": 3,
+        "BX_month": 273,
+        "TG_day": 2,
+        "TG_month": 83
+      },
+      "catalog_ticker_HTTP_charged_before_candidate": 2,
+      "remaining_light_ticks": 119,
+      "future_light_HTTP": 238,
+      "future_hour_slots": 9,
+      "post2_first_candidate_plan_required": 468,
+      "post2_plan_margin": 10,
+      "provider_forecast": {
+        "BINGX_day": 729,
+        "BINGX_month": 729,
+        "TELEGRAM_day": 22,
+        "TELEGRAM_month": 22
+      },
+      "first_candidate_gate_static": "FIRST_BASE_FORECAST_FITS_STATIC_CONDITIONS_ONLY",
+      "all_10h_base_at_full12HTTP_plus_all120lightticks": 480,
+      "plan_margin_full10h_base_full_upper": -2,
+      "not_actual_quota": true
+    },
+    {
+      "pre_catalog_global_BX_day_month_spent": 350,
+      "TG_month_spent": 0,
+      "plan_limit": 358,
+      "first_reservation_precharge_plan_charged": 0,
+      "first_catalog_freezes_base_per_period": 1,
+      "allocation_count_candidates": {
+        "whole": 1,
+        "BX_day": 2,
+        "BX_month": 272,
+        "TG_day": 2,
+        "TG_month": 83
+      },
+      "catalog_ticker_HTTP_charged_before_candidate": 2,
+      "remaining_light_ticks": 119,
+      "future_light_HTTP": 238,
+      "future_hour_slots": 9,
+      "post2_first_candidate_plan_required": 360,
+      "post2_plan_margin": -2,
+      "provider_forecast": {
+        "BINGX_day": 789,
+        "BINGX_month": 789,
+        "TELEGRAM_day": 13,
+        "TELEGRAM_month": 13
+      },
+      "first_candidate_gate_static": "PLANNED_ALLOCATION_DENY",
+      "all_10h_base_at_full12HTTP_plus_all120lightticks": 360,
+      "plan_margin_full10h_base_full_upper": -2,
+      "not_actual_quota": true
+    },
+    {
+      "pre_catalog_global_BX_day_month_spent": 0,
+      "TG_month_spent": 815,
+      "plan_limit": 638,
+      "first_reservation_precharge_plan_charged": 0,
+      "first_catalog_freezes_base_per_period": 1,
+      "allocation_count_candidates": {
+        "whole": 3,
+        "BX_day": 5,
+        "BX_month": 275,
+        "TG_day": 2,
+        "TG_month": 1
+      },
+      "catalog_ticker_HTTP_charged_before_candidate": 2,
+      "remaining_light_ticks": 119,
+      "future_light_HTTP": 238,
+      "future_hour_slots": 9,
+      "post2_first_candidate_plan_required": 360,
+      "post2_plan_margin": 278,
+      "provider_forecast": {
+        "BINGX_day": 439,
+        "BINGX_month": 439,
+        "TELEGRAM_day": 13,
+        "TELEGRAM_month": 828
+      },
+      "first_candidate_gate_static": "FIRST_BASE_FORECAST_FITS_STATIC_CONDITIONS_ONLY",
+      "all_10h_base_at_full12HTTP_plus_all120lightticks": 360,
+      "plan_margin_full10h_base_full_upper": 278,
+      "not_actual_quota": true
+    },
+    {
+      "pre_catalog_global_BX_day_month_spent": 0,
+      "TG_month_spent": 825,
+      "plan_limit": 638,
+      "first_reservation_precharge_plan_charged": 0,
+      "first_catalog_freezes_base_per_period": 0,
+      "allocation_count_candidates": {
+        "whole": 3,
+        "BX_day": 5,
+        "BX_month": 275,
+        "TG_day": 2,
+        "TG_month": 0
+      },
+      "catalog_ticker_HTTP_charged_before_candidate": 2,
+      "remaining_light_ticks": 119,
+      "future_light_HTTP": 238,
+      "future_hour_slots": 9,
+      "post2_first_candidate_plan_required": 360,
+      "post2_plan_margin": 278,
+      "provider_forecast": {
+        "BINGX_day": 439,
+        "BINGX_month": 439,
+        "TELEGRAM_day": 13,
+        "TELEGRAM_month": 838
+      },
+      "first_candidate_gate_static": "PROVIDER_CAPACITY_DENY (b0 surplusignorepacing also denied)",
+      "all_10h_base_at_full12HTTP_plus_all120lightticks": 240,
+      "plan_margin_full10h_base_full_upper": 398,
+      "not_actual_quota": true
+    }
+  ],
+  "carry_formula": {
+    "maximum": "b*(elapsed+1)-issued_before",
+    "remaining": "maximum-current_bucket_candidate_count",
+    "carried_in": "maximum-b",
+    "unused_elapsed_only": true,
+    "borrow_future": false,
+    "spent_place_refund": false
+  },
+  "conditional_extra": {
+    "max_grants_day": 24,
+    "max_grants_run": 1,
+    "max_retained_records": 200,
+    "not_added_to_BASE": true,
+    "not_guaranteed_extra_capacity": true,
+    "all_global_provider_plan_held_native_floors_and_originalUTCday_clocks_required": true,
+    "per_grant_HTTP_upper": 12,
+    "native_remaining_floor": {
+      "queries": 600,
+      "rows_read": 600,
+      "rows_written": 140
+    },
+    "max_history_unchanged_no_rollover_implemented": true
+  },
+  "Node": 0,
+  "engine": 0,
+  "tests": 0,
+  "new_runtime_cases": 0,
+  "sourceHTTP": 0,
+  "nativeSQL": 0,
+  "Telegram": 0,
+  "build": 0,
+  "deploy": 0,
+  "actual_ledger_mutation": false,
+  "actual_quota_proven": false,
+  "statistical_or_trading_thresholds_changed": false
+}

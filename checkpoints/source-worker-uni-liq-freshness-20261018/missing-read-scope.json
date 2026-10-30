@@ -1,0 +1,79 @@
+{
+  "schema": "UNI_FAILED_BOUND_LIQ_FRESHNESS_MISSING_READ_SCOPE_V1",
+  "status": "PROPOSAL_ONLY_NOT_ADMISSION",
+  "executor": "coordinator only",
+  "case": {
+    "cloud_run": "39136880005",
+    "source_head": "03fafed3ef85e2e58f141b0fe6070fe3579a4490",
+    "source_run_id": "1792334308196-1792334318400",
+    "failed_key": "UNI-USDT|LONG|EDW:UNI-USDT:1791877293953:G7|OBSERVE|v3-telegram-shadow-r6",
+    "current_distinct_publication": "PUB:25cbc77aa8f4d9152674f1695af3adc7062055a5",
+    "current_distinct_snapshot": "S392:UNI-USDT:1792334416057",
+    "current_distinct_wave": "EDW:UNI-USDT:1792334318579:G11",
+    "current_distinct_direction": "SHORT"
+  },
+  "purpose": "Identify the actual failed bound publication and its original LIQ clock/TTL/expiry; distinguish that failure from the newly persisted SHORT snapshot and identify any deferred current publication without assuming its dispatch exists.",
+  "first_use_already_saved_evidence": [
+    "Check exact39136880005 immutable runner logs or any already acquired binding/dispatch receipt. Existing artifact failure entry lacks publication/run/snapshot/checked_ts and the six archive members do not contain full canonical_json.",
+    "Do not repeat provider acquisition, accepted delivery or full-report runs. The current SHORT provider body is not required to explain an older LONG binding."
+  ],
+  "if_missing_coordinator_may_prepare_read_only_native_scope": {
+    "granted": false,
+    "fresh_main_phase_fence_generation_and_own_scope_required": true,
+    "current_bridge_provenance_and_actual_budget_admission_required": true,
+    "targets": [
+      {
+        "table": "v3_dispatch_publication_binding_shadow",
+        "exact_key_field": "idempotency_key",
+        "exact_key": "UNI-USDT|LONG|EDW:UNI-USDT:1791877293953:G7|OBSERVE|v3-telegram-shadow-r6",
+        "row_limit": 1,
+        "fields": ["idempotency_key", "publication_id", "contract_code", "direction", "wave_id", "lifecycle_event", "run_id", "snapshot_id", "observed_ts", "created_ts", "analytical_fingerprint", "presentation_hash"],
+        "dependency": "Only this returned exact publication_id may select the old failed canonical. Do not select latestUNI or substitute the newSHORT snapshot."
+      },
+      {
+        "table": "canonical_publication_shadow",
+        "exact_key_field": "publication_id",
+        "exact_key": "FROM_EXACT_OLD_BINDING_ONLY",
+        "row_limit": 1,
+        "fields": ["publication_id", "contract_code", "direction", "wave_id", "run_id", "snapshot_id", "observed_ts", "valid_until_ts", "created_ts", "bound_ts", "actionability_status", "analytical_fingerprint", "presentation_hash", "canonical_json original identity and liquidations native_extension/independent_extensions only"],
+        "source_fields": ["schema", "status", "provider", "venue", "binding", "source_ts", "received_ts", "freshness_max_age_ms", "fingerprint", "acquisition_id", "acquisition_fingerprint", "above/below zone source_ts and source_clock_closed", "raw_accounts_persisted"],
+        "limits": "Extract original fields without re-rendering, re-fingerprinting into a new publication or refreshing any source clock. Missing source clock/row/body remainsunknown. No raw account/provider fetch is authorized."
+      },
+      {
+        "table": "v3_telegram_dispatch_shadow",
+        "exact_key_field": "idempotency_key",
+        "exact_key": "UNI-USDT|LONG|EDW:UNI-USDT:1791877293953:G7|OBSERVE|v3-telegram-shadow-r6",
+        "row_limit": 1,
+        "fields": ["dispatch_id", "idempotency_key", "contract", "direction", "wave_id", "lifecycle_event", "state", "last_error", "created_ts", "updated_ts", "sent_ts", "telegram_message_id"],
+        "limits": "Current updated_ts or last_error may reflect a later attempt. They are not automatically the historical checked_ts of39136880005. If no immutable original attempt clock exists, keep itnull."
+      },
+      {
+        "table": "canonical_publication_shadow",
+        "exact_key_field": "publication_id",
+        "exact_key": "PUB:25cbc77aa8f4d9152674f1695af3adc7062055a5",
+        "row_limit": 1,
+        "fields": ["publication_id", "contract_code", "direction", "wave_id", "run_id", "snapshot_id", "observed_ts", "valid_until_ts", "actionability_status", "bound_ts"],
+        "limits": "Optional only if coordinator needs current publication admission/reconciliation state; existence of current candidate does not prove a dispatch row was queued or was the deferred row."
+      }
+    ],
+    "logical_targeted_reads_upper_plan": 4,
+    "actual_SQL_transport_requests": null,
+    "actual_rows_read": null,
+    "actual_rows_written": 0,
+    "native_cost_bound_qualified": false,
+    "provider_HTTP": 0,
+    "MAIN_Telegram_deploy_or_mutation": 0,
+    "unknown_and_spent_reservations_preserved": true,
+    "required_receipts": "Exact read identity/hash, original row/source clocks, all actual native statements/costs and unknown accounting under the coordinator scope. No retry after unknown and no reserve refund."
+  },
+  "future_failure_diagnostic_proposal": {
+    "file": "current-generation/files/src/canonical-publication.mjs and bound-telegram-delivery-sidecar.mjs",
+    "owner": "coordinator shared lane",
+    "proposal": "Return a bounded failure receipt from already-read exact binding/publication: failed key, publication/run/snapshot/wave/direction/fingerprint, original checked_ts, guard stage and offending provider/context/zone source clock/maxAge, independently known publicationexpiry. No extra read, fetch, send, source-clock refresh or freshness bypass. Persist only this diagnostic in completionartifact.",
+    "existing_freshness_thresholds_changed": false,
+    "existing_reconciliation_or_delivery_limits_changed": false,
+    "historical_missing_fields_backfilled": false
+  },
+  "conditional_code_question_for_coordinator": "loadBoundTelegram currently checks native freshness before publicationexpiry; sidecar maps NATIVE_LIQUIDATION_SOURCE_STALE to FAILED_RETRYABLE. Inspect exact old valid_until and original attempttime before asserting an expired-publication loop. Any terminal-priority fix belongs to coordinator and must retain freshness and immutable binding; this worker makes no lifecycle or delivery change.",
+  "not_proven": ["old failed publication provider/sourceclock", "old failed publicationexpiry", "historical exact failed-attempt checked_ts", "currentUNI was the capacity-deferred row", "currentSHORT observation was sent", "source outage or incorrect currentproviderfreshness"]
+}

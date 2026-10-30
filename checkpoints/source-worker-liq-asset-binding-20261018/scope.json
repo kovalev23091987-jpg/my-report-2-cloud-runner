@@ -1,0 +1,120 @@
+{
+  "schema": "REPORT2_LIQ_THREE_PROVIDERS_EXACT_ASSET_BINDING_OFFLINE_V1",
+  "recorded_utc": "2026-10-18T08:34:38.261958+00:00",
+  "source_main": "ddcdc7e4c3fe7ce0d41a914b8f7360ae12296cac",
+  "branch": "work/report2-sources-liq-exact-binding-20261018",
+  "thread_id": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "lease": {
+    "lease_commit": "2fc0bb22bd8a0a9b1f8353f64bf0b917b96ee3d6",
+    "lease": {
+      "schema": "REPORT2_SOURCE_WORKER_OFFLINE_CAS_LEASE_V1",
+      "owner": "CODEX:SOURCES:01a14e11:1792312280089",
+      "thread_id": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+      "acquired_ts": 1792312280089,
+      "expires_ts": 1792317080089,
+      "expected_main": "ddcdc7e4c3fe7ce0d41a914b8f7360ae12296cac",
+      "scope": "OFFLINE_ONLY LIQ exact asset binding across CoinBoss, Swolecharts and Orderly provider outputs and the permitted LIQ consumer; saved original replay and new negative controls only. Shared pump consumer remains a proposal until coordinator confirms file ownership. No shared/main/phase/fence/status/generation mutations, live provider/nativeSQL/deploy/MAIN/Telegram, quota or unknown reset.",
+      "released": false,
+      "guard_sha256": {
+        "checkpoints/CLOUD_PHASE_STATE_20261004.json": "5448ae4e49bacdc41e8c31b82333f25e01273f20d044a5bb22d4285b4c03f60b",
+        "audit-fixes/source-optimization-20260930/execution-lock.json": "6680cb2a33b36e008501686072852ca359def4a5ffbafabe9e828cbb00cc29bd",
+        "REPORT2_CURRENT_GENERATION.json": "3c7bd755f8d44f941c52667001e6d473016aa9b9a6bdbd599f0e14ab53139ef3",
+        "checkpoints/CURRENT_PROJECT_STATUS.json": "98d278f916c9a2751b7d35c539a1c51947f0f96ff382f3c2e1e00b004bb58377"
+      }
+    },
+    "phase_owner": {
+      "owner": "CODEX:ACTIVE105_SOURCE_RELIABILITY:1792311331649",
+      "acquired_ts": 1792311331649,
+      "expires_ts": 1792316131649,
+      "expected_main": "8275f9583572ce29dd7ab661a678d1f9c4aaef3a",
+      "scope": "Coordinator-only report recovery and exact persisted natural readback after Paid, bind source worker chat and preserve independent parallel offline lane. Inspect already-saved natural39110507521 and original UTC18 first failed full39081512792, exact same-run artifacts/costs/delivery. Repair concrete same-day verified unknown-refusal reuse if original evidence qualifies, so known failed admission is not reprobed repeatedly; never clear unknown/refund reservations/force MAIN/manual. Original artifacts/metadata only; no live provider/native SQL/MAIN/Telegram/deploy. One connected verification/PR and precise GitHub save. Preserve paid volume retention/cursor710/native relocation; source worker files untouched. Owner-authorized coordinator integration of ready source-worker PR425/head650086abf4155a3e070d8a28b3744a6a8cf22bbc: review saved originals and exact provider changes, add only missing overlay module and CI regression/path binding; rebase/merge ready branch with fresh main and one connected cloud verification. Worker provider files remain unchanged, next N15 worker branch independent. Preserve all guards and live prohibitions, no new provider/native SQL/MAIN/Telegram/deploy. Save both PR424 day-refusal and PR425 exact acceptance together and release own lease."
+    },
+    "fence_active": false,
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "exact_readback": true
+  },
+  "defect": "CoinBoss/Swolecharts modeled rows and Orderly projected positions lose their verified HTX contract at normalization. The shared pump consumer accepts those rows for another requested contract under a controlled matching numeric reference. This demonstrates missing source-to-consumer binding, not actual production cross-asset contamination.",
+  "provider_change": "Carry exact htx_contract in normalized rows only after the existing exact response symbol/market check. Source clocks, units, model/position distinction, estimates, target exclusions and normal request path unchanged.",
+  "shared_consumer_proposal": {
+    "path": "checkpoints/source-worker-liq-asset-binding-20261018/pump-asset-binding.proposed.patch",
+    "file": "current-generation/files/src/pump-liquidation-zones.mjs",
+    "shared_workspace_file_modified": false,
+    "baseline_sha256": "b1ac690bfc8a39169c1ab975d4e9bcedf38578c1594d636dd8de784eccaabb59",
+    "proposed_sha256": "50415448df048fec23a6817be9935672000d12ac1dc26612dfccb39d7c6db0ae",
+    "guard_scope": [
+      "Orderly-specific projected rows",
+      "CoinBoss/Swolecharts external modeled scenarios"
+    ],
+    "unchanged": [
+      "Native ctx.binding.contract path",
+      "Fingerprint-validated provider map native_symbol path",
+      "Other projected providers",
+      "Local HTX model remains owner-explicit-only",
+      "Report and Telegram forms"
+    ]
+  },
+  "originals": {
+    "checkpoints/source-inputs/coinboss-liq-levels-102-original-20261012.json.gz": {
+      "file_sha256": "6429aeebfda7366c450029e7618041b34c76c06c91e9d3c0664ddd10189f8ada",
+      "raw_sha256": "10c41f4e6bf5dd551617391c083d597b74b64c29da3654760da3bb311d7dd1db"
+    },
+    "checkpoints/source-inputs/swolecharts-liq-levels-bounded-20261013.json": {
+      "file_sha256": "cd9ccc7d1a3e16ab019060dbafe0474803b277721ee13a0cad65198251b8f73d",
+      "raw_sha256": "cd9ccc7d1a3e16ab019060dbafe0474803b277721ee13a0cad65198251b8f73d"
+    }
+  },
+  "tests": {
+    "baseline21": {
+      "path": "checkpoints/source-worker-liq-asset-binding-20261018/baseline21.tap.gz",
+      "raw_sha256": "e81fcda2c1945be674a2b25a02b31c3c3811b45a983e7747048ff6e5c880b4d7",
+      "gzip_sha256": "b4395f7cd6ed551f1fb5f00b264a1e690ab58f37730f5bc80eb3af48dc5c02f3",
+      "counts": {
+        "tests": 21,
+        "pass": 6,
+        "fail": 15
+      }
+    },
+    "proposal21": {
+      "path": "checkpoints/source-worker-liq-asset-binding-20261018/proposal21.tap.gz",
+      "raw_sha256": "a9dfa5a01668c7c0c44ebfd4cbc113e6de015b9842a6f2324d331786bc5618ec",
+      "gzip_sha256": "94ec0cc5a5ce6c2764e9fb5dd67feb9e4f3ebb62d6450e018e2186ac5bb62710",
+      "counts": {
+        "tests": 21,
+        "pass": 21,
+        "fail": 0
+      }
+    },
+    "provider_related": {
+      "path": "checkpoints/source-worker-liq-asset-binding-20261018/provider_related.tap.gz",
+      "raw_sha256": "80884745a27aab90f0674a399265ac83a554feb76ccdd8aef8978c466ffcdf37",
+      "gzip_sha256": "92f7a4a74e627fd4973f172d1574ff21871173e3309350874aa12c7eafddfd33",
+      "counts": {
+        "tests": 17,
+        "pass": 17,
+        "fail": 0
+      }
+    }
+  },
+  "new_cases": 21,
+  "provider_HTTP_this_package": 0,
+  "native_SQL": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "extra_normal_path_SQL": 0,
+  "current_coverage_delivery_accepted": false,
+  "limitations": [
+    "This source branch alone adds provider bindings. Consumer negative cases require coordinator application of the saved exact shared proposal.",
+    "The passing21-case consumer result uses a complete /tmp source copy plus the exact saved shared proposal; it is not current main or deployed runtime acceptance.",
+    "Real retained CoinBoss FIL/AAVE and Swolecharts FIL/STRK source bodies retain original clocks. Controlled identical reference prices isolate the missing asset binding and do not assert real cross-asset price agreement.",
+    "No full Orderly raw platform position body was found in this checkout; the Orderly case is explicitly the existing controlled HYPE example, not an invented AAVE original or new provider qualification.",
+    "No live103/105 coverage, current provider availability, same-run manual/Telegram publication or SENT inferred from tests."
+  ],
+  "next_action": "Coordinator reviews and applies exact pump proposal centrally, adds liq-provider-asset-binding.test.mjs to assembled CI path/command, runs combined verification and integrates. Source worker does not mutate ready PR while review runs. Next independent scope: N10 remaining exact HTX candle/window/source-clock evidence gaps, reuse PR418 same-window candles.",
+  "changed_file_sha256": {
+    "current-generation/files/src/coinboss-liquidation-levels.mjs": "8492c84a09287d9875f37cc8a3efe233be939f376975df86be28f2b7c706ce10",
+    "current-generation/files/src/swolecharts-liquidation-levels.mjs": "66dca85adf769df3ceeb23bb634d9f27a1ce1a0707298b82f9c4792338a2e429",
+    "current-generation/files/src/orderly-public-liquidation-positions.mjs": "09ec57428054fdf46140770a71cbf02f8634a3eb4fbf094641dfe1ce00f9833e",
+    "current-generation/tests/liq-provider-asset-binding.test.mjs": "0419e0e1aad08b52467f61c85500459d829678f387cf85ef1d16730c7d371df5",
+    "checkpoints/source-worker-liq-asset-binding-20261018/pump-asset-binding.proposed.patch": "351cc530e7eba4e481c0ede7c2afcfdb12dfaa84f22f52a887e50563d7de8222"
+  }
+}

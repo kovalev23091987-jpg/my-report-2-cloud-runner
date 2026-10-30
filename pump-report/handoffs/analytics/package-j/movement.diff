@@ -1,0 +1,42 @@
+--- pump-report/handoffs/analytics/package-j/baseline/movement.before.mjs	2026-10-25 17:16:16
++++ pump-report/analytics/movement.mjs	2026-10-25 17:24:23
+@@ -1,15 +1,16 @@
+ import {positive, finite, validTime, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, candleNativeComparisonKey} from '../contracts/index.mjs';
+ import {median, sum, pct, growthAtLeast, windowRows, completeInterval} from './math.mjs';
+ 
+-export function growthWindows(rows, ticker, profile) {
++export function growthWindows(rows, ticker, profile, observedDay=null) {
+   const end=rows.at(-1)?.close_ts, out=[];
+   for(const duration of [...profile.automatic_growth.short_windows_ms,86400000]){
+     const xs=end?windowRows(rows,end,duration,profile.candle_interval_ms):null;
+-    if(xs){const start=xs[0].open,finish=xs.at(-1).close,threshold=duration===86400000?profile.automatic_growth.day_pct:profile.automatic_growth.short_pct;
++    if(duration===86400000&&observedDay?.usable){out.push(structuredClone(observedDay.window));
++    }else if(xs){const start=xs[0].open,finish=xs.at(-1).close,threshold=duration===86400000?profile.automatic_growth.day_pct:profile.automatic_growth.short_pct;
+       out.push({window_ms:duration,start_ts:end-duration,end_ts:end,start_price:start,end_price:finish,return_pct:pct(start,finish),passed:growthAtLeast(finish,start,threshold)});
+     }else if(duration===86400000&&ticker&&positive(ticker.value?.open)&&positive(ticker.value?.last)){
+       out.push({window_ms:duration,start_ts:ticker.event_ts-duration,end_ts:ticker.event_ts,start_price:ticker.value.open,end_price:ticker.value.last,
+-        return_pct:pct(ticker.value.open,ticker.value.last),passed:growthAtLeast(ticker.value.last,ticker.value.open,profile.automatic_growth.day_pct)});
++        return_pct:pct(ticker.value.open,ticker.value.last),passed:growthAtLeast(ticker.value.last,ticker.value.open,profile.automatic_growth.day_pct),fact_ids:[ticker.fact_id]});
+     }else out.push({window_ms:duration,start_ts:end?end-duration:null,end_ts:end??null,return_pct:null,passed:false,reason:'EXACT_WINDOW_UNAVAILABLE'});
+   }
+   return out;
+@@ -61,8 +62,8 @@
+     Array.isArray(p.qualification)&&p.qualification.every(q=>validTime(q.end_ts)&&q.end_ts<=p.created_ts)&&
+     p.impulse&&positive(p.impulse.baseline_median)&&positive(p.impulse.normal_range)&&validTime(p.impulse.end_ts)&&p.impulse.end_ts<=p.created_ts;
+ }
+-export function analyzeMovement(input, rows, price, ticker, profile) {
+-  const windows=growthWindows(rows,ticker,profile),current_threshold_passed=windows.some(w=>w.passed),now=input.analysis_ts,end=rows.at(-1)?.close_ts;
++export function analyzeMovement(input, rows, price, ticker, profile, observedDay=null) {
++  const windows=growthWindows(rows,ticker,profile,observedDay),current_threshold_passed=windows.some(w=>w.passed),now=input.analysis_ts,end=rows.at(-1)?.close_ts;
+   const p=input.previous_wave,previous=usablePrevious(p,input,profile)?p:null;
+   const expired=p?.instrument_id===input.instrument.instrument_id&&validTime(p.expires_ts)&&p.expires_ts<=now;
+   const candidates=[];
+@@ -101,7 +102,7 @@
+   const invalidation=previous?.invalidation_price??impulse.low;
+   const observedCancel=price<invalidation||rows.some(r=>r.open_ts>=Math.max(impulse.end_ts,continuityStart)&&r.low<invalidation);
+   if(!observedCancel&&(!recent||!basis||!recent.every(r=>finite(r[field]))||!finite(sum(recent.map(r=>r[field])))||sum(recent.map(r=>r[field]))<=0))return {...base,state:previous?'WEAKENING':null,next_wave:previous?{...previous,state:'WEAKENING',covered_until_ts:end}:null,reasons:['CURRENT_VOLUME_REQUIRED']};
+-  const qualification=previous?.qualification??windows.filter(w=>w.passed).map(w=>({...w,fact_ids:facts}));
++  const qualification=previous?.qualification??windows.filter(w=>w.passed).map(w=>({...w,fact_ids:w.fact_ids??facts}));
+   const qualified=qualification.some(w=>w.passed===true&&positive(w.start_price)&&positive(w.end_price)&&
+     growthAtLeast(w.end_price,w.start_price,w.window_ms===86400000?profile.automatic_growth.day_pct:profile.automatic_growth.short_pct));
+   const created=previous?.created_ts??now,wave_id=previous?.wave_id??('PUMP:'+input.instrument.instrument_id+':'+impulse.start_ts);

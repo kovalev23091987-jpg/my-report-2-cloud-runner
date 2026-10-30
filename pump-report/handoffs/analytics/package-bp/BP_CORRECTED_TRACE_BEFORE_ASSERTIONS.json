@@ -1,0 +1,275 @@
+{
+  "ARTIFICIAL_ONLY": true,
+  "trace": [
+    {
+      "selected": "BINGX:USDT_M:ARTIFICIAL_BP_OLD",
+      "at": 1793021400000,
+      "scores": [
+        {
+          "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_OLD",
+          "preliminary_growth": 0,
+          "reported_day_growth": 30,
+          "movement_event_ts": 1793003400000,
+          "first_seen": 1793003400000,
+          "last_checked_ts": null,
+          "priority": {
+            "score": 300,
+            "waiting_minutes": 300,
+            "movement_freshness": 0,
+            "entry_proximity": 0,
+            "confirmed_data_fraction": 0
+          }
+        },
+        {
+          "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+          "preliminary_growth": 12.00000000000001,
+          "reported_day_growth": 5,
+          "movement_event_ts": 1793021400000,
+          "first_seen": 1793021400000,
+          "last_checked_ts": null,
+          "priority": {
+            "score": 20,
+            "waiting_minutes": 0,
+            "movement_freshness": 1,
+            "entry_proximity": 0,
+            "confirmed_data_fraction": 0
+          }
+        }
+      ],
+      "admission": {
+        "allowed": true,
+        "scope": "BOUNDED_WHOLE_CANDIDATE_FORECAST_NOT_AN_IO_RESERVATION",
+        "http_upper_bound": 12,
+        "candidate_quota": {
+          "period_start": 1793019600000,
+          "maximum": 1,
+          "base_per_period": 1,
+          "carried_in": 0,
+          "issued": 1,
+          "remaining": 0,
+          "day_issued": 5,
+          "never_refunded": true
+        }
+      },
+      "slot": "BASE"
+    },
+    {
+      "selected": "BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+      "at": 1793021410000,
+      "scores": [
+        {
+          "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_OLD",
+          "preliminary_growth": 0,
+          "reported_day_growth": 30,
+          "movement_event_ts": null,
+          "first_seen": 1793003400000,
+          "last_checked_ts": 1793021410000,
+          "priority": {
+            "score": 6.666666666666666,
+            "waiting_minutes": 0,
+            "movement_freshness": 0,
+            "entry_proximity": 0,
+            "confirmed_data_fraction": 0.3333333333333333
+          }
+        },
+        {
+          "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+          "preliminary_growth": 12.00000000000001,
+          "reported_day_growth": 5,
+          "movement_event_ts": 1793021400000,
+          "first_seen": 1793021400000,
+          "last_checked_ts": null,
+          "priority": {
+            "score": 20.15277777777778,
+            "waiting_minutes": 0.16666666666666666,
+            "movement_freshness": 0.9993055555555556,
+            "entry_proximity": 0,
+            "confirmed_data_fraction": 0
+          }
+        }
+      ],
+      "admission": {
+        "allowed": true,
+        "scope": "CONDITIONAL_UNASSIGNED_WHOLE_OPERATION_HOLD",
+        "surplus_grant_id": "ARTIFICIAL_BP_ONE_COUNTEREXAMPLE|BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+        "candidate_quota": {
+          "kind": "UNASSIGNED_SURPLUS",
+          "logical_spent": true,
+          "never_refunded": true,
+          "idempotent": false,
+          "http_upper_bound": 12
+        }
+      },
+      "slot": "CONDITIONAL_EXTRA"
+    }
+  ],
+  "stubCalls": {
+    "catalog": 1,
+    "discovery": 1,
+    "deep_overview": 2,
+    "core": 2,
+    "analysis_stub": 2
+  },
+  "result": {
+    "run_id": "ARTIFICIAL_BP_ONE_COUNTEREXAMPLE",
+    "status": "COMPLETE",
+    "checked": [
+      {
+        "analysis_key": "pump:analysis:8f9b8363699e653c02d9c75a21d8815cb74960ba48f0c9d6af8771985519a004",
+        "analysis": {
+          "ready": false,
+          "status": "REJECTED",
+          "reasons": [
+            "ARTIFICIAL_NOT_READY_NO_ENGINE"
+          ],
+          "run_id": "ARTIFICIAL_BP_ONE_COUNTEREXAMPLE",
+          "mode": "AUTO",
+          "instrument": {
+            "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_OLD",
+            "asset_id": "ARTIFICIAL:ARTIFICIAL_BP_OLD",
+            "native_symbol": "ARTIFICIAL_BP_OLD-USDT",
+            "base": "ARTIFICIAL_BP_OLD",
+            "venue": "BINGX",
+            "market_type": "PERPETUAL",
+            "quote": "USDT",
+            "settle": "USDT",
+            "classification_status": "VERIFIED_CRYPTO",
+            "identity_evidence_ref": "ARTIFICIAL_ONLY_NOT_NATIVE_QUALIFICATION",
+            "price_tick": 0.001
+          },
+          "analysis_ts": 1793021410000,
+          "run_purpose": "ARTIFICIAL_ONLY",
+          "wave_id": null,
+          "wave_state": null,
+          "previous_wave": null,
+          "next_wave": null,
+          "plan": null,
+          "automatic_eligible": false,
+          "current_threshold_passed": false
+        },
+        "delivery": null,
+        "source_coverage": {
+          "status": "ARTIFICIAL_STUB_NOT_REAL_CORE",
+          "facts": {}
+        },
+        "candidate_quota": {
+          "period_start": 1793019600000,
+          "maximum": 1,
+          "base_per_period": 1,
+          "carried_in": 0,
+          "issued": 1,
+          "remaining": 0,
+          "day_issued": 5,
+          "never_refunded": true
+        }
+      },
+      {
+        "analysis_key": "pump:analysis:1c88a78528bbe760d8e7e5a05ccbbc4f1a92f65bd33e1d9d853639d2937dcf39",
+        "analysis": {
+          "ready": false,
+          "status": "REJECTED",
+          "reasons": [
+            "ARTIFICIAL_NOT_READY_NO_ENGINE"
+          ],
+          "run_id": "ARTIFICIAL_BP_ONE_COUNTEREXAMPLE",
+          "mode": "AUTO",
+          "instrument": {
+            "instrument_id": "BINGX:USDT_M:ARTIFICIAL_BP_NEW",
+            "asset_id": "ARTIFICIAL:ARTIFICIAL_BP_NEW",
+            "native_symbol": "ARTIFICIAL_BP_NEW-USDT",
+            "base": "ARTIFICIAL_BP_NEW",
+            "venue": "BINGX",
+            "market_type": "PERPETUAL",
+            "quote": "USDT",
+            "settle": "USDT",
+            "classification_status": "VERIFIED_CRYPTO",
+            "identity_evidence_ref": "ARTIFICIAL_ONLY_NOT_NATIVE_QUALIFICATION",
+            "price_tick": 0.001
+          },
+          "analysis_ts": 1793021410000,
+          "run_purpose": "ARTIFICIAL_ONLY",
+          "wave_id": null,
+          "wave_state": null,
+          "previous_wave": null,
+          "next_wave": null,
+          "plan": null,
+          "automatic_eligible": false,
+          "current_threshold_passed": false
+        },
+        "delivery": null,
+        "source_coverage": {
+          "status": "ARTIFICIAL_STUB_NOT_REAL_CORE",
+          "facts": {}
+        },
+        "candidate_quota": {
+          "kind": "UNASSIGNED_SURPLUS",
+          "logical_spent": true,
+          "never_refunded": true,
+          "idempotent": false,
+          "http_upper_bound": 12
+        }
+      }
+    ],
+    "manual": [],
+    "coverage": {
+      "status": "CHECKED"
+    },
+    "outcomes": [],
+    "delivery": [],
+    "errors": [],
+    "catalog_coverage": {
+      "status": "ARTIFICIAL_VERIFIED_IDENTITY_EQUAL_FOR_BOTH",
+      "owner_delivery_excluded": [],
+      "verified_crypto_count": 2,
+      "delivery_eligible_verified_count": 2
+    },
+    "source_evidence_coverage": {
+      "eligible_for_deep_check": 2,
+      "temporarily_deferred": 0,
+      "reason_counts": {},
+      "not_an_asset_exclusion": true,
+      "current_CORE_proven": false
+    },
+    "discovery_result": "NO_READY_IDEAS_IN_CHECKED_SCOPE",
+    "resources": {
+      "total": 0,
+      "lanes": {
+        "hot": 0,
+        "background": 0,
+        "statistics": 0
+      },
+      "liquidations": 0,
+      "candidates": {},
+      "unknown": 0,
+      "receipts": [],
+      "run_id": "ARTIFICIAL_BP_ONE_COUNTEREXAMPLE",
+      "mode": "STATISTICS",
+      "limits": {
+        "http_per_run": 164,
+        "project_http_day": 900,
+        "lanes": {
+          "hot": 96,
+          "background": 56,
+          "statistics": 12
+        },
+        "deep_per_candidate": 50,
+        "liquidations_per_run": 8,
+        "manual_http_run_reserve": 24,
+        "d1_reads_day": 3500000,
+        "d1_writes_day": 70000,
+        "next_full_reads": 59000,
+        "next_full_writes": 920
+      },
+      "protected_reserves": {
+        "http_by_provider": {
+          "BINGX": 51,
+          "TELEGRAM": 3,
+          "SWOLECHARTS": 0,
+          "BINGX_WEB_METADATA": 0
+        },
+        "delivery_http": 24,
+        "outcomes_http": 24
+      }
+    }
+  }
+}

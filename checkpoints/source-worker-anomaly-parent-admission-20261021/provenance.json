@@ -1,0 +1,75 @@
+{
+  "schema": "RUNNER_ANOMALY_PARENT_SOURCE_PROVENANCE_V1",
+  "working_base": "48a523c0e0cedea47c15d69c810b6fd8bea8bcc4",
+  "protocol_first_commit": "cd87c7e5e1942368958caf5221884ebda318c6c7",
+  "lease_commit": "bd947e190cab20e9a85dceba8458474c08c9a79b",
+  "lease_owner": "CODEX:SOURCES:01a14e11:1792605851935",
+  "lease_expires_ts": 1792610651935,
+  "scope_amended_before_implementation": true,
+  "scope_amendment_commit": "bd947e190cab20e9a85dceba8458474c08c9a79b",
+  "runtime_original_target_edited": false,
+  "author_execution": {
+    "Node": 0,
+    "syntax": 0,
+    "application_imports": 0,
+    "tests": 0,
+    "semantic_calls": 0,
+    "SQL": 0,
+    "SQLite": 0,
+    "git_apply": 0,
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "CF": 0,
+    "MAIN": 0,
+    "manual": 0,
+    "Telegram": 0,
+    "deploy": 0
+  },
+  "prepared_groups": 12,
+  "qualification": null,
+  "native_policy_cost_bounds": null,
+  "native_grant": false,
+  "old_component_replay": false,
+  "future_runtime_pair": {
+    "candidate_files": 617,
+    "baseline_files": 617,
+    "other_files_equal": 616,
+    "both_include_third_changes": true,
+    "only_difference": "runner-main.mjs"
+  },
+  "historical_protocol_amendment_supersedes": {
+    "old_api": "prepared-only",
+    "old_rpc": 2,
+    "old_reserve_max": true
+  },
+  "current_api": "{logical_event_id,prepare_from_origin}",
+  "current_rpc_initial_or_revision": 3,
+  "current_rpc_stored_duplicate": 1,
+  "protected_budget_postV7": {
+    "rows_read": 9448,
+    "rows_written": 244
+  },
+  "source_execution_claims": "UNEXECUTED_AUTHOR_ARTIFACT",
+  "native_qualification_claims": false,
+  "new_root_finding_success_receipt_retention": true,
+  "third_full_peer_findings": [
+    "F1_CALLBACK_REENTRY_AND_D1_PURITY",
+    "F2_ACTUAL_FINALIZER_AFTER_RESTORE"
+  ],
+  "findings_delta_applied_unexecuted": true,
+  "metadata_report_bounds": {
+    "logical_events": 2,
+    "records_per_event": 8,
+    "records_total": 16,
+    "whole_metadata_UTF8": 16384,
+    "preaction_reserved_metadata_bytes": 3072,
+    "record_bytes": 2048
+  },
+  "root_owned_artifact_wiring_not_applied_by_source": true,
+  "own_static_cost_unknown_ack_correction": {
+    "old_rule": "COMMITTED status skipped reconciliation even when cost_status was unknown",
+    "new_rule": "retain SAME effective prepared/opid whenever uncertain, even if verified row status is COMMITTED",
+    "case_groups_added": 0,
+    "author_execution": 0
+  }
+}

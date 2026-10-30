@@ -1,0 +1,177 @@
+{
+  "schema": "SOURCE_WORKER_COINGECKO_RAW_NUMBERS_V1",
+  "recorded_utc": "2026-10-18T11:46:49.849612+00:00",
+  "parent_main": "6f29ddcbefe49307d04d074dabb0809b628a187a",
+  "worker_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "coordinator_thread": "01a14dc8-472e-7090-9342-5c43b77c0a0c",
+  "scope": "N15 CoinGecko raw quote numeric schema, finite comparison and unrelated null-row isolation; provider module/new tests/proof only.434 cache binding semantics retained.",
+  "new_cases": 42,
+  "baseline": "23PASS19FAIL;23previously passing guards/valid controls are not new defects. Malformed shapes are explicit mutations of saved original bodies, not actual provider incidents.",
+  "tests": {
+    "baseline42": {
+      "path": "checkpoints/source-worker-coingecko-raw-numbers-20261018/baseline42.tap.gz",
+      "raw_sha256": "e29c481b3430de9d46f59cf2781b1631d860d3281026317b20737f959e1fc1d0",
+      "gzip_sha256": "517a7b3b34740fc157c52f69627be81dffc93676243ed76981a511bdfb357bf2",
+      "counts": {
+        "tests": 42,
+        "pass": 23,
+        "fail": 19
+      }
+    },
+    "connected144": {
+      "path": "checkpoints/source-worker-coingecko-raw-numbers-20261018/connected144.tap.gz",
+      "raw_sha256": "cb0e3de0e682c70202a5dab8050d742c324291dbd719163d77a8d11e9e7ead2f",
+      "gzip_sha256": "62ac6d0f65b4d330eae74f917a090d5006860154678bf6b26de00e4c9214bbb6",
+      "counts": {
+        "tests": 144,
+        "pass": 144,
+        "fail": 0
+      }
+    }
+  },
+  "connected_scope": [
+    "42new raw schema/null isolation cases",
+    "Coingecko434cachebinding cases affected by same normalizer",
+    "Demoaccess/manualprotectedadmission",
+    "sectorcachepreservation/sectorcontext/sharedsectorbatch",
+    "outputcontractfreeze12"
+  ],
+  "test_assertion_correction": "First connected run143PASS1FAIL was a new test expecting full evidence byte equality after adding a null raw quote. Corrected assertion preserves all factual fields/ID/clocks while honestly requiring returned_category_rows+1 and changed raw_hash; source code unchanged by this test correction. Final baseline rerun on exact unmodified6f29 source23PASS19FAIL and final connected144PASS.",
+  "source_inputs": {
+    "checkpoints/tron-sector-live-38570989795/validation.json.gz": {
+      "file_sha256": "6c9f1e79a0d706b75d08fa9431ddff5a628c27d8f00c596dd531a1313993c328",
+      "raw_sha256": "09f289569ce20757529c049e06815fd43b3eb03c182f292ad5db6865c4526429"
+    },
+    "checkpoints/native-sector-rest-38564913120/validation.json.gz": {
+      "file_sha256": "1d850cb1bba02ba079055f9c03a909c18df1d00633ac8cf5f657118351b1bc03",
+      "raw_sha256": "f0eccc366bee6d54df1b2920747fd7a8e027e572c49e31d940e4394ecbf41714"
+    },
+    "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz": {
+      "file_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "raw_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29"
+    },
+    "checkpoints/btw-preserved-block-result-input-20261004.json": {
+      "file_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8",
+      "raw_sha256": "a4fb14c55af208c67ea09e5c8fb32cf53e3ed6fff8e7046cca262ae6dbbef4c8"
+    }
+  },
+  "actual_response_receipts": [
+    {
+      "url": "https://api.coingecko.com/api/v3/coins/tron/contract/TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7",
+      "received_ts": 1791984064214,
+      "http_status": 200,
+      "body_sha256": "31d6361944565922a18f4762dd4fd8d9408bb2f66a7f93f7aa4f5037c616cbef",
+      "synthetic": false
+    },
+    {
+      "url": "https://api.coingecko.com/api/v3/coins/categories/list",
+      "received_ts": 1791981318759,
+      "http_status": 200,
+      "body_sha256": "5573eb8ced4088d98366c69eb3d35f3cc317a779668e1f976a1e2562a188e307",
+      "synthetic": false
+    },
+    {
+      "url": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=oracle&order=market_cap_desc&per_page=100&page=1&sparkline=false",
+      "received_ts": 1791984066366,
+      "http_status": 200,
+      "body_sha256": "05f01e55ffaa7d9aa4025f5681cf536260ce15426ee7dd462157a3a7305d92aa",
+      "synthetic": false
+    }
+  ],
+  "original_fact": {
+    "contract": "WIN-USDT",
+    "coin_id": "wink",
+    "category_id": "oracle",
+    "category_name": "Oracle",
+    "peer_count": 17,
+    "source_ts": 1791983988000,
+    "observed_ts": 1791984066366,
+    "first_known_ts": 1791984066366,
+    "expires_at": 1791984366366,
+    "raw_category_rows": 50,
+    "limited_aggregated_context": true,
+    "entry_eligible": false,
+    "native_provider_wire_requalified_now": false
+  },
+  "controlled_mutations": [
+    "boolean/array/nestedarray/emptyarray/object/whitespace target/peer currentprice/volume/24hreturn",
+    "finite extreme returns whose median/difference overflows",
+    "one unrelated null quote/category row",
+    "numeric scalar string compatibility",
+    "WIN canonical render borrows old BTW template with explicit WIN identity/observation/trigger controls; not an actual WIN publication"
+  ],
+  "concrete_defects": [
+    "Raw num helper accepted arrays as provider numeric fields, and whitespace as zero return. Boolean values already refused and stay refused.",
+    "Null quote/category rows could throw before retaining valid target and peers.",
+    "Finite raw values could yield nonfinite median/difference yet emit CLOSED evidence."
+  ],
+  "behavior_preserved": [
+    "Require number or nonempty numeric string with finite conversion; invalid target refuses; invalid peer omitted while16valid saved peers remain.",
+    "Skip unrelated null rows, retain exact original target/category and17peers, keep returned raw row count honest and raw_hash responsive to changed shape.",
+    "Reject nonfinite derived comparison before emission; no new value thresholds/strategy formula.",
+    "Valid original body results and exact retained cache remain byte-identical, original source/receipt/known/expiry clocks retained and0newHTTP/grants.",
+    "Versionv11 unchanged, no cache mass invalidation or extendedTTL. Existing344cold/day limitation, daily/month/minute/manualreserve/backoff unchanged.",
+    "Existing manual/V5 N15fact and approvedbriefomission, advisory reportfactscore0; existing bounded rawN15 strategy semantics unchanged."
+  ],
+  "implementation": {
+    "current-generation/files/src/coingecko-sector-evidence.mjs": {
+      "before_sha256": "f2e4c9b858bd69e6800dd3a2f907ec1756ddf9fbe91e2217df05204ffda0f836",
+      "after_sha256": "6eb123b0c26740a7a2d60d3675c9255709893051695ebc0a47b0ec8db45419b6"
+    },
+    "current-generation/tests/coingecko-raw-numbers.test.mjs": {
+      "sha256": "06f4faf9bd146af635068862c3f93a88bc3b68bd463ad4e1ec03dcb4909ba494"
+    }
+  },
+  "shared_CI_proposal": {
+    "path": "checkpoints/source-worker-coingecko-raw-numbers-20261018/shared-CI.proposed.patch",
+    "sha256": "3a1821c6d4ff10e6f74dfc0191afad9a2127e1eea698734991df3efb46dd84ff",
+    "before_sha256": "47ad5ece322e1781402fe60d7861f82fd0a381914e344e075b8e68ecbd97ad53",
+    "proposed_sha256": "e0c9be484ebbb5bb27b119b16725607277bc5ebc573db8246e1162f55969edcc",
+    "actual_workflow_modified": false,
+    "dry_check_passed": true
+  },
+  "output_contract": {
+    "tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "all10fixture_files_byte_unchanged": true,
+    "golden_sha256": {
+      "current-generation/tests/fixtures/output-contract/short-wait-coin.json": "8151567e17668baf3869780644216292bff5a3d6704dcc36c8d6f3ff81c6d665",
+      "current-generation/tests/fixtures/output-contract/long-entry-full.json": "1d1d61ba2332e5b330b9fc2c17fe9f8ff7954f023a02387bf8fb6781b3c007f3",
+      "current-generation/tests/fixtures/output-contract/long-removed-full.json": "cc58cef16c931daec831234808ff080c33b6140860db84e75d193d6e085d364f",
+      "current-generation/tests/fixtures/output-contract/long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
+      "current-generation/tests/fixtures/output-contract/missing-data.json": "14c7851efc2bffb9318142d8d0ba81ceb8a4d9a326ea10fe57ed9fe766179371",
+      "current-generation/tests/fixtures/output-contract/README.md": "86b69186180f6a72166832f9ad3dba2c159318a81ec77fbce44d7db764a6508c",
+      "current-generation/tests/fixtures/output-contract/short-entry-coin.json": "f91398c11b6544afc4d3e955b71e61d5ad50880ea7911bb58326a6378bf0645d",
+      "current-generation/tests/fixtures/output-contract/MANIFEST.json": "62fd775fc21c3384368a4b386f8375d759c76615a733a36ecf025e92f2874afe",
+      "current-generation/tests/fixtures/output-contract/short-removed-coin.json": "36fa5aa33a30202981ea812fd57f7d88589f26d7392ed18257bc0c17ee11d901",
+      "current-generation/tests/fixtures/output-contract/pump-liquidation-only.json": "add2e33d053fad5a7a8cb37fff29cb8b51d79a058ccfc231401200a13ea31b12"
+    },
+    "manifest_maintenance_performed": false
+  },
+  "own_lease": {
+    "commit": "f1918340b0b53efb0d134b3b92a36ffee80fe173",
+    "owner": "CODEX:SOURCES:01a14e11:1792323820624",
+    "expires_ts": 1792328620624,
+    "exact_readback": true
+  },
+  "limits": {
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "deploy": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "extra_normal_path_HTTP_SQL": 0,
+    "shared_runtime_guard_changes": 0,
+    "caps_strategy_weights_forms_pauses_unknown_spent_reserves_changed": false,
+    "new_asset_or_provider_qualification": false,
+    "current105_or_fullreport_or_delivery_proven": false
+  },
+  "acceptance_limits": [
+    "Offline saved actual WIN wire and explicit corruptions, not current provider schema incident or useful coverage of new coins.",
+    "SQLite mock admission/reference-cache reads are not native SQL or persistence/delivery.",
+    "Bounded local numeric/null checks only; no native CPU/sustainable quota proof.",
+    "Cloud branch/main/integration/105availability/Telegramlength/natural final acceptance belongs coordinator."
+  ],
+  "exact_next_action": "Coordinator integrate frozen source/new42tests/sharedCIproposal after exact readback and combined qualification; worker reuse exact READY446/445 evidence and proceed only to next independently demonstrated source fault without waiting for merge or rerunning historical coverage/probes."
+}

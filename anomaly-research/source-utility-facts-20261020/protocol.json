@@ -1,0 +1,31 @@
+{
+  "schema": "ANOMALY_CANDLE_SOURCE_UTILITY_PROTOCOL_V1",
+  "scope": "OFFLINE_CLOSED_OHLCV_OPERATIONAL_USEFULNESS_ONLY",
+  "cohorts": [
+    "CONTROLLED",
+    "RETAINED",
+    "DECLARED_PROSPECTIVE"
+  ],
+  "unit": "ONE_DECLARED_BOUND_INSTRUMENT_EPOCH_AND_CLOSED_CANDLE_WINDOW_PER_UPSTREAM_COHORT",
+  "fact_identity": "instrument economic tuple incl native_epoch + explicit aligned timeframe/window; normalized exact decimal OHLCV content; proof/locator/source-asof/receipt differences not new economic windows",
+  "fact_revisions": "same window with different numeric OHLCV censored across all roles, no latest/winner selection",
+  "numeric_policy": "bounded non-exponent decimal lexemes canonicalized exactly; prices>0,volume>=0,exact decimal OHLC geometry; preserve original row proof pointers",
+  "temporal_policy": "end<=source_ts<=body_completed_ts<=available_at<=decision_ts; unknown body completion is ineligible, never use header in its place",
+  "attempt_policy": "group full declared attempts by cohort/upstream/attempt_id; identical replays count once; distinct variants censor one whole attempt; order-independent counters",
+  "acquisition_policy": "separate cost-first cohort/upstream/acquisition_id ledger across roles/consumers; same MEASURED count/UNKNOWN/NOT_ATTEMPTED claim collapses even with different proof locators; inconsistent claims or UNKNOWN censor total/ratio; invalid/FACT-ineligible attempts cannot erase valid cost receipts",
+  "cost_unknown": "known measured HTTP lower bound only, total and facts-per-HTTP NULL whenever any unknown/conflict/unbound cost receipt; no native budget or admission",
+  "legacy": "existing sourceUtility and all current canonical modules unchanged; legacy comparison only in ONE UNEXECUTED connected callable",
+  "no_inference": [
+    "RAW_PROOF_VARIANT_NOT_INDEPENDENT_SOURCE",
+    "RETAINED_NOT_PROSPECTIVE",
+    "SELF_CONSISTENT_IDENTITY_NOT_NATIVE_AUTHENTICATION",
+    "OPERATIONAL_FACTS_NOT_PREDICTIVE_ACCURACY",
+    "NO_WEIGHT_CHANGE_OR_NATIVE_ACTIVATION"
+  ],
+  "preparation": {
+    "Node_import_tests_semantics": 0,
+    "provider_HTTP_native_SQL_MAIN_Telegram": 0,
+    "old_accepted_cases_replayed": 0,
+    "next": "ONE_COORDINATOR_NEXT_COMMON"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "SOURCE_F556_ROOT_ROUTE_INPUT_REQUIREMENTS_V1",
+  "status": "NO_ROUTE_OR_ACCOUNT_ACTIVATED",
+  "placement": "Existing independently supplied registry entry.liquidations.routes, ROOT-owned actual registry",
+  "provider": "HYPERLIQUID",
+  "family": "LIQUIDATIONS",
+  "required_intent_fields": [
+    "asset_id exact intended BingXasset",
+    "coin exact nativeHLmeta coin, not derived from BingXticker",
+    "market_id explicitHLmarket",
+    "admitted_accounts[] <=2 unique actual addresses+stableopaque account_ref+admission_ref",
+    "account_admission_ref"
+  ],
+  "no_account_default": "NOT_CHECKED/FINITE_ADMITTED_ACCOUNT_LIST_REQUIRED/0HTTP",
+  "admitted_accounts": [],
+  "body": "{type:clearinghouseState,user:exact admitted address,dex:only when explicitly supplied}; <=4096B",
+  "ROOT_policy": "Exact read_only POST template/host/path and actual provider+whole native grant, separately supplied; SOURCE creates neither",
+  "eligibility_fields": {
+    "identity_binding": [
+      "status VERIFIED_SAME_UNDERLYING",
+      "evidence_ref from independentreview",
+      "bingx_instrument_id/asset_id/identity_evidence_ref exact",
+      "hyperliquid_coin/market_id exact"
+    ],
+    "instrument_gate": "canonical_cross_venue_identity_qualified===true; new539price-only entries do not acquire it",
+    "price_quote": "Actualcurrency with price_quote_evidence_ref; no defaultUSDC orUSDT",
+    "position_semantics": [
+      "Independent evidence_ref",
+      "signed_size_field szi,positiveLONG,negativeSHORT",
+      "liquidation_price_field liquidationPx,kindCURRENT_ACCOUNT_ESTIMATE"
+    ],
+    "price_mapping": [
+      "Explicit pricebasis+quoteconversion kind",
+      "evidence_ref,quote_conversion_evidence_ref,price_basis_evidence_ref",
+      "Exactsourcequote/market and targetUSDT/instrument",
+      "HYPERLIQUID_LIQUIDATION_PX -> BINGX_NATIVE_PRICE",
+      "Positiveexplicitmultiplier, originalevent/expiry, freshness<=profileprice"
+    ],
+    "position_value": "Optional independently proven positionValue sourcequote amount; never size×liqPx or autoUSDT"
+  },
+  "identity_unqualified": "Native diagnostics only; asset_idnull/usablefalse, no preciseBingXzone",
+  "clock": "Original payload.time Unixms; received never substitutes. NativeTTL observed_positions120s; convertedzone expiry=min(nativeexpiry,mappingexpiry,mappingevent+priceTTL)",
+  "current_budget": "SOURCE hardmax1 and profilemapHTTP1 preserved. Atmost2explicitaccounts allowed inmetadata, currentconnectedcallreads1 and labelsotherunchecked. No backgrounddiscovery/pagination/fallback. Shared map/native reserves unchanged.",
+  "overlap": "Stable opaque account_ref must remain uniquely bound to address across runs; account+market oneWay position ID dedups source snapshots; no summing duplicates",
+  "native_prerequisites": [
+    "ROOT deployment of new POSTbroker+sourcepin",
+    "Exactpositivepolicytemplates and actualbudgetadmissions",
+    "Finiteadmittedaccounts and perinstrument independentproofs"
+  ],
+  "native_calls_allowed_by_this_package": 0
+}

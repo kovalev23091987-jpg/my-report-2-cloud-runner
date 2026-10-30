@@ -1,0 +1,131 @@
+{
+  "schema": "MEXC_CHINESE_NORMATIVE_DOC_GAP_RECEIPTS_V1",
+  "recorded_utc": "2026-10-18T20:50:07.489643+00:00",
+  "documentation_tool_calls": 4,
+  "developer_search_calls": 1,
+  "underlying_document_fetch_HTTP_count": null,
+  "documentation_fetches_are_not_market_data_requests": true,
+  "documents": [
+    {
+      "id": "doc-cn",
+      "requested_url": "https://mexcdevelop.github.io/apidocs/contract_v1_cn/",
+      "final_url": "https://www.mexc.com/zh-MY/api-docs/futures/update-log",
+      "title": "更新日志 | MEXC API",
+      "locale": "zh-MY",
+      "version_label": "current",
+      "http_status": 200,
+      "scrape_id": "01a150c2-bd51-7059-a273-c8657d12a4ff",
+      "markdown_sha256": "ee2babace97a8591d849d0112cf619e9569ab8f59c9bd215561a3d55b111dac7",
+      "markdown_bytes": 11072,
+      "processed_html_sha256": "ef05d8869d40878a732a27c1894ca0f491cf4f2c1f5ca04dfa37860ca5ebf330",
+      "processed_html_bytes": 24734,
+      "raw_wire_digest_or_provider_event_clock": null,
+      "bounded_schema_fragments": [],
+      "full_document_body_committed": false
+    },
+    {
+      "id": "kline",
+      "requested_url": "https://www.mexc.com/zh-MY/api-docs/futures/market-endpoints/get-candlestick-data",
+      "final_url": "https://www.mexc.com/zh-MY/api-docs/futures/market-endpoints/get-candlestick-data",
+      "title": "获取蜡烛图数据 | MEXC API",
+      "locale": "zh-MY",
+      "version_label": "current",
+      "http_status": 200,
+      "scrape_id": "01a150c3-1a40-7087-9c3e-274d20b7963e",
+      "markdown_sha256": "7f8c6ff68146b5794bb1a96df8a9acc147ccde27b563e10d683de5d8f53b12ec",
+      "markdown_bytes": 6775,
+      "processed_html_sha256": "7c4cbb0b1b6adc7c9eee65eb30b61191634c25e38bc31385abeda15421a8f760",
+      "processed_html_bytes": 36631,
+      "raw_wire_digest_or_provider_event_clock": null,
+      "bounded_schema_fragments": [
+        "| start | long | false | 开始时间戳，单位秒 |",
+        "| end | long | false | 结束时间戳，单位秒 |",
+        "| vol | double | 成交量 |",
+        "| time | long | 时间窗口 |"
+      ],
+      "full_document_body_committed": false
+    },
+    {
+      "id": "trades",
+      "requested_url": "https://www.mexc.com/zh-MY/api-docs/futures/market-endpoints/get-recent-trades",
+      "final_url": "https://www.mexc.com/zh-MY/api-docs/futures/market-endpoints/get-recent-trades",
+      "title": "获取成交数据 | MEXC API",
+      "locale": "zh-MY",
+      "version_label": "current",
+      "http_status": 200,
+      "scrape_id": "01a150c3-2c50-77e3-9f6c-2b4e1bfce64b",
+      "markdown_sha256": "0d1dd6ad30fc2ee17dbd6bedf3e25c92242fd5d0bab03cf6d170f55f4b69f758",
+      "markdown_bytes": 4821,
+      "processed_html_sha256": "81d0079c00229ba05d158348373565b6308e09081bb119dd456989fbdf9a6b15",
+      "processed_html_bytes": 21192,
+      "raw_wire_digest_or_provider_event_clock": null,
+      "bounded_schema_fragments": [
+        "| T | int | 成交方向,1:买,2:卖 |",
+        "| O | int | 是否是开仓，1:taker和maker都是开仓,2:taker和maker都不是开仓,3:其他情况,当O为1的时候, vol是新增的持仓量 |",
+        "| t | long | 成交时间 |"
+      ],
+      "full_document_body_committed": false
+    },
+    {
+      "id": "guide",
+      "requested_url": "https://www.mexc.com/zh-MY/api-docs/futures/integration-guide",
+      "final_url": "https://www.mexc.com/zh-MY/api-docs/futures/integration-guide",
+      "title": "介绍 | MEXC API",
+      "locale": "zh-MY",
+      "version_label": "current",
+      "http_status": 200,
+      "scrape_id": "01a150c3-ba7e-7708-8d61-be2deb2ffc44",
+      "markdown_sha256": "25fd1ee481cd68d528399306f51556c0a64b936b1a53a1b54674b5c5195a2304",
+      "markdown_bytes": 8164,
+      "processed_html_sha256": "b8e4a17ae9bde8196b912b54f77d5702a86d4615c51313e4e407c6b0e683c32a",
+      "processed_html_bytes": 24688,
+      "raw_wire_digest_or_provider_event_clock": null,
+      "bounded_schema_fragments": [
+        "所有签名接口均需要传入header参数Request-Time，即以毫秒表示的时间戳字符串，服务端接收到请求后会验证请求发出的时间"
+      ],
+      "full_document_body_committed": false
+    }
+  ],
+  "developer_search_results": [
+    {
+      "url": "https://github.com/suenot/mexc-docs-markdown/blob/bce72cdb5879bfa16bc7656aa9226e2029072a87/docs/futures/websocket.md",
+      "title": "WebSocket Market Streams",
+      "used_as_MEXC_normative_proof": false,
+      "reason": "NOT_PRIMARY_MEXC_DOCUMENTATION"
+    },
+    {
+      "url": "https://www.kucoin.com/docs-new/rest/futures-trading/market-data/get-klines",
+      "title": "Get Klines",
+      "used_as_MEXC_normative_proof": false,
+      "reason": "WRONG_PROVIDER"
+    },
+    {
+      "url": "https://context7.com/websites/mexc_api-docs_futures",
+      "title": "MEXC Futures API (websites/mexc_api-docs_futures)",
+      "used_as_MEXC_normative_proof": false,
+      "reason": "NOT_PRIMARY_MEXC_DOCUMENTATION"
+    },
+    {
+      "url": "https://github.com/makarworld/pymexc",
+      "title": "makarworld/pymexc",
+      "used_as_MEXC_normative_proof": false,
+      "reason": "NOT_PRIMARY_MEXC_DOCUMENTATION"
+    },
+    {
+      "url": "https://www.esegece.com/help/sgcWebSockets/Components/APIs/API/API_MEXC_Futures.htm",
+      "title": "MEXC Futures API | sgcWebSockets - eSeGeCe",
+      "used_as_MEXC_normative_proof": false,
+      "reason": "NOT_PRIMARY_MEXC_DOCUMENTATION"
+    }
+  ],
+  "developer_search_UUID_for_feedback": null,
+  "scrape_feedback_accepted": {
+    "doc-cn": "01a150c2-e75b-70c8-9be9-a9b3d501a6e4",
+    "kline": "01a150c3-7970-701c-bb08-9f847de9214a",
+    "trades": "01a150c3-8524-7169-a3d8-3ef9bef80231",
+    "guide": "01a150c4-3b5d-723f-81c4-b9c7f5a4d380"
+  },
+  "market_provider_HTTP": 0,
+  "native_SQL": 0,
+  "WS_connections": 0
+}

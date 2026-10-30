@@ -1,0 +1,66 @@
+{
+  "schema": "SOURCE_REPORTED_SAVED_ADMISSION_ONLY_BOUNDARY_V1",
+  "reporter_thread": "01a14e11-ff1e-7ca1-9f7c-61666ef85c94",
+  "run": 39453764958,
+  "head": "ff68b1c0cdfaa2830f5888ffe09c05d69b8a9364",
+  "artifact": 12279935214,
+  "zip_bytes": 1201,
+  "digest": "sha256:2552d572a73b5fd9c98f1fbbc5c861d3efd48a4cc3cdd6a1873dd34375ecb510",
+  "members": [
+    {
+      "name": "report2-run-result.json",
+      "bytes": 1909,
+      "sha256": "5a02326f47f7c012d8e94eeefd3afe0cb5412973f16580fbe625f907a9c5b09c"
+    },
+    {
+      "name": "known-d1-day-guard.json",
+      "bytes": 135,
+      "sha256": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605"
+    }
+  ],
+  "evidence_boundary": {
+    "raw_original_exported": false,
+    "raw_zip_retained": false,
+    "zip_base64": null,
+    "coordinator_independent_raw_verification": false,
+    "source_reported_exact_memory_read": true,
+    "parsed_stdout_cannot_reconstruct_exact_bytes": true,
+    "new_GET_to_recreate": 0
+  },
+  "pre_analysis": {
+    "stage": "D1_DAY_PREACTION_ADMISSION",
+    "status": "UNMEASURED_FINALIZED_USAGE",
+    "started_ts": 1792512121151,
+    "failed_ts": 1792512124428,
+    "reason": "D1_DAILY_ADMISSION_NOT_CLOSED",
+    "source": "schedule",
+    "candidates": [],
+    "market_conditions_evaluated": false,
+    "full_analysis_completed": false,
+    "source_clock_refreshed": false
+  },
+  "separate_scopes": {
+    "day_adaptive_input": {
+      "status": "DAY_USAGE_CLOSED",
+      "run_count": 194,
+      "reserved_rows_read": 1252100,
+      "reserved_rows_written": 22472,
+      "measured_rows_read": 775425,
+      "measured_rows_written": 8365,
+      "unknown_operations": 1,
+      "unfinished": 0
+    },
+    "current_attempt": {
+      "statements": 24,
+      "rows_read": 692,
+      "rows_written": 5,
+      "unknown": 0,
+      "row_totals_closed": true
+    }
+  },
+  "no_operation_identity_recovered": true,
+  "provider_failure_proven": false,
+  "full_or_newprimary_source_read_cost_or_newavailability_carrier": false,
+  "no_sum_refund_reset_grant_or_full_day_closure": true,
+  "source_lease_files_tests_framework": 0
+}

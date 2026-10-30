@@ -1,0 +1,100 @@
+{
+  "schema": "BZ44_IDOL_EVENT_KNOWN_CLOCK_STATIC_PROPOSAL_V1",
+  "status": "OPEN_POLICY_CLARIFICATION_REQUIRED_NOT_PROVEN_TZ_IMPLEMENTATION_DEFECT",
+  "authority_main": "9fab7a151859ed224be7f5aaf784e565a9470118",
+  "packet_sha256": "96ef9124d3b20301dddb1dafead6db47f30760ea18f5bbc6c4ce95f16c1d9eaf",
+  "packet_bytes": 1745264,
+  "original_json_path": "$.latest_candidates[1].private_evidence.original",
+  "analysis_key": "pump:analysis:fd7d6551df3a1a1eca4d7c6f0196f53fc6670fa31f26569a5e994911b38a86ce",
+  "movement_sha256": "589abe087ccf60192625a8ab15f685d1b992190c8c148ffce5d8259e505e6453",
+  "movement_git_blob": "2aa2f21891e496c63527a546223c2f264ff7f0de",
+  "production_pin": "930905e4840003ab8e28ac2482d2915980bba2b3c4d9ccce0a103cb48a286531",
+  "old_wave_id": "PUMP:BINGX:USDT_M:101334:IDOL-USDT:COLD_BASE_V1:1793266980000:1793268240000:1793268360000",
+  "previous_state": "CALM_PULLBACK",
+  "next_state": "CANCELLED",
+  "protected_base": 0.013643,
+  "previous_covered_until_ts": 1793268360000,
+  "breach_row_index": 180,
+  "breach_candle": {
+    "open_ts": 1793268480000,
+    "close_ts": 1793268540000,
+    "low": 0.013477
+  },
+  "intrabar_exact_crossing_ts": null,
+  "closed_bar_evidence_available_event_ts": 1793268540000,
+  "candle_fact": {
+    "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:3fd34a36-4ce9-4763-b416-dbd130c07a6a",
+    "evidence_ref": "3fd34a36-4ce9-4763-b416-dbd130c07a6a",
+    "origin": "OBSERVED",
+    "status": "USABLE",
+    "event_ts": 1793275980000,
+    "received_ts": 1793275990806,
+    "expires_ts": 1793276070000,
+    "cache_hit": false
+  },
+  "received_ts_means": "Receipt of this exact historical candle fact, not earliest global knowledge of the breach",
+  "cancel_decided_and_recorded_ts": 1793275993145,
+  "decision_delay_from_closed_bar_ms": 7453145,
+  "decision_delay_after_this_fact_receipt_ms": 2339,
+  "current_selector_excluded_seed_start_interval": {
+    "start_inclusive": 1793268540000,
+    "end_exclusive": 1793275993145,
+    "scope": "Candidates that would otherwise pass; no such qualified candidate or READY plan proven"
+  },
+  "same_call_behavior": "previous CALM is usable, old impulse retained at154, originalCancel186 detects closed historical breach, CANCELLED223 returned; no same-call replacement scan",
+  "next_call_behavior": "If saved cancelled next_wave is supplied as previous, terminal146, cancelled_ts boundary147 and start>=boundary148 exclude the interval. Native persistence not inspected.",
+  "TZ_basis": {
+    "original_v2_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+    "unified_git_blob": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
+    "lines": [
+      "293–308 current fresh wave, observe until completion/cancellation, no infinite refresh",
+      "314 no guarantee of every move between polls",
+      "377–388 preserve impulse baseline, versioned profile",
+      "424–432 predeclared invalidation"
+    ],
+    "finding": "No explicit required event-vs-observation cutoff for distinct replacement seeds in read TZ. Existing rule explicitly conservative at movement182–184; cannot label TZ breach solely from sample."
+  },
+  "classification": "Proven coverage restriction and conflated decision/event boundary; actual missed qualified wave and TZ violation unproven. Changing seed cutoff is strategy eligibility policy; leave OPEN for explicit owner clarification via ROOT.",
+  "proposal_scope": "Future append-only cause evidence and optional separately approved event-bounded distinct-wave search only; no product patch, saved-original mutation or signal backdating",
+  "proposal_clocks": {
+    "breach_interval": "Actual source OHLC open/close; exact crossing inside minute UNKNOWN",
+    "terminal_event_ts": "For closed-candle evidence, use first verified breached candle close_ts, not candle open nor later analysis time",
+    "terminal_known_ts": "Actual receipt/validation clock for proving source fact; known>=source_received and <=current analysis, never assume bot knew at candle close; earliest global receipt unknown",
+    "cancel_decided_ts": "Current analysis timestamp; preserve existing cancelled_ts semantics and old originals",
+    "price_only_breach": "If no closed breach row proves event, use observed price event/receipt clocks and conservative existing cutoff; no fabricated older boundary"
+  },
+  "proposed_conditions": [
+    "Owner explicitly chooses event cutoff rather than waiting for a newly observed post-cancellation seed; version future policy.",
+    "Complete qualifying closed path from previously covered point through first breach; identity/fact/source/clock evidence bound; absent path -> no event boundary.",
+    "Distinct seed start >= verified closed-breach event; entire impulse is postbreach; seed and confirmations known by current asof; no new candidate/readiness inferred here.",
+    "Do not rewrite old wave/state/seed/invalidation/qualification/created/expires/original/card. Keep old CANCELLED terminal; new unique wave_id and explicit predecessor relation; old qualification not inherited.",
+    "Require independently qualified new impulse and volume basis, growth/qualification, current activity, liquidity, independent pullback plan and minimum10; map optional; no threshold changes.",
+    "All source and confirmation known clocks <=current analysis, event<=received<=analysis and applicable freshness; evaluate/send only now with fresh facts, never backdate analysis or Telegram.",
+    "Keep current240min seed search, unchanged14400000ms lifetime policy and full observed continuity. Retained new wave never reanchors lifetime on refresh. Event-cutoff proposal must not silently grant new full lifetime to an already stale historical seed; anchor semantics need explicit resolution before implementation.",
+    "EXPIRED cause retains original expires_ts boundary. Legacy CANCELLED records without proved cause clocks remain on existing conservative cutoff, not guessed migration."
+  ],
+  "not_claimed": [
+    "A qualifying replacement seed exists in actual14",
+    "READY or independently recalculated plan",
+    "Any missed genuine SENT or completed AUTO run",
+    "Native retained-wave global storage state",
+    "Earliest historical bot receipt of the breach",
+    "General market coverage"
+  ],
+  "new_activity": {
+    "Node": 0,
+    "imports": 0,
+    "engine": 0,
+    "strategy_reanalysis": 0,
+    "tests": 0,
+    "builds": 0,
+    "SQL": 0,
+    "native": 0,
+    "Cloudflare": 0,
+    "provider": 0,
+    "Telegram": 0,
+    "product_edits": 0,
+    "original_mutations": 0,
+    "raw_packet_copied": false
+  }
+}

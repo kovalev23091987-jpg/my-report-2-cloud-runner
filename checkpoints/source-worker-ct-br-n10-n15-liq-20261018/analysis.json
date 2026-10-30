@@ -1,0 +1,1820 @@
+{
+  "schema": "SAVED_CT_BR_N10_N15_LIQ_CONSUMER_AUDIT_V1",
+  "working_base": "e1decc92e2243453162bf763dcd3c26d8010c5ef",
+  "original": {
+    "cloud_run": 39155268524,
+    "artifact_id": 12147056724,
+    "archive": "checkpoints/source-worker-post470-natural-audit-20261018/native-39155268524-12147056724.zip",
+    "archive_sha256": "36832ffdb75b7c509d29b2a6874196b76c33ad8e4ad7cc02ce2cf092afa231fe",
+    "source_head": "911a1d9dbbca4c9c7416700843ae353127c24926",
+    "run_id": "1792348881418-1792348897657",
+    "generated_at": "2026-10-18T18:43:24.784Z",
+    "member_sha256": {
+      "report2-run-result.json": "00a5cf0eafdca560d67062944e7944172e96411207ceb185ba7c1b80252af845",
+      "automatic-delivery-audit.json": "38b69082c8fe41346c9431d3bf267ff796a05154624a0c77ebc8bb0edd628ae9",
+      "same-run-delivery-proof.json": "0272b5dbae2f56a079aca511c33c3281c721a87bd8a02196564be0e264b2a2a2",
+      "known-d1-day-guard.json": "cb92abda06dd39c4fc3d65ac4ec08b28672b9fdc98396c8e321ac385fc0d32a1",
+      "report2-completion-accounting.json": "78a3c2bfb057c8467110599c1d26ce61f2c8a1d59b3e8d2a7538f4d0633fbbf3",
+      "private-canonical-archive-receipt.json": "c2f9e5fd73e38d0e901d9169e0a8d8a6edfa7e07675803d4890407779204623f"
+    }
+  },
+  "source_code": [
+    {
+      "path": "current-generation/files/src/htx-technical-structure.mjs",
+      "original_git_blob": "b17d882c020055f2087486f1d0bc689aae69901f",
+      "working_base_git_blob": "b17d882c020055f2087486f1d0bc689aae69901f",
+      "sha256": "6868f49ac8ce7d7201f3eb40964368350bee0e09848dd86e1ae630618f4c92cc"
+    },
+    {
+      "path": "current-generation/files/src/sector-relative-strength-review.mjs",
+      "original_git_blob": "57eef05e91e2e057957ff6acb996c5102f0879ae",
+      "working_base_git_blob": "57eef05e91e2e057957ff6acb996c5102f0879ae",
+      "sha256": "6beea3a048c3e9db253160ece5e04259b810359c73725649d9a4d8c81a8a83f4"
+    },
+    {
+      "path": "current-generation/files/src/coinboss-liquidation-levels.mjs",
+      "original_git_blob": "ca25b70cc2314cda575676f6b0d470d3a58481a2",
+      "working_base_git_blob": "ca25b70cc2314cda575676f6b0d470d3a58481a2",
+      "sha256": "019267fbc0eb8c6d29b2eb4b43456232860a172c75a2d1634aec1ce47954cf4e"
+    },
+    {
+      "path": "current-generation/files/src/block-result-context.mjs",
+      "original_git_blob": "be13b45e5232374784a8509ddb8050d07ca203f2",
+      "working_base_git_blob": "be13b45e5232374784a8509ddb8050d07ca203f2",
+      "sha256": "fb0110ee6d77b01f40ad42897cbe4150fcc7df1f2c83fac95772a0bdb3cac1de"
+    },
+    {
+      "path": "current-generation/files/src/candidate-evidence-v2-runtime.mjs",
+      "original_git_blob": "86f33b162b610ab30b0c5eb8735122de7b9ec002",
+      "working_base_git_blob": "86f33b162b610ab30b0c5eb8735122de7b9ec002",
+      "sha256": "850edc9ac89a67b32bc721d93abaf01ab5c9b82067287c2c45b73359348631a0"
+    },
+    {
+      "path": "current-generation/files/src/block-score-policy.mjs",
+      "original_git_blob": "44589eac9b9663691276738cfc796dac15cd0056",
+      "working_base_git_blob": "44589eac9b9663691276738cfc796dac15cd0056",
+      "sha256": "873d70a0404baf5df104ee34459246fd85d798163f3cadd7bd72bb7cba3441a1"
+    },
+    {
+      "path": "current-generation/files/src/evidence-v2.mjs",
+      "original_git_blob": "57892233bb589116ac365ca0d4ba397597adc57b",
+      "working_base_git_blob": "57892233bb589116ac365ca0d4ba397597adc57b",
+      "sha256": "dd939e4825e032d71eb41f8bc530419b78263d341f2491486279ef4a4be712e7"
+    },
+    {
+      "path": "current-generation/files/src/block-decision-use-audit.mjs",
+      "original_git_blob": "af3bf405bd9ed243d84bd3592cd090f2b289a9bb",
+      "working_base_git_blob": "af3bf405bd9ed243d84bd3592cd090f2b289a9bb",
+      "sha256": "9ae5511596818b2e60af715845ffe0cbfa73fc5ed0299ddd8c50e8304156d3dc"
+    }
+  ],
+  "facts": [
+    {
+      "block_id": "N10",
+      "evidence_id": "EV2:5cbd8c9f50fc9c146932b1536aebc1a0cfc58866226e06bf80e55c63120b7f03",
+      "physical_root_key": "htx-futures:CT-USDT|CT-USDT:60min:1792346400000",
+      "evidence_ids": [
+        "EV2:5cbd8c9f50fc9c146932b1536aebc1a0cfc58866226e06bf80e55c63120b7f03"
+      ],
+      "physical_root_keys": [
+        "htx-futures:CT-USDT|CT-USDT:60min:1792346400000"
+      ],
+      "source_ts": 1792348939517,
+      "observed_ts": 1792348939635,
+      "label": "Фактический ценовой диапазон",
+      "value": "20 закрытых свечей 60min: 0,2868–0,34242 USDT, ширина 19,39%; цена последней закрытой свечи 0,29127 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно",
+      "source": "HTX / закрытые свечи",
+      "consumer": "MANUAL_CONFIRMED_CONTEXT",
+      "score_contribution": 0,
+      "contract": "CT-USDT",
+      "run_id": "1792348881418-1792348897657",
+      "snapshot_id": "S392:CT-USDT:1792348993007",
+      "venue": "HTX",
+      "market": "FUTURES",
+      "quote": "USDT",
+      "window_start_ts": 1792274400000,
+      "window_end_ts": 1792346400000,
+      "window_basis": "ROOT_CANDLE_END_AND_RETAINED_CANDLE_COUNT_BOUND_NORMALIZER",
+      "source_clock_is_window_end": false,
+      "first_known_ts": null,
+      "expires_at": null,
+      "raw_hash": null,
+      "missing_fields_basis": "NOT_RETAINED_IN_THIS_COMPACT_ORIGINAL_NO_FULL_EVIDENCE_RECONSTRUCTION"
+    },
+    {
+      "block_id": "N10",
+      "evidence_id": "EV2:8383954951828d3c704cdfc504923609e2c14aa50b60d8a66f775480db7f6c27",
+      "physical_root_key": "htx-futures:CT-USDT|CT-USDT:15m:1792348920000",
+      "evidence_ids": [
+        "EV2:8383954951828d3c704cdfc504923609e2c14aa50b60d8a66f775480db7f6c27"
+      ],
+      "physical_root_keys": [
+        "htx-futures:CT-USDT|CT-USDT:15m:1792348920000"
+      ],
+      "source_ts": 1792348920000,
+      "observed_ts": 1792348993007,
+      "label": "Фактический путь цены за 15 минут",
+      "value": "15 закрытых минутных свечей: 0,29501 → 0,29239 USDT (-0,89%); минимум 0,29196, максимум 0,29609 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+      "source": "HTX / закрытые минутные свечи",
+      "consumer": "MANUAL_CONFIRMED_CONTEXT",
+      "score_contribution": 0,
+      "contract": "CT-USDT",
+      "run_id": "1792348881418-1792348897657",
+      "snapshot_id": "S392:CT-USDT:1792348993007",
+      "venue": "HTX",
+      "market": "FUTURES",
+      "quote": "USDT",
+      "window_start_ts": 1792348020000,
+      "window_end_ts": 1792348920000,
+      "window_basis": "ROOT_CANDLE_END_AND_RETAINED_CANDLE_COUNT_BOUND_NORMALIZER",
+      "source_clock_is_window_end": true,
+      "first_known_ts": null,
+      "expires_at": null,
+      "raw_hash": null,
+      "missing_fields_basis": "NOT_RETAINED_IN_THIS_COMPACT_ORIGINAL_NO_FULL_EVIDENCE_RECONSTRUCTION"
+    },
+    {
+      "block_id": "N10",
+      "evidence_id": "EV2:a65aade8690b5782510132074c447040c02a690b83c2c3d2eb2b8121670dd2ef",
+      "physical_root_key": "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792348920000",
+      "evidence_ids": [
+        "EV2:a65aade8690b5782510132074c447040c02a690b83c2c3d2eb2b8121670dd2ef"
+      ],
+      "physical_root_keys": [
+        "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792348920000"
+      ],
+      "source_ts": 1792348920000,
+      "observed_ts": 1792348993007,
+      "label": "Фактический путь цены на споте за 15 минут",
+      "value": "15 закрытых минутных свечей, активных минут 15: 0,2959 → 0,2924 USDT (-1,18%); минимум 0,2919, максимум 0,2964 USDT. Направления спота и фьючерса HTX совпали, ценовые диапазоны пересеклись; это два рынка одной биржи, не два независимых источника. Цель и разрешение входа этим не подтверждены",
+      "source": "HTX / спотовые закрытые свечи",
+      "consumer": "MANUAL_CONFIRMED_CONTEXT",
+      "score_contribution": 0,
+      "contract": "CT-USDT",
+      "run_id": "1792348881418-1792348897657",
+      "snapshot_id": "S392:CT-USDT:1792348993007",
+      "venue": "HTX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1792348020000,
+      "window_end_ts": 1792348920000,
+      "window_basis": "ROOT_CANDLE_END_AND_RETAINED_CANDLE_COUNT_BOUND_NORMALIZER",
+      "source_clock_is_window_end": true,
+      "first_known_ts": null,
+      "expires_at": null,
+      "raw_hash": null,
+      "missing_fields_basis": "NOT_RETAINED_IN_THIS_COMPACT_ORIGINAL_NO_FULL_EVIDENCE_RECONSTRUCTION"
+    },
+    {
+      "block_id": "N15",
+      "evidence_id": "EV2:8298aa7b9f97bec1ee523cf175b4d133f4ac2d66dc6d9df583cca7f42aed48e8",
+      "physical_root_key": "ethereum:0x0a092e544da31150b439a1aaa1a3a2214a867f46|concrete:decentralized-finance-defi:1792348917000",
+      "evidence_ids": [
+        "EV2:8298aa7b9f97bec1ee523cf175b4d133f4ac2d66dc6d9df583cca7f42aed48e8"
+      ],
+      "physical_root_keys": [
+        "ethereum:0x0a092e544da31150b439a1aaa1a3a2214a867f46|concrete:decentralized-finance-defi:1792348917000"
+      ],
+      "source_ts": 1792348917000,
+      "observed_ts": 1792348975801,
+      "label": "Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет",
+      "value": "монета -12,94%, медиана -3,19%, разница -9,75 п.п.; сводные цены площадок",
+      "source": "CoinGecko",
+      "consumer": "MANUAL_CONFIRMED_CONTEXT",
+      "score_contribution": 0,
+      "contract": "CT-USDT",
+      "run_id": "1792348881418-1792348897657",
+      "snapshot_id": "S392:CT-USDT:1792348993007",
+      "venue": null,
+      "market": "AGGREGATED_VENUES",
+      "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+      "window_start_ts": null,
+      "window_end_ts": null,
+      "window_basis": "PROVIDER_ROLLING_24H_LABEL_ONLY_NO_EXPLICIT_START_END",
+      "source_clock_is_window_end": false,
+      "first_known_ts": null,
+      "expires_at": null,
+      "raw_hash": null,
+      "missing_fields_basis": "NOT_RETAINED_IN_THIS_COMPACT_ORIGINAL_NO_FULL_EVIDENCE_RECONSTRUCTION"
+    },
+    {
+      "block_id": "N10",
+      "evidence_id": "EV2:4fac2adf9741a0a5943d470e15275a74910425be9bcd14bb38c1e191fd278cb7",
+      "physical_root_key": "htx-futures:BR-USDT|BR-USDT:60min:1792346400000",
+      "evidence_ids": [
+        "EV2:4fac2adf9741a0a5943d470e15275a74910425be9bcd14bb38c1e191fd278cb7"
+      ],
+      "physical_root_keys": [
+        "htx-futures:BR-USDT|BR-USDT:60min:1792346400000"
+      ],
+      "source_ts": 1792348913923,
+      "observed_ts": 1792348914224,
+      "label": "Фактический ценовой диапазон",
+      "value": "20 закрытых свечей 60min: 0,39394–0,49143 USDT, ширина 24,75%; цена последней закрытой свечи 0,43177 USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно",
+      "source": "HTX / закрытые свечи",
+      "consumer": "MANUAL_CONFIRMED_CONTEXT",
+      "score_contribution": 0,
+      "contract": "BR-USDT",
+      "run_id": "1792348881418-1792348897657",
+      "snapshot_id": "S392:BR-USDT:1792348934852",
+      "venue": "HTX",
+      "market": "FUTURES",
+      "quote": "USDT",
+      "window_start_ts": 1792274400000,
+      "window_end_ts": 1792346400000,
+      "window_basis": "ROOT_CANDLE_END_AND_RETAINED_CANDLE_COUNT_BOUND_NORMALIZER",
+      "source_clock_is_window_end": false,
+      "first_known_ts": null,
+      "expires_at": null,
+      "raw_hash": null,
+      "missing_fields_basis": "NOT_RETAINED_IN_THIS_COMPACT_ORIGINAL_NO_FULL_EVIDENCE_RECONSTRUCTION"
+    },
+    {
+      "block_id": "N10",
+      "evidence_id": "EV2:f3a00631af88169ebb8fc405332d9c4908d7be80600278be51019a5167a0f7c3",
+      "physical_root_key": "htx-futures:BR-USDT|BR-USDT:15m:1792348860000",
+      "evidence_ids": [
+        "EV2:f3a00631af88169ebb8fc405332d9c4908d7be80600278be51019a5167a0f7c3"
+      ],
+      "physical_root_keys": [
+        "htx-futures:BR-USDT|BR-USDT:15m:1792348860000"
+      ],
+      "source_ts": 1792348860000,
+      "observed_ts": 1792348934852,
+      "label": "Фактический путь цены за 15 минут",
+      "value": "15 закрытых минутных свечей: 0,43912 → 0,448 USDT (+2,02%); минимум 0,43719, максимум 0,448 USDT. Это тот же источник HTX; цель и разрешение входа не подтверждены",
+      "source": "HTX / закрытые минутные свечи",
+      "consumer": "MANUAL_CONFIRMED_CONTEXT",
+      "score_contribution": 0,
+      "contract": "BR-USDT",
+      "run_id": "1792348881418-1792348897657",
+      "snapshot_id": "S392:BR-USDT:1792348934852",
+      "venue": "HTX",
+      "market": "FUTURES",
+      "quote": "USDT",
+      "window_start_ts": 1792347960000,
+      "window_end_ts": 1792348860000,
+      "window_basis": "ROOT_CANDLE_END_AND_RETAINED_CANDLE_COUNT_BOUND_NORMALIZER",
+      "source_clock_is_window_end": true,
+      "first_known_ts": null,
+      "expires_at": null,
+      "raw_hash": null,
+      "missing_fields_basis": "NOT_RETAINED_IN_THIS_COMPACT_ORIGINAL_NO_FULL_EVIDENCE_RECONSTRUCTION"
+    }
+  ],
+  "candidates": [
+    {
+      "contract": "CT-USDT",
+      "publication_id": "PUB:b51d02997879c6b9c785286a5d6d9d36dddde54f",
+      "run_id": "1792348881418-1792348897657",
+      "snapshot_id": "S392:CT-USDT:1792348993007",
+      "wave_id": "EDW:CT-USDT:1792344030224:G7",
+      "direction": "SHORT",
+      "observed_ts": 1792348993007,
+      "canonical_state": "OBSERVE",
+      "blocks": {
+        "N10": {
+          "coverage": {
+            "status": "CHECKED_NEUTRAL_CONTEXT",
+            "checked": true,
+            "observed_facts": 3,
+            "valid_context_facts": 3,
+            "usable_facts": 0,
+            "source_statuses": {
+              "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+            },
+            "decision_consumer": "TARGET_PATH_INVALIDATION",
+            "maximum_score_points": 0.2,
+            "decision_path": "ADMITTED_CONTROL_CONTEXT",
+            "evidence_rejection_reasons": {
+              "ZERO_DECISION_COVERAGE": 3
+            }
+          },
+          "decision": {
+            "checked": true,
+            "observed_fact_count": 3,
+            "valid_fact_count": 3,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 3,
+            "unscored_diagnostic_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 3,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN"
+          },
+          "impact_diagnostic": {
+            "internal_only": true,
+            "score_recomputed": false,
+            "rows": [
+              {
+                "evidence_id": "EV2:5cbd8c9f50fc9c146932b1536aebc1a0cfc58866226e06bf80e55c63120b7f03",
+                "metric_family": "CLOSED_CANDLE_RANGE_CONTEXT",
+                "validation": "VALID",
+                "coverage_fraction": 0,
+                "reliability": 0.8,
+                "directional_or_risk_strength": 0,
+                "block_cap": 0.2,
+                "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+                "actual_score_contribution": 0,
+                "reasons": [
+                  "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                  "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+                ]
+              },
+              {
+                "evidence_id": "EV2:8383954951828d3c704cdfc504923609e2c14aa50b60d8a66f775480db7f6c27",
+                "metric_family": "CLOSED_15M_PRICE_PATH_CONTEXT",
+                "validation": "VALID",
+                "coverage_fraction": 0,
+                "reliability": 0.8,
+                "directional_or_risk_strength": 0,
+                "block_cap": 0.2,
+                "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+                "actual_score_contribution": 0,
+                "reasons": [
+                  "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                  "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+                ]
+              },
+              {
+                "evidence_id": "EV2:a65aade8690b5782510132074c447040c02a690b83c2c3d2eb2b8121670dd2ef",
+                "metric_family": "CLOSED_15M_HTX_SPOT_PRICE_PATH_CONTEXT",
+                "validation": "VALID",
+                "coverage_fraction": 0,
+                "reliability": 0.8,
+                "directional_or_risk_strength": 0,
+                "block_cap": 0.2,
+                "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+                "actual_score_contribution": 0,
+                "reasons": [
+                  "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                  "PARTIAL_SAMPLE_LIMITS_WEIGHT"
+                ]
+              }
+            ],
+            "empty_fact_reason": null,
+            "control_effect_not_invented": true
+          },
+          "source_checks": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 2,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [
+                "EV2:5cbd8c9f50fc9c146932b1536aebc1a0cfc58866226e06bf80e55c63120b7f03",
+                "EV2:8383954951828d3c704cdfc504923609e2c14aa50b60d8a66f775480db7f6c27",
+                "EV2:a65aade8690b5782510132074c447040c02a690b83c2c3d2eb2b8121670dd2ef"
+              ],
+              "provider_ids": [
+                "PRIMARY_TECHNICAL_CONTEXT"
+              ],
+              "declared_upstream_ids": [
+                "HTX_OFFICIAL_CLOSED_CANDLES",
+                "HTX_OFFICIAL_CLOSED_1M_CANDLES",
+                "HTX_OFFICIAL_SPOT_CLOSED_1M_CANDLES"
+              ],
+              "physical_root_keys": [
+                "htx-futures:CT-USDT|CT-USDT:60min:1792346400000",
+                "htx-futures:CT-USDT|CT-USDT:15m:1792348920000",
+                "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792348920000"
+              ],
+              "receipts": [
+                {
+                  "route": null,
+                  "status": "NO_ENTRY_STATE",
+                  "http_status": null,
+                  "error": null
+                },
+                {
+                  "route": null,
+                  "status": "CLOSED_SPOT_PRICE_PATH",
+                  "http_status": null,
+                  "error": null
+                }
+              ]
+            }
+          },
+          "source_accounting": {
+            "valid_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "used_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "nonzero_score_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_CLOSED_1M_CANDLES",
+              "HTX_OFFICIAL_CLOSED_CANDLES",
+              "HTX_OFFICIAL_SPOT_CLOSED_1M_CANDLES"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:CT-USDT|CT-USDT:15m:1792348920000",
+              "htx-futures:CT-USDT|CT-USDT:60min:1792346400000",
+              "htx-spot:CT-USDT|HTX_SPOT:CT-USDT:1792348920000"
+            ],
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "provider_or_upstream_count_is_not_independent_vote_count": true
+          }
+        },
+        "N15": {
+          "coverage": {
+            "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+            "checked": true,
+            "observed_facts": 1,
+            "valid_context_facts": 1,
+            "usable_facts": 1,
+            "source_statuses": {
+              "COINGECKO_SECTOR": "CLOSED",
+              "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+            },
+            "decision_consumer": "SECTOR_RELATIVE_STRENGTH",
+            "maximum_score_points": 0.6,
+            "decision_path": "ADMITTED_SCORE_OR_RISK_INPUT",
+            "evidence_rejection_reasons": {}
+          },
+          "decision": {
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 1,
+            "score_application_receipt_count": 1,
+            "score_contribution": 1.1698,
+            "score_application_status": "SCORE_APPLICATION_PROVEN",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "unscored_diagnostic_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "SCORE_EFFECT_PROVEN"
+          },
+          "impact_diagnostic": {
+            "internal_only": true,
+            "score_recomputed": false,
+            "rows": [
+              {
+                "evidence_id": "EV2:8298aa7b9f97bec1ee523cf175b4d133f4ac2d66dc6d9df583cca7f42aed48e8",
+                "metric_family": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+                "validation": "VALID",
+                "coverage_fraction": 0.75,
+                "reliability": 0.8,
+                "directional_or_risk_strength": -0.9747954999999999,
+                "block_cap": 2,
+                "weight_policy": "INITIAL_ALLOCATION_NOT_EMPIRICALLY_FITTED",
+                "actual_score_contribution": 1.1698,
+                "reasons": []
+              }
+            ],
+            "empty_fact_reason": null,
+            "control_effect_not_invented": true
+          },
+          "source_checks": {
+            "COINGECKO_SECTOR": {
+              "status": "CLOSED",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 3,
+              "cache_status": null,
+              "receipt_count": 4,
+              "admission_status": "PER_TRANSPORT_RESERVED",
+              "blocking_checks": [],
+              "valid_evidence_ids": [
+                "EV2:8298aa7b9f97bec1ee523cf175b4d133f4ac2d66dc6d9df583cca7f42aed48e8"
+              ],
+              "provider_ids": [
+                "COINGECKO_SECTOR"
+              ],
+              "declared_upstream_ids": [
+                "COINGECKO_AGGREGATED_VENUES"
+              ],
+              "physical_root_keys": [
+                "ethereum:0x0a092e544da31150b439a1aaa1a3a2214a867f46|concrete:decentralized-finance-defi:1792348917000"
+              ],
+              "receipts": [
+                {
+                  "route": "EXACT_COIN_METADATA",
+                  "status": "VALIDATED_REFERENCE_CACHE",
+                  "http_status": 200,
+                  "error": null
+                },
+                {
+                  "route": "EXACT_CATEGORY_DIRECTORY",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                },
+                {
+                  "route": "CATEGORY_QUOTES",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                },
+                {
+                  "route": "EXACT_TARGET_QUOTE",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 1,
+              "admission_status": "PER_TRANSPORT_RESERVED",
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": [
+                {
+                  "route": "HTX_MARKET_CATALOG",
+                  "status": "VALIDATED_REFERENCE_CACHE",
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            }
+          },
+          "source_accounting": {
+            "valid_provider_ids": [
+              "COINGECKO_SECTOR"
+            ],
+            "used_provider_ids": [
+              "COINGECKO_SECTOR"
+            ],
+            "nonzero_score_provider_ids": [
+              "COINGECKO_SECTOR"
+            ],
+            "unscored_diagnostic_provider_ids": [
+              "COINGECKO_SECTOR"
+            ],
+            "used_declared_upstream_ids": [
+              "COINGECKO_AGGREGATED_VENUES"
+            ],
+            "used_physical_root_keys": [
+              "ethereum:0x0a092e544da31150b439a1aaa1a3a2214a867f46|concrete:decentralized-finance-defi:1792348917000"
+            ],
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 1,
+            "provider_or_upstream_count_is_not_independent_vote_count": true
+          }
+        }
+      },
+      "manual_fact_ids": [
+        "EV2:5cbd8c9f50fc9c146932b1536aebc1a0cfc58866226e06bf80e55c63120b7f03",
+        "EV2:8383954951828d3c704cdfc504923609e2c14aa50b60d8a66f775480db7f6c27",
+        "EV2:a65aade8690b5782510132074c447040c02a690b83c2c3d2eb2b8121670dd2ef",
+        "EV2:8298aa7b9f97bec1ee523cf175b4d133f4ac2d66dc6d9df583cca7f42aed48e8"
+      ],
+      "detailed_N10_N15_telegram_receipts": [],
+      "telegram_payload_status": "APPROVED_PAYLOAD_TEXT_OBSERVED",
+      "liquidations": {
+        "status": "CALCULATED_CONTEXT_ONLY",
+        "coverage_status": "NO_FACTUAL_FUTURE_LEVELS",
+        "reason": "FACTUAL_FUTURE_LEVELS_NOT_AVAILABLE",
+        "current_price": 0.29194,
+        "future_levels_status": "CALCULATED_SCENARIOS_ONLY",
+        "provider_zone_count": 0,
+        "calculated_scenario_count": 8,
+        "displayed_zone_count": 0,
+        "source_receipts": [],
+        "htx_source_backed_model": {
+          "status": "DISABLED_BY_OWNER_ON_REQUEST_ONLY",
+          "volatility_1h_pct": null
+        },
+        "coverage_admission": {
+          "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+          "eligible": true,
+          "source_ids": [
+            "HYPERLIQUID_NATIVE"
+          ],
+          "independent_upstreams": [],
+          "network_calls": 0,
+          "calculated_fallback_allowed": false,
+          "contract": "CT-USDT",
+          "proven_level_source_ids": [],
+          "additional_context_check_source_ids": [
+            "HYPERLIQUID_NATIVE"
+          ],
+          "structural_market_source_ids": [],
+          "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+          "fresh_live_levels_confirmed": false,
+          "receipt_only_context_score_eligible": false,
+          "receipt_only_context_target_eligible": false,
+          "leaders_may_be_replaced": false
+        },
+        "future_source_status": {
+          "coverage_admission": {
+            "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+            "eligible": true,
+            "source_ids": [
+              "HYPERLIQUID_NATIVE"
+            ],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false,
+            "contract": "CT-USDT",
+            "proven_level_source_ids": [],
+            "additional_context_check_source_ids": [
+              "HYPERLIQUID_NATIVE"
+            ],
+            "structural_market_source_ids": [],
+            "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+            "fresh_live_levels_confirmed": false,
+            "receipt_only_context_score_eligible": false,
+            "receipt_only_context_target_eligible": false,
+            "leaders_may_be_replaced": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          },
+          "orderly": {
+            "source": "ORDERLY_PUBLIC_POSITIONS",
+            "status": "NOT_COLLECTED",
+            "source_ts": null,
+            "nearby_levels": 0
+          },
+          "coinboss": {
+            "source": "COINBOSS_CEX_MODEL",
+            "status": "CLOSED",
+            "reason": null,
+            "network_calls": 1,
+            "capability_receipt": null,
+            "source_ts": 1792348759714,
+            "scenario_count": 8
+          },
+          "swolecharts": {
+            "source": "SWOLECHARTS_CEX_MODEL",
+            "status": "NOT_COLLECTED",
+            "source_ts": null,
+            "scenario_count": 0
+          }
+        },
+        "acquisition_diagnostics": {
+          "schema": "BOUND_LIQUIDATION_ACQUISITION_DIAGNOSTICS_V1",
+          "contract": "CT-USDT",
+          "run_id": "1792348881418-1792348897657",
+          "snapshot_id": "S392:CT-USDT:1792348993007",
+          "observed_ts": 1792348993007,
+          "evaluated_ts": 1792348993007,
+          "routes": [
+            {
+              "lane": "HYPERLIQUID_NATIVE",
+              "status": "UNSUPPORTED_NATIVE_SYMBOL",
+              "kind": "ASSET_UNSUPPORTED",
+              "actual_http": 1,
+              "source_ts": null,
+              "original_clock_retained": false,
+              "complete_accounts_read": null,
+              "full_market_census": false
+            }
+          ],
+          "status": "ATTEMPT_DIAGNOSTICS_RETAINED",
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true,
+          "source_state_proof": false,
+          "score_contribution": 0,
+          "entry_authorized": false
+        },
+        "scenarios": [
+          {
+            "kind": "PROJECTED",
+            "price": 0.274861,
+            "price_quote": "USD",
+            "distance_pct": -9.60006577865482,
+            "distance_reference_price": 0.30405,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "BELOW",
+            "liquidated_side": "BUYERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348759714,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.30405,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              10
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.333239,
+            "price_quote": "USD",
+            "distance_pct": 9.600065778654843,
+            "distance_reference_price": 0.30405,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348759714,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.30405,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              10
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.293104,
+            "price_quote": "USD",
+            "distance_pct": -3.6000657786548262,
+            "distance_reference_price": 0.30405,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "BELOW",
+            "liquidated_side": "BUYERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348759714,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.30405,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              25
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.314996,
+            "price_quote": "USD",
+            "distance_pct": 3.6000657786548373,
+            "distance_reference_price": 0.30405,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348759714,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.30405,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              25
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.299185,
+            "price_quote": "USD",
+            "distance_pct": -1.6000657786548245,
+            "distance_reference_price": 0.30405,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "BELOW",
+            "liquidated_side": "BUYERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348759714,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.30405,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              50
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.308915,
+            "price_quote": "USD",
+            "distance_pct": 1.6000657786548356,
+            "distance_reference_price": 0.30405,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348759714,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.30405,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              50
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.302226,
+            "price_quote": "USD",
+            "distance_pct": -0.5999013320177604,
+            "distance_reference_price": 0.30405,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "BELOW",
+            "liquidated_side": "BUYERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "небольшая",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348759714,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.30405,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              100
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "небольшая",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.305874,
+            "price_quote": "USD",
+            "distance_pct": 0.5999013320177493,
+            "distance_reference_price": 0.30405,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "небольшая",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348759714,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.30405,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              100
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "небольшая",
+            "scenario_only": true
+          }
+        ],
+        "model_source_age_at_candidate_ms": 233293,
+        "model_received_ts": null,
+        "model_first_known_ts": null,
+        "raw_model_body_present": false,
+        "displayed_model_levels": [
+          {
+            "side": "ABOVE",
+            "prices": [
+              0.314996,
+              0.333239
+            ],
+            "line": "Ликвидационные уровни выше: расчётный уровень ≈0,314996 USD (+3,6% к цене источника) — размер возможной ликвидации: средняя (расчётный); объединено 3 близких уровней, показан дальний; есть расчётные уровни; CoinBoss; расчётный уровень ≈0,333239 USD (+9,6% к цене источника) — размер возможной ликвидации: средняя (расчётный); CoinBoss."
+          },
+          {
+            "side": "BELOW",
+            "prices": [
+              0.293104,
+              0.274861
+            ],
+            "line": "Ликвидационные уровни ниже: расчётный уровень ≈0,293104 USD (−3,6% к цене источника) — размер возможной ликвидации: средняя (расчётный); объединено 3 близких уровней, показан дальний; есть расчётные уровни; CoinBoss; расчётный уровень ≈0,274861 USD (−9,6% к цене источника) — размер возможной ликвидации: средняя (расчётный); CoinBoss."
+          }
+        ],
+        "displayed_model_count": 4,
+        "displayed_zone_count_excludes_separate_model_rendering": true,
+        "full_position_census": false,
+        "detailed_Telegram_LIQ_model_display_proven": false,
+        "target_consumer_has_no_levels": true
+      }
+    },
+    {
+      "contract": "BR-USDT",
+      "publication_id": "PUB:d10d1733c5984ac97fdf88936158a563b39ec92c",
+      "run_id": "1792348881418-1792348897657",
+      "snapshot_id": "S392:BR-USDT:1792348934852",
+      "wave_id": "EDW:BR-USDT:1792321806066:G17",
+      "direction": null,
+      "observed_ts": 1792348934852,
+      "canonical_state": "REJECTED",
+      "blocks": {
+        "N10": {
+          "coverage": {
+            "status": "CHECKED_NEUTRAL_CONTEXT",
+            "checked": true,
+            "observed_facts": 2,
+            "valid_context_facts": 2,
+            "usable_facts": 0,
+            "source_statuses": {
+              "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+            },
+            "decision_consumer": "TARGET_PATH_INVALIDATION",
+            "maximum_score_points": 0.2,
+            "decision_path": "ADMITTED_CONTROL_CONTEXT",
+            "evidence_rejection_reasons": {
+              "ZERO_DECISION_COVERAGE": 2
+            }
+          },
+          "decision": {
+            "checked": true,
+            "observed_fact_count": 2,
+            "valid_fact_count": 2,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 2,
+            "unscored_diagnostic_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 2,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN"
+          },
+          "impact_diagnostic": {
+            "internal_only": true,
+            "score_recomputed": false,
+            "rows": [
+              {
+                "evidence_id": "EV2:4fac2adf9741a0a5943d470e15275a74910425be9bcd14bb38c1e191fd278cb7",
+                "metric_family": "CLOSED_CANDLE_RANGE_CONTEXT",
+                "validation": "VALID",
+                "coverage_fraction": 0,
+                "reliability": 0.8,
+                "directional_or_risk_strength": 0,
+                "block_cap": 0.2,
+                "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+                "actual_score_contribution": 0,
+                "reasons": [
+                  "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                  "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                  "BASE_SCORE_MISSING"
+                ]
+              },
+              {
+                "evidence_id": "EV2:f3a00631af88169ebb8fc405332d9c4908d7be80600278be51019a5167a0f7c3",
+                "metric_family": "CLOSED_15M_PRICE_PATH_CONTEXT",
+                "validation": "VALID",
+                "coverage_fraction": 0,
+                "reliability": 0.8,
+                "directional_or_risk_strength": 0,
+                "block_cap": 0.2,
+                "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+                "actual_score_contribution": 0,
+                "reasons": [
+                  "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                  "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                  "BASE_SCORE_MISSING"
+                ]
+              }
+            ],
+            "empty_fact_reason": null,
+            "control_effect_not_invented": true
+          },
+          "source_checks": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 1,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [
+                "EV2:4fac2adf9741a0a5943d470e15275a74910425be9bcd14bb38c1e191fd278cb7",
+                "EV2:f3a00631af88169ebb8fc405332d9c4908d7be80600278be51019a5167a0f7c3"
+              ],
+              "provider_ids": [
+                "PRIMARY_TECHNICAL_CONTEXT"
+              ],
+              "declared_upstream_ids": [
+                "HTX_OFFICIAL_CLOSED_CANDLES",
+                "HTX_OFFICIAL_CLOSED_1M_CANDLES"
+              ],
+              "physical_root_keys": [
+                "htx-futures:BR-USDT|BR-USDT:60min:1792346400000",
+                "htx-futures:BR-USDT|BR-USDT:15m:1792348860000"
+              ],
+              "receipts": [
+                {
+                  "route": null,
+                  "status": "NO_ENTRY_STATE",
+                  "http_status": null,
+                  "error": null
+                }
+              ]
+            }
+          },
+          "source_accounting": {
+            "valid_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "used_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "nonzero_score_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_CLOSED_1M_CANDLES",
+              "HTX_OFFICIAL_CLOSED_CANDLES"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:BR-USDT|BR-USDT:15m:1792348860000",
+              "htx-futures:BR-USDT|BR-USDT:60min:1792346400000"
+            ],
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "provider_or_upstream_count_is_not_independent_vote_count": true
+          }
+        },
+        "N15": {
+          "coverage": {
+            "status": "CHECKED_NO_USABLE_FACTS",
+            "checked": true,
+            "observed_facts": 0,
+            "valid_context_facts": 0,
+            "usable_facts": 0,
+            "source_statuses": {
+              "COINGECKO_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED",
+              "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+            },
+            "decision_consumer": "SECTOR_RELATIVE_STRENGTH",
+            "maximum_score_points": 0.6,
+            "decision_path": "CHECKED_NEUTRAL_NO_EVENT",
+            "evidence_rejection_reasons": {}
+          },
+          "decision": {
+            "checked": true,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "CHECKED_NO_APPLICABLE_FACT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "unscored_diagnostic_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN"
+          },
+          "impact_diagnostic": {
+            "internal_only": true,
+            "score_recomputed": false,
+            "rows": [],
+            "empty_fact_reason": "CHECKED_SOURCE_RETURNED_NO_APPLICABLE_FACT",
+            "control_effect_not_invented": true
+          },
+          "source_checks": {
+            "COINGECKO_SECTOR": {
+              "status": "EXACT_SECTOR_REGISTRY_REQUIRED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 1,
+              "admission_status": "PER_TRANSPORT_RESERVED",
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": [
+                {
+                  "route": "HTX_MARKET_CATALOG",
+                  "status": "VALIDATED_REFERENCE_CACHE",
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            }
+          },
+          "source_accounting": {
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "provider_or_upstream_count_is_not_independent_vote_count": true
+          }
+        }
+      },
+      "manual_fact_ids": [
+        "EV2:4fac2adf9741a0a5943d470e15275a74910425be9bcd14bb38c1e191fd278cb7",
+        "EV2:f3a00631af88169ebb8fc405332d9c4908d7be80600278be51019a5167a0f7c3"
+      ],
+      "detailed_N10_N15_telegram_receipts": [],
+      "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+      "liquidations": {
+        "status": "CALCULATED_CONTEXT_ONLY",
+        "coverage_status": "NO_FACTUAL_FUTURE_LEVELS",
+        "reason": "FACTUAL_FUTURE_LEVELS_NOT_AVAILABLE",
+        "current_price": 0.44711500000000004,
+        "future_levels_status": "CALCULATED_SCENARIOS_ONLY",
+        "provider_zone_count": 0,
+        "calculated_scenario_count": 8,
+        "displayed_zone_count": 0,
+        "source_receipts": [],
+        "htx_source_backed_model": {
+          "status": "DISABLED_BY_OWNER_ON_REQUEST_ONLY",
+          "volatility_1h_pct": null
+        },
+        "coverage_admission": {
+          "status": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+          "eligible": false,
+          "source_ids": [],
+          "independent_upstreams": [],
+          "network_calls": 0,
+          "calculated_fallback_allowed": false
+        },
+        "future_source_status": {
+          "coverage_admission": {
+            "status": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+            "eligible": false,
+            "source_ids": [],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          },
+          "orderly": {
+            "source": "ORDERLY_PUBLIC_POSITIONS",
+            "status": "NOT_COLLECTED",
+            "source_ts": null,
+            "nearby_levels": 0
+          },
+          "coinboss": {
+            "source": "COINBOSS_CEX_MODEL",
+            "status": "CLOSED",
+            "reason": null,
+            "network_calls": 1,
+            "capability_receipt": null,
+            "source_ts": 1792348757019,
+            "scenario_count": 8
+          },
+          "swolecharts": {
+            "source": "SWOLECHARTS_CEX_MODEL",
+            "status": "NOT_COLLECTED",
+            "source_ts": null,
+            "scenario_count": 0
+          }
+        },
+        "acquisition_diagnostics": {
+          "schema": "BOUND_LIQUIDATION_ACQUISITION_DIAGNOSTICS_V1",
+          "contract": "BR-USDT",
+          "run_id": "1792348881418-1792348897657",
+          "snapshot_id": "S392:BR-USDT:1792348934852",
+          "observed_ts": 1792348934852,
+          "evaluated_ts": 1792348934852,
+          "routes": [],
+          "status": "NO_CAPTURED_ROUTE",
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true,
+          "source_state_proof": false,
+          "score_contribution": 0,
+          "entry_authorized": false
+        },
+        "scenarios": [
+          {
+            "kind": "PROJECTED",
+            "price": 0.387798,
+            "price_quote": "USD",
+            "distance_pct": -9.599981351111941,
+            "distance_reference_price": 0.42898,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "BELOW",
+            "liquidated_side": "BUYERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "крупная",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348757019,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.42898,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              10
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "крупная",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.470162,
+            "price_quote": "USD",
+            "distance_pct": 9.599981351111953,
+            "distance_reference_price": 0.42898,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "крупная",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348757019,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.42898,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              10
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "крупная",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.413537,
+            "price_quote": "USD",
+            "distance_pct": -3.599934728891785,
+            "distance_reference_price": 0.42898,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "BELOW",
+            "liquidated_side": "BUYERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348757019,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.42898,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              25
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.444423,
+            "price_quote": "USD",
+            "distance_pct": 3.599934728891796,
+            "distance_reference_price": 0.42898,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348757019,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.42898,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              25
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.422116,
+            "price_quote": "USD",
+            "distance_pct": -1.6000745955522366,
+            "distance_reference_price": 0.42898,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "BELOW",
+            "liquidated_side": "BUYERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348757019,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.42898,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              50
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.435844,
+            "price_quote": "USD",
+            "distance_pct": 1.6000745955522477,
+            "distance_reference_price": 0.42898,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348757019,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.42898,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              50
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.426406,
+            "price_quote": "USD",
+            "distance_pct": -0.6000279733320846,
+            "distance_reference_price": 0.42898,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "BELOW",
+            "liquidated_side": "BUYERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348757019,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.42898,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              100
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          },
+          {
+            "kind": "PROJECTED",
+            "price": 0.431554,
+            "price_quote": "USD",
+            "distance_pct": 0.6000279733320957,
+            "distance_reference_price": 0.42898,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": null,
+            "notional_unit": null,
+            "exact_notional_usdt": null,
+            "exact_amount_available": false,
+            "amount_semantics": "MODELED_INTENSITY_TIER_NOT_OBSERVED_POSITION",
+            "strength_label_ru": "средняя",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "EXTERNAL_PROVIDER_MODELED_INTENSITY_ESTIMATE"
+            ],
+            "source": "CoinBoss",
+            "venue": null,
+            "source_ts": 1792348757019,
+            "coverage": null,
+            "price_semantics": "COINBOSS_AGGREGATED_LEVERAGE_MODEL",
+            "native_reference_price": 0.42898,
+            "conditional_cross": false,
+            "position_count": null,
+            "position_key": null,
+            "decision_target_eligible": false,
+            "estimated": true,
+            "independence_group": "COINBOSS_AGGREGATED_CEX_MODEL",
+            "model_sources": [],
+            "model_version": "COINBOSS_PUBLIC_API_2026",
+            "anchor_kinds": [],
+            "leverage_scenarios": [
+              100
+            ],
+            "source_backed_calculated": true,
+            "scenario_estimated_size_tier": "средняя",
+            "scenario_only": true
+          }
+        ],
+        "model_source_age_at_candidate_ms": 177833,
+        "model_received_ts": null,
+        "model_first_known_ts": null,
+        "raw_model_body_present": false,
+        "displayed_model_levels": [
+          {
+            "side": "ABOVE",
+            "prices": [
+              0.444423,
+              0.470162
+            ],
+            "line": "Ликвидационные уровни выше: расчётный уровень ≈0,444423 USD (+3,6% к цене источника) — размер возможной ликвидации: средняя (расчётный); объединено 3 близких уровней, показан дальний; есть расчётные уровни; CoinBoss; расчётный уровень ≈0,470162 USD (+9,6% к цене источника) — размер возможной ликвидации: крупная (расчётный); CoinBoss."
+          },
+          {
+            "side": "BELOW",
+            "prices": [
+              0.413537,
+              0.387798
+            ],
+            "line": "Ликвидационные уровни ниже: расчётный уровень ≈0,413537 USD (−3,6% к цене источника) — размер возможной ликвидации: средняя (расчётный); объединено 3 близких уровней, показан дальний; есть расчётные уровни; CoinBoss; расчётный уровень ≈0,387798 USD (−9,6% к цене источника) — размер возможной ликвидации: крупная (расчётный); CoinBoss."
+          }
+        ],
+        "displayed_model_count": 4,
+        "displayed_zone_count_excludes_separate_model_rendering": true,
+        "full_position_census": false,
+        "detailed_Telegram_LIQ_model_display_proven": false,
+        "target_consumer_has_no_levels": true
+      }
+    }
+  ],
+  "liquidation_route_accounting": {
+    "audit_builder_network_calls": 0,
+    "audit_builder_db_calls": 0,
+    "native_acquisition_http": 1,
+    "native_routes": [
+      {
+        "contract": "CT-USDT",
+        "run_id": "1792348881418-1792348897657",
+        "lane": "HYPERLIQUID_NATIVE",
+        "status": "UNSUPPORTED_NATIVE_SYMBOL",
+        "role_usable": false,
+        "attempt": 1,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "actual_http": 1,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "UNSUPPORTED",
+          "failure_origin": "COVERAGE"
+        },
+        "position_proof": null
+      }
+    ],
+    "CoinBoss_retained_http_by_contract": {
+      "CT-USDT": 1,
+      "BR-USDT": 1
+    },
+    "not_entire_run_HTTP_and_not_complete_provider_accounting": true
+  },
+  "diagnostic_proposal": {
+    "kind": "COVERAGE_STATIC_CAP_LABEL_DIFFERS_FROM_APPLIED_POLICY_CAP",
+    "contract": "CT-USDT",
+    "block": "N15",
+    "coverage_maximum_score_points": 0.6,
+    "actual_resolved_policy_cap": 2,
+    "actual_retained_contribution": 1.1698,
+    "proposal": "Coordinator may distinguish static legacy cap from the resolved per-evidence policy cap in internal coverage diagnostics; reuse resolveBlockCap and existing receipt. Do not clamp contribution, change weights, strategy or user form.",
+    "new_runtime_or_strategy_bug_claimed": false,
+    "shared_files_changed": false
+  },
+  "acceptance": {
+    "new_blocks_not_PR477_repeat": [
+      "N10",
+      "N15",
+      "LIQ"
+    ],
+    "manual_N10_facts": 5,
+    "manual_N15_facts": 1,
+    "CT_N15_retained_actual_score": 1.1698,
+    "BR_N15_fact_and_use_proven": false,
+    "LIQ_raw_model_scenarios": 16,
+    "LIQ_displayed_model_levels": 8,
+    "factual_future_position_levels": 0,
+    "N10_control_effect_or_entry_proven": false,
+    "detailed_N10_N15_Telegram_fact_display": false,
+    "detailed_LIQ_Telegram_display": false,
+    "raw_provider_payload_replayed": false,
+    "all105_fresh_coverage": false,
+    "current_connection_qualified": false
+  },
+  "limits": [
+    "Raw candle rows, sector peer basket, target quote/reference body and CoinBoss body are absent in this compact original. No new provider identity or complete raw replay is inferred.",
+    "N10 windows are explicitly derived from retained root + candle-count label using unchanged normalizer; unavailable raw hash/expiry/first-known clocks remain NULL. N15 rolling24h has no reconstructed explicit endpoints.",
+    "CT spot/futures aligned15m windows are two markets on one HTX upstream, not independent sources; BR has no retained N10 spot fact, no new listing/availability conclusion.",
+    "CT CoinGecko is one aggregated provider; retained root binds concrete Ethereum address, not 50 independent providers or full-sector coverage. Three actual HTTP plus one cached metadata receipt, not four new HTTP.",
+    "CoinPaprika cached market lookup with HTTP200 and zero new HTTP produced no sector fact for either finalist; no automatic retry, identity override or cap increase authorized.",
+    "N15 presentation score0 and unscored review0 do not erase actual score1.1698; BR unknown contribution stays NULL. Static coverage cap0.6 is not substituted for resolved policycap2.",
+    "CoinBoss model prices/distances remain USD relative to its original reference; source age at final snapshot is not transport receipt age. The two markets/current HTXUSDT price do not authorize FX conversion or replacement of source reference.",
+    "LIQ canonical displayed_zone_count0 refers to factual-zone output; manual text separately renders four model levels per asset from eight retained scenarios. No observed positions, exact notional, score, entry or target authority.",
+    "Only CT Hyperliquid unsupported-symbol attempt is captured in native audit; operational/schema success is not source coverage, BR has no captured native route. Audit-builder0 does not mean acquisition0 or allprovider accounting closed.",
+    "PR477 exact CT same-run220 delivery is reused as its separate accepted proof; this package does not rerun delivery assertions or infer detailed block/model publication from it."
+  ],
+  "worker_effect": {
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "new_run_acquisition": 0,
+    "deploy_MAIN_Telegram": 0,
+    "production_changes": false,
+    "accepted_test_suites_repeated": 0,
+    "strategy_score_weights_forms_pauses_caps_or_unknown_changed": false
+  }
+}

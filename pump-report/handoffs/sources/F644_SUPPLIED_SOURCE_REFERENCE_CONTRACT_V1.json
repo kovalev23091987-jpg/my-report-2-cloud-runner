@@ -1,0 +1,681 @@
+{
+  "schema": "PUMP_F644_SUPPLIED_SOURCE_REFERENCE_ALLOWLIST_V1",
+  "status": "STATIC_SOURCE_CONTRACT_FOR_BZ23_ROOT_NOT_IMPLEMENTATION_OR_DELETE_AUTHORITY",
+  "created_utc": "2026-10-27T20:32:17.238053+00:00",
+  "authority_main": "20ef78ec7a866992ad12bf72f56f991a3966462f",
+  "consumer": "analytics/feature-capsule.mjs projectProtectedReferences (BZ23/ROOT ownership)",
+  "sample": {
+    "source_file": "pump-report/.private/historical-baseline-20261027-results.json",
+    "source_file_sha256": "3795ccc7a66f678ed775a4dae148e59d6b5e577d1a8491045872fbcd818b90cc",
+    "case_id": "AIN_AUTO_20261026_READY_STALE",
+    "input_from": "cases[].original.input; original.analysis (not recomputed baseline_analysis)",
+    "evidence_class": "OBSERVED",
+    "sample_has_zero_LIQ_zones": true
+  },
+  "sample_presence_scope": "Exactly one retained OBSERVED original; presence is not current freshness, universe coverage or all-history claim. Input equals cases[].input; use original.analysis, not recomputed baseline_analysis.",
+  "allowlist": [
+    {
+      "path": "input.instrument.identity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "532cd628546eb198a8b428b41c4f2c0d16a6e8e048474c5570ad5b31d6ab2c78",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "independent registry -> input.instrument -> analysis.instrument copy",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "analysis.instrument.identity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "532cd628546eb198a8b428b41c4f2c0d16a6e8e048474c5570ad5b31d6ab2c78",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "independent registry -> input.instrument -> analysis.instrument copy",
+      "source_object": "original.analysis",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.price.evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "763494d05a8a2a1ce923246f6f6bee364305d9eb7d790c01f440c928b20ab9de",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT_OR_PROFILE_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": "fact.evidence_ref existing loop"
+    },
+    {
+      "path": "input.facts.price.identity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "532cd628546eb198a8b428b41c4f2c0d16a6e8e048474c5570ad5b31d6ab2c78",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.ticker_24h.evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "763494d05a8a2a1ce923246f6f6bee364305d9eb7d790c01f440c928b20ab9de",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT_OR_PROFILE_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": "fact.evidence_ref existing loop"
+    },
+    {
+      "path": "input.facts.ticker_24h.identity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "532cd628546eb198a8b428b41c4f2c0d16a6e8e048474c5570ad5b31d6ab2c78",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.candles.evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "643b452aff05849c42d27865bbca640b918d9e145ef5dd28f111189556c8ace3",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT_OR_PROFILE_PROOF",
+      "producer": "sources/bingx.mjs parseCandles113-114/144-145",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": "fact.evidence_ref existing loop"
+    },
+    {
+      "path": "input.facts.candles.identity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "532cd628546eb198a8b428b41c4f2c0d16a6e8e048474c5570ad5b31d6ab2c78",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/bingx.mjs parseCandles113-114/144-145",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.orderbook.evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "11f434272e5b3ec3898a2540f4991e929ebd466bd041f39345cecbe91203b902",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT_OR_PROFILE_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": "fact.evidence_ref existing loop"
+    },
+    {
+      "path": "input.facts.orderbook.identity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "532cd628546eb198a8b428b41c4f2c0d16a6e8e048474c5570ad5b31d6ab2c78",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.growth_24h.evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "c6bf91dbb34e2ecb82ab8aa26444f985243db1a965ef79b7997366d7ca47d5ae",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT_OR_PROFILE_PROOF",
+      "producer": "sources/day-growth.mjs24-25/77-83",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": "fact.evidence_ref existing loop"
+    },
+    {
+      "path": "input.facts.growth_24h.identity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "532cd628546eb198a8b428b41c4f2c0d16a6e8e048474c5570ad5b31d6ab2c78",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/day-growth.mjs24-25/77-83",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.trades.evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "238a549026cebcefa91e3b1ddb20d66943066680d7d0d9397d8f8ba38980fe21",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT_OR_PROFILE_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": "fact.evidence_ref existing loop"
+    },
+    {
+      "path": "input.facts.trades.identity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "532cd628546eb198a8b428b41c4f2c0d16a6e8e048474c5570ad5b31d6ab2c78",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.trades.unit_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "f353e42000b1ccdc3474bf0136660dec4631152212481569cddc65225beb20e4",
+      "reference_kind": "SUPPLIED_SOURCE_UNIT_OR_CONSUMER_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.open_interest.evidence_ref",
+      "present_nonempty": false,
+      "value_sha256": null,
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT_OR_PROFILE_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": "fact.evidence_ref existing loop"
+    },
+    {
+      "path": "input.facts.open_interest.identity_evidence_ref",
+      "present_nonempty": false,
+      "value_sha256": null,
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.open_interest.unit_evidence_ref",
+      "present_nonempty": false,
+      "value_sha256": null,
+      "reference_kind": "SUPPLIED_SOURCE_UNIT_OR_CONSUMER_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.funding.evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "505850124c6ab5f5b41cbf53f01aba6f5edd4bd51978e30228996ca42764e6d3",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT_OR_PROFILE_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": "fact.evidence_ref existing loop"
+    },
+    {
+      "path": "input.facts.funding.identity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "532cd628546eb198a8b428b41c4f2c0d16a6e8e048474c5570ad5b31d6ab2c78",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.funding.unit_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "f23f022a1cfa400d4990456c8d8eefe47742c0c7804d1ed4cfee9e6c06159ab2",
+      "reference_kind": "SUPPLIED_SOURCE_UNIT_OR_CONSUMER_PROOF",
+      "producer": "sources/index.mjs fact/getOptional",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.candles.coverage.time_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "e03019dff20d4e8bc0d3895fdabf0713f8a9c5ba2783287cab3214c71f4867ce",
+      "reference_kind": "SUPPLIED_SOURCE_CLOCK_PROOF",
+      "producer": "sources/bingx.mjs parseCandles113-114/144-145",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.growth_24h.coverage.time_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "e03019dff20d4e8bc0d3895fdabf0713f8a9c5ba2783287cab3214c71f4867ce",
+      "reference_kind": "SUPPLIED_SOURCE_CLOCK_PROOF",
+      "producer": "sources/day-growth.mjs24-25/77-83",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.candles.coverage.owner_decision_ref",
+      "present_nonempty": true,
+      "value_sha256": "1bc9f3a755a0e3798647d2b9a6d1d6df29520c54a9c1333131809892ca3d461c",
+      "reference_kind": "SUPPLIED_OWNER_SEMANTICS_PROOF",
+      "producer": "sources/bingx.mjs parseCandles113-114/144-145",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.growth_24h.coverage.owner_decision_ref",
+      "present_nonempty": true,
+      "value_sha256": "1bc9f3a755a0e3798647d2b9a6d1d6df29520c54a9c1333131809892ca3d461c",
+      "reference_kind": "SUPPLIED_OWNER_SEMANTICS_PROOF",
+      "producer": "sources/day-growth.mjs24-25/77-83",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.growth_24h.derived_from.time_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "e03019dff20d4e8bc0d3895fdabf0713f8a9c5ba2783287cab3214c71f4867ce",
+      "reference_kind": "SUPPLIED_SOURCE_CLOCK_PROOF",
+      "producer": "sources/day-growth.mjs24-25/77-83",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.orderbook.coverage.quantity_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "b7ccac4b53cc00afe6fe36d0fbfbebe54c572f07be94040e1aef75de28e82b77",
+      "reference_kind": "SUPPLIED_SOURCE_UNIT_OR_CONSUMER_PROOF",
+      "producer": "sources/bingx.mjs parseOrderbook176-177",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.trades.coverage.response_bound_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "af6213947fae98ddc84a6e04cf06dd78304a1fe9efeca0bc073c4f6963c97ec8",
+      "reference_kind": "SUPPLIED_RESPONSE_BOUND_PROOF",
+      "producer": "sources/recent-trades.mjs84-95",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.trades.coverage.id_mapping_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "1479f9e8b13a5e41e9485fdfb4c46c3255a866f3f2515e740eb74abaca93c490",
+      "reference_kind": "SUPPLIED_NATIVE_ID_MAPPING_PROOF",
+      "producer": "sources/recent-trades.mjs84-95",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.trades.coverage.unit_and_maker_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "f353e42000b1ccdc3474bf0136660dec4631152212481569cddc65225beb20e4",
+      "reference_kind": "SUPPLIED_SOURCE_UNIT_OR_CONSUMER_PROOF",
+      "producer": "sources/recent-trades.mjs84-95",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.funding.coverage.evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "9c85812e3b0543910bdcac7a86ae4236c795628bca434947f8803a52396cbc7f",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT_OR_PROFILE_PROOF",
+      "producer": "sources/funding-qualification.mjs48-53 -> bingx.mjs parseFunding208-211",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.funding.coverage.unit_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "f23f022a1cfa400d4990456c8d8eefe47742c0c7804d1ed4cfee9e6c06159ab2",
+      "reference_kind": "SUPPLIED_SOURCE_UNIT_OR_CONSUMER_PROOF",
+      "producer": "sources/funding-qualification.mjs48-53 -> bingx.mjs parseFunding208-211",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.funding.coverage.native_to_unified_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "7e3d53732ad29df2162889bc2dfce335b5b8beb95317dd94a26dfd8785e009de",
+      "reference_kind": "SUPPLIED_SOURCE_UNIT_OR_CONSUMER_PROOF",
+      "producer": "sources/funding-qualification.mjs48-53 -> bingx.mjs parseFunding208-211",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.funding.coverage.clock_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "7e3d53732ad29df2162889bc2dfce335b5b8beb95317dd94a26dfd8785e009de",
+      "reference_kind": "SUPPLIED_SOURCE_CLOCK_PROOF",
+      "producer": "sources/funding-qualification.mjs48-53 -> bingx.mjs parseFunding208-211",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.funding.coverage.period_evidence_ref",
+      "present_nonempty": true,
+      "value_sha256": "7e3d53732ad29df2162889bc2dfce335b5b8beb95317dd94a26dfd8785e009de",
+      "reference_kind": "SUPPLIED_FUNDING_PERIOD_PROOF",
+      "producer": "sources/funding-qualification.mjs48-53 -> bingx.mjs parseFunding208-211",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.candles.value[].time_evidence_ref",
+      "present_nonempty": true,
+      "elements_with_ref": 125,
+      "unique_ref_sha256": [
+        "e03019dff20d4e8bc0d3895fdabf0713f8a9c5ba2783287cab3214c71f4867ce"
+      ],
+      "reference_kind": "SUPPLIED_SOURCE_CLOCK_PROOF",
+      "producer": "sources/bingx.mjs parseCandles113-114/144-145",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    },
+    {
+      "path": "input.facts.candles.value[].volume_evidence_ref",
+      "present_nonempty": true,
+      "elements_with_ref": 125,
+      "unique_ref_sha256": [
+        "1bc9f3a755a0e3798647d2b9a6d1d6df29520c54a9c1333131809892ca3d461c"
+      ],
+      "reference_kind": "SUPPLIED_SOURCE_UNIT_OR_CONSUMER_PROOF",
+      "producer": "sources/bingx.mjs parseCandles113-114/144-145",
+      "source_object": "original.input",
+      "extract_only_if_nonempty_string": true,
+      "registry_fallback": false,
+      "current_projection_already_covers": false
+    }
+  ],
+  "LIQ_conditional_allowlist": [
+    {
+      "path": "input.liquidations.zones[].evidence_ref",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "input.liquidations.zones[].identity_evidence_ref",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "input.liquidations.zones[].model_evidence_ref",
+      "reference_kind": "SUPPLIED_MODEL_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "input.liquidations.zones[].price_mapping_evidence_ref",
+      "reference_kind": "SUPPLIED_PRICE_MAPPING_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "input.liquidations.zones[].price_comparability.evidence_ref",
+      "reference_kind": "SUPPLIED_PRICE_MAPPING_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "input.liquidations.zones[].relative_scale.evidence_ref",
+      "reference_kind": "SUPPLIED_RELATIVE_SCALE_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_up[].evidence_ref",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_up[].identity_evidence_ref",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_up[].model_evidence_ref",
+      "reference_kind": "SUPPLIED_MODEL_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_up[].price_mapping_evidence_ref",
+      "reference_kind": "SUPPLIED_PRICE_MAPPING_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_up[].price_comparability.evidence_ref",
+      "reference_kind": "SUPPLIED_PRICE_MAPPING_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_up[].relative_scale.evidence_ref",
+      "reference_kind": "SUPPLIED_RELATIVE_SCALE_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_down[].evidence_ref",
+      "reference_kind": "SUPPLIED_SOURCE_RECEIPT",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_down[].identity_evidence_ref",
+      "reference_kind": "SUPPLIED_IDENTITY_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_down[].model_evidence_ref",
+      "reference_kind": "SUPPLIED_MODEL_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_down[].price_mapping_evidence_ref",
+      "reference_kind": "SUPPLIED_PRICE_MAPPING_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_down[].price_comparability.evidence_ref",
+      "reference_kind": "SUPPLIED_PRICE_MAPPING_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    },
+    {
+      "path": "analysis.liquidations.zones_down[].relative_scale.evidence_ref",
+      "reference_kind": "SUPPLIED_RELATIVE_SCALE_PROOF",
+      "producer": "sources/liquidations.mjs56-66; hyperliquid-observed-positions.mjs103-107; orderly-observed-positions.mjs119",
+      "sample_presence": "ABSENT_NO_LIQ_ZONES",
+      "existing_optional_output_only": true,
+      "never_synthesize_missing_field": true
+    }
+  ],
+  "negative_presence_checks": [
+    {
+      "path": "input.facts.price.unit_evidence_ref",
+      "present_nonempty": false,
+      "value_sha256": null,
+      "meaning": "No such top-level field emitted by current producer; do not backfill from qualification."
+    },
+    {
+      "path": "input.facts.ticker_24h.unit_evidence_ref",
+      "present_nonempty": false,
+      "value_sha256": null,
+      "meaning": "No such top-level field emitted by current producer; do not backfill from qualification."
+    },
+    {
+      "path": "input.facts.candles.unit_evidence_ref",
+      "present_nonempty": false,
+      "value_sha256": null,
+      "meaning": "No such top-level field emitted by current producer; do not backfill from qualification."
+    },
+    {
+      "path": "input.facts.orderbook.unit_evidence_ref",
+      "present_nonempty": false,
+      "value_sha256": null,
+      "meaning": "No such top-level field emitted by current producer; do not backfill from qualification."
+    },
+    {
+      "path": "input.facts.growth_24h.unit_evidence_ref",
+      "present_nonempty": false,
+      "value_sha256": null,
+      "meaning": "No such top-level field emitted by current producer; do not backfill from qualification."
+    }
+  ],
+  "registry_or_qualification_only": [
+    {
+      "path": "entry.qualifications.candles.owner_decision_git_blob / time.pinned_commit",
+      "why": "Registry/code revision context, not supplied saved input fields. Only preserve separately supplied historical implementation/proof context."
+    },
+    {
+      "path": "entry.qualifications.orderbook.primary_source_review_sha256 / native_base_unit / qualification_scope",
+      "why": "Registry-only. If coverage.quantity_evidence_ref exists, use that actual saved ref; do not add missing orderbook.unit_evidence_ref."
+    },
+    {
+      "path": "entry.qualifications.funding.unit_proof_parts.*.evidence_ref / clock_proof.evidence_ref / period_proof.evidence_ref",
+      "why": "Do not traverse current registry. Use only the forwarded saved funding.coverage/top unit refs if actually present."
+    },
+    {
+      "path": "route.identity_binding.bingx_identity_evidence_ref / route.price_quote_evidence_ref",
+      "why": "Route qualification context; not every nested proof is forwarded into a saved zone."
+    },
+    {
+      "path": "route.price_mapping.quote_conversion_evidence_ref / price_basis_evidence_ref",
+      "why": "Qualification-only subproofs unless explicitly supplied in the saved record. Outer saved price_mapping_evidence_ref is not permission to reconstruct subproofs."
+    }
+  ],
+  "contract_rules": [
+    "Traverse only listed paths and eight known fact kinds price/ticker_24h/candles/orderbook/growth_24h/trades/open_interest/funding; no generic recursive scan.",
+    "Read existing primitive nonempty string refs only; missing/null remains absent, no empty edge and no lookup of current registry/route for backfill.",
+    "Existing source/parser and capsule bounds apply; candle proof arrays max1440, observed sample125. Analysis up/down zones max3 each. Overflow must fail or mark incomplete; never silently truncate and claim closure.",
+    "Deduplicate using existing from/to/kind rules before global CAPSULE_BOUNDS.refs limit; repeated candle proof strings do not imply many independent sources.",
+    "Classify pump: targets as existing state/receipt refs and all other proof tokens as unresolved external originals unless separately explicitly resolved; hash/path syntax is not external authentication.",
+    "No original analysis/input mutation, timestamp changes, qualification upgrade, new producer call or API lookup.",
+    "event_ts/received_ts/expires_ts/period_ms/native timestamps and comparison_key are not proof-reference locators; retain them inside protected original, do not manufacture edges from numbers.",
+    "original.implementation_sha256 belongs to saved wrapper; do not invent it inside input/analysis or replace it with current live pin. A separate caller-supplied historical implementation context may be retained as an explicit external/owner ref.",
+    "Originals remain protected; automatic_delete=false, global_reference_closure=false, approved_delete_ttl_ms=null."
+  ],
+  "provenance_scope_copy_error_supplement": {
+    "original_F643_path": "pump-report/handoffs/sources/F643_PACKAGE_POSTINSTALL14_FINAL_V1.json",
+    "original_F643_SHA256": "a26c0ff3908aff55aaa0f458cf95b45c3121e1a296ab346bbe2b03068c3bffeb",
+    "error_field": "own_lease.lease.scope",
+    "error": "Copied recovery13 scope mentions1deb/73/no14/1441 instead of actual directly authorized saved installation14/75/2988/1446 review.",
+    "old_scope_sha256": "aeba4b83d5fa27c1e49724a631b0aadee3d57999bca0b9dfc7bcf4c4b2e3390f",
+    "correct_actual_authority": "ROOT F643 direct task: saved14receipts/pointers/cost/sourceboundary only, fresh own<=6min/FULL, no tests/build/provider/native/newsearch/server readback.",
+    "actual_SOURCE_IO": {
+      "Node_import_tests_build": 0,
+      "provider_HTTP": 0,
+      "native_SQL": 0,
+      "Cloudflare_server_readback": 0,
+      "Telegram": 0,
+      "newsource_search_connections": 0,
+      "runtime_source_test_edits": 0,
+      "administrative_GitHub_guards_own_CAS_ONLY": true
+    },
+    "old_released_lease_and_manifest_bytes_unchanged": true,
+    "old_release": "198dfd594f23932b675d6a5e5bc1c9f36b14aba8",
+    "not_a_repeat_review_or_retroactive_lease_repair": true,
+    "current_F644_active_scope_corrected": {
+      "old_head": "568c82369f2079dda27e6e1360be442e6322d449",
+      "old_scope_sha256": "b01870c750dcdb2b36c25fa92db7ab8da7e9c68290d4e411146ffb1157cb73d1",
+      "only_scope_changed": true,
+      "expiry_unchanged": true
+    },
+    "current_F644_scope_is_exact_contract": true
+  },
+  "analytics_shared_runtime_source_edits": false,
+  "SOURCE_execution": {
+    "Node_import_tests": 0,
+    "provider_HTTP": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "Telegram": 0,
+    "generic_private_scan": 0,
+    "public_search_connections": 0
+  },
+  "two_OWNERdeferrals_preserved": true
+}

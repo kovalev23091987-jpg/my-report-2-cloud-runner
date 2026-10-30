@@ -1,0 +1,148 @@
+// BL REV2 corrected-once: authorized only after preserved oracle failure25266c50. No native IO/old suites.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
+const root=fileURLToPath(new URL('../../../',import.meta.url)),dir=path.join(root,'pump-report/handoffs/analytics/package-bl/corrected-once');
+const read=p=>fs.readFileSync(path.join(root,p)),json=p=>JSON.parse(read(p).toString('utf8'));
+const sha=b=>createHash('sha256').update(b).digest('hex'),clone=structuredClone;
+const save=(n,v)=>fs.writeFileSync(path.join(dir,n),JSON.stringify(v,null,2)+'\n');
+const report={schema:'BL_REV2_CORRECTED_ONE_CONNECTED_CASE_ACTUAL_V1',status:'STARTED',evidence_class:'ARTIFICIAL_ONLY',
+  Node:1,new_cases:1,phases:[],real_HTTP:0,MCP:0,native_SQL:0,TG:0,deploy:0,engine:0,old_tests:0,REV1_executed:false};
+let locked=false,lastBackend=null,currentStep='preimport';
+const mark=(name,data)=>{currentStep=name;report.phases.push({name,...data});save('case-progress.json',report);};
+try{
+  const admission=json('pump-report/handoffs/analytics/package-bl/corrected-once/EXECUTION_ADMISSION.json');
+  assert.equal(admission.status,'ROOT_FROZEN_REV2_ONE_CASE_AUTHORIZED');assert.ok(Date.now()<admission.own_expires_ts);
+  assert.ok(Date.now()<admission.root_expires_ts);assert.equal(admission.all4_equal,true);
+  assert.equal(admission.own_actual_ref_match,true);assert.equal(admission.own_exact_bytes_match,true);
+  assert.equal(sha(fs.readFileSync(fileURLToPath(import.meta.url))),admission.test_sha256);
+  const frozen=json('pump-report/handoffs/analytics/package-bl/corrected-once/REV2-frozen-inputs.json');
+  assert.equal(sha(read('pump-report/handoffs/analytics/package-bl/corrected-once/REV2-frozen-inputs.json')),admission.frozen_inputs_sha256);
+  for(const f of frozen.files){assert.equal(sha(read(f.path)),f.sha256,'FROZEN_INPUT_CHANGED:'+f.path);assert.equal(read(f.path).length,f.bytes);}
+  const lock=fs.openSync(path.join(dir,'EXECUTION_ONCE.lock'),'wx');locked=true;fs.writeFileSync(lock,'BL REV2 one invocation entered; no blind rerun\n');fs.closeSync(lock);
+  const load=p=>import(pathToFileURL(path.join(root,p)).href);
+  const [{createUnifiedBudget,RESOURCE_LIMITS},{PRODUCTION_PLAN,productionAdmission,productionPolicies},
+    {PROVIDER_POLICIES,PROVIDER_POLICY_VERSION,PROTECTED_HTTP},{surplusHeld,surplusBaseExtra},
+    {createPumpRunner},{START_PROFILE}]=await Promise.all([
+      load('pump-report/runtime/budget.mjs'),load('pump-report/runtime/production-policy.mjs'),
+      load('pump-report/runtime/provider-policy.mjs'),load('pump-report/runtime/candidate-surplus.mjs'),
+      load('pump-report/runtime/runner.mjs'),load('pump-report/profile/start-v1.mjs')]);
+  const F=json('pump-report/tests/analytics/bl-conditional-surplus-corrected-fixture.json'),T=F.clock,D=F.day,M=F.month;
+  const productionBefore=JSON.stringify(PRODUCTION_PLAN),policies=productionPolicies(PROVIDER_POLICIES);
+  assert.equal(PRODUCTION_PLAN.candidate_surplus.enabled,false);assert.equal(PRODUCTION_PLAN.candidate_surplus.activation_decision_ref,null);
+  assert.equal(RESOURCE_LIMITS.project_http_day,900);assert.equal(RESOURCE_LIMITS.http_per_run,164);
+  assert.equal(policies.BINGX.project_monthly_cap,27900);assert.equal(policies.BINGX.per_minute_cap,10);assert.equal(policies.BINGX.per_second_cap,1);
+  assert.deepEqual(PROTECTED_HTTP,F.expected_protection.http_by_provider?{
+    http_by_provider:F.expected_protection.http_by_provider,delivery_http:24,outcomes_http:24}:null);
+  class FakeCAS {
+    constructor(state){this.state=clone(state);this.revision=0;this.conflicts=0;this.rows=new Map();}
+    async get(k){return clone(k==='pump:resources'?this.state:this.rows.get(k)??null);}
+    async set(k,v){if(k==='pump:resources'){this.state=clone(v);this.revision++;}else this.rows.set(k,clone(v));return v;}
+    async atomic(k,change){
+      if(k!=='pump:resources'){const x=change(await this.get(k));await this.set(k,x.state);return x.result;}
+      for(let n=0;n<5;n++){const rev=this.revision,s=clone(this.state),x=change(s);await Promise.resolve();
+        if(rev!==this.revision){this.conflicts++;continue;}this.state=clone(x.state);this.revision++;return x.result;}
+      throw Object.assign(Error('STATE_CAS_CONTENTION'),{code:'STATE_CAS_CONTENTION'});
+    }
+  }
+  let serial=0;
+  function context({state=F.resource_state,backend=null,run=null,enabled=true,nativeChange=()=>{}}={}){
+    const b=backend??new FakeCAS(state),run_id=run??'BL_ARTIFICIAL_'+(++serial),clock={now:T};
+    const view=clone(F.native_view);view.evidence_ref=view.evidence_ref_template.replace('{run_id}',run_id);delete view.evidence_ref_template;
+    nativeChange(view);
+    const store={ARTIFICIAL_ONLY:true,admission:{evidence_ref:view.evidence_ref,expires_ts:view.expires_ts,max_requests:view.max_requests,max_rows_read:view.max_rows_read,max_rows_written:view.max_rows_written},
+      finalization_reserve:clone(view.finalization_reserve),usage:()=>clone(view.usage),
+      get:b.get.bind(b),set:b.set.bind(b),atomic:b.atomic.bind(b)};
+    const a=productionAdmission(store.admission,PROVIDER_POLICY_VERSION,{mode:'AUTO'});
+    a.candidate_surplus=enabled?clone(F.feature_fixture_only):PRODUCTION_PLAN.candidate_surplus;
+    const budget=createUnifiedBudget({store,run_id,mode:'AUTO',clock:()=>clock.now,policies,protected_reserves:PROTECTED_HTTP,admission:a});
+    lastBackend=b;return {b,run_id,store,budget,clock,view,admission:a};
+  }
+  const idA=F.candidate_ids[0],idB=F.candidate_ids[1],request=(c,id=idA)=>c.budget.admitCandidate({candidate_id:id,...F.operation});
+  const baseSnapshot=s=>JSON.stringify({allocation:s.automatic_candidate_allocations,pacing:s.automatic_deep_pacing});
+  const grants=s=>Object.values(s.automatic_surplus_grants??{});
+  const countRecords=s=>grants(s).length;
+  let c=context({enabled:false}),before=clone(c.b.state),answer=await request(c);
+  mark('OFF_original_deny',{answer});assert.equal(answer.allowed,false);assert.equal(answer.detail,'EVEN_DAY_CANDIDATE_ALLOCATION');assert.deepEqual(c.b.state,before);
+  const blocked=[
+    ['manual_global',s=>{s.days[D]=669;},null,'WHOLE_CANDIDATE_DAY_CAPACITY'],
+    ['future_plan',s=>{s.automatic_plans[D].charged=505;},null,'WHOLE_CANDIDATE_PLANNED_ALLOCATION'],
+    ['provider_day',s=>{s.providers.TELEGRAM.days[D]=22;s.providers.TELEGRAM.months[M]=30;},null,'WHOLE_CANDIDATE_PROVIDER_DAY'],
+    ['provider_month',s=>{s.providers.TELEGRAM.months[M]=831;},null,'WHOLE_CANDIDATE_PROVIDER_MONTH'],
+    ['backoff',s=>{s.providers.BINGX.backoff_until=T+60000;},null,'SURPLUS_PROVIDER_BACKOFF'],
+    ['native_unknown',()=>{},v=>{v.usage.unknown_ops=1;},'SURPLUS_NATIVE_ADMISSION_REQUIRED'],
+    ['native_expiry',()=>{},v=>{v.expires_ts=T+119999;},'SURPLUS_NATIVE_ADMISSION_REQUIRED'],
+    ['native_requests',()=>{},v=>{v.usage.requests=199;},'SURPLUS_NATIVE_CAPACITY_REQUIRED'],
+    ['native_rows_read',()=>{},v=>{v.usage.rows_read=4400;},'SURPLUS_NATIVE_CAPACITY_REQUIRED'],
+    ['native_rows_written',()=>{},v=>{v.usage.rows_written=160;},'SURPLUS_NATIVE_CAPACITY_REQUIRED']
+  ];
+  for(const [name,mut,native,detail]of blocked){const s=clone(F.resource_state);mut(s);c=context({state:s,nativeChange:native??(()=>{})});before=clone(s);answer=await request(c);
+    mark('blocked_'+name,{answer});assert.equal(answer.allowed,false,name);assert.equal(answer.detail,detail,name);assert.deepEqual(c.b.state,before,name);}
+  function base3(){
+    const s=clone(F.resource_state);s.automatic_candidate_allocations[D].candidates_per_period=3;
+    for(const [k,v]of Object.entries(s.automatic_deep_pacing[D])){const i=(Number(k)-Number(s.automatic_candidate_allocations[D].first_period))/3600000;v.candidate_count=3;v.maximum=3;v.limit=36;v.issued_before=3*i;}
+    return s;
+  }
+  let s3=base3();c=context({state:s3,enabled:false});before=clone(s3);answer=await request(c);
+  mark('REV2_OFF_base3_no_grants',{answer,extra:surplusBaseExtra(c.b.state,T,c.admission)});
+  assert.equal(answer.detail,'EVEN_DAY_CANDIDATE_ALLOCATION');assert.deepEqual(c.b.state,before);assert.equal(surplusBaseExtra(c.b.state,T,c.admission).http,0);
+  c=context({state:s3});answer=await request(c);mark('REV2_ON_base3_protected',{answer});
+  assert.equal(answer.allowed,false);assert.equal(answer.detail,'WHOLE_CANDIDATE_DAY_CAPACITY');assert.equal(countRecords(c.b.state),0);
+  s3=base3();s3.days[D]=596;s3.automatic_plans[D].charged=432;
+  c=context({state:s3});const base3Before=baseSnapshot(s3),extra=surplusBaseExtra(c.b.state,T,c.admission);answer=await request(c);
+  mark('REV2_base3_safe_headroom',{answer,extra});assert.equal(answer.allowed,true);assert.deepEqual(extra,{http:72,http_by_provider:{BINGX:60,TELEGRAM:6}});
+  assert.equal(baseSnapshot(c.b.state),base3Before);
+  for(const [label,mut,expected]of [
+    ['provider_day',s=>{s.providers.TELEGRAM.days[D]=15;s.providers.TELEGRAM.months[M]=100;},'WHOLE_CANDIDATE_PROVIDER_DAY'],
+    ['provider_month_today_extra',s=>{s.providers.TELEGRAM.months[M]=825;},'WHOLE_CANDIDATE_PROVIDER_MONTH']
+  ]){const s=clone(s3);mut(s);c=context({state:s});answer=await request(c);mark('REV2_base3_'+label,{answer});assert.equal(answer.allowed,false);assert.equal(answer.detail,expected);assert.equal(countRecords(c.b.state),0);}
+  const shared=new FakeCAS(F.resource_state),A=context({backend:shared,run:'BL_ARTIFICIAL_RACE_A'}),B=context({backend:shared,run:'BL_ARTIFICIAL_RACE_B'});
+  const baseBefore=baseSnapshot(shared.state),race=await Promise.all([request(A,idA),request(B,idB)]);
+  mark('competing_CAS',{race,conflicts:shared.conflicts});
+  assert.equal(race.filter(x=>x.allowed).length,1);assert.ok(shared.conflicts>=1);assert.equal(countRecords(shared.state),1);
+  const winner=race[0].allowed?A:B,loser=race[0].allowed?B:A,winnerId=race[0].allowed?idA:idB,grantId=race.find(x=>x.allowed).surplus_grant_id;
+  const issued=clone(shared.state.automatic_surplus_grants[grantId]);assert.equal(issued.remaining_http,12);assert.equal(issued.logical_spent,true);
+  const idem=await request(winner,winnerId);mark('idempotent_grant',{idem});assert.equal(idem.surplus_grant_id,grantId);assert.equal(idem.candidate_quota.idempotent,true);assert.equal(countRecords(shared.state),1);
+  await assert.rejects(loser.budget.reserve({provider:'BINGX',family:'USDT_M',purpose:'CORE',candidate_id:'ARTIFICIAL_OTHER',request_id:'BL_OTHER_HELD',cost:1}),{code:'PROTECTED_DAY_RESERVE'});
+  const globalBefore=shared.state.days[D],planBefore=shared.state.automatic_plans[D].charged;
+  const ownCore=await winner.budget.reserve({provider:'BINGX',family:'USDT_M',purpose:'CORE',candidate_id:winnerId,request_id:'BL_OWN_CORE',cost:1});
+  await winner.budget.finalize(ownCore,{state:'CONFIRMED',http_status:200,successful_response:true,network_attempted:false});
+  const ownDelivery=await winner.budget.reserve({provider:'TELEGRAM',family:'DELIVERY',purpose:'DELIVERY',candidate_id:winnerId,request_id:'BL_OWN_DELIVERY',cost:1});
+  await winner.budget.finalize(ownDelivery,{state:'CONFIRMED',http_status:200,successful_response:true,network_attempted:false});
+  const consumed=clone(shared.state.automatic_surplus_grants[grantId]);
+  mark('own_CORE_DELIVERY_conversion',{consumed});
+  assert.equal(consumed.remaining_http,10);assert.equal(consumed.consumed_http,2);assert.deepEqual(consumed.remaining_by_provider,{BINGX:9,TELEGRAM:0});
+  assert.deepEqual(consumed.consumed_by_provider,{BINGX:1,TELEGRAM:1});assert.equal(shared.state.days[D],globalBefore+2);assert.equal(shared.state.automatic_plans[D].charged,planBefore+2);
+  assert.equal(shared.state.days[D]+consumed.remaining_http,globalBefore+12);assert.equal(baseSnapshot(shared.state),baseBefore);
+  const closed=await winner.budget.closeCandidate({candidate_id:winnerId,surplus_grant_id:grantId});mark('known_close',{closed});
+  assert.equal(closed.state,'CLOSED');assert.equal(closed.hold_retained,true);assert.equal(surplusHeld(shared.state,T).http,10);
+  const afterEnd=Date.parse(D+'T00:00:00Z')+86400000;
+  assert.equal(surplusHeld(shared.state,afterEnd).http,0);assert.equal(countRecords(shared.state),1);assert.equal(shared.state.automatic_surplus_grants[grantId].logical_spent,true);
+  for(const [provider,purpose]of [['BINGX','CORE'],['TELEGRAM','DELIVERY']])await assert.rejects(winner.budget.reserve({provider,purpose,family:purpose==='CORE'?'USDT_M':'DELIVERY',candidate_id:winnerId,request_id:'BL_LATE_'+provider,cost:1}),{code:'SURPLUS_CANDIDATE_ALREADY_CLOSED'});
+  const reissue=await request(winner,winnerId);assert.equal(reissue.allowed,false);assert.equal(reissue.detail,'SURPLUS_LOGICAL_GRANT_ALREADY_SPENT');
+  for(const kind of ['outstanding','unknown_receipt','native_unknown']){
+    c=context();const a=await request(c),g=a.surplus_grant_id;
+    if(kind!=='native_unknown'){const rec=await c.budget.reserve({provider:'BINGX',family:'USDT_M',purpose:'CORE',candidate_id:idA,request_id:'BL_'+kind,cost:1});if(kind==='unknown_receipt')await c.budget.finalize(rec,{state:'UNKNOWN',network_attempted:false});}
+    else c.view.usage.unknown_ops=1;
+    const x=await c.budget.closeCandidate({candidate_id:idA,surplus_grant_id:g});mark('retained_'+kind,{closure:x,stored:clone(c.b.state.automatic_surplus_grants[g])});
+    assert.equal(x.state,'UNKNOWN');assert.ok(['UNKNOWN','OPEN'].includes(c.b.state.automatic_surplus_grants[g].state));assert.ok(surplusHeld(c.b.state,afterEnd).http>0);assert.equal(c.b.state.automatic_surplus_grants[g].logical_spent,true);
+  }
+  c=context({run:'BL_ARTIFICIAL_RUNNER'});let fakeOverview=0,engineCalls=0;
+  const runner=createPumpRunner({store:c.store,budget:c.budget,clock:()=>T,profile:START_PROFILE,
+    sources:{getCore:async()=>{throw Error('UNEXPECTED_CORE');},getOverview:async()=>{fakeOverview++;throw Object.assign(Error('ARTIFICIAL_STOP_AFTER_GRANT'),{code:'ARTIFICIAL_STOP_AFTER_GRANT'});}},
+    analyzePump:()=>{engineCalls++;throw Error('ENGINE_FORBIDDEN');},evaluateOutcome:()=>{throw Error('OUTCOME_FORBIDDEN');},delivery:{}});
+  await assert.rejects(runner.checkInstrument({instrument_id:idA,base:'ARTIFICIAL_BL_A',native_symbol:'ARTIFICIAL_BL_A-USDT'},{run_id:c.run_id,mode:'AUTO',publish:false}),{code:'ARTIFICIAL_STOP_AFTER_GRANT'});
+  mark('real_runner_finally',{fakeOverview,engineCalls,grants:clone(grants(c.b.state))});
+  assert.equal(fakeOverview,1);assert.equal(engineCalls,0);assert.equal(countRecords(c.b.state),1);assert.equal(grants(c.b.state)[0].state,'CLOSED');assert.equal(grants(c.b.state)[0].remaining_http,12);
+  assert.equal(JSON.stringify(PRODUCTION_PLAN),productionBefore);
+  report.status='PASS';report.native_admission_proved=false;report.budget_caps_or_live_activation_proved=false;
+  report.late_scope='Bound ended candidate_id checked; unscoped queue-drain is not misclassified as that ended operation';
+  save('affected-result.json',report);
+  process.stdout.write(JSON.stringify({status:'PASS',new_cases:1,Node:1,phases:report.phases.length,engine:0,native:0,real_runner_finally:true,REV2_base3:true})+'\n');
+}catch(error){
+  if(locked){save('affected-failure.json',{...report,status:'FAIL_NO_RERUN',currentStep,error:{name:error.name,message:error.message,stack:String(error.stack).split('\n').slice(0,12).join('\n')}});
+    if(lastBackend)save('failure-state.json',{evidence_class:'ARTIFICIAL',state:lastBackend.state});}
+  process.stderr.write(String(error.stack)+'\n');process.exitCode=1;
+}

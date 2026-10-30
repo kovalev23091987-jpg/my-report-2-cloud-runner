@@ -1,0 +1,38 @@
+--- a/pump-report/analytics/index.mjs
++++ b/pump-report/analytics/index.mjs
+@@ -7,7 +7,7 @@
+ import {explainOptionalFacts, explainMapPlan} from './context.mjs';
+ import {consumeObservedDayGrowth} from './day-growth.mjs';
+ import {explainManualAnalysis} from './manual-text.mjs';
+-import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative} from './presentation.mjs';
++import {presentationModeLines,selectGrowthProof,growthProofLine,FUTURE_EVENT_TEXT,movementStateText,currentActivityFinding,movementDetailFindings,selectUserNarrative,planExitLines} from './presentation.mjs';
+ export {evaluateOutcome} from './outcome.mjs';
+ 
+ export const RULES_VERSION='pump-analytics-v4-first-qualification-20261025';
+@@ -57,7 +57,7 @@
+   function make(compact){
+   const mode=presentationModeLines(result),lines=[label(result.instrument.native_symbol)+' · '+mode[0],...mode.slice(1),growthProofLine(result.growth_proof,compact),FUTURE_EVENT_TEXT,...(selected.length?[selected.join(' ')]:[]),
+     'Покупка на откате: '+p.entry_zones.map(z=>px(z.lower)+'–'+px(z.upper)+' ('+(z.basis_level.kind==='HIGH'?'прежняя вершина':'прежний минимум')+' '+px(z.basis_level.price)+'; '+(z.confirmation_status==='CONFIRMED_RECLAIM'?'возврат подтверждён':'предварительная область')+')').join('; ')+'.',
+-    'Фиксация всей позиции: '+px(p.exit_zone.lower)+'–'+px(p.exit_zone.upper)+' — ближайшая подтверждённая вершина выше цены.'];
++    ...planExitLines(p,{compact})];
+   if(narrative.limitation)lines.push(narrative.limitation);
+   const map=result.liquidations;
+   if(map.map_mode==='WITHOUT_MAP')lines.push('Карта ликвидаций недоступна. Области входа и выхода определены по движению цены и объёму; текущая ликвидность проверена.');
+@@ -114,7 +114,7 @@
+   result.liquidity={...measureLiquidity(facts.orderbook.value,instrument,profile),fact_id:facts.orderbook.fact_id,source_ts:facts.orderbook.event_ts};
+   result.fact_ids.push(facts.orderbook.fact_id);
+   if(result.liquidity.status!=='USABLE')return {...result,status:result.liquidity.status==='INSUFFICIENT'?'REJECTED':'WAITING',reasons:unique([...result.reasons,result.liquidity.reason])};
+-  result.plan=constructPlan(movement,result.reference_price,result.liquidity,facts.candles.fact_id,instrument.price_tick,profile);
++  result.plan=constructPlan(movement,result.reference_price,result.liquidity,facts.candles.fact_id,instrument.price_tick,profile,at);
+   if(!result.plan)return {...result,status:'REJECTED',reasons:unique([...result.reasons,'INDEPENDENT_PULLBACK_PLAN_NOT_JUSTIFIED'])};
+   const potentialReason=ownerPublicationRefusal(result),minimum=result.plan.potential_pct?.minimum;
+   result.notification_eligibility={eligible:potentialReason===null,reason:potentialReason,required_potential_pct:OWNER_MIN_PLAN_POTENTIAL_PCT,minimum_potential_pct:finite(minimum)?minimum:null,
+@@ -128,7 +128,7 @@
+   const mapContext=explainMapPlan(result.plan,result.liquidations);
+   if(mapContext){result.plan_context={liquidation_confluence:mapContext.liquidation_confluence};result.findings.push(mapContext.finding);}
+   result.findings.push({code:'STRUCTURAL_PLAN',text:'Вход и выход обоснованы подтверждённой структурой цены; текущая двусторонняя ликвидность проверена.',fact_ids:[facts.candles.fact_id,facts.orderbook.fact_id]});
+-  result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids]);result.user_narrative=selectUserNarrative(result);result.card_text=render(result);
++  result.ready=true;result.status='READY';result.reasons=[];result.fact_ids=unique([...result.fact_ids,...result.plan.entry_zones.flatMap(z=>z.basis_fact_ids),...result.plan.exit_zone.basis_fact_ids,...(result.plan.exit_zone.intermediate_highs??[]).map(p=>p.fact_id)]);result.user_narrative=selectUserNarrative(result);result.card_text=render(result);
+   return result;
+ }
+ 

@@ -1,0 +1,76 @@
+--- index.before.mjs
++++ pump-report/analytics/index.mjs
+@@ -8,8 +8,10 @@
+ export {evaluateOutcome} from './outcome.mjs';
+ 
+ export const RULES_VERSION='pump-analytics-v1-tz2-20261025';
+-const label=value=>String(value??'').replace(/[\r\n\p{C}]/gu,' ').slice(0,128);
+-const shortLabel=(value,n=32)=>{const s=label(value);return s.length>n?s.slice(0,n-1)+'…':s;};
++const clip=(s,n)=>{let out='';for(const point of s){if(out.length+point.length>n)break;out+=point;}return out;};
++const wellFormed=s=>s.replace(/\p{Cs}/gu,'�');
++const label=value=>clip(String(value??'').replace(/[\r\n\p{C}]/gu,' '),128);
++const shortLabel=(value,n=32)=>{const s=label(value);return s.length>n?clip(s,n-1)+'…':s;};
+ const px=value=>Number(value.toPrecision(10)).toString();
+ const contextCodes=['TRADE_SAMPLE','OI_SNAPSHOT','FUNDING_SNAPSHOT','RELATIVE_RETURN','MAP_PLAN_CONTEXT'];
+ const descriptions={ACTIVE_WAVE:'Активная волна: рост сопровождается торговой активностью.',CALM_PULLBACK:'После активного роста идёт спокойный откат; торговая активность стала меньше.',
+@@ -28,36 +30,48 @@
+   }
+   return currentFact(f,at,p.freshness_ms[kind]);
+ }
+-function mapLine(z,at){
++function mapLine(z,at,compact=false){
+   let magnitude='величина не определена';
+   if(finite(z.magnitude_value)&&z.magnitude_unit){
+-    magnitude=px(z.magnitude_value)+' '+label(z.magnitude_unit);
+-    if(z.magnitude_unit==='RELATIVE_INTENSITY')magnitude+=' (относительная шкала '+shortLabel(z.relative_scale?.scale_id,24)+')';
+-    if(z.components.length>1)magnitude+='; максимум одной компоненты, не сумма';
++    magnitude=px(z.magnitude_value)+' '+(compact?shortLabel(z.magnitude_unit,24):label(z.magnitude_unit));
++    if(z.magnitude_unit==='RELATIVE_INTENSITY')magnitude+=(compact?' (шкала ':' (относительная шкала ')+shortLabel(z.relative_scale?.scale_id,compact?12:24)+')';
++    if(z.components.length>1)magnitude+=compact?'; максимум, не сумма':'; максимум одной компоненты, не сумма';
+   }
+   const version=z.model_version??z.relative_scale?.model_version;
+-  const model=z.basis_type==='EXTERNAL_MODEL'?', расчётная, модель '+shortLabel(z.model_id??'не указана',24)+(version?' / '+shortLabel(version,16):' (версия не указана)'):', наблюдаемые позиции';
++  const model=z.basis_type==='EXTERNAL_MODEL'?', расчётная, модель '+shortLabel(z.model_id??'не указана',compact?14:24)+(version?' / '+shortLabel(version,compact?10:16):' (версия не указана)'):', наблюдаемые позиции';
+   const time=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(z.event_ts);
+   const age=Math.floor((at-z.event_ts)/1000);
+   const knownLimits={PARTIAL_SOURCE_COVERAGE:'охват источника ограничен',OBSERVED_ACCOUNTS_ONLY:'только наблюдаемые аккаунты',RETURNED_BINS_ONLY:'только опубликованный диапазон',
+     OVERLAPPING_COVERAGE_NOT_SUMMED:'перекрывающееся покрытие не суммировалось',MERGED_MAGNITUDE_MAX_SINGLE_COMPONENT_NOT_SUMMED:'величина объединения не является суммой'};
+-  const limits=z.limitations?.length?'; ограничения источника: '+unique(z.limitations.map(k=>knownLimits[k]??'дополнительные ограничения источника')).slice(0,2).join(', '):'';
+-  return px(z.lower)+'–'+px(z.upper)+' — '+magnitude+', '+shortLabel(z.source)+(z.venue?' / '+shortLabel(z.venue,24):'')+model+'; данные '+time+' МСК ('+age+' с назад)'+limits;
++  const limits=z.limitations?.length?(compact?'; ограничения: ':'; ограничения источника: ')+unique(z.limitations.map(k=>knownLimits[k]??'дополнительные ограничения источника')).slice(0,2).map(t=>compact?shortLabel(t,26):t).join(', ')+(compact&&z.limitations.length>2?'; др.':''):'';
++  return px(z.lower)+'–'+px(z.upper)+' — '+magnitude+', '+shortLabel(z.source,compact?18:32)+(z.venue?' / '+shortLabel(z.venue,compact?14:24):'')+model+'; данные '+time+' МСК ('+age+' с назад)'+limits;
+ }
+ function render(result){
+-  const p=result.plan,lines=[label(result.instrument.native_symbol)+' · +10% за 4 часа: вероятность пока не оценена',result.findings.filter(f=>!contextCodes.includes(f.code)).slice(0,2).map(f=>f.text).join(' '),
++  const p=result.plan,context=result.findings.filter(f=>contextCodes.includes(f.code)).map(f=>wellFormed(f.text));
++  function make(compact,selected){
++  const lines=[label(result.instrument.native_symbol)+' · +10% за 4 часа: вероятность пока не оценена',result.findings.filter(f=>!contextCodes.includes(f.code)).slice(0,2).map(f=>f.text).join(' '),
+     'Покупка на откате: '+p.entry_zones.map(z=>px(z.lower)+'–'+px(z.upper)+' ('+(z.basis_level.kind==='HIGH'?'прежняя вершина':'прежний минимум')+' '+px(z.basis_level.price)+'; '+(z.confirmation_status==='CONFIRMED_RECLAIM'?'возврат подтверждён':'предварительная область')+')').join('; ')+'.',
+     'Фиксация всей позиции: '+px(p.exit_zone.lower)+'–'+px(p.exit_zone.upper)+' — ближайшая подтверждённая вершина выше цены.'];
+-  const context=result.findings.filter(f=>contextCodes.includes(f.code));
+-  if(context.length)lines.push(context.map(f=>f.text).join(' '));
++  if(selected.length)lines.push(selected.join(' '));
+   const map=result.liquidations;
+   if(map.map_mode==='WITHOUT_MAP')lines.push('Карта ликвидаций недоступна. Области входа и выхода определены по движению цены и объёму; текущая ликвидность проверена.');
+-  else{lines.push('Ликвидации сверху: '+(map.zones_up.map(z=>mapLine(z,result.analysis_ts)).join('; ')||'пригодных зон нет')+'.');lines.push('Ликвидации снизу: '+(map.zones_down.map(z=>mapLine(z,result.analysis_ts)).join('; ')||'пригодных зон нет')+'.');if(map.status==='PARTIAL')lines.push('Карта неполная.');lines.push('Охват карты: только полученные данные источников.');}
++  else{lines.push('Ликвидации сверху: '+(map.zones_up.map(z=>mapLine(z,result.analysis_ts,compact)).join('; ')||'пригодных зон нет')+'.');lines.push('Ликвидации снизу: '+(map.zones_down.map(z=>mapLine(z,result.analysis_ts,compact)).join('; ')||'пригодных зон нет')+'.');if(map.status==='PARTIAL')lines.push('Карта неполная.');lines.push('Охват карты: только полученные данные источников.');}
+   lines.push('Размер: до '+p.position_limit_usdt+' USDT по текущему стакану; будущая цена исполнения не гарантирована.');
+   lines.push('Важно: пересмотреть план при цене ниже '+px(p.invalidation.price)+'.');
+   if(result.wave_state==='SHARP_PULLBACK_UNCONFIRMED')lines.push('Возврат не подтверждён; предварительная область не является доказанным выкупом.');
+   if(p.desired_potential_status==='BELOW_DESIRED')lines.push('Обоснованный потенциал ниже желаемых '+p.desired_plan_potential_pct+'%.');
+-  return lines.join('\n');
++  return wellFormed(lines.join('\n'));
++  }
++  const full=make(false,context);if(full.length<=4096)return full;
++  // Reserve the complete plan, position/invalidation limits, all selected map
++  // prices, provenance and map status before fitting optional explanations.
++  const notice='Краткая версия; полные сведения — в анализе.',required=make(true,[]);
++  let remaining=4096-required.length-notice.length-2;const selected=[];
++  if(remaining<0)throw Error('CARD_REQUIRED_FIELDS_EXCEED_LIMIT');
++  for(const text of context){if(text.length+1<=remaining){selected.push(text);remaining-=text.length+1;}}
++  const card=make(true,selected)+'\n'+notice;
++  if(card.length>4096)throw Error('CARD_LENGTH_INVARIANT');
++  return card;
+ }
+ export function analyzePump(input, profile=START_PROFILE){
+   assertInput(input);

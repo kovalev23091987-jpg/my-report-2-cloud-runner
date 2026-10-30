@@ -1,0 +1,39 @@
+{
+  "schema": "PUMP_OWNER_APPROVED_CANDLE_SEMANTICS_V1",
+  "status": "ACCEPTED_BY_DIRECT_HUMAN_OWNER",
+  "recorded_at": "2026-10-25 13:19:33 UTC",
+  "authority_main": "79cafbb6d687bfdfcb2616efdf732a63843c8272",
+  "owner_reply": "Принять этот вариант",
+  "question_context": "Accept pinned CCXT OPEN_TIME convention and dimensionless native reported quantity comparison; absolute BASE/USDT unknown.",
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "does_not_change_strategy_or_thresholds": true,
+  "time": {
+    "basis": "CCXT_CONSUMER_OPEN_TIME",
+    "evidence": "pump-report/handoffs/sources/CCXT_PINNED_NATIVE_CANDLE_REVIEW_V1.json",
+    "pinned_commit": "d3159f7036f93db086cd0414642132fba5401710",
+    "independent_vendor_guarantee_claimed": false
+  },
+  "quantity": {
+    "fact_unit": "OHLC_USDT_NATIVE_REPORTED_QUANTITY",
+    "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+    "volume_base": null,
+    "native_quantity_unit": "UNKNOWN",
+    "derived_ratio_unit": "RATIO",
+    "same_instrument_route_field_interval_only": true,
+    "missing_or_zero_denominator": "NULL_WITH_REASON",
+    "absolute_base_or_USDT_claims": false
+  },
+  "unchanged": [
+    "capture-closedness/original clocks",
+    "price/book/volume/independent-plan gates",
+    "threshold20day10short",
+    "four_hour10percent outcome",
+    "maps supplementary nonblocking",
+    "budgets/reserves/unknowns/legacy pause"
+  ],
+  "implementation_owners": {
+    "ROOT": "shared contract/registry/runtime",
+    "SOURCES": "exact candle normalization/evidence",
+    "ANALYTICS": "native-relative ratios and guards"
+  }
+}

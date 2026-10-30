@@ -1,0 +1,61 @@
+// Insert into the EXISTING due-watch module before prepareCapturedDueWatch.
+export function evaluateOriginalEventOutcomes({origin,projection,now_ts}={}){
+  checkedOrigin(origin,origin?.logical_event_id);
+  const outcomes=clone(origin.state.outcomes),closed_keys=[],deferred=[];
+  const pending=origin.plan.cells.filter(c=>outcomes[c.key].status==='PENDING');
+  const refused=reason=>({outcomes,closed_keys:[],deferred:pending.map(c=>({key:c.key,reason})),closure_fingerprints:[],status:'ORIGINAL_OUTCOMES_DEFERRED'});
+  const finite=v=>typeof v==='number'&&Number.isFinite(v),positive=v=>finite(v)&&v>0;
+  const card=origin.card,A=card.anchor?.price;
+  if(!clock(now_ts)||now_ts>Date.now()||now_ts<origin.state.evaluated_ts)return refused('EVALUATION_CLOCK_NOT_CLOSED');
+  if(!positive(A)||A!==card.candle?.close||card.anchor?.source_ts!==card.event_end_ts||card.candle?.end_ts!==card.event_end_ts)return refused('ORIGINAL_ANCHOR_NOT_COHERENT');
+  const q=projection;
+  if(!q||q.status!=='CAPTURED_ORIGINAL_OUTCOME_WINDOWS_V1'||Buffer.byteLength(canonical(q))>16384||!Array.isArray(q.windows))return refused('OUTCOME_PROJECTION_NOT_CLOSED');
+  if(q.logical_event_id!==origin.logical_event_id||q.revision!==origin.revision||q.first_known_ts!==origin.first_known_ts||q.now_ts!==now_ts||['card','descriptor','plan'].some(n=>q[n+'_sha256']!==origin[n+'_sha256'])||q.quote!=='USDT'||q.price_unit!=='HTX_NATIVE_LINEAR_PRICE'||Object.keys(QUAL).some(n=>q[n]!==false)||q.source_HTTP!==0||q.SQL!==0)return refused('OUTCOME_PROJECTION_BINDING_MISMATCH');
+  if(q.windows.length!==origin.plan.cells.length)return refused('OUTCOME_PROJECTION_INCOMPLETE');
+  const summary={logical_event_id:q.logical_event_id,revision:q.revision,card_sha256:q.card_sha256,descriptor_sha256:q.descriptor_sha256,plan_sha256:q.plan_sha256,windows:q.windows,quote:q.quote,price_unit:q.price_unit};
+  if(q.summary_sha256!==digest(summary))return refused('OUTCOME_SUMMARY_MISMATCH');
+  const by=new Map();
+  for(const w of q.windows){if(!w||by.has(w.key))return refused('OUTCOME_CELL_DUPLICATE');by.set(w.key,w);}
+  const complete=w=>w?.status==='COMPLETE_CLOSED_MINUTE_WINDOW';
+  const physical=w=>Object.fromEntries(['start_ts','end_ts','minutes','expected_minutes','first_open','last_close','high','low','window_sha256'].map(n=>[n,w[n]]));
+  for(const c of origin.plan.cells){
+    const w=by.get(c.key);
+    if(!w||w.direction!==c.direction||w.horizon_ms!==c.horizon_ms||w.target_ts!==c.target_ts||w.start_ts!==card.event_end_ts||w.end_ts!==c.target_ts)return refused('OUTCOME_CELL_PLAN_MISMATCH');
+    if(!['DEFERRED','COMPLETE_CLOSED_MINUTE_WINDOW'].includes(w.status))return refused('OUTCOME_CELL_STATUS_INVALID');
+    if(complete(w)){
+      const count=c.horizon_ms/MIN;
+      if(w.reason!==null||!Number.isInteger(count)||count<1||count>2000||w.minutes!==count||w.expected_minutes!==count||w.start_ts%MIN!==0||w.end_ts%MIN!==0||c.target_ts>now_ts||![q.source_as_of_ts,q.received_ts,q.body_completed_ts].every(clock)||q.source_as_of_ts<c.target_ts||q.source_as_of_ts>q.body_completed_ts||q.body_completed_ts>q.received_ts||q.received_ts>now_ts||now_ts-q.received_ts>120000||!hex(q.body_text_sha256)||q.raw_body_sha256!==null||!hex(q.metadata_row_sha256)||!hex(q.provenance_sha256)||q.record_compatibility!=='SAME_OPAQUE_RECORD_NOT_QUALIFIED_EPOCH'||!hex(w.window_sha256)||![w.first_open,w.last_close,w.high,w.low].every(positive)||w.low>Math.min(w.first_open,w.last_close)||w.high<Math.max(w.first_open,w.last_close)||w.low>w.high)return refused('OUTCOME_COMPLETE_FACTS_NOT_CLOSED');
+      const sibling=origin.plan.cells.find(x=>x.horizon_ms===c.horizon_ms&&x.direction!==c.direction),other=by.get(sibling?.key);
+      if(!complete(other)||canonical(physical(other))!==canonical(physical(w)))return refused('OUTCOME_DIRECTIONAL_WINDOW_CONFLICT');
+    }else if(typeof w.reason!=='string'||!w.reason||['minutes','expected_minutes','first_open','last_close','high','low','window_sha256'].some(n=>w[n]!==null))return refused('OUTCOME_DEFERRED_FACTS_INVALID');
+  }
+  const closure_fingerprints=[];
+  for(const c of pending){
+    const w=by.get(c.key);
+    if(!complete(w)){deferred.push({key:c.key,reason:w.reason});continue;}
+    const retained=origin.plan.cells.filter(x=>x.horizon_ms===c.horizon_ms).map(x=>outcomes[x.key]).filter(x=>x.status==='CLOSED_FACTUAL');
+    if(retained.some(x=>x.schema!=='ORIGINAL_EVENT_OUTCOME_FACTS_V1'||x.window_sha256!==w.window_sha256||x.anchor?.price!==A||x.anchor?.source_ts!==card.event_end_ts||canonical(x.window)!==canonical(physical(w)))){deferred.push({key:c.key,reason:'RETAINED_FACTUAL_WINDOW_CONFLICT_OR_UNPROVEN'});continue;}
+    const sign=c.direction==='LONG'?1:-1,ret=sign*100*(w.last_close/A-1),up=sign*100*(w.high/A-1),down=sign*100*(w.low/A-1);
+    if(![ret,up,down].every(Number.isFinite)){deferred.push({key:c.key,reason:'OUTCOME_ARITHMETIC_NOT_FINITE'});continue;}
+    const zero=v=>Object.is(v,-0)?0:v,fp=digest({kind:'ORIGINAL_EVENT_OUTCOME_FACTS_V1',logical_event_id:origin.logical_event_id,key:c.key,window_sha256:w.window_sha256,anchor:{price:A,source_ts:card.event_end_ts}});
+    outcomes[c.key]={schema:'ORIGINAL_EVENT_OUTCOME_FACTS_V1',status:'CLOSED_FACTUAL',target_ts:c.target_ts,direction:c.direction,horizon_ms:c.horizon_ms,anchor:clone(card.anchor),window:physical(w),window_sha256:w.window_sha256,closure_fingerprint:fp,directional_price_return_pct:zero(ret),mfe_pct:zero(Math.max(0,up,down)),mae_pct:zero(Math.min(0,up,down)),formula:'s=LONG:+1,SHORT:-1;return=s*100*(C/A-1);MFE=max(0,s*100*(H/A-1),s*100*(L/A-1));MAE=min(0,s*100*(H/A-1),s*100*(L/A-1))',quote:q.quote,price_unit:q.price_unit,intrabar_order:'UNKNOWN',classification:'NOT_CLASSIFIED',execution_or_PnL_claimed:false,price_source_ts:c.target_ts,first_known_ts:origin.first_known_ts,recorded_by_worker_ts:now_ts,source_as_of_ts:q.source_as_of_ts,received_ts:q.received_ts,body_completed_ts:q.body_completed_ts,body_text_sha256:q.body_text_sha256,raw_body_sha256:null,metadata_row_sha256:q.metadata_row_sha256,provenance_sha256:q.provenance_sha256,...QUAL};
+    closed_keys.push(c.key);closure_fingerprints.push(fp);
+  }
+  return{status:closed_keys.length?'ORIGINAL_OUTCOMES_FACTUAL':'ORIGINAL_OUTCOMES_DEFERRED',outcomes,closed_keys,deferred,closure_fingerprints};
+}
+function advanceCapturedWatch(origin,now_ts){
+  if(!origin.state.watch.active)return{reason:'WATCH_INACTIVE_PENDING_OUTCOMES',detail:'WATCH_INACTIVE_OUTCOMES_EVALUATED_SEPARATELY'};
+  const input=lastClosedCapture(origin,now_ts);if(input.reason)return input;
+  const w=origin.state.watch,prior=w.last_confirmation;
+  if(prior&&input.candle.end_ts===prior.end_ts)return input.fact_hash!==prior.fact_hash?{reason:'CLOSED_WINDOW_UNAVAILABLE',detail:'CONFLICTING_ALREADY_RETAINED_CLOSED_WINDOW'}:{reason:'CLOSED_WINDOW_ALREADY_OBSERVED',detail:'RECEIPT_BODY_FORMAT_AND_PROCESS_CLOCK_ARE_NOT_NEW_FACTS'};
+  if(w.last_source_ts!==null&&input.candle.end_ts<=w.last_source_ts||input.candle.end_ts<origin.state.last_snapshot.ts)return{reason:'CLOSED_WINDOW_ALREADY_OBSERVED',detail:'CLOSED_PRICE_TIME_DOES_NOT_ADVANCE_CURSOR'};
+  const fingerprint=digest({kind:'CLOSED_CAPTURE_WATCH_V1',logical_event_id:origin.logical_event_id,fact_hash:input.fact_hash});
+  if(origin.state.revisions.some(x=>x.observation_kind==='CLOSED_CAPTURE_WATCH_V1'&&x.observation_fingerprint===fingerprint))return{reason:'CLOSED_WINDOW_ALREADY_OBSERVED',detail:'SEMANTIC_CLOSED_FACT_ALREADY_RETAINED'};
+  const snapshot_id='ANOMALY_WATCH:'+fingerprint,snapshot={instrument:clone(origin.card.instrument),snapshot_id,raw_sha256:input.raw_sha256,raw_ref:input.raw_ref,source_ts:input.candle.end_ts,received_ts:input.received_ts,price:input.candle.close,closed_candle:input.candle};
+  const memory=newMemory({max_active:1,max_cards:2});memory.cards[origin.card.event_id]=clone(origin.card);memory.watch[origin.card.event_id]=clone(w);
+  const observed=observe(memory,{event_id:origin.card.event_id,snapshot,now_ts,confirmation_alignment_offset_ms:input.alignment});
+  if(observed.status!=='OBSERVED')return{reason:'CLOSED_WINDOW_UNAVAILABLE',detail:'EXISTING_WATCH_DID_NOT_ACCEPT_SNAPSHOT'};
+  const drafts=Object.fromEntries(Object.entries(observed.state.outbox).map(([id,o])=>['watch:'+id,{status:'DRAFT',form_status:'NOT_APPROVED',actual_send:false,source_snapshot_id:snapshot_id,message_ru:draftNotice(observed.state,id).text,transition:clone(o.transition)}]));
+  need(Object.values(drafts).every(x=>x.message_ru.length<=1600),'DRAFT_MESSAGE_BOUND');
+  return{input,fingerprint,snapshot_id,snapshot,observed,drafts};
+}

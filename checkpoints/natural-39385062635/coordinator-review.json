@@ -1,0 +1,412 @@
+{
+  "schema": "SAVED_POST565_STAGE0_PARTIAL_BOUNDARY_V1",
+  "source": {
+    "run": 39385062635,
+    "head": "e5ac72e70475c6295992d280f384f7fd9940175f",
+    "artifact": 12247730316,
+    "digest": "sha256:c19b58721f6188db21cfce46420a9dc8cc158edf4aa976df9a261ca8a855145e",
+    "zip_bytes": 4468,
+    "members": [
+      {
+        "path": "known-d1-day-guard.json",
+        "bytes": 135,
+        "sha256": "a0fea726e017860be1c39b75bbcea044a8c53d278296f73c5cd0199199389605"
+      },
+      {
+        "path": "report2-failure-accounting.json",
+        "bytes": 38752,
+        "sha256": "427d1d11f3c81058c01c42926d62d22b03043fdada7e3500be65fc45f53a063d"
+      }
+    ]
+  },
+  "origin": "Already existing automatic40min workflow_dispatch, REPORT2_RUN_SOURCE=schedule; not manually forced. Exact previously downloaded files, no reacquisition.",
+  "cron": {
+    "run_id": "1792480404946-1792480414754",
+    "scheduled_time": 1792480404946,
+    "started_ts": 1792480414754,
+    "completed_ts": 1792480490799,
+    "status": "PARTIAL",
+    "universe_total": 105,
+    "scanned": 99,
+    "persistence_status": "NOT_CLOSED",
+    "error_text": "{\"contracts\":null,\"market\":null,\"oi\":null,\"funding\":null,\"history\":null}",
+    "v3_discovery_shortlist_count": 22,
+    "v3_live_shortlist_count": 22,
+    "v3_live_deep_check_count": 2,
+    "v3_live_zero_reason": "STAGE0_SCAN_FAILED",
+    "v3_pipeline_health_status": "DEGRADED_PIPELINE",
+    "v3_pipeline_health_reason": "STAGE0_SCAN_FAILED",
+    "v3_live_lane": "LIVE_DISCOVERY",
+    "v3_maintenance_deferred": 0
+  },
+  "approved_universe_audit": {
+    "schema": "APPROVED_HTX_ANALYSIS_SCOPE_V1",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "manifest": "checkpoints/htx-approved-crypto-futures-universe-20261012.json.gz",
+    "manifest_sha256": "31ad09d7711a69f441ad69bef204156e9554f2f4abca0e1606eb20dc4b9fe771",
+    "approved_contracts": 122,
+    "approved_assets": 105,
+    "catalog_families": 3,
+    "unsupported_inverse_delivery_contracts": 17,
+    "catalog_observed_ts": 1791827516363,
+    "observed_ts": 1792480414924,
+    "expected_analysis_contracts": 105,
+    "accepted_analysis_contracts": 99,
+    "missing_approved_analysis_contracts": [
+      "BTR-USDT",
+      "DOS-USDT",
+      "GPS-USDT",
+      "PIPPIN-USDT",
+      "SKR-USDT",
+      "UB-USDT"
+    ],
+    "officially_unavailable_analysis_contracts": [],
+    "unresolved_approved_analysis_contracts": [
+      "BTR-USDT",
+      "DOS-USDT",
+      "GPS-USDT",
+      "PIPPIN-USDT",
+      "SKR-USDT",
+      "UB-USDT"
+    ],
+    "checked_analysis_contracts": 99,
+    "market_data_analysis_contracts": 99,
+    "scan_count_basis": "APPROVED_ASSETS_CHECKED_MARKET_DATA_AND_EXPLICIT_NATIVE_AVAILABILITY_SEPARATE",
+    "outside_approved_crypto_contracts": [
+      {
+        "contract": "ZCSH-USDT",
+        "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+      },
+      {
+        "contract": "DNA-USDT",
+        "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+      },
+      {
+        "contract": "SNPS-USDT",
+        "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+      },
+      {
+        "contract": "WAL-USDT",
+        "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+      },
+      {
+        "contract": "MAGIC-USDT",
+        "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+      },
+      {
+        "contract": "Q-USDT",
+        "reason": "NOT_IN_APPROVED_GENERATION_UNIVERSE"
+      }
+    ],
+    "identity_rejected": [],
+    "duplicate_rejected": [],
+    "status": "NOT_CLOSED",
+    "structural_membership_only": true,
+    "source_clocks_refreshed": false,
+    "approved_universe_changed": false
+  },
+  "native_usage": {
+    "status": "FAILED_RUN_NATIVE_USAGE_FINALIZED",
+    "receipt": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "R2RUN:1792480404946:c22cfcfe6fa3d49f",
+      "source_run_id": "39385062635",
+      "measured_rows_read": 36956,
+      "finalization_read_padding": 1,
+      "reservation_never_reduced": true,
+      "measured_rows_written_accounted": 380,
+      "measured_requests_accounted": 490,
+      "unknown_ops": 0
+    },
+    "new_SQL_attempts": 1,
+    "reservation_never_reduced": true
+  },
+  "native_usage_totals": {
+    "usage_before": {
+      "requests": 489,
+      "rows_read": 36956,
+      "rows_written": 379,
+      "unknown_ops": 0
+    },
+    "usage_after": {
+      "requests": 490,
+      "rows_read": 36957,
+      "rows_written": 380,
+      "unknown_ops": 0
+    }
+  },
+  "partial_carriers": {
+    "schema": "report2-candidate-selection-audit-v1",
+    "run_id": "1792480404946-1792480414754",
+    "lane": "LIVE_DISCOVERY",
+    "minimum_turnover_24h_usdt": 100000,
+    "qualified_candidates": [
+      {
+        "rank": 1,
+        "queue_priority_rank": 1,
+        "contract": "BR-USDT",
+        "score_0_100": 80,
+        "direction_hint": "LONG_WATCH",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 8,
+        "turnover_24h_usdt": 1763697.6249
+      },
+      {
+        "rank": 2,
+        "queue_priority_rank": 2,
+        "contract": "BTW-USDT",
+        "score_0_100": 80,
+        "direction_hint": "SHORT_WATCH",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 7,
+        "turnover_24h_usdt": 5694922.9932
+      },
+      {
+        "rank": 3,
+        "queue_priority_rank": 3,
+        "contract": "NIL-USDT",
+        "score_0_100": 70,
+        "direction_hint": "LONG_WATCH",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 256440.8514
+      },
+      {
+        "rank": 4,
+        "queue_priority_rank": 4,
+        "contract": "龙虾-USDT",
+        "score_0_100": 45,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 8,
+        "turnover_24h_usdt": 460674.9328
+      },
+      {
+        "rank": 5,
+        "queue_priority_rank": 5,
+        "contract": "AKE-USDT",
+        "score_0_100": 45,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 6,
+        "turnover_24h_usdt": 204042.4334
+      },
+      {
+        "rank": 6,
+        "queue_priority_rank": 6,
+        "contract": "USELESS-USDT",
+        "score_0_100": 45,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 5,
+        "turnover_24h_usdt": 145824.5958
+      },
+      {
+        "rank": 7,
+        "queue_priority_rank": 7,
+        "contract": "CT-USDT",
+        "score_0_100": 45,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 4,
+        "turnover_24h_usdt": 650502.6064
+      },
+      {
+        "rank": 8,
+        "queue_priority_rank": 8,
+        "contract": "PONS-USDT",
+        "score_0_100": 45,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 4,
+        "turnover_24h_usdt": 167908.4204
+      },
+      {
+        "rank": 9,
+        "queue_priority_rank": 9,
+        "contract": "LSK-USDT",
+        "score_0_100": 45,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 4,
+        "turnover_24h_usdt": 117145.62004
+      },
+      {
+        "rank": 10,
+        "queue_priority_rank": 10,
+        "contract": "AAVE-USDT",
+        "score_0_100": 40,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 8,
+        "non_funding_anomaly_flags_count": 3,
+        "turnover_24h_usdt": 596785.4086
+      },
+      {
+        "rank": 11,
+        "queue_priority_rank": 11,
+        "contract": "APR-USDT",
+        "score_0_100": 40,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 3,
+        "turnover_24h_usdt": 197583.2162
+      },
+      {
+        "rank": 12,
+        "queue_priority_rank": 12,
+        "contract": "PUMP-USDT",
+        "score_0_100": 40,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 3,
+        "turnover_24h_usdt": 107913.786
+      },
+      {
+        "rank": 13,
+        "queue_priority_rank": 13,
+        "contract": "FIL-USDT",
+        "score_0_100": 40,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 8,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 3015953.84882
+      },
+      {
+        "rank": 14,
+        "queue_priority_rank": 14,
+        "contract": "WLD-USDT",
+        "score_0_100": 40,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 8,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 2262867.2678
+      },
+      {
+        "rank": 15,
+        "queue_priority_rank": 15,
+        "contract": "XMR-USDT",
+        "score_0_100": 35,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 8,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 446798.2036
+      },
+      {
+        "rank": 16,
+        "queue_priority_rank": 16,
+        "contract": "ZKC-USDT",
+        "score_0_100": 35,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 133836.3562
+      },
+      {
+        "rank": 17,
+        "queue_priority_rank": 17,
+        "contract": "牛来-USDT",
+        "score_0_100": 35,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 126998.8992
+      },
+      {
+        "rank": 18,
+        "queue_priority_rank": 18,
+        "contract": "LIT-USDT",
+        "score_0_100": 25,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 4,
+        "non_funding_anomaly_flags_count": 3,
+        "turnover_24h_usdt": 138562.8242
+      },
+      {
+        "rank": 19,
+        "queue_priority_rank": 19,
+        "contract": "ZEC-USDT",
+        "score_0_100": 25,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 8,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 25194650.787
+      },
+      {
+        "rank": 20,
+        "queue_priority_rank": 20,
+        "contract": "NEAR-USDT",
+        "score_0_100": 20,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 8,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 5310398.258
+      },
+      {
+        "rank": 21,
+        "queue_priority_rank": 21,
+        "contract": "ARB-USDT",
+        "score_0_100": 20,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 8,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 712206.37618
+      },
+      {
+        "rank": 22,
+        "queue_priority_rank": 22,
+        "contract": "UNI-USDT",
+        "score_0_100": 20,
+        "direction_hint": "NEUTRAL_ANOMALY",
+        "funding_bonus_0_15": 0,
+        "funding_interval_hours": 8,
+        "non_funding_anomaly_flags_count": 2,
+        "turnover_24h_usdt": 703222.1728
+      }
+    ],
+    "top_two_contracts": [
+      "BR-USDT",
+      "BTW-USDT"
+    ],
+    "registry_did_not_change_rank": true,
+    "deep_check_selected": [
+      "BR-USDT",
+      "BTW-USDT"
+    ],
+    "deep_check_capacity_this_invocation": 2
+  },
+  "boundary": {
+    "runtime_refusal": "CRON_IDENTITY_NOT_SUCCESS before lifecycle sidecar / new primary loader export / private archive ACK",
+    "native_early_cost_after565": null,
+    "actual_182_read_reduction_proven": false,
+    "original_catalog_first_failed_term": null,
+    "provider_transport_failure_proven": false,
+    "both_primary_and_private_durable_proven": false,
+    "same_run_sent_accepted": false,
+    "native_day_admission": "Historical at-cut only, not future admission or whole-day upper bound",
+    "counted_requests": "SQL/native accounting, not providerHTTP",
+    "saved_reason": "99/105 scanned with six unresolved and zero official unavailable. Existing prior six suspended result cannot identify actual missing catalog predicate. No reconstruction or reclassification."
+  },
+  "next": "Bounded optional diagnostic of first actually executed existing catalog/row refusal from already loaded input; gates/classifier calls/105 scope/clocks/caps unchanged. ONE new affected case only after ready proposal/static peer. ENTRYfollowup and physicalstorage remain deferred."
+}

@@ -1,0 +1,17 @@
+# Проверка неизменного кода перед native activation
+
+Конечное поручение ROOT23Oct: устранить отказ initialize после обязательного изменения main только арендой или checkpoint. Рабочая база88f5051b6389a4e1c5741ad65faccf78cc20edf7, собственная ветка work/report2-sources-unchanged-code-native-qualification-20261023. Изменения допускаются только в этом checkpoint-prefix как текстовые предложения. Shared/runtime файлы меняет ROOT.
+
+Предлагаются изменения существующих tools/rollout-correlated-sql-bridge-20261022.mjs (до70250байт/SHA2568fd53dba375b575435e3863050faaa5651500b566d322b8b4913af156db21dfc) и .github/workflows/current-bridge-module-inspection-20261016.yml (до7984байт/SHA2569372f565a3f432045f7ca5232e3fd911984a930bdf82b3cd95918fbca56b7c32). Исходные6c6/d6e/133/Paid и старые режимы остаются побайтно прежними.
+
+Gate получает номер normalautomaticMAIN как недоверенный selector, проверяет точный run/workflow/push/main/attempt1/SUCCESS. Current execution head и qualified code head различаются. Оба полных commit/tree графа читаются локально без lazyfetch; каждый объект проверяется собственным GitOID. Все tracked пути/mode/blob сравниваются. Различаться могут только перечисленные в коде authority/checkpoint файлы, без directory exemption; удаление запрещено. Фактические файлы всей существующей native import/proof/workflow цепочки проверяются по current Gitblob передCF. Новая версия самого gate требует собственной новой affected qualification и normalautomatic merge; прежний624 не принимает изменённый gate.
+
+Ранее временный common scope1121 не является списком существующих production файлов. Gate не возвращает архивированные временные тесты. Все Git build inputs (включая encryptedbase/recipe/overlays/proofs) должны совпасть с принятым merge. Это связывает ранее принятые265 runtimepins/618inventory; новой сборки/расшифровки618 и повторов8/10/2/20 нет. Верификатор не обещает JS sandbox, отсутствие файловых гонок, crash durability или CPU/heap/latency квалификацию.
+
+Сохраняются fresh CURRENTall4/head/owner/expiry/fence/generation,10min initialize headroom, fresh guard перед каждымCF,2s headers+body, jobstarted+300s,30s tail,40CF/40GH/164/manual24. Exact run GET заменяет существующий automatic-list GET. Дополнительных GH control calls нет. Только существующий checkout получает условную глубину8 для нового activation режима; остальные режимы сохраняют depth1. Missing/oversized/incomplete Git proof означает отказ доCF, без сетевого fallback/cap raise. Git checkout transport bytes/latency отдельно не измерены.
+
+Единственный новый callable runUnchangedCodeNativeQualificationConnected({repo_root}) будет подготовлен, но автором не исполняется. Только новые Gitfixture/controlmetadata vectors. SOURCE Node/import/syntax/tests/SQL/SQLite/appsemantics/gitapply/nativeCF/provider/MAIN/manual/TG/deploy=0. ROOT интегрирует и выполняет одну новую affected проверку, сохраняя каждый returnedJSON до assertion/next. THREE static peer только после полного frozen пакета. Заблокированные отправки не повторяются.
+
+Own lease CODEX:SOURCES:01a14e11:1792745861303, expiry1792750661303 (23Oct10:17:41.303UTC). Перед каждым code write/commit/publish/ref mutation выполняется проверка hosttime<expiry в том же script. После работы освобождается только эта собственная аренда.
+
+ROOT additional CI binding: ONLY one existing CLI literal push.paths entry in existing offline workflow; no job/assertion changes. SAMEowner/SAMEexpiry ownscope amended4c7755 and FULLreadback.

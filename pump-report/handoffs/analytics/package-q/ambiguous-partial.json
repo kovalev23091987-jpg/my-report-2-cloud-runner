@@ -1,0 +1,201 @@
+{
+  "evidence": "ARTIFICIAL_ONLY",
+  "variants": [
+    "dedup-conflict-before-invalid-row-filter-partial-same-sample",
+    "tied-different-first-prices",
+    "tied-different-last-prices",
+    "tied-same-endpoint-price-is-unambiguous",
+    "no-time-span",
+    "interior-ties-do-not-order-market-path",
+    "units",
+    "estimated",
+    "incomplete",
+    "stale",
+    "future-receipt",
+    "before-source-receipt",
+    "expired",
+    "anonymous",
+    "unknown-side",
+    "unknown-quantity",
+    "empty",
+    "sum-overflow",
+    "return-overflow"
+  ],
+  "partial": {
+    "buy_usdt": 101,
+    "sell_usdt": 200,
+    "netflow_usdt": -99,
+    "direction_coverage": "PARTIAL_RETURNED_TRADES",
+    "sample_start_ts": 1799999998000,
+    "sample_end_ts": 1799999999000,
+    "unique_executions": 2,
+    "price_response": {
+      "first_price": 100,
+      "last_price": 101,
+      "min_price": 100,
+      "max_price": 101,
+      "first_to_last_return_pct": 1.0000000000000009
+    },
+    "price_response_reason": null,
+    "coverage": {
+      "scope": "QUALIFIED_UNIQUE_RETURNED_TRADES_ONLY",
+      "returned_rows": 10,
+      "qualified_unique_rows": 2,
+      "duplicate_rows": 1,
+      "conflicting_ids": 1,
+      "excluded_returned_rows": 7,
+      "exclusion_reasons": [
+        "MISSING_STABLE_TRADE_ID",
+        "CONFLICTING_TRADE_ID",
+        "TRADE_PRICE_QUANTITY_OR_SIDE_UNQUALIFIED",
+        "TRADE_ROW_CLOCK_UNQUALIFIED",
+        "TRADE_NOTIONAL_NOT_FINITE"
+      ],
+      "provider_coverage": {
+        "scope": "RETURNED_SAMPLE_ONLY",
+        "complete": false
+      },
+      "full_market_coverage": false
+    },
+    "provenance": {
+      "fact_id": "ARTIFICIAL:trades:1800000000000",
+      "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+      "source": "ARTIFICIAL_FIXTURE",
+      "venue": "BINGX",
+      "origin": "OBSERVED",
+      "unit": "USDT_PRICE_BASE_QUANTITY",
+      "event_ts": 1800000000000,
+      "received_ts": 1800000000000,
+      "expires_ts": 1800000090000,
+      "evidence_ref": "ARTIFICIAL_ONLY"
+    },
+    "absorption_proven": false,
+    "market_path_proven": false,
+    "causation_proven": false
+  },
+  "ambiguous": {
+    "buy_usdt": 0,
+    "sell_usdt": 311,
+    "netflow_usdt": -311,
+    "direction_coverage": "ALL_RETURNED_TRADES",
+    "sample_start_ts": 1799999998000,
+    "sample_end_ts": 1800000000000,
+    "unique_executions": 3,
+    "price_response": {
+      "first_price": null,
+      "last_price": 110,
+      "min_price": 100,
+      "max_price": 110,
+      "first_to_last_return_pct": null
+    },
+    "price_response_reason": "ENDPOINT_ORDER_AMBIGUOUS",
+    "coverage": {
+      "scope": "QUALIFIED_UNIQUE_RETURNED_TRADES_ONLY",
+      "returned_rows": 3,
+      "qualified_unique_rows": 3,
+      "duplicate_rows": 0,
+      "conflicting_ids": 0,
+      "excluded_returned_rows": 0,
+      "exclusion_reasons": [],
+      "provider_coverage": null,
+      "full_market_coverage": false
+    },
+    "provenance": {
+      "fact_id": "ARTIFICIAL:trades:1800000000000",
+      "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+      "source": "ARTIFICIAL_FIXTURE",
+      "venue": "BINGX",
+      "origin": "OBSERVED",
+      "unit": "USDT_PRICE_BASE_QUANTITY",
+      "event_ts": 1800000000000,
+      "received_ts": 1800000000000,
+      "expires_ts": 1800000090000,
+      "evidence_ref": "ARTIFICIAL_ONLY"
+    },
+    "absorption_proven": false,
+    "market_path_proven": false,
+    "causation_proven": false
+  },
+  "no_span": {
+    "buy_usdt": 0,
+    "sell_usdt": 200,
+    "netflow_usdt": -200,
+    "direction_coverage": "ALL_RETURNED_TRADES",
+    "sample_start_ts": 1800000000000,
+    "sample_end_ts": 1800000000000,
+    "unique_executions": 2,
+    "price_response": {
+      "first_price": 100,
+      "last_price": 100,
+      "min_price": 100,
+      "max_price": 100,
+      "first_to_last_return_pct": null
+    },
+    "price_response_reason": "SAMPLE_HAS_NO_TIME_SPAN",
+    "coverage": {
+      "scope": "QUALIFIED_UNIQUE_RETURNED_TRADES_ONLY",
+      "returned_rows": 2,
+      "qualified_unique_rows": 2,
+      "duplicate_rows": 0,
+      "conflicting_ids": 0,
+      "excluded_returned_rows": 0,
+      "exclusion_reasons": [],
+      "provider_coverage": null,
+      "full_market_coverage": false
+    },
+    "provenance": {
+      "fact_id": "ARTIFICIAL:trades:1800000000000",
+      "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+      "source": "ARTIFICIAL_FIXTURE",
+      "venue": "BINGX",
+      "origin": "OBSERVED",
+      "unit": "USDT_PRICE_BASE_QUANTITY",
+      "event_ts": 1800000000000,
+      "received_ts": 1800000000000,
+      "expires_ts": 1800000090000,
+      "evidence_ref": "ARTIFICIAL_ONLY"
+    },
+    "absorption_proven": false,
+    "market_path_proven": false,
+    "causation_proven": false
+  },
+  "price_only_unqualified": {
+    "status": "UNAVAILABLE",
+    "reason": "NO_QUALIFIED_UNIQUE_TRADES",
+    "buy_usdt": null,
+    "sell_usdt": null,
+    "netflow_usdt": null,
+    "price_response": {
+      "first_price": null,
+      "last_price": null,
+      "min_price": null,
+      "max_price": null,
+      "first_to_last_return_pct": null
+    },
+    "coverage": {
+      "scope": "QUALIFIED_UNIQUE_RETURNED_TRADES_ONLY",
+      "returned_rows": 1,
+      "qualified_unique_rows": 0,
+      "duplicate_rows": 0,
+      "conflicting_ids": 0,
+      "excluded_returned_rows": 1,
+      "exclusion_reasons": [
+        "TRADE_PRICE_QUANTITY_OR_SIDE_UNQUALIFIED"
+      ],
+      "provider_coverage": null,
+      "full_market_coverage": false
+    },
+    "provenance": {
+      "fact_id": "ARTIFICIAL:trades:1800000000000",
+      "instrument_id": "ARTIFICIAL:BINGX:TEST-USDT",
+      "source": "ARTIFICIAL_FIXTURE",
+      "venue": "BINGX",
+      "origin": "OBSERVED",
+      "unit": "USDT_PRICE_BASE_QUANTITY",
+      "event_ts": 1800000000000,
+      "received_ts": 1800000000000,
+      "expires_ts": 1800000090000,
+      "evidence_ref": "ARTIFICIAL_ONLY"
+    }
+  }
+}

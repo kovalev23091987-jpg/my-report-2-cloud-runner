@@ -1,0 +1,66 @@
+{
+  "schema": "F594_MINIMAL_NEXT_ROOT_ADMISSION_PROPOSAL_V1",
+  "status": "PROPOSAL_ONLY_NO_SERVICE_ACCOUNT_ADMISSION_IN_F594",
+  "preferred_candidate": "COINVERSA_FREE_PUBLIC_DISCOVERY_CONTEXT",
+  "next_single_packet": {
+    "purpose": "Confirmexistingaccountplan/actualcapsusingFreeintrospection;notmarketcheckandnotnewsignup",
+    "max_outer_MCP_calls": 1,
+    "tool": "mcp__codex_apps__coinversa_pulse_pulse_my_plan",
+    "args": {
+      "useToonFormat": false
+    },
+    "REST_equivalent": "GET https://api.coinversa.ai/api/public/v1/plan",
+    "REST_header": "X-API-Key existingsecret only",
+    "cost": {
+      "published_stdio_success_HTTP": 1,
+      "published_stdio_max_attempts": 3,
+      "source_reference": "src/coinversaServer.ts:193-195,252-351,2503-2511",
+      "hosted_MCP_upper_HTTP": "UNKNOWN_NOT_TRANSFERRED_FROM_STDIO",
+      "backend_RPC": "UNKNOWN",
+      "provider_counter": "Free30requests/min1000/day;currentremainingUNKNOWN;noendpointcreditunitspublished"
+    },
+    "direct_REST_option": "OnlyifROOTalreadyhasvalidexistingkeyandseparatepositiveadmission:1request,retries0,<=10s,<=2MB. NoautomaticRESTfallbackafterfailedMCP/no newkeycreation.",
+    "critical_precondition": "IfROOTrequiresfiniteMCPHTTPupper,thehostedtransportgapmustbeclosedorchoosealreadycredentialedboundedREST;oneMCPtoolcallisnot1HTTPpromise.",
+    "auth_paid_quota_stop": "Any401/403/tier/quota/timeoutstop;noagentretry/alternatewrapper/paidtrial/signup/keygeneration. Internalhostedretryunknownretainednonrefundable.",
+    "shared_deadline": "Existing10ssource/shareddeadlineunchanged;publishedstdio3x30s+backoffcanexceedit,cannotactivateasrecurringworkertransportwithoutROOTchange/review."
+  },
+  "conditional_later_packet": {
+    "not_admitted_here": true,
+    "depends": "ExistingFreeaccess/headroomandtransportboundproven;separateROOTsource/whole/nativegrant",
+    "tool": "mcp__codex_apps__coinversa_pulse_list_markets",
+    "args": {
+      "useToonFormat": false
+    },
+    "REST": "GET https://api.coinversa.ai/api/public/v1/pulse/market-overview",
+    "successful_handler_API_reads": 1,
+    "optional_asset_directory": "One list_assets({crossMarketOnly:false,useToonFormat:false}) onlyifseparatelyneeded/admitted;notautomatic",
+    "purpose": "Fullprovider-levelbatchjoin550;captureunit/clock/completion;not500percoinqualification"
+  },
+  "MidasFlow_secondary_future_packet": {
+    "not_admitted_here": true,
+    "account_tool": "mcp__codex_apps__midasflow_account",
+    "account_args": {
+      "kind": "usage"
+    },
+    "account_REST": "GET https://mcp.midasflow.ai/v1/usage",
+    "account_documented_weight": 1,
+    "conditional_feed_tool": "mcp__codex_apps__midasflow_get_whales",
+    "feed_args": {
+      "kind": "liquidations",
+      "exchange": "all",
+      "symbol": "",
+      "window": 60
+    },
+    "feed_REST_path": "/v1/liquidations",
+    "feed_documented_weight": 1,
+    "total_documented_default_weight": 2,
+    "current_config_and_MCP_HTTP_upper": "UNKNOWN;usageweightsactualneeded",
+    "scope": "Realizedforcedflowcontextonly;bandednotional/nativeclocksneedactualqualification;nofuturemap"
+  },
+  "Coinfuty": "NoactualpacketuntilFreeentitlement/limits/transportcostproved;metadataclaimfreeinsufficientforpromisingusablefallback.",
+  "native_storage": "NoSQL/LOOKUPpermissioncreated. All11LOOKUPrunsSPENT0left/default10unchanged;ROOTneedsseparateordinarynativecapacitybeforeanycapture/readback. Do not relabel sourcepreflight as allowednativeLOOKUP.",
+  "qualification": "19/24remain5ROOTreported;nofundingBFduplicationornewqualificationcalledbySOURCE.",
+  "evidence_to_capture": "Plan/tier/quotaheaders/reset,requestID/sanitizedargs,outercallandknown/unknownupstreamattempts,bodyhash/bytes/privateoriginal,source/event/receiveclocks,fieldunits/periods,rows/completion,exactidentityrefs,consumerutility. No secrets/rawprivatepayloadinGit.",
+  "actual_calls_in_F594": 0,
+  "existing_optional_cap": "Anyfuturecandidatecontextmustfitexistingoptionalmax2andwholecostreservation;noautomaticthirdoptionalcall/newpolling. Cataloguequalificationpacket isseparateROOTadmission."
+}

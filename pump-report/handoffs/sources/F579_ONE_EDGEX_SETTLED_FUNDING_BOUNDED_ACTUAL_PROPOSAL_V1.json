@@ -1,0 +1,72 @@
+{
+  "schema": "F579_ONE_EDGEX_SETTLED_FUNDING_BOUNDED_ACTUAL_PROPOSAL_V1",
+  "status": "PROPOSED_NOT_ADMITTED_NOT_EXECUTED; ROOT_SEMANTIC_REVIEW_PRECONDITIONS",
+  "producer": "edgeX V2 settled funding history, venue-specific optional context",
+  "purpose": "Qualify a small actual settled-funding sample for one selected crypto candidate; no adapter/adoption or full550 claim.",
+  "preconditions": [
+    "Fresh compatible authority/own lease and separate positive exact provider/native/whole-budget admission by ROOT.",
+    "ROOT accepts or independently closes vendor raw rate-to-ratio serialization mapping; otherwise do not spend.",
+    "ROOT accepts retained canonical4STOCK asset evidence and current instrument-family mapping; ticker alone never sufficient. If not, stop before second read.",
+    "Provider no-auth route only; no key/signup/wallet/account discovery; no unknown trial."
+  ],
+  "cold_steps": [
+    {
+      "step": 1,
+      "method": "GET",
+      "url": "https://edgex-prod-v2.edgex.exchange/api/v2/public/quote/getTicker",
+      "query": {},
+      "purpose": "Find the one approved native candidate contractName/contractId; optional unfiltered request is documented. Treat rows as incomplete/unqualified catalog facts, discard all unrelated/BTCETH data from saved receipt.",
+      "stop_if": "Absent/ambiguous target, body>2MiB, inconsistent identity/status/family,403/429,auth/paywall,missing fields. No new classifier or quote inference."
+    },
+    {
+      "step": 2,
+      "method": "GET",
+      "url": "https://edgex-prod-v2.edgex.exchange/api/v2/public/funding/getFundingRatePage",
+      "query": {
+        "contractId": "EXACT_EDGEX_ID_RESOLVED_AND_ROOT_APPROVED_AT_STEP1",
+        "size": 2,
+        "filterSettlementFundingRate": true,
+        "offsetData": ""
+      },
+      "purpose": "At most2settled records; verify isSettlement, positive intervalMin, calculation timestamp ms and raw rate string. fundingTime remains a distinct native settlement clock.",
+      "stop_if": "No semantic preapproval, no verified native id, missing/contradictory fields, source clock in future,403/429/auth/paywall/bodycap. No retry/pagination/second asset."
+    }
+  ],
+  "cost": {
+    "max_logical_HTTP_GETs": 2,
+    "warm_if_current_exact_approved_contractId_available": 1,
+    "max_redirects": 0,
+    "max_retries": 0,
+    "max_pagination_followups": 0,
+    "max_candidates": 1,
+    "max_settled_records": 2,
+    "max_body_bytes_per_response": 2000000,
+    "vendor_endpoint_weight": null,
+    "provider_current_quota": null,
+    "measured_physical_HTTP": null,
+    "latency": null,
+    "new_SQL_TG_Worker_requests": 0,
+    "actual_spent": 0,
+    "reservation_created": 0,
+    "cap_increase": 0
+  },
+  "receipt_required": [
+    "Native venue/id/name and separately approved asset join; original raw rate + unit evidence status.",
+    "fundingTimestamp calculation ms, raw fundingTime settlement clock, intervalMin, isSettlement; actual receive clocks and field-specific age.",
+    "Observed status/headers/actual physical attempts/bytes/latency, any provider quota evidence; no source age renewal.",
+    "Single selected candidate only. No unrelated prices/accounts, benchmarks, future zones or OI direction."
+  ],
+  "acceptance_boundary": "This proposal can measure access/shape/cost/record consistency. It cannot prove serializer units or canonical identity from a sample, nor reconcile vendor prose contradictions. Unresolved prerequisites remain NULL/hold; no production normalization or activation.",
+  "current_550_input": {
+    "path": "pump-report/handoffs/sources/U3_SELECTED_550_SYMBOLS_V1.json",
+    "sha256": "88bf55ea409ec376502ebc26b92053f99a86d30f16fa49c095fd5eec19073475",
+    "count": 550,
+    "fourstock_selected": true,
+    "identity_proof_path": "pump-report/handoffs/sources/U3_FULL_934_SCOPE_SELECTION_V1.json",
+    "identity_proof_sha256": "540111a3d30a4a76064b1124a8d904864a4c52f051642f75e83cbc3ca0559057",
+    "not_a_current_edgeX_catalog_receipt": true
+  },
+  "one_route_only": true,
+  "all_other_candidates": "ASTER/APEX_OMNI_HOLD; no additional native proposals",
+  "no_new_local_funding_or_liquidation_model": true
+}

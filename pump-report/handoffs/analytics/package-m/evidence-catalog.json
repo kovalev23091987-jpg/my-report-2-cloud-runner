@@ -1,0 +1,735 @@
+{
+  "schema": "PUMP_M_ACCEPTED_RECEIPT_INDEX_V1",
+  "new_test_execution": false,
+  "proofs": [
+    {
+      "path": "pump-report/handoffs/analytics/package-b/qualification.json",
+      "sha256": "4ee422100eefb66dae213e9c8026a4bd0004e023099a1fd747a96d50f94b2823",
+      "bytes": 2548,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-c/qualification.json",
+      "sha256": "de3e1c52b987af593febcf273c433b076c3aac6e7a141917dbf8d9b3d581adc4",
+      "bytes": 4586,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-d/affected-prior-results.tap",
+      "sha256": "5c9be77812b23dd8ba05f871aa0aaae7fa90fc34d629aaf2efe095d6cce13245",
+      "bytes": 847,
+      "cases": [
+        "sharp unconfirmed and reclaimed cases have distinct factual explanations",
+        "unknown directional trades and rising OI cannot create absorption or short-building claims",
+        "six long source/model descriptions remain within Telegram length while preserving all six zones"
+      ],
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-d/qualification.json",
+      "sha256": "88729bf3f9e70d2c1f3e0d0c0941cca9d5a974b512c79bb213dfa6ac00af6f49",
+      "bytes": 6410,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-d/test-results.tap",
+      "sha256": "b578417ef09db70d85eb1091f8c9819d5d4149b3e7500304645c38c186bde231",
+      "bytes": 8962,
+      "cases": [
+        "D first SENT selects its saved card, not an earlier failed draft or newest analysis",
+        "D first possible UNKNOWN fixes original P0 even when a later different card is SENT",
+        "D a later receipt for the same card resolves UNKNOWN without moving t0 or map cohort",
+        "D updates cannot change a published original price or rules",
+        "D missing original publication ledger is quarantined instead of resetting to UNSENT",
+        "D a mature but active never-sent wave remains outside UNSENT statistics",
+        "D expiry admits the first READY unsent card, never the newest draft",
+        "D explicit terminal completion admits UNSENT before expiry",
+        "D future terminal information and future receipt do not leak into an earlier snapshot",
+        "D late received terminal event is not known at its event time",
+        "D future input features invalidate a snapshot even if its analysis timestamp is old",
+        "D a publication must bind an already saved ready snapshot",
+        "D malformed SENT remains possible-send UNKNOWN and never becomes UNSENT",
+        "D unresolved UNKNOWN possibility is quarantined, not classified as never sent",
+        "D conflicting immutable IDs, simultaneous originals and cross-wave input are quarantined",
+        "D adapter is deterministic and pure with shuffled or replayed ledger rows",
+        "D summary consumes eligible frozen origins and separates mode, map and delivery cohorts",
+        "D all optional contexts create attributed factual explanations without changing the plan",
+        "D optional trades use source row clocks rather than a fresh envelope",
+        "D stable trade IDs deduplicate replay and conflicting IDs cannot add notional",
+        "D anonymous identical executions remain distinct; no artificial dedup by price and time",
+        "D unknown units or missing aggressor side never manufacture directional context",
+        "D later optional envelope and historical future values cannot change earlier explanation",
+        "D asynchronous benchmark windows are not presented as relative strength",
+        "D OI zero is a valid labeled snapshot, not absent or evidence of shorts",
+        "D unqualified OI units and funding period remain additional unknowns without blocking core",
+        "D foreign optional context names venue and estimated origin rather than attributing it to BingX",
+        "D only the entry around the reclaimed level is confirmed, not every lower support",
+        "D maps add sourced context while farther strong zones cannot move the structural exit",
+        "D maximum six-zone map plus all optional explanations fits Telegram with concrete entry bases",
+        "D audit simultaneous drafts do not obscure an unambiguous published original",
+        "D audit future or unknown context payload fields never enter initial feature values",
+        "D audit unsupported optional shapes stay out of derived features as well as explanations",
+        "D audit removed conflicting trade IDs are explicitly partial sample coverage",
+        "D audit a terminal UNSENT original is immutable and late contradictory publication is quarantined",
+        "D map overlap and a zone before the exit explain context while preserving every planned price",
+        "D context text is rendered once and does not replace the core movement/plan explanation",
+        "D immutable anchor also binds the saved analysis digest so plan or feature changes cannot hide behind unchanged P0"
+      ],
+      "pass": 38,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e/qualification.json",
+      "sha256": "e4596bda7884048e6097bc62e8da6d977c847372c6e2d9a3cdd6d96399128447",
+      "bytes": 4147,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e/strengthened-cases.tap",
+      "sha256": "ae42a4d5d05741a0669422d30e3329c456452982dd0c1f5323736543edce73d0",
+      "bytes": 1563,
+      "cases": [
+        "E05 AUTO and statistics make zero source calls outside the Moscow daytime window",
+        "E06 a manual night request may publish but cannot trigger automatic outcome collection",
+        "E10 REQUIREMENT a terminal never-sent wave must register first READY as a separate UNSENT original"
+      ],
+      "pass": 2,
+      "fail": 1
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e/test-results.tap",
+      "sha256": "ae1a7b191b175a53ddc581fed701ab9794ba28b1736c539a9b720551b0ec91c7",
+      "bytes": 4339,
+      "cases": [
+        "E01 real runner checks three ready candidates without a fixed-two ceiling",
+        "E02 manual below every automatic threshold uses the real core and can publish a qualified plan",
+        "E03 retained wave survives a five-minute retreat below thresholds and preserves published original t0/P0",
+        "E04 no-map budget absence remains nonblocking through core, stored text, dispatch and receipt",
+        "E05 AUTO and statistics make zero source calls outside the Moscow daytime window",
+        "E06 a manual night request may publish but cannot trigger automatic outcome collection",
+        "E07 possible-send UNKNOWN is durable and never retried by the same or a later run",
+        "E08 stale evening card is not sent at night and morning analysis recalculates a new wave",
+        "E09 REQUIREMENT possible-send UNKNOWN must register the immutable original for separate outcome tracking",
+        "E10 REQUIREMENT a terminal never-sent wave must register first READY as a separate UNSENT original",
+        "E11 SENT manual/auto and partial-map/no-map originals retain distinct modes and map states"
+      ],
+      "pass": 9,
+      "fail": 2
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e-final-assembled/final-results.tap",
+      "sha256": "17033f04faed2100c9d1c6445f4b5c1c661dcc2c15eeb9e149b87b822ed7be3a",
+      "bytes": 2891,
+      "cases": [
+        "E01 real runner checks three ready candidates without a fixed-two ceiling",
+        "E02 manual below every automatic threshold uses the real core and can publish a qualified plan",
+        "E03 retained wave survives a five-minute retreat below thresholds and preserves published original t0/P0",
+        "E04 no-map budget absence remains nonblocking through core, stored text, dispatch and receipt",
+        "E05 AUTO and statistics make zero source calls outside the Moscow daytime window",
+        "E06 a manual night request may publish but cannot trigger automatic outcome collection",
+        "E07 possible-send UNKNOWN is durable and never retried by the same or a later run",
+        "E08 stale evening card is not sent at night and morning analysis recalculates a new wave",
+        "E09 REQUIREMENT possible-send UNKNOWN must register the immutable original for separate outcome tracking",
+        "E10 REQUIREMENT a terminal never-sent wave must register first READY as a separate UNSENT original",
+        "E11 SENT manual/auto and partial-map/no-map originals retain distinct modes and map states"
+      ],
+      "pass": 11,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e-final-assembled/qualification.json",
+      "sha256": "e47b6897b6e79d499bd9013186cf30d04d61cd4c7dc003a3467ecf2ba98a25c3",
+      "bytes": 11425,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-e-final-assembled/root-final-results.tap",
+      "sha256": "e816a923e9d9e2e1e9b1e71c8f5f06d1aaf612ade0846ce541a2f6fb7c0c0ee5",
+      "bytes": 2891,
+      "cases": [
+        "E01 real runner checks three ready candidates without a fixed-two ceiling",
+        "E02 manual below every automatic threshold uses the real core and can publish a qualified plan",
+        "E03 retained wave survives a five-minute retreat below thresholds and preserves published original t0/P0",
+        "E04 no-map budget absence remains nonblocking through core, stored text, dispatch and receipt",
+        "E05 AUTO and statistics make zero source calls outside the Moscow daytime window",
+        "E06 a manual night request may publish but cannot trigger automatic outcome collection",
+        "E07 possible-send UNKNOWN is durable and never retried by the same or a later run",
+        "E08 stale evening card is not sent at night and morning analysis recalculates a new wave",
+        "E09 REQUIREMENT possible-send UNKNOWN must register the immutable original for separate outcome tracking",
+        "E10 REQUIREMENT a terminal never-sent wave must register first READY as a separate UNSENT original",
+        "E11 SENT manual/auto and partial-map/no-map originals retain distinct modes and map states"
+      ],
+      "pass": 11,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/affected-floor-tests.tap",
+      "sha256": "1269b4822402f931e555345cc5b5516ebe76b4299c87a6bfacf71f0c8a1ad248",
+      "bytes": 891,
+      "cases": [
+        "F01 clean temporal train and holdout partitions never enable publication or estimate probability",
+        "F11 mode, map, delivery, rules, profile and implementation remain distinct cohorts",
+        "F28 engineering floors are inherited from TZ/summary and cannot be met by pooling distinct map cohorts"
+      ],
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/qualification.json",
+      "sha256": "81d9472910bfe9ec37562742635031df02ab58fc64d4179c2e17633dadbec7b3",
+      "bytes": 5022,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/test-results-final.tap",
+      "sha256": "fd2b47b5743d7f428261b86287c1c8cfc99693535f11fd3093f0a2a61211a7a4",
+      "bytes": 7024,
+      "cases": [
+        "F01 clean temporal train and holdout partitions never enable publication or estimate probability",
+        "F02 labels whose four-hour horizon crosses split are purged, including early known hits",
+        "F03 an ended horizon with label received after split is not usable for training",
+        "F04 a wave update crossing the split remains in the original partition once",
+        "F05 post hoc split declaration is blocked even when a partition could be formed",
+        "F06 future received/known features cannot become original inputs",
+        "F07 outcome or arbitrary post-outcome feature names are excluded despite plausible clocks",
+        "F08 null requires a reason but zero is retained as an observed value",
+        "F09 duplicate feature names and unknown feature schema fail input qualification",
+        "F10 changing an original feature snapshot or analysis digest on an update is quarantined",
+        "F11 mode, map, delivery, rules, profile and implementation remain distinct cohorts",
+        "F12 late forecasts, training labels from the future and map-cohort transfers are rejected",
+        "F13 a holdout forecast trained past the frozen split cannot pass as out-of-time validation",
+        "F14 mature UNKNOWN and not-yet-mature HIT remain outside train and mature holdout labels",
+        "F15 future records are excluded and contradictory immutable origins cannot form a clean cohort",
+        "F16 OBSERVED labels and claimed hashes alone never authenticate native provenance",
+        "F17 input and feature bounds prevent unbounded offline audit work",
+        "F18 missing snapshots and forecasts in retained records stay missing, never backfilled",
+        "F19 retained map/no-map snapshots compare behavior on one wave without causal or numerical claims",
+        "F20 adding a map obtained after the original report fails paired comparison",
+        "F21 map comparisons cannot silently change mandatory facts, P0 or rules",
+        "F22 repeated map comparisons are not independent wins and conflicting pair IDs are censored",
+        "F23 paired input without original raw clocks or exact implementation binding stays unqualified",
+        "F24 audits are pure and deterministic for shuffled independent rows",
+        "F25 feature units/domains and declared map cohort cannot be silently changed",
+        "F26 identical no-map snapshots cannot be labeled as a map-benefit experiment",
+        "F27 unresolved publication and unbound training manifests prevent clean calibration partitions",
+        "F28 engineering floors are inherited from TZ/summary and cannot be met by pooling distinct map cohorts",
+        "F29 raw drafts cannot enter calibration without a frozen original or terminal UNSENT admission"
+      ],
+      "pass": 29,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/test-results-initial.tap",
+      "sha256": "913f40a9e01905b98383c23f5680e70536f9d3f0b4231792e5c0e1f52682ab31",
+      "bytes": 5774,
+      "cases": [
+        "F01 clean temporal train and holdout partitions never enable publication or estimate probability",
+        "F02 labels whose four-hour horizon crosses split are purged, including early known hits",
+        "F03 an ended horizon with label received after split is not usable for training",
+        "F04 a wave update crossing the split remains in the original partition once",
+        "F05 post hoc split declaration is blocked even when a partition could be formed",
+        "F06 future received/known features cannot become original inputs",
+        "F07 outcome or arbitrary post-outcome feature names are excluded despite plausible clocks",
+        "F08 null requires a reason but zero is retained as an observed value",
+        "F09 duplicate feature names and unknown feature schema fail input qualification",
+        "F10 changing an original feature snapshot or analysis digest on an update is quarantined",
+        "F11 mode, map, delivery, rules, profile and implementation remain distinct cohorts",
+        "F12 late forecasts, training labels from the future and map-cohort transfers are rejected",
+        "F13 a holdout forecast trained past the frozen split cannot pass as out-of-time validation",
+        "F14 mature UNKNOWN and not-yet-mature HIT remain outside train and mature holdout labels",
+        "F15 future records are excluded and contradictory immutable origins cannot form a clean cohort",
+        "F16 OBSERVED labels and claimed hashes alone never authenticate native provenance",
+        "F17 input and feature bounds prevent unbounded offline audit work",
+        "F18 missing snapshots and forecasts in retained records stay missing, never backfilled",
+        "F19 retained map/no-map snapshots compare behavior on one wave without causal or numerical claims",
+        "F20 adding a map obtained after the original report fails paired comparison",
+        "F21 map comparisons cannot silently change mandatory facts, P0 or rules",
+        "F22 repeated map comparisons are not independent wins and conflicting pair IDs are censored",
+        "F23 paired input without original raw clocks or exact implementation binding stays unqualified",
+        "F24 audits are pure and deterministic for shuffled independent rows"
+      ],
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-f/test-results.tap",
+      "sha256": "9f53f56f52cf7572c4e610f1dc5d5ca5c1787fb55d466a4c76222ff87c5d8b29",
+      "bytes": 6491,
+      "cases": [
+        "F01 clean temporal train and holdout partitions never enable publication or estimate probability",
+        "F02 labels whose four-hour horizon crosses split are purged, including early known hits",
+        "F03 an ended horizon with label received after split is not usable for training",
+        "F04 a wave update crossing the split remains in the original partition once",
+        "F05 post hoc split declaration is blocked even when a partition could be formed",
+        "F06 future received/known features cannot become original inputs",
+        "F07 outcome or arbitrary post-outcome feature names are excluded despite plausible clocks",
+        "F08 null requires a reason but zero is retained as an observed value",
+        "F09 duplicate feature names and unknown feature schema fail input qualification",
+        "F10 changing an original feature snapshot or analysis digest on an update is quarantined",
+        "F11 mode, map, delivery, rules, profile and implementation remain distinct cohorts",
+        "F12 late forecasts, training labels from the future and map-cohort transfers are rejected",
+        "F13 a holdout forecast trained past the frozen split cannot pass as out-of-time validation",
+        "F14 mature UNKNOWN and not-yet-mature HIT remain outside train and mature holdout labels",
+        "F15 future records are excluded and contradictory immutable origins cannot form a clean cohort",
+        "F16 OBSERVED labels and claimed hashes alone never authenticate native provenance",
+        "F17 input and feature bounds prevent unbounded offline audit work",
+        "F18 missing snapshots and forecasts in retained records stay missing, never backfilled",
+        "F19 retained map/no-map snapshots compare behavior on one wave without causal or numerical claims",
+        "F20 adding a map obtained after the original report fails paired comparison",
+        "F21 map comparisons cannot silently change mandatory facts, P0 or rules",
+        "F22 repeated map comparisons are not independent wins and conflicting pair IDs are censored",
+        "F23 paired input without original raw clocks or exact implementation binding stays unqualified",
+        "F24 audits are pure and deterministic for shuffled independent rows",
+        "F25 feature units/domains and declared map cohort cannot be silently changed",
+        "F26 identical no-map snapshots cannot be labeled as a map-benefit experiment",
+        "F27 unresolved publication and unbound training manifests prevent clean calibration partitions"
+      ],
+      "pass": 27,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/affected-renderer-prior.tap",
+      "sha256": "6c19585846392899d011c053262a8e31b2323e67e1738f8b88695eb8fbcd7ed6",
+      "bytes": 1381,
+      "cases": [
+        "card shows source as-of age, venue, model and limitations instead of refreshing age from receipt",
+        "uncalibrated event is named without inventing a numerical probability or user profit",
+        "six long source/model descriptions remain within Telegram length while preserving all six zones",
+        "D maximum six-zone map plus all optional explanations fits Telegram with concrete entry bases",
+        "D context text is rendered once and does not replace the core movement/plan explanation"
+      ],
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/boundary-after.tap",
+      "sha256": "bda8f184ee6f9476141810910c77853025848cb9001ec583af5901fc9bce31f2",
+      "bytes": 891,
+      "cases": [
+        "G01 maximum three entries, six relative-scale zones and every optional context fit one complete Telegram card",
+        "G02 long opaque source-unit labels cannot make a ready card exceed Telegram size",
+        "G03 Unicode source/model/symbol labels cannot overflow or leave unpaired UTF-16 surrogates"
+      ],
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/boundary-before-merged.tap",
+      "sha256": "36fee27c0633e95ea268d0491bd0d9d922d10e59debafc204b38f6b5d9078b98",
+      "bytes": 2902,
+      "cases": [
+        "G01 maximum three entries, six relative-scale zones and every optional context fit one complete Telegram card",
+        "G02 long opaque source-unit labels cannot make a ready card exceed Telegram size",
+        "G03 Unicode source/model/symbol labels cannot overflow or leave unpaired UTF-16 surrogates"
+      ],
+      "pass": 1,
+      "fail": 2
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/boundary-before.tap",
+      "sha256": "52cddbde30489c445a88de1a7186a008471944ad78a81589b9d2aec8d5bfc21d",
+      "bytes": 2900,
+      "cases": [
+        "G01 maximum three entries, six relative-scale zones and every optional context fit one complete Telegram card",
+        "G02 long opaque source-unit labels cannot make a ready card exceed Telegram size",
+        "G03 Unicode source/model/symbol labels cannot overflow or leave unpaired UTF-16 surrogates"
+      ],
+      "pass": 1,
+      "fail": 2
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/boundary-final.tap",
+      "sha256": "c01812dfcd0aea363f5d80eb475788370b6779069210f147b409a55dc8d8fadf",
+      "bytes": 2416,
+      "cases": [
+        "G01 maximum three entries, six relative-scale zones and every optional context fit one complete Telegram card",
+        "G02 long opaque source-unit labels cannot make a ready card exceed Telegram size",
+        "G03 Unicode source/model/symbol labels cannot overflow or leave unpaired UTF-16 surrogates",
+        "G04 odd UTF-16 source prefixes in optional-context sentences remain valid Unicode",
+        "G05 compact relative map retains short-history and unconfirmed-return warnings, model basis, source clocks and all prices",
+        "G06 compaction never converts an opaque or relative source unit into a monetary estimate",
+        "G07 no-map card preserves all three entries and facts without a hidden map gate",
+        "G08 compact card keeps a smaller supported position limit and observable invalidation",
+        "G09 observed positions retain their observed basis rather than being renamed modeled liquidations"
+      ],
+      "pass": 9,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/e09-e10-recheck.tap",
+      "sha256": "4dd0b69f12026c574a7572193cd47bc4b6fd2f6835732fd8cb107b5c58c5aa5a",
+      "bytes": 664,
+      "cases": [
+        "E09 REQUIREMENT possible-send UNKNOWN must register the immutable original for separate outcome tracking",
+        "E10 REQUIREMENT a terminal never-sent wave must register first READY as a separate UNSENT original"
+      ],
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-g/qualification.json",
+      "sha256": "44885fdb20c33e1b2654b6e6a4093cb5019a74b9d62bb4618310d40501695bb4",
+      "bytes": 6800,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/adverse-affected.tap",
+      "sha256": "1de574c157b39728e6fe4b1ad701b5139acaeb7f531dafbff34d0ad5a7a24a01",
+      "bytes": 703,
+      "cases": [
+        "H18 adverse values remain null for gaps and materialize known drawdown/cancellation facts without profit claims",
+        "H22 incomplete path cannot materialize precise total drawdown or intrabar pre-hit drawdown from a stray scalar"
+      ],
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/atomic-pair-affected.tap",
+      "sha256": "32c0b72d4905d97626198e40116699ed56993bbd54ba2489bbbbf5270b349b3b",
+      "bytes": 1692,
+      "cases": [
+        "H01 forty-two independent waves have exact materialized counters without passing old records to the query",
+        "H02 exact event replay is a no-op and cannot increment counters or revisions twice",
+        "H12 P0, t0 and original map cannot be rewritten; rejected protocol events leave state untouched",
+        "H16 DELIVERY_DIAGNOSTIC SENT239 is ignored with no origin, wave, outcome or counter",
+        "H25 prepared event folds synchronously through the actual ROOT MemoryStore.atomicPair and repeats safely",
+        "H26 prepared hash envelope is immutable/transient and cannot be forged or persisted as an event authority"
+      ],
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/qualification.json",
+      "sha256": "63f73352d7c7e3ff2e78bb74465c17179a8df260bc5771e5e957508fbd4e38a7",
+      "bytes": 4937,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/test-results-final.tap",
+      "sha256": "0a0a0d7e2973699a58c1c021fd787da52baf4d509eedeb76d151b982f9680852",
+      "bytes": 6852,
+      "cases": [
+        "H01 forty-two independent waves have exact materialized counters without passing old records to the query",
+        "H02 exact event replay is a no-op and cannot increment counters or revisions twice",
+        "H03 UNKNOWN becomes HIT and a later UNKNOWN cannot erase confirmed hit or re-count its wave",
+        "H04 early HIT stays pending until explicit due transition; query flags stale maturity honestly",
+        "H05 late receipt moves exactly one original wave from UNKNOWN to SENT cohort",
+        "H06 a later UNKNOWN receipt state cannot downgrade a receipt-backed SENT",
+        "H07 two raw cards of one wave retain the selected original map/mode instead of becoming two successes",
+        "H08 all mode/delivery/map/rules/profile/evidence cohorts match batch counts",
+        "H09 gapped HIT and enclosing-bar MISS preserve distinct coverage and unknown adverse data",
+        "H10 contradictory HIT/MISS censors the original wave just like the batch oracle",
+        "H11 invalid later targets retain issues without erasing an earlier valid HIT",
+        "H12 P0, t0 and original map cannot be rewritten; rejected protocol events leave state untouched",
+        "H13 verified instrument-to-asset conflicts stop reconciliation before applying any delta",
+        "H14 replaying a record ID with changed bytes is rejected rather than silently replaced",
+        "H15 sequence gaps, backwards clocks and mixed materializations cannot corrupt counters",
+        "H16 DELIVERY_DIAGNOSTIC SENT239 is ignored with no origin, wave, outcome or counter",
+        "H17 serialize/restore aggregate and a single compact wave then continue without prior observations",
+        "H18 adverse values remain null for gaps and materialize known drawdown/cancellation facts without profit claims",
+        "H19 due transitions page explicitly and repeated mature clock ticks are idempotent",
+        "H20 a hundred updates need only compact representative observations for the next fold",
+        "H21 immutable input objects remain detached from the returned derived state",
+        "H22 incomplete path cannot materialize precise total drawdown or intrabar pre-hit drawdown from a stray scalar",
+        "H23 pre-send ERROR/FAILED is not a normalized statistical UNKNOWN signal",
+        "H24 maturity state revision is separate from source journal event revision",
+        "H25 prepared event folds synchronously through the actual ROOT MemoryStore.atomicPair and repeats safely",
+        "H26 prepared hash envelope is immutable/transient and cannot be forged or persisted as an event authority",
+        "H27 atomicPair may assign the next unique-event revision inside CAS without a new source sequence column"
+      ],
+      "pass": 27,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-h/test-results-initial.tap",
+      "sha256": "d972e4f627ccb72758863c0cacecb564c9a9bc8ec3a215cfd36acb94203c5a8c",
+      "bytes": 5277,
+      "cases": [
+        "H01 forty-two independent waves have exact materialized counters without passing old records to the query",
+        "H02 exact event replay is a no-op and cannot increment counters or revisions twice",
+        "H03 UNKNOWN becomes HIT and a later UNKNOWN cannot erase confirmed hit or re-count its wave",
+        "H04 early HIT stays pending until explicit due transition; query flags stale maturity honestly",
+        "H05 late receipt moves exactly one original wave from UNKNOWN to SENT cohort",
+        "H06 a later UNKNOWN receipt state cannot downgrade a receipt-backed SENT",
+        "H07 two raw cards of one wave retain the selected original map/mode instead of becoming two successes",
+        "H08 all mode/delivery/map/rules/profile/evidence cohorts match batch counts",
+        "H09 gapped HIT and enclosing-bar MISS preserve distinct coverage and unknown adverse data",
+        "H10 contradictory HIT/MISS censors the original wave just like the batch oracle",
+        "H11 invalid later targets retain issues without erasing an earlier valid HIT",
+        "H12 P0, t0 and original map cannot be rewritten; rejected protocol events leave state untouched",
+        "H13 verified instrument-to-asset conflicts stop reconciliation before applying any delta",
+        "H14 replaying a record ID with changed bytes is rejected rather than silently replaced",
+        "H15 sequence gaps, backwards clocks and mixed materializations cannot corrupt counters",
+        "H16 DELIVERY_DIAGNOSTIC SENT239 is ignored with no origin, wave, outcome or counter",
+        "H17 serialize/restore aggregate and a single compact wave then continue without prior observations",
+        "H18 adverse values remain null for gaps and materialize known drawdown/cancellation facts without profit claims",
+        "H19 due transitions page explicitly and repeated mature clock ticks are idempotent",
+        "H20 a hundred updates need only compact representative observations for the next fold",
+        "H21 immutable input objects remain detached from the returned derived state"
+      ],
+      "pass": 21,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/affected-legacy.tap",
+      "sha256": "d5e176bee0b0584c91f8729103482a7ee84ccccd92f25dc1a5a98710a63d0aa4",
+      "bytes": 2482,
+      "cases": [
+        "12%/15m produces a standalone long pullback card without map, OI or trade direction",
+        "retained wave survives retreat below the original percentage with unchanged ID, baseline and expiry",
+        "sharp unconfirmed and reclaimed cases have distinct factual explanations",
+        "missing quote turnover stays null and base volume remains a correctly labelled comparison",
+        "partial old history can qualify exact available windows without inventing 24h",
+        "future confirmation candles cannot improve an earlier plan or create a pivot",
+        "a temporary empty activity window keeps the prior wave record without extending it",
+        "missing mandatory volume is a precise waiting reason rather than zero or a market inactivity claim",
+        "known target hit survives missing history while full decline remains unknown",
+        "boundary candle high cannot prove the price was reached inside four hours"
+      ],
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/median-affected.tap",
+      "sha256": "09d7febb369d90bfb710156bcf223dd6610d4eb39a1c2c8bae32f522b4cb1ec0",
+      "bytes": 1434,
+      "cases": [
+        "I01 owner-approved dimensionless native comparison qualifies the same plan without inventing BASE/USDT volume",
+        "I16 old genuine BASE and quote comparisons retain field/unit and numerical ratios",
+        "I17 overflowing native sums do not create Infinity/NaN activity; finite large medians remain finite",
+        "I22 real SOURCE normalization joins the analytics consumer with null absolutes and retained clock evidence",
+        "I25 positive but numerically overflowing ratios are null with an honest numeric reason"
+      ],
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/qualification.json",
+      "sha256": "0974597160fff24267e7f6327ba74081f536706f68cd83f74d7546aff81314f6",
+      "bytes": 6565,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/test-results-final.tap",
+      "sha256": "1bdca801836fff20f784c20b2a2b9414fce77a41ea7ee43d5111f9881c6ce810",
+      "bytes": 6599,
+      "cases": [
+        "I01 owner-approved dimensionless native comparison qualifies the same plan without inventing BASE/USDT volume",
+        "I02 named native unit needs all time/relative/absolute-unknown coverage flags even with USABLE status",
+        "I03 unknown absolute mode never consumes native quantity as an implicit BASE fallback",
+        "I04 rows preserve exact decimal strings and native metadata without filling volume_base",
+        "I05 cross-instrument, other-route, other-field or interval comparison keys fail before ratios",
+        "I06 a BASE/quote row inserted in native current or baseline windows cannot be silently mixed",
+        "I07 missing, negative, nonfinite, decimal-mismatched or known-unit native fields are rejected",
+        "I08 zero background produces null RATIO with reason rather than infinite activity",
+        "I09 zero current native activity still fails the mandatory current-volume gate",
+        "I10 saved BASE wave cannot be converted to native or reanchored merely because source units changed",
+        "I11 saved native wave cannot convert back to BASE or lose its original key",
+        "I12 same native basis preserves retained qualification, baseline and wave lifetime after retreat",
+        "I13 a saved native comparison key changed in retained state waits without a new wave",
+        "I14 gaps, stale bars and unclosed future bars cannot lower the former activity/freshness requirements",
+        "I15 ratio mode does not bypass price, book or independent-plan qualification",
+        "I16 old genuine BASE and quote comparisons retain field/unit and numerical ratios",
+        "I17 overflowing native sums do not create Infinity/NaN activity; finite large medians remain finite",
+        "I18 valid native metadata does not alter the price-only four-hour outcome",
+        "I19 richer absolute quote data cannot silently change a retained BASE baseline",
+        "I20 an absolute quote-to-BASE switch waits without extending the old wave",
+        "I21 coverage scope mismatch or an asserted absolute/vendor guarantee cannot bypass native row guards",
+        "I22 real SOURCE normalization joins the analytics consumer with null absolutes and retained clock evidence",
+        "I23 zero saved impulse denominator returns null with reason and preserves original lifetime",
+        "I24 native-relative warning coexists with a maximum complete Telegram presentation",
+        "I25 positive but numerically overflowing ratios are null with an honest numeric reason",
+        "I26 an expired BASE wave is not revived by switching to inactive native-relative observations"
+      ],
+      "pass": 26,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-i/test-results-initial.tap",
+      "sha256": "f93a5e7321405738b11083737c219e9436e0dd72f16eb4ee44cba28abe6d9966",
+      "bytes": 4608,
+      "cases": [
+        "I01 owner-approved dimensionless native comparison qualifies the same plan without inventing BASE/USDT volume",
+        "I02 named native unit needs all time/relative/absolute-unknown coverage flags even with USABLE status",
+        "I03 unknown absolute mode never consumes native quantity as an implicit BASE fallback",
+        "I04 rows preserve exact decimal strings and native metadata without filling volume_base",
+        "I05 cross-instrument, other-route, other-field or interval comparison keys fail before ratios",
+        "I06 a BASE/quote row inserted in native current or baseline windows cannot be silently mixed",
+        "I07 missing, negative, nonfinite, decimal-mismatched or known-unit native fields are rejected",
+        "I08 zero background produces null RATIO with reason rather than infinite activity",
+        "I09 zero current native activity still fails the mandatory current-volume gate",
+        "I10 saved BASE wave cannot be converted to native or reanchored merely because source units changed",
+        "I11 saved native wave cannot convert back to BASE or lose its original key",
+        "I12 same native basis preserves retained qualification, baseline and wave lifetime after retreat",
+        "I13 a saved native comparison key changed in retained state waits without a new wave",
+        "I14 gaps, stale bars and unclosed future bars cannot lower the former activity/freshness requirements",
+        "I15 ratio mode does not bypass price, book or independent-plan qualification",
+        "I16 old genuine BASE and quote comparisons retain field/unit and numerical ratios",
+        "I17 overflowing native sums do not create Infinity/NaN activity; finite large medians remain finite",
+        "I18 valid native metadata does not alter the price-only four-hour outcome"
+      ],
+      "pass": 18,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-j/affected-corrected-one.tap",
+      "sha256": "4599af4981983e57e0f160ff269dbbbc97582f63f0c44f9beab0afe722495a79",
+      "bytes": 310,
+      "cases": [
+        "old inactive 50% daily gain cannot manufacture a current wave"
+      ],
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-j/affected-legacy.tap",
+      "sha256": "f80aa411a4756b6a42a0bb4127990cb25ba12713f50886072d80a382daae270f",
+      "bytes": 2908,
+      "cases": [
+        "manual analysis uses same kernel while automatic thresholds remain separate",
+        "old inactive 50% daily gain cannot manufacture a current wave",
+        "retained wave survives retreat below the original percentage with unchanged ID, baseline and expiry",
+        "partial old history can qualify exact available windows without inventing 24h",
+        "a price extreme inside the period does not replace its starting price",
+        "stale mandatory data returns waiting instead of a ready card",
+        "expiry is anchored at first observation and cannot be renewed by inactive updates",
+        "missing mandatory volume is a precise waiting reason rather than zero or a market inactivity claim"
+      ],
+      "pass": 7,
+      "fail": 1
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-j/qualification.json",
+      "sha256": "4884ebb670a0667dcf73115ac5f84d1b45d9dbf291c3b4b04e75a9020a1021f4",
+      "bytes": 10620,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-j/test-results-final.tap",
+      "sha256": "95e4d2e9f6f23b6ce0e2449b87d630a7b5d62a09ea9bf58dd31b6661d5e04f8e",
+      "bytes": 5108,
+      "cases": [
+        "J01 exact observed +20% qualifies the day cohort although all short windows are below +10%",
+        "J02 no favorable minimum or reported percentage substitutes for first.open to last.close",
+        "J03 different identity, venue, source, origin, market or unit cannot qualify",
+        "J04 stale, future, delayed or extended-expiry day facts never qualify",
+        "J05 exact full aligned 24h boundaries are mandatory",
+        "J06 missing minute, open row, incomplete coverage or false absolute/time assertions cannot qualify",
+        "J07 receipt and original OHLC fields and clocks remain bound",
+        "J08 a conflicting endpoint in the independently observed core window is ignored without poisoning a short-window idea",
+        "J09 invalid optional day data does not suppress independently qualifying short windows",
+        "J10 observed day does not bypass current activity, current book or an independent pullback plan",
+        "J11 retained original qualification, impulse, creation and expiry cannot be moved by new day boundaries",
+        "J12 the former positively qualified ticker fixture path remains and reported-only status is not promoted",
+        "J13 manual refusal explains verified price, growth, activity, liquidity and the missing plan",
+        "J14 missing or unqualified data is explained as unknown rather than zero activity or fabricated liquidity",
+        "J15 an inactive wave can still explain an independently verified book without becoming READY",
+        "J16 invalid profiles receive a plain refusal without a formatter exception",
+        "J17 ready presentation remains exactly the ready card, with optional map absent",
+        "J18 the real SOURCE producer joins the consumer using an artificial 1440-row broker receipt",
+        "J19 changed J rules and a newer day observation preserve an already published original t0, P0 and target",
+        "J20 manual rejection exposes a dimensionless native activity comparison without an absolute quantity claim"
+      ],
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-k/qualification.json",
+      "sha256": "be926b2662009e369426f1224f7a9a3a1fc2e35788647f0ef618a3dbc1fd5bd3",
+      "bytes": 12631,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-k/test-results-initial-fixture.tap",
+      "sha256": "062233c3675aa5f1f5e8d373ce9de78db910c2f4154214ae47c23c83605f54a6",
+      "bytes": 3820,
+      "cases": [
+        "K01 real SOURCE 240/241 native-relative history closes MISS through ROOT journal and materialized summary at original v1 target",
+        "K02 a boundary high from true SOURCE history remains UNKNOWN through ROOT instead of becoming a false HIT",
+        "K03 repeated latest J update and resolved-outcome replay retain one original v1 cohort without a second history load"
+      ],
+      "pass": 0,
+      "fail": 3
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-k/test-results.tap",
+      "sha256": "77a92acc050edbd64298353c47c16bffad624bd606cf04a99d4ba3e375e68962",
+      "bytes": 1029,
+      "cases": [
+        "K01 real SOURCE 240/241 native-relative history closes MISS through ROOT journal and materialized summary at original v1 target",
+        "K02 a boundary high from true SOURCE history remains UNKNOWN through ROOT instead of becoming a false HIT",
+        "K03 repeated latest J update and resolved-outcome replay retain one original v1 cohort without a second history load"
+      ],
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/affected-two.tap",
+      "sha256": "5545ca5bb7f99c0f7aa68a02ee9472e8ab2953209a37517174cf14f9f84926cc",
+      "bytes": 621,
+      "cases": [
+        "card shows source as-of age, venue, model and limitations instead of refreshing age from receipt",
+        "uncalibrated event is named without inventing a numerical probability or user profit"
+      ],
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/purpose-corrected-one.tap",
+      "sha256": "23c535cd188f11fc372a7dfafcb3234ec5591a85236fd47d4010b509746f86b5",
+      "bytes": 472,
+      "cases": [
+        "L07 cohort calibration inputs exclude acceptance, unknown, artificial claims and conflicting-wave promotion while raw summary stays unchanged"
+      ],
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/qualification.json",
+      "sha256": "bce0b87e2171e4a2508e43a875b9e252a8beee4fcc3b8a9c080aaac8c19b940f",
+      "bytes": 15612,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/test-results-initial.tap",
+      "sha256": "9aabd527133f40b495c237ddc79e04ef59f91a1ed9eecae731414d57513724bf",
+      "bytes": 3507,
+      "cases": [
+        "L01 AUTO shows the confirmed past crossing separately from the unestimated future +10/4h event",
+        "L02 a manual acceptance review below the auto growth threshold is labelled MANUAL and TEST without inventing a crossing",
+        "L03 retained wave names the earlier crossing with original clocks/evidence and never borrows a current fact",
+        "L04 a PARTLY plan below minimum 10% becomes a plain manual refusal without extending its exit",
+        "L05 complete six-zone, three-entry native/Unicode/opaque cards retain TEST, historical growth evidence and future-event labels under4096",
+        "L06 true SOURCE 24h day proof is displayed as past +20% while its separate plan still meets notification minimum",
+        "L07 cohort calibration inputs exclude acceptance, unknown, artificial claims and conflicting-wave promotion while raw summary stays unchanged",
+        "L08 paired feature audit admits only explicit OBSERVED production claims, and excludes acceptance/unknown without rewriting saved analyses"
+      ],
+      "pass": 7,
+      "fail": 1
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-l/test-results.tap",
+      "sha256": "9aabd527133f40b495c237ddc79e04ef59f91a1ed9eecae731414d57513724bf",
+      "bytes": 3507,
+      "cases": [
+        "L01 AUTO shows the confirmed past crossing separately from the unestimated future +10/4h event",
+        "L02 a manual acceptance review below the auto growth threshold is labelled MANUAL and TEST without inventing a crossing",
+        "L03 retained wave names the earlier crossing with original clocks/evidence and never borrows a current fact",
+        "L04 a PARTLY plan below minimum 10% becomes a plain manual refusal without extending its exit",
+        "L05 complete six-zone, three-entry native/Unicode/opaque cards retain TEST, historical growth evidence and future-event labels under4096",
+        "L06 true SOURCE 24h day proof is displayed as past +20% while its separate plan still meets notification minimum",
+        "L07 cohort calibration inputs exclude acceptance, unknown, artificial claims and conflicting-wave promotion while raw summary stays unchanged",
+        "L08 paired feature audit admits only explicit OBSERVED production claims, and excludes acceptance/unknown without rewriting saved analyses"
+      ],
+      "pass": 7,
+      "fail": 1
+    },
+    {
+      "path": "pump-report/handoffs/analytics/qualification.json",
+      "sha256": "a923236367b3ab4c8f1a8a591a34fdc98602ce986ad0e2159774169e4881a5b2",
+      "bytes": 4508,
+      "kind": "FROZEN_QUALIFICATION_MANIFEST"
+    }
+  ]
+}

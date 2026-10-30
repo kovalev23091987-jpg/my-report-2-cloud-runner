@@ -1,0 +1,172 @@
+{
+  "schema": "PUMP_REAL_MANUAL_SIGNAL_AND_MAP_ACTUAL_V1",
+  "artifact_code_main": "c680e0f3193c68249d0fb7a154b2b3335a980e72",
+  "deployment": {
+    "deployment_id": "345f16d835764e5da2886d3f363e6c1a",
+    "exact_module_readback": 28,
+    "legacy_sha256": "34d4db2ea9667e000107effa5b7b17c01cb699fc5b33ceb64e1a652b34b38e10"
+  },
+  "manual": {
+    "run_id": "pump-native-relative-manual-btc-20261025-one",
+    "instrument_id": "BINGX:USDT_M:100:BTC-USDT",
+    "analysis_key": "pump:analysis:083a55f40ac6ce9b7d32a56f127661587726f72b2f1ddea1e9721a1e785d4ec7",
+    "card_id": "PUMP:190fedda0c458e9aa3ab1b52e4e353b9630d8dcfb694619ae6be73aa7b9b7c46",
+    "text_sha256": "0e1a01f8fbf7cfc762110524a4eba4399a4aa09fd885c1a5499022f9d3d45678",
+    "message_id": "240",
+    "saved_before_send": true,
+    "same_card_text_hash_and_positive_message_receipt_readback": true,
+    "recipient_matched_inside_dispatch": true,
+    "t0": 1792937009606,
+    "deadline_ts": 1792951409606,
+    "P0_present_in_private_immutable_original": true,
+    "market_values_omitted": true,
+    "mandatory_facts": {
+      "price": "USABLE",
+      "candles": "USABLE",
+      "orderbook": "USABLE"
+    },
+    "candle_time_basis": "CCXT_CONSUMER_OPEN_TIME",
+    "relative_native_quantity_only": true,
+    "absolute_BASE_USDT_quantity_qualified": false,
+    "map_mode": "NO_MAP",
+    "plan_ready": true,
+    "plan_potential_status": "BELOW_DESIRED",
+    "probability_pct": null,
+    "provider_HTTP": 7,
+    "new_provider_unknowns": 0,
+    "native": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:MANUAL:pump-native-relative-manual-btc-20261025-one",
+      "usage": {
+        "requests": 140,
+        "rows_read": 107,
+        "rows_written": 83,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 107,
+        "rows_written": 83
+      },
+      "original_envelope_never_reduced": true
+    },
+    "universe_incomplete_reasons": [
+      {
+        "reason": "UNIVERSE_QUALIFICATION_INCOMPLETE",
+        "unqualified": 919
+      }
+    ]
+  },
+  "summary": {
+    "status": "CURRENT",
+    "source_cursor": 1,
+    "independent_waves": 1,
+    "pending_waves": 1,
+    "mature_waves": 0,
+    "publication_counts": {
+      "sent": 1,
+      "unsent": 0,
+      "unknown": 0
+    },
+    "cohort": {
+      "mode": "MANUAL",
+      "publication": "SENT",
+      "map_mode": "NO_MAP",
+      "rules_version": "pump-analytics-v1-tz2-20261025",
+      "profile_version": "pump-report-start-v1",
+      "evidence_class": "OBSERVED"
+    },
+    "technical239_excluded": true,
+    "success_rate_pct": null,
+    "probability_pct": null,
+    "native": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:bde2c191-5708-4cb4-ae03-cf0dbc4fa7fc",
+      "usage": {
+        "requests": 9,
+        "rows_read": 16,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 16,
+        "rows_written": 6
+      },
+      "original_envelope_never_reduced": true
+    }
+  },
+  "map_probe": {
+    "run_id": "pump-swole-btc-20261025-one",
+    "HTTP_status": 200,
+    "provider_receipt_id": "5113a908-f118-4f2b-875f-c6a913bde255",
+    "received_ts": 1792937103370,
+    "capture_sha256": "24b91c66d165ecae68c46782b6527f9660df43bb95418b3efb93036dad0c9528",
+    "capture_class": "PARSED_PROVIDER_REPLY_ENVELOPE_NOT_ORIGINAL_HTTP_BYTES",
+    "schema_top_keys": [
+      "coin",
+      "range",
+      "view",
+      "estimated",
+      "model_version",
+      "as_of",
+      "price",
+      "bin_width",
+      "has_data",
+      "levels",
+      "max_pain",
+      "totals",
+      "links"
+    ],
+    "coin": "BTC",
+    "estimated": true,
+    "model_version": "est-1.0+hl-2026-09-27",
+    "as_of": 1792936820179,
+    "long_bins": 2,
+    "short_bins": 2,
+    "qualified_for_BingX_orders": false,
+    "offline_review_pending": true,
+    "single_attempt_grant_spent": true,
+    "native": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:MAP_CHECK:pump-swole-btc-20261025-one",
+      "usage": {
+        "requests": 10,
+        "rows_read": 15,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 15,
+        "rows_written": 8
+      },
+      "original_envelope_never_reduced": true
+    }
+  },
+  "cumulative_known_native": {
+    "requests": 242,
+    "rows_read": 613,
+    "rows_written": 157,
+    "unknown_ops": 0
+  },
+  "provider_attempts_charged": 14,
+  "original_BINGX_unknown_attempts_preserved": 2,
+  "old_BINGX5_and_technical_TG1_not_rearmed": true,
+  "manual_TG1_now_spent": true,
+  "manual_BINGX6_of24_charged": true,
+  "Swole1_spent": true,
+  "health": {
+    "version": "pump-report-v1.1-native-relative-manual-acceptance",
+    "provider_stage": "MANUAL_ACCEPTANCE",
+    "automatic_enabled": false,
+    "delivery_enabled": false,
+    "legacy_schedules_restored": false
+  },
+  "private_evidence_directory": "pump-report/.private/evidence/",
+  "legacy_and_new_auto_schedules_enabled": false,
+  "complete_TZ": false,
+  "remaining": [
+    "Exact day-growth1440 producer/consumer/native qualification",
+    "Full crypto underlying universe classification beyond13 verified;919 unknown",
+    "New daytime scheduling and production admission",
+    "Pending real outcome after original4h horizon, without night auto collection"
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "schema": "AG_AF_ONLY_DELTA_TO_AD_V1",
+  "AD_crosswalk_sha256": "daf5a31d944d32c4ab2c44c15e64275bb88777212419b4626cea35ce1d82d091",
+  "AF_manifest_sha256": "1e81599d8c95857bf55a9e3888c88b25762b415b291e4203a588e3bb4ea63577",
+  "AF_result": "8_NEW_PASS_FIRST_RUN_ALREADY_COMPLETED_NOT_REEXECUTED",
+  "original_AD_296_or_719_reaudit": false,
+  "prior_ledger_modified": false,
+  "kernel_imports": 0,
+  "tests_run_in_AG": 0,
+  "rows": [
+    {
+      "id": "TZ07.005",
+      "section": 7,
+      "line": 232,
+      "text": "| Активная волна | Цена ускоряется, торговая активность подтверждает движение |",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Состояния вычисляются детерминированными OHLC/volume proxy; ускорение, price impact и повторные неудачные вершины покрыты не полностью.",
+      "AG_delta_assessment": "OBSERVATION_ADDED_STAGE_PROXY_REMAINS_PARTIAL",
+      "AF_actual_change": "Соседние3/5m signed return/min и acceleration observations; ACTIVE classifier не изменён.",
+      "AF_existing_new_case_receipts": [
+        "AF01",
+        "AF03",
+        "AF06"
+      ],
+      "remaining": "Новый критерий существенного ускорения для переключения ACTIVE не задан.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ07.009",
+      "section": 7,
+      "line": 236,
+      "text": "| Возобновление роста | После отката снова усиливаются покупки и движение вверх |",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Состояния вычисляются детерминированными OHLC/volume proxy; ускорение, price impact и повторные неудачные вершины покрыты не полностью.",
+      "AG_delta_assessment": "OBSERVATION_ADDED_STAGE_PROXY_REMAINS_PARTIAL",
+      "AF_actual_change": "Наблюдение ускорения3/5m при не меньшем относительном счётчике; не причинное усиление покупок.",
+      "AF_existing_new_case_receipts": [
+        "AF03",
+        "AF06"
+      ],
+      "remaining": "RESUMING остаётся прежним OHLC/volume proxy; причинная buy pressure не доказана.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ07.010",
+      "section": 7,
+      "line": 237,
+      "text": "| Ослабление | Большие усилия дают всё меньший рост, повторяются неудачные обновления вершины |",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Состояния вычисляются детерминированными OHLC/volume proxy; ускорение, price impact и повторные неудачные вершины покрыты не полностью.",
+      "AG_delta_assessment": "OBSERVATION_ADDED_STAGE_PROXY_REMAINS_PARTIAL",
+      "AF_actual_change": "Меньший прирост при не меньшей активности + отдельный счётчик повторных закрытых failed-high баров после известного HIGH.",
+      "AF_existing_new_case_receipts": [
+        "AF03",
+        "AF04"
+      ],
+      "remaining": "Не автоматический WEAKENING estimator: веса/шум/threshold отсутствуют; полный count всей волны неизвестен.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ07.013",
+      "section": 7,
+      "line": 242,
+      "text": "**активная торговля на росте → уменьшение активности на откате → усиление при возобновлении движения.**",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Calm/resumption activity proxy есть; trade-price response и скорость/величина выкупа как независимые признаки полностью не реализованы.",
+      "AG_delta_assessment": "OBSERVATION_ADDED_SEQUENCE_NOT_NEW_NATIVE_PASS",
+      "AF_actual_change": "Оба актуальных окна и соседняя активность теперь сохраняются как наблюдения.",
+      "AF_existing_new_case_receipts": [
+        "AF01",
+        "AF03",
+        "AF06"
+      ],
+      "remaining": "Новая реальная последовательность импульс→откат→возобновление ещё не получена.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ07.016",
+      "section": 7,
+      "line": 248,
+      "text": "- скорость падения;",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Calm/resumption activity proxy есть; trade-price response и скорость/величина выкупа как независимые признаки полностью не реализованы.",
+      "AG_delta_assessment": "SEPARATE_OBSERVATION_SCALAR_GAP_CLOSED_CODE_ONLY",
+      "AF_actual_change": "Signed closed fall magnitude и OHLC time-based speed bounds от фактического peak bar.",
+      "AF_existing_new_case_receipts": [
+        "AF05"
+      ],
+      "remaining": "Точный внутрисвечный peak time неизвестен; при отсутствующем peak bar/path скорость NULL.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ07.017",
+      "section": 7,
+      "line": 249,
+      "text": "- положение относительно заранее известных уровней;",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Calm/resumption activity proxy есть; trade-price response и скорость/величина выкупа как независимые признаки полностью не реализованы.",
+      "AG_delta_assessment": "OBSERVATION_ADDED_PREKNOWN_LEVEL_CLOCKS",
+      "AF_actual_change": "Preknown HIGH tests и отдельные closed/current-above-reclaim flags.",
+      "AF_existing_new_case_receipts": [
+        "AF04",
+        "AF05"
+      ],
+      "remaining": "Не новая квалификация уровня или native source proof; действует только доступный сегмент.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ07.020",
+      "section": 7,
+      "line": 252,
+      "text": "- скорость и величина возврата;",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Calm/resumption activity proxy есть; trade-price response и скорость/величина выкупа как независимые признаки полностью не реализованы.",
+      "AG_delta_assessment": "SEPARATE_OBSERVATION_SCALAR_GAP_CLOSED_CODE_ONLY",
+      "AF_actual_change": "Closed return magnitude от post-peak low и min/max duration/speed bounds.",
+      "AF_existing_new_case_receipts": [
+        "AF05"
+      ],
+      "remaining": "При same-bar low верхняя скорость UNKNOWN; это OHLC возврат, не доказанный выкуп/исполнение.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ07.021",
+      "section": 7,
+      "line": 253,
+      "text": "- возвращение выше пробитого уровня.",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Calm/resumption activity proxy есть; trade-price response и скорость/величина выкупа как независимые признаки полностью не реализованы.",
+      "AG_delta_assessment": "OBSERVATION_ADDED_RECLAIM_CLOCKS",
+      "AF_actual_change": "First breach interval, first reclaim close, reclaim after last breach; текущая цена отдельно.",
+      "AF_existing_new_case_receipts": [
+        "AF05"
+      ],
+      "remaining": "Прежний reclaim gate не менялся, не известная intrabar последовательность сделок.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ08.007",
+      "section": 8,
+      "line": 273,
+      "text": "| Короткие окна | 3 и 5 минут для активности; 5, 15 и 60 минут для согласованного отбора |",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "activity_windows_ms объявляет 3/5 минут, но основной volumeComparison использует только impulse_window_ms=5 минут; отдельный 3m consumer отсутствует.",
+      "AG_delta_assessment": "THREE_MINUTE_CONSUMER_GAP_CLOSED_CODE_ONLY",
+      "AF_actual_change": "Два самостоятельных activity windows3m/5m, равные предыдущие окна и исключающая текущий образец медианная база.",
+      "AF_existing_new_case_receipts": [
+        "AF01",
+        "AF02",
+        "AF06"
+      ],
+      "remaining": "Native input ещё не принят;5/15/60 AUTO filter не менялся, 3m не новый AUTO threshold.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ18.025",
+      "section": 18,
+      "line": 811,
+      "text": "Сначала ядро формирует набор подтверждённых выводов. Затем текст выбирает:",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Открытая общая приёмка; см. все три оценки.",
+      "AG_delta_assessment": "OBSERVATION_FINDINGS_CONSUMER_ADDED_CODE_ONLY",
+      "AF_actual_change": "Новые фактические movementDetailFindings связаны с activity.details.version и исходными fact_ids.",
+      "AF_existing_new_case_receipts": [
+        "AF03",
+        "AF04",
+        "AF06"
+      ],
+      "remaining": "Реальная карточка и exact delivery receipt ещё не приняты.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ18.026",
+      "section": 18,
+      "line": 813,
+      "text": "- два наиболее важных основания;",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Состояния различаются и размер4096 проверен, но renderer добавляет все помещающиеся optional-context предложения, а не строго два наиболее важных; UX-краткость не доказана.",
+      "AG_delta_assessment": "OBSERVATION_REASON_PRIORITY_ADDED_CODE_ONLY",
+      "AF_actual_change": "Наблюдение failed-high/effort/return/acceleration доступно для второго основания после стадии; ≤2.",
+      "AF_existing_new_case_receipts": [
+        "AF04",
+        "AF06"
+      ],
+      "remaining": "Ограничение количества существовало доAF; AF добавил конкретные наблюдения, не новый общий UX PASS.",
+      "native_PASS": false
+    },
+    {
+      "id": "TZ18.027",
+      "section": 18,
+      "line": 814,
+      "text": "- один главный риск;",
+      "AD_prior_status_preserved": "PARTIAL",
+      "AD_prior_remaining_preserved": "Состояния различаются и размер4096 проверен, но renderer добавляет все помещающиеся optional-context предложения, а не строго два наиболее важных; UX-краткость не доказана.",
+      "AG_delta_assessment": "OBSERVATION_WARNING_ADDED_CODE_ONLY",
+      "AF_actual_change": "Failed-high warning при отсутствии более приоритетного существующего риска.",
+      "AF_existing_new_case_receipts": [
+        "AF04",
+        "AF05"
+      ],
+      "remaining": "Closed/current reclaim предупреждения сохранены; не новая native приёмка риска.",
+      "native_PASS": false
+    }
+  ],
+  "remaining_stage_proxy": "ACTIVE/WEAKENING/RESUMING classifier unchanged; minimal ROOT choice needed only before promoting observations into stage gates. No proposed numeric threshold or new strategy.",
+  "causation_absorption_proven": false,
+  "actual_launch_capture_received": false,
+  "native_PASS": false
+}

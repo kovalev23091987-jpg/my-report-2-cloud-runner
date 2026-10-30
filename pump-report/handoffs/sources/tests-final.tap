@@ -1,0 +1,208 @@
+TAP version 13
+# Subtest: catalog verifies independent asset identity; active status and provider claims cannot qualify a ticker
+ok 1 - catalog verifies independent asset identity; active status and provider claims cannot qualify a ticker
+  ---
+  duration_ms: 1.324541
+  type: 'test'
+  ...
+# Subtest: duplicate catalog rows and ambiguous registry identities invalidate all duplicates
+ok 2 - duplicate catalog rows and ambiguous registry identities invalidate all duplicates
+  ---
+  duration_ms: 0.639208
+  type: 'test'
+  ...
+# Subtest: core returns usable typed price, closed one-minute volume and base-quantity book with registry proofs
+ok 3 - core returns usable typed price, closed one-minute volume and base-quantity book with registry proofs
+  ---
+  duration_ms: 6.980541
+  type: 'test'
+  ...
+# Subtest: payload booleans do not qualify candle clocks or units and unknown values remain null
+ok 4 - payload booleans do not qualify candle clocks or units and unknown values remain null
+  ---
+  duration_ms: 0.428708
+  type: 'test'
+  ...
+# Subtest: missing and duplicate candle windows are rejected honestly; current open row is excluded
+ok 5 - missing and duplicate candle windows are rejected honestly; current open row is excluded
+  ---
+  duration_ms: 1.012583
+  type: 'test'
+  ...
+# Subtest: a cached forming candle never becomes a closed bar merely because time has passed
+ok 6 - a cached forming candle never becomes a closed bar merely because time has passed
+  ---
+  duration_ms: 0.374875
+  type: 'test'
+  ...
+# Subtest: book contract multiplier is applied once; crossed or unknown quantities cannot execute
+ok 7 - book contract multiplier is applied once; crossed or unknown quantities cannot execute
+  ---
+  duration_ms: 0.694541
+  type: 'test'
+  ...
+# Subtest: cache re-download preserves source and receipt ages; stale LAST fallback remains stale
+ok 8 - cache re-download preserves source and receipt ages; stale LAST fallback remains stale
+  ---
+  duration_ms: 0.3055
+  type: 'test'
+  ...
+# Subtest: fallback replaces the same last-price fact when its primary source clock is absent
+ok 9 - fallback replaces the same last-price fact when its primary source clock is absent
+  ---
+  duration_ms: 0.27575
+  type: 'test'
+  ...
+# Subtest: future source clock fails without laundering it through another price route
+ok 10 - future source clock fails without laundering it through another price route
+  ---
+  duration_ms: 0.259833
+  type: 'test'
+  ...
+# Subtest: one failed instrument leaves its other facts and another instrument usable
+ok 11 - one failed instrument leaves its other facts and another instrument usable
+  ---
+  duration_ms: 0.412667
+  type: 'test'
+  ...
+# Subtest: budget denial stops price fallback, preserves unknown costs and never substitutes zeros
+ok 12 - budget denial stops price fallback, preserves unknown costs and never substitutes zeros
+  ---
+  duration_ms: 0.237625
+  type: 'test'
+  ...
+# Subtest: the coordinator synchronous identity resolver supplies independent entries, never provider classification
+ok 13 - the coordinator synchronous identity resolver supplies independent entries, never provider classification
+  ---
+  duration_ms: 0.273708
+  type: 'test'
+  ...
+# Subtest: six newly listed closed minutes remain usable while a recent internal hole reduces usable windows
+ok 14 - six newly listed closed minutes remain usable while a recent internal hole reduces usable windows
+  ---
+  duration_ms: 0.548541
+  type: 'test'
+  ...
+# Subtest: HTTP-200 provider rate-limit envelope stops fallback and retains its broker evidence
+ok 15 - HTTP-200 provider rate-limit envelope stops fallback and retains its broker evidence
+  ---
+  duration_ms: 0.281458
+  type: 'test'
+  ...
+# Subtest: overview separates preliminary percentages from qualified rolling-24h facts
+ok 16 - overview separates preliminary percentages from qualified rolling-24h facts
+  ---
+  duration_ms: 0.248625
+  type: 'test'
+  ...
+# Subtest: fresh overview LAST is reused by core with the same original fact and clocks
+ok 17 - fresh overview LAST is reused by core with the same original fact and clocks
+  ---
+  duration_ms: 0.263375
+  type: 'test'
+  ...
+# Subtest: an invalid bulk row or one missing symbol does not discard another instrument
+ok 18 - an invalid bulk row or one missing symbol does not discard another instrument
+  ---
+  duration_ms: 0.123791
+  type: 'test'
+  ...
+# Subtest: future candle rows and HTTP access denial cannot qualify core data or trigger a price retry
+ok 19 - future candle rows and HTTP access denial cannot qualify core data or trigger a price retry
+  ---
+  duration_ms: 0.263792
+  type: 'test'
+  ...
+# Subtest: optional OI unit stays unknown and funding metadata update is not the rate clock
+ok 20 - optional OI unit stays unknown and funding metadata update is not the rate clock
+  ---
+  duration_ms: 0.196334
+  type: 'test'
+  ...
+# Subtest: qualified optional inputs use their own source clocks and units via the common broker
+ok 21 - qualified optional inputs use their own source clocks and units via the common broker
+  ---
+  duration_ms: 0.1385
+  type: 'test'
+  ...
+# Subtest: no configured or POST-only map route causes no HTTP and does not block core
+ok 22 - no configured or POST-only map route causes no HTTP and does not block core
+  ---
+  duration_ms: 0.285584
+  type: 'test'
+  ...
+# Subtest: one-sided model preserves scale, venue and original bounds without invented dollar amounts
+ok 23 - one-sided model preserves scale, venue and original bounds without invented dollar amounts
+  ---
+  duration_ms: 0.428833
+  type: 'test'
+  ...
+# Subtest: unqualified basis or scale retains diagnostic zones but makes them unusable
+ok 24 - unqualified basis or scale retains diagnostic zones but makes them unusable
+  ---
+  duration_ms: 0.109792
+  type: 'test'
+  ...
+# Subtest: negative map response differs from not checked; old map does not get a new source clock
+ok 25 - negative map response differs from not checked; old map does not get a new source clock
+  ---
+  duration_ms: 0.149917
+  type: 'test'
+  ...
+# Subtest: map quota denial and bounded timeout preserve unknown attempt accounting and do not retry
+ok 26 - map quota denial and bounded timeout preserve unknown attempt accounting and do not retry
+  ---
+  duration_ms: 4.85975
+  type: 'test'
+  ...
+# Subtest: foreign asset maps are rejected and source cache keys are reused across manual/automatic runs
+ok 27 - foreign asset maps are rejected and source cache keys are reused across manual/automatic runs
+  ---
+  duration_ms: 0.428959
+  type: 'test'
+  ...
+# Subtest: existing overview price is validated by identity, units, clocks and provenance; stale claimed-USABLE is fetched again
+ok 28 - existing overview price is validated by identity, units, clocks and provenance; stale claimed-USABLE is fetched again
+  ---
+  duration_ms: 0.667292
+  type: 'test'
+  ...
+# Subtest: selected force refresh bypasses source reuse and broker TTL without redownloading candles
+ok 29 - selected force refresh bypasses source reuse and broker TTL without redownloading candles
+  ---
+  duration_ms: 0.466875
+  type: 'test'
+  ...
+# Subtest: delivery refresh never spends a third fallback request when its primary price fails
+ok 30 - delivery refresh never spends a third fallback request when its primary price fails
+  ---
+  duration_ms: 0.091834
+  type: 'test'
+  ...
+# Subtest: one historical request covers an old four-hour window without pretending it is a live-price fact
+ok 31 - one historical request covers an old four-hour window without pretending it is a live-price fact
+  ---
+  duration_ms: 0.43625
+  type: 'test'
+  ...
+# Subtest: outcome boundary highs are not exact HIT proof; internal holes and unfinished periods remain explicit
+ok 32 - outcome boundary highs are not exact HIT proof; internal holes and unfinished periods remain explicit
+  ---
+  duration_ms: 0.608667
+  type: 'test'
+  ...
+# Subtest: outcome span is bounded before HTTP and volume unknown does not invent units in qualified historical OHLC
+ok 33 - outcome span is bounded before HTTP and volume unknown does not invent units in qualified historical OHLC
+  ---
+  duration_ms: 0.4355
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 60.944041

@@ -1,0 +1,32 @@
+{
+  "schema": "SOURCE_T3_RECENT_TRADES_QUALIFICATION_V1",
+  "status": "PASS_CONTROLLED_WIRE_ONLY_NATIVE_UNEXECUTED",
+  "tests": {
+    "passed": 6,
+    "failed": 0,
+    "duration_ms": 80.041041,
+    "log": "pump-report/handoffs/sources/T3_RECENT_TRADES_AFFECTED_TESTS_V1.log",
+    "sha256": "e1a96e54e04644cdba9b7fc6aa4b508af98906def570bef98de022baa8bad2b9"
+  },
+  "contract_git_blob": "e1fdc83afdf72b803806370d32f8d42c92630cd6",
+  "actual_market_HTTP_SQL_TG_deploy": 0,
+  "single_affected_battery": true,
+  "older_accepted_batteries_replayed": false,
+  "native_coverage_or_cost_qualified": false,
+  "unit_basis": "Recent quoteQty quote-asset amount plus independently verified BINGX USDT instrument; no BASE derivation",
+  "maker_basis": "Exact retained isBuyerMaker-only descriptor; mixed schemas unknown",
+  "wire_ID_guarantee": "Not native-proven: real response must actually supply stable vendor id",
+  "coverage": "Bounded latest returned sample only; no complete window",
+  "consumer_dependency": "Quote-notional v1.2; dedup/conflicts before qualification; same qualified set for sum and price response",
+  "budget": "Upper2 unchanged; trades1 + residual OI/funding1; no third GET; errors/denials use attempted slot",
+  "owner_no_comparison": "Entire key absent; BTCETH no optional requests",
+  "practical_U3_scope_count": 550,
+  "U3_runtime_identity_or_units_promotion": false,
+  "immutable_dependencies": {
+    "PACKAGE_U3_FULL934_SCOPE_SELECTION_FINAL_V1.json": "1d45208baa190c83728957ae1372118de3cdbb80eda12ab76ebfad74300ebfeb",
+    "PACKAGE_T3_SAVED_PREPATCH_OWNER_PRIORITY_V1.json": "e859bc9f46ade9e7603e692b158483e919649cba72d7226ec5264908ba6025d3",
+    "PACKAGE_OWNER_NO_MARKET_COMPARISON_FINAL_V2.json": "40bf13ee34031b9be5f0f9de8e4e4485e54202e842a49357ffb7555cdd2ae1c8",
+    "PACKAGE_T2_RETAINED_TRADE_SEMANTICS_FINAL_V1.json": "2d1aa9cb5dce9bf56cef8907efe5a4be67b81be2a80c689b156cf25ac1a28932",
+    "T3_RECENT_TRADES_PRIMARY_PROOFS_V1.json": "64240dd64eaac3e8940c364b27dcfabffb12f1b1cd8305c78207d0a77a5abe1d"
+  }
+}

@@ -1,0 +1,1355 @@
+{
+  "schema": "REPORT2_FULL_COMPLETION_ACCOUNTING_V1",
+  "head": "47b08e859075fd9bafc19b568ae8d3139ec7cee9",
+  "cloud_run": "39245523405",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "run_id": "1792409648781-1792409663854",
+  "source": "schedule",
+  "started_ts": 1792409648781,
+  "recorded_ts": 1792409794881,
+  "canonical_status": "CLOSED",
+  "candidate_count": 2,
+  "reservation_id": "R2RUN:1792409648781:97e49115f32cfc1e",
+  "reservation": {
+    "ok": true,
+    "status": "CLOSED_BURST",
+    "runs_per_day": 47,
+    "rows_read": 54000,
+    "rows_written": 840,
+    "daily_reserved_if_all_runs": {
+      "rows_read": 3499996,
+      "rows_written": 69983
+    },
+    "daily_limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    },
+    "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+    "nominal_rows_read": 74468,
+    "nominal_rows_written": 1489
+  },
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-19",
+      "run_count": 186,
+      "reserved_rows_read": 1168400,
+      "reserved_rows_written": 20936,
+      "measured_rows_read": 741916,
+      "measured_rows_written": 8339,
+      "unknown_ops": 0,
+      "unfinished_count": 0,
+      "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+      "raw_reserved_rows_read": 1168400,
+      "raw_reserved_rows_written": 20936,
+      "adaptive_effective_rows_read": 1168400,
+      "adaptive_effective_rows_written": 20936,
+      "unfinished_reservations_charged_by_own_ledger_caps": true,
+      "no_completed_reservation_refund": true
+    },
+    "next_reservation": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "projected_reserved": {
+      "rows_read": 1222400,
+      "rows_written": 21776
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "ledger_finalization": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "R2RUN:1792409648781:97e49115f32cfc1e",
+    "source_run_id": "1792409648781-1792409663854",
+    "measured_rows_read": 41016,
+    "finalization_read_padding": 1,
+    "reservation_never_reduced": true,
+    "measured_rows_written_accounted": 469,
+    "measured_requests_accounted": 668,
+    "unknown_ops": 0
+  },
+  "usage_before_finalization": {
+    "budget_mode": "PER_RUN_RESERVED_OR_MEASURED_MAXIMUM_V4_20261015",
+    "measured_rows_read": 41016,
+    "measured_rows_written": 468,
+    "measured_requests": 667,
+    "unknown_ops": 0,
+    "run_burst_cap": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "run_headroom": {
+      "rows_read": 12984,
+      "rows_written": 372
+    },
+    "runs_per_day": 47,
+    "maximum_reserved_daily_rows_read": 2538000,
+    "maximum_reserved_daily_rows_written": 39480,
+    "naive_projected_daily_rows_read": 1927752,
+    "naive_projected_daily_rows_written": 21996,
+    "safety_budget_daily_rows_read": 3500000,
+    "safety_budget_daily_rows_written": 70000,
+    "daily_admission_status": "CLOSED",
+    "top_targets": [
+      {
+        "target": "batch:liquidation_cluster_state",
+        "requests": 4,
+        "rows_read": 18692,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:opportunity_shadow_outcome",
+        "requests": 2,
+        "rows_read": 6587,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:liquidation_events",
+        "requests": 1,
+        "rows_read": 3064,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:v3_early_candidate_wave",
+        "requests": 7,
+        "rows_read": 2541,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:opportunity_shadow_event",
+        "requests": 2,
+        "rows_read": 2079,
+        "rows_written": 9,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:report2_market_snapshot_batch_v1",
+        "requests": 63,
+        "rows_read": 1644,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:report2_liq_source_allowance_shadow",
+        "requests": 20,
+        "rows_read": 951,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:scan_runs",
+        "requests": 8,
+        "rows_read": 799,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:v3_dispatch_publication_binding_shadow",
+        "requests": 1,
+        "rows_read": 625,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:fast_move_watch_state",
+        "requests": 4,
+        "rows_read": 491,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "first:sqlite_master",
+        "requests": 1,
+        "rows_read": 404,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:fast_move_watch_generation",
+        "requests": 1,
+        "rows_read": 372,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    ]
+  },
+  "usage_after_analytics_lease_release": {
+    "requests": 670,
+    "rows_read": 41019,
+    "rows_written": 470,
+    "unknown_ops": 0,
+    "targets": {
+      "batch:OTHER": {
+        "requests": 30,
+        "rows_read": 8,
+        "rows_written": 42,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 26,
+        "rows_read": 2,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "run:report2_runtime_lease_v1": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_runtime_lease_v1": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_command_v2": {
+        "requests": 2,
+        "rows_read": 328,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_command_v2": {
+        "requests": 1,
+        "rows_read": 163,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_scheduler_job_ownership_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_maintenance_cadence_shadow": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_maintenance_cadence_shadow": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 187,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 96,
+        "rows_read": 65,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 29,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 28,
+        "rows_read": 25,
+        "rows_written": 31,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_signal_outcomes": {
+        "requests": 1,
+        "rows_read": 179,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_predictive_health": {
+        "requests": 2,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_global_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_global_source_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 20,
+        "rows_read": 951,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "run:report2_candidate_task_v2": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_task_v2": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_market_snapshot_batch_v1": {
+        "requests": 5,
+        "rows_read": 242,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:scan_runs": {
+        "requests": 1,
+        "rows_read": 5,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:scan_runs": {
+        "requests": 8,
+        "rows_read": 799,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_early_candidate_wave": {
+        "requests": 7,
+        "rows_read": 2541,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "all:report2_market_snapshot_batch_v1": {
+        "requests": 63,
+        "rows_read": 1644,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_market_microstructure_1m": {
+        "requests": 1,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_early_candidate_wave": {
+        "requests": 6,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_early_feature_snapshot": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "batch:full_evidence_shadow_log": {
+        "requests": 3,
+        "rows_read": 2,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "first:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_recheck_task_shadow": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_watch_state": {
+        "requests": 4,
+        "rows_read": 491,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_recheck_queue": {
+        "requests": 2,
+        "rows_read": 26,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:fast_move_watch_generation": {
+        "requests": 1,
+        "rows_read": 372,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:deep_check_scheduler_state": {
+        "requests": 1,
+        "rows_read": 39,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_monthly_usage": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_reservations": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_byk_monthly_usage": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_source_cache": {
+        "requests": 4,
+        "rows_read": 24,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_health_observation": {
+        "requests": 26,
+        "rows_read": 144,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 27,
+        "rows_read": 24,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 55,
+        "rows_read": 112,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 34,
+        "rows_read": 17,
+        "rows_written": 17,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 17,
+        "rows_read": 17,
+        "rows_written": 34,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 17,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 16,
+        "rows_read": 48,
+        "rows_written": 64,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_health_observation": {
+        "requests": 10,
+        "rows_read": 0,
+        "rows_written": 30,
+        "unknown_ops": 0
+      },
+      "first:sqlite_master": {
+        "requests": 1,
+        "rows_read": 404,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liquidation_role_observation": {
+        "requests": 1,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "run:report2_liq_venue_catalog_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_liquidation_source_health": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_liquidation_source_health": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "run:report2_liquidation_role_observation": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "run:json_each": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_shadow_observation": {
+        "requests": 3,
+        "rows_read": 7,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_cluster_state": {
+        "requests": 4,
+        "rows_read": 18692,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_cross_exchange_risk_cache": {
+        "requests": 2,
+        "rows_read": 9,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_cross_exchange_catalog": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_cex_venue_cache": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_volume_profile_cache": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_outcome": {
+        "requests": 2,
+        "rows_read": 6587,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 227,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_event": {
+        "requests": 2,
+        "rows_read": 2079,
+        "rows_written": 9,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_outcome": {
+        "requests": 3,
+        "rows_read": 160,
+        "rows_written": 62,
+        "unknown_ops": 0
+      },
+      "batch:opportunity_shadow_funnel": {
+        "requests": 3,
+        "rows_read": 4,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "batch:shadow_decision_log": {
+        "requests": 3,
+        "rows_read": 19,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:multi_wave_campaign_shadow": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:full_evidence_shadow_log": {
+        "requests": 4,
+        "rows_read": 16,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:deep_check_scheduler_state": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "batch:deep_check_run_log": {
+        "requests": 2,
+        "rows_read": 11,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_coinalyze_catalog": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_gate_contract_identity": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_cross_exchange_risk_cache": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:cron_runs": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:scan_runs": {
+        "requests": 1,
+        "rows_read": 155,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:liquidation_events": {
+        "requests": 1,
+        "rows_read": 3064,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_realized_liquidation_aggregate": {
+        "requests": 8,
+        "rows_read": 8,
+        "rows_written": 24,
+        "unknown_ops": 0
+      },
+      "batch:v3_realized_liquidation_density_5m": {
+        "requests": 4,
+        "rows_read": 4,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "first:final_decision_integration_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:final_decision_integration_shadow": {
+        "requests": 1,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_user_lifecycle_shadow": {
+        "requests": 1,
+        "rows_read": 28,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:canonical_publication_shadow": {
+        "requests": 1,
+        "rows_read": 67,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_pipeline_health_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:v3_pipeline_health_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "all:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 76,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 2,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 1,
+        "rows_read": 67,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:discovery_recall_kpi_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:discovery_recall_kpi_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:tz101_entry_area_calibration_state": {
+        "requests": 3,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:tz101_entry_area_calibration_state": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "all:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 625,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:tz101_entry_area_calibration_signal": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:tz101_entry_area_calibration_outcome": {
+        "requests": 1,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A1": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A2": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A3": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "private-canonical:report2_canonical_cold_archive_v1:A4": {
+        "requests": 0,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "existing_run_budget_context": {
+    "schema": "EXISTING_RUN_BUDGET_CONTEXT_V1",
+    "run_id": "1792409648781-1792409663854",
+    "recorded_ts": 1792409794880,
+    "cut": "AFTER_ANALYTICS_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+    "HTTP": {
+      "basis": "RESERVED_LOGICAL_REQUEST_SLOTS_NOT_ACTUAL_HTTP",
+      "status": "CONSISTENT_RESERVED_SLOT_SNAPSHOT",
+      "used": {
+        "hot": 84,
+        "background": 24,
+        "statistics": 0
+      },
+      "limits": {
+        "whole_job": 164,
+        "hot": 96,
+        "background": 56,
+        "statistics": 12
+      },
+      "total_reserved": 108,
+      "reported_remaining_slots": 56,
+      "consistent": true,
+      "admissible_extra_HTTP": null,
+      "actual_HTTP": null
+    },
+    "native_run": {
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "usage": {
+        "requests": 670,
+        "rows_read": 41019,
+        "rows_written": 470,
+        "unknown_ops": 0
+      },
+      "status": "KNOWN_CURRENT_POINT",
+      "remaining_at_this_cut": {
+        "rows_read": 12981,
+        "rows_written": 370
+      },
+      "reservation_exceeded": false,
+      "future_work_admitted": false
+    },
+    "earlier_day_admission": {
+      "status": "CLOSED",
+      "allowed_at_original_cut": true,
+      "day_utc": "2026-10-19",
+      "reported_unknown_ops": 0,
+      "reserved_rows_read": 1168400,
+      "reserved_rows_written": 20936,
+      "reconciliation": null
+    },
+    "native_liquidation_service": {
+      "scope": "EXISTING_NATIVE_LIQ_SERVICE_NOT_ALL_LIQ_PROVIDERS_OR_JOB",
+      "reserved_http": 4,
+      "gross_reserved_http": null,
+      "claimed_http": null,
+      "actual_http": 4,
+      "max_http_per_run": 4
+    },
+    "provider_day_month_rolling60s_headroom": null,
+    "manual_provider_reserve_headroom": null,
+    "independent_global_native_capacity": null,
+    "required_next_full_reservation_by_policy": {
+      "rows_read": 59000,
+      "rows_written": 920
+    },
+    "observed_next_full_reservation": null,
+    "admission_authorized": false,
+    "whole_day_closed": false,
+    "additional_SQL": 0,
+    "additional_source_HTTP": 0
+  },
+  "analytics_lease": {
+    "finished": true,
+    "status": "RELEASED"
+  },
+  "statistics": {
+    "maintenance": {
+      "schema": "LOW_PRIORITY_MAINTENANCE_CADENCE_RECEIPT_V1",
+      "source": "schedule",
+      "unified_enabled": true,
+      "scheduled_minute_utc": 34,
+      "low_priority_cadence_due": true,
+      "claim": {
+        "status": "CLOSED",
+        "claimed": true,
+        "due": true,
+        "job_key": "HOURLY_LOW_PRIORITY_STATS",
+        "interval_ms": 3600000,
+        "last_success_ts": 1792404910559,
+        "next_due_ts": null,
+        "lease_owner": "GITHUB_ACTIONS",
+        "lease_started_ts": 1792409791045,
+        "lease_expires_ts": 1792410391045
+      },
+      "completion": {
+        "status": "CLOSED",
+        "completed": true,
+        "success_recorded": true
+      },
+      "projection_SQL_added": 0,
+      "projection_HTTP_added": 0
+    },
+    "block_weights": {
+      "status": "WEEKLY_POLICY_ALREADY_ASSESSED",
+      "sourceHTTP": 0,
+      "policy_fingerprint": "2898479a156de45142e3e58cad63b12d179dccbc78a83f9ae3bc72aff03b02cc"
+    },
+    "discovery_recall": {
+      "mode": "DISCOVERY_RECALL_KPI_SHADOW_V1",
+      "status": "PARTIAL",
+      "closed_horizons": [
+        "4h",
+        "24h"
+      ],
+      "horizons": {
+        "1h": {
+          "horizon": "1h",
+          "status": "NOT_CLOSED",
+          "reason": "BASELINE_SNAPSHOT_MISSING"
+        },
+        "4h": {
+          "horizon": "4h",
+          "status": "CLOSED",
+          "semantics": "RELATIVE_DIRECTIONAL_TAIL_P95_SHADOW_KPI_NOT_TRADE_SIGNAL",
+          "matched_contracts": 99,
+          "positive_contracts": 6,
+          "negative_contracts": 93,
+          "thresholds": {
+            "long_positive_tail_p95_pct": 14.487146,
+            "short_negative_tail_p05_pct": -4.214949
+          },
+          "long_tail": {
+            "total": 1,
+            "baseline_directional_watch": 0,
+            "directional_recall_pct": 0,
+            "wrong_direction_only": 0,
+            "missed": [
+              {
+                "contract": "CT-USDT",
+                "move_pct": 16.943301,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              }
+            ]
+          },
+          "short_tail": {
+            "total": 5,
+            "baseline_directional_watch": 3,
+            "directional_recall_pct": 60,
+            "wrong_direction_only": 0,
+            "missed": [
+              {
+                "contract": "LSK-USDT",
+                "move_pct": -6.215988,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              },
+              {
+                "contract": "MYX-USDT",
+                "move_pct": -4.427793,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              }
+            ]
+          },
+          "combined": {
+            "total": 6,
+            "baseline_directional_watch": 3,
+            "directional_recall_pct": 50
+          },
+          "caveat": "Relative-tail descriptive KPI only. It does not define a trading threshold, probability, validation, or causal false-negative classification."
+        },
+        "24h": {
+          "horizon": "24h",
+          "status": "CLOSED",
+          "semantics": "RELATIVE_DIRECTIONAL_TAIL_P95_SHADOW_KPI_NOT_TRADE_SIGNAL",
+          "matched_contracts": 99,
+          "positive_contracts": 34,
+          "negative_contracts": 65,
+          "thresholds": {
+            "long_positive_tail_p95_pct": 9.697773,
+            "short_negative_tail_p05_pct": -6.56469
+          },
+          "long_tail": {
+            "total": 2,
+            "baseline_directional_watch": 1,
+            "directional_recall_pct": 50,
+            "wrong_direction_only": 1,
+            "missed": [
+              {
+                "contract": "CT-USDT",
+                "move_pct": 14.224571,
+                "baseline_long_watch": false,
+                "baseline_short_watch": true,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 1
+              }
+            ]
+          },
+          "short_tail": {
+            "total": 4,
+            "baseline_directional_watch": 0,
+            "directional_recall_pct": 0,
+            "wrong_direction_only": 0,
+            "missed": [
+              {
+                "contract": "龙虾-USDT",
+                "move_pct": -25.214093,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              },
+              {
+                "contract": "BTW-USDT",
+                "move_pct": -14.830643,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              },
+              {
+                "contract": "BILL-USDT",
+                "move_pct": -7.407407,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              },
+              {
+                "contract": "RLC-USDT",
+                "move_pct": -6.609157,
+                "baseline_long_watch": false,
+                "baseline_short_watch": false,
+                "baseline_long_trigger_count": 0,
+                "baseline_short_trigger_count": 0
+              }
+            ]
+          },
+          "combined": {
+            "total": 6,
+            "baseline_directional_watch": 1,
+            "directional_recall_pct": 16.667
+          },
+          "caveat": "Relative-tail descriptive KPI only. It does not define a trading threshold, probability, validation, or causal false-negative classification."
+        }
+      },
+      "safety": {
+        "strategy_changed": false,
+        "decision_weights_changed": false,
+        "live_probability": false,
+        "validated_signal": false,
+        "automatic_telegram": false,
+        "trading_execution": false
+      },
+      "audit_ts": 1792409648781,
+      "source_run_id": "1792409648781-1792409663854",
+      "current_scan_ts": 1792409664081,
+      "persistence_semantics": "HOURLY_SHADOW_KPI_ONLY",
+      "persisted": true,
+      "persistence_readback": "PASS",
+      "auto_send": false
+    },
+    "prospective_gate": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "current_usage": {
+        "rows_read": 40372,
+        "rows_written": 465,
+        "requests": 657,
+        "unknown_ops": 0
+      },
+      "extra": {
+        "rows_read": 3000,
+        "rows_written": 9
+      },
+      "reservation": {
+        "rows_read": 54000,
+        "rows_written": 840
+      },
+      "remaining": {
+        "rows_read": 13628,
+        "rows_written": 375
+      }
+    },
+    "prospective": {
+      "version": "r8-20-prospective-v8-fail-closed-readiness-integrity-20261010",
+      "mode": "SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",
+      "status": "CLOSED",
+      "calibration_only": true,
+      "live_probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "automatic_weight_tuning": false,
+      "strategy_weights_changed": false,
+      "telegram_network_send": false,
+      "source_run_id": "1792409648781-1792409663854",
+      "activation": {
+        "status": "CLOSED",
+        "activation_ts": 1789813960780,
+        "created": false
+      },
+      "early_outcome": {
+        "status": "DEFERRED_FAIR_QUEUE_ROTATION",
+        "closed": 0
+      },
+      "entry_sample": {
+        "status": "CLOSED_NO_CAPTURABLE_DECISION",
+        "captured": 0
+      },
+      "entry_outcome": {
+        "status": "CLOSED_NO_DUE_ENTRY_OUTCOME",
+        "closed": 0
+      },
+      "readiness": {
+        "version": "r8-20-prospective-v8-fail-closed-readiness-integrity-20261010",
+        "mode": "SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",
+        "status": "NOT_VALIDATED_INSUFFICIENT_PROSPECTIVE_SAMPLE",
+        "calibration_only": true,
+        "live_probability": null,
+        "validated_signal": false,
+        "trading_execution": false,
+        "automatic_weight_tuning": false,
+        "strategy_weights_changed": false,
+        "telegram_network_send": false,
+        "activation_ts": 1789813960780,
+        "elapsed_days": 30.044,
+        "min_train_per_cell": 80,
+        "min_holdout_per_cell": 40,
+        "required_per_direction_horizon_cell": 120,
+        "ready_cells": 0,
+        "total_cells": 8,
+        "signal_rows": [],
+        "outcome_cells": [
+          {
+            "direction": "LONG",
+            "horizon_hours": 1,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "LONG",
+            "horizon_hours": 4,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "LONG",
+            "horizon_hours": 12,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "LONG",
+            "horizon_hours": 24,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "SHORT",
+            "horizon_hours": 1,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "SHORT",
+            "horizon_hours": 4,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "SHORT",
+            "horizon_hours": 12,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          },
+          {
+            "direction": "SHORT",
+            "horizon_hours": 24,
+            "closed_samples": 0,
+            "missing_samples": 120,
+            "data_ready": false,
+            "first_observed_ts": null,
+            "last_observed_ts": null
+          }
+        ],
+        "approved_entry_performance": [],
+        "integrity_excluded_outcomes": 0,
+        "performance_dimensions": [
+          "BASIS",
+          "SOURCE",
+          "COHORT"
+        ],
+        "data_ready_for_separate_oos_validation": false,
+        "validated_out_of_sample": false
+      },
+      "usage_delta": {
+        "rows_read": 642,
+        "rows_written": 1,
+        "requests": 8,
+        "unknown_ops": 0
+      },
+      "prospective_only": true,
+      "retrospective_backfill": false
+    }
+  },
+  "delivery": {
+    "version": "post-v7-bound-telegram-delivery-v5-finalize-invisible-removal-20260928",
+    "mode": "CANONICAL_BOUND_DELIVERY",
+    "network_send": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "original_terminal": {
+      "status": "NO_ELIGIBLE_ORIGINAL_TERMINAL",
+      "queued": false
+    },
+    "reconciliation": {
+      "status": "CLOSED",
+      "processed": 0,
+      "capacity_deferred": 0,
+      "source_run_id": "1792409648781-1792409663854",
+      "executor_run_id": "1792409648781-1792409663854",
+      "results": []
+    },
+    "lifecycle": [
+      {
+        "key": "ZEC-USDT|LONG|EDW:ZEC-USDT:1791710630650:G8|OBSERVE|v3-telegram-shadow-r6",
+        "status": "FAILED_RETRYABLE",
+        "reason": "NOT_CLOSED",
+        "sent": false,
+        "bound_refusal": null
+      }
+    ],
+    "health": [],
+    "sent": 0,
+    "usage_delta": {
+      "rows_read": 92,
+      "rows_written": 2,
+      "requests": 6,
+      "unknown_ops": 0
+    },
+    "secrets_logged": false
+  },
+  "telegram_network_enabled": true,
+  "scope": "FULL_ANALYTICS_AFTER_LEDGER_FINALIZATION_AND_LEASE_RELEASE_BEFORE_OPTIONAL_MANUAL_COMMAND_COMPLETION_AND_EXTERNAL_ARCHIVE_COPY",
+  "statement_journals_recorded": false,
+  "whole_day_closed": false,
+  "reservations_refunded": false,
+  "additional_SQL": 0,
+  "additional_source_HTTP": 0,
+  "contains_SQL_params_or_results": false,
+  "secret_values_stored": false
+}

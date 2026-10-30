@@ -1,0 +1,30 @@
+{
+  "schema": "F599_BOUNDED_DEDUP_V1",
+  "scope": "SOURCE handoffs/sources and top-level checkpoints JSON/Markdown <1.4MB; targeted1427-file scan plus retained dedup indices, not full re-audit or world novelty claim.",
+  "excluded": {
+    "VARIATIONAL": "F573 detailed v2 API; ROOT_AM holds clocks/identity",
+    "AVANTIS": "F578/F570 and AVANTIS_READONLY_SCHEMA_REVIEW_20261015",
+    "GAINS": "F578 retained gTrade RPC qualification",
+    "STANDX": "F576/F577 detailed quotas/schema attempts",
+    "EDGEX": "F579/F580 detailed metadata/rate serializer",
+    "PACIFICA_EXTENDED": "F570 retained_avoid_research",
+    "BACKPACK": "Existing source routes/collectors in retained project",
+    "BITUNIX": "F576 dedup points to existing remaining-venue contract spec"
+  },
+  "candidate_primary_pattern_hits": {
+    "TOOBIT": 0,
+    "VEST_API": 0
+  },
+  "selected": [
+    "TOOBIT_PUBLIC_FUTURES",
+    "VEST_PUBLIC_PERPETUALS"
+  ],
+  "reason": "New direct public derivatives data candidates; evaluate useful per-field clocks/units/catalogue/cost, no promise of future-map availability.",
+  "new_source_IO": 0,
+  "retained_index_hashes": {
+    "pump-report/handoffs/sources/F570_RETAINED_INVENTORY_DEDUP_V1.json": "9d950f5d2d03f281700f5a11e6bcdaac127abfe3597281774243171b1252aca8",
+    "pump-report/handoffs/sources/F576_BOUNDED_PUBLISHED_DATA_DEDUP_V1.json": "809ad1d39217d64b73f43240d9f7675f5c17c1972f3667b30b53633ad0afcc00",
+    "pump-report/handoffs/sources/F578_BOUNDED_PRIMARY_DEDUP_V1.json": "46c73f4d4ff051849a05a3961a38b26cf31304984dc6e7a7eaf85b45db672158",
+    "pump-report/handoffs/sources/F573_NEW_GLOBAL_HANDOFF_RU.md": "f0b209de92fdc912e22d40b556bcb5e8ee15729e76b98f4ff2e10728af2d45e9"
+  }
+}

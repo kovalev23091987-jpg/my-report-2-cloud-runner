@@ -1,0 +1,138 @@
+{
+  "schema": "OFFLINE_BACKFILL_WATCH_STARVATION_REPAIR_V1",
+  "base": "e052dfb1aa91db35f4e5536b016d49680c75354a",
+  "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792349036661",
+  "lease_ref": "a1cc07e80579596bcecff6d6a38d1cded1c3117c",
+  "expires_ts": 1792352636661,
+  "exact_readback": true,
+  "before": {
+    "frozen_head": "0654dedee1b387d560b6b02e13e90c3790391f04",
+    "path": "anomaly-research/source-effectiveness-audit-20261018/new-admission-counterexample.json",
+    "sha256": "207bccc7121fd9505931c147e6aa9570b11bfab2da215182f87cf5a7b98710cf",
+    "counterexample": {
+      "schema": "CONTROLLED_BACKFILL_ACTIVE_QUEUE_STARVATION_COUNTEREXAMPLE_V1",
+      "frozen_head": "1251d4b4f16d9fe4a15370eab0e2c3146ad78ed6",
+      "source_path": "anomaly-research/observer/observer.mjs",
+      "source_sha256": "d5dcccbb0b53295b1a68a382d97e25c3f30162910511d96583e8bbfaf81694a2",
+      "evidence_class": "CONTROLLED_SYNTHETIC_NOT_MARKET_DATA",
+      "bars": 180,
+      "detected_events": 160,
+      "prospective_events": 1,
+      "stored_active_events": 128,
+      "stored_BACKFILLED_events": 128,
+      "stored_PROSPECTIVE_events": 0,
+      "deferred_events": 32,
+      "actual_prospective_event_result": {
+        "event_id": "ANOM:fccbef190f519f48499353432ab0f9189280989eac7476a528527aabba52266b",
+        "event_end_ts": 1700162100000,
+        "discovery": "PROSPECTIVE",
+        "capture_status": "DEFERRED_CAPACITY"
+      },
+      "root_cause": "Oldest-first historical detection is admitted into the same128active slots before the latest timely event; no reserved or separately admitted prospective queue.",
+      "current_main_affected": false,
+      "production_anomaly_activated": false,
+      "accepted_tests_rerun": 0,
+      "new_provider_HTTP": 0,
+      "SQL": 0,
+      "Telegram": 0,
+      "proposed_coordinator_action": "Keep complete backfill ledger separate from admitted active watch. Qualify prospective/delayed-event selection and capacity explicitly; do not silently evict active events or claim current coverage from historical replay.",
+      "fixture_recipe": {
+        "start_ts": "ceil(1700000000000/900000)*900000",
+        "bars": 180,
+        "bar_duration_ms": 900000,
+        "open": 100,
+        "close": 100,
+        "high": 101,
+        "low": 99,
+        "volume_at_index_n": "100*1.2**n",
+        "lookback": 20,
+        "source_as_of_ts": "last_bar.end_ts",
+        "received_ts": "last_bar.end_ts+500",
+        "known_ts": "last_bar.end_ts+1000",
+        "mode": "LIVE_CAPTURE",
+        "evidence_class": "PROSPECTIVE",
+        "capture_order": "detected.events original oldest-first order",
+        "max_active": 128
+      }
+    },
+    "old_execution_repeated": false
+  },
+  "after": {
+    "schema": "CONTROLLED_BACKFILL_WATCH_REPAIR_V1",
+    "input_class": "CONTROLLED_SYNTHETIC_NOT_MARKET_DATA",
+    "bars": 180,
+    "events": 160,
+    "retained_backfilled": 159,
+    "retained_prospective": 1,
+    "active": 1,
+    "active_event": "ANOM:6ad7d2486cea1183433e954e56bd6015b4ac0039f5279fa28d68d895187222b7",
+    "first_known_ts": 1700162101000,
+    "retained_cards_hash": "ac5485686d0e6d3ccd9628271a20bde7a3131b2737f6757a553b1774609be681",
+    "max_active": 128,
+    "max_cards": 512,
+    "backfill_card_limit": 384,
+    "deferred": 0,
+    "production_activation": false,
+    "native_admission_qualified": false,
+    "network": 0,
+    "SQL": 0
+  },
+  "unchanged_detector_card_prefix_sha256": "5b9e7f714113d9e671113d2c71ba4bd37b857ef13feea0ddccadcd60ba78cb09",
+  "unchanged_source_files": {
+    "anomaly-research/statistics/outcomes.mjs": "da9ff05288c1e54927f89035117f18e5225682c10af7965e50d9742295981c72",
+    "anomaly-research/statistics/capacity.mjs": "fda377dbf5daecd3b267cbcfcecb68f9e4113337e03afc0585ab12fa74f135f5",
+    "anomaly-research/durability/identity-retention-grid.mjs": "437364fc0ecc4d02db54fac9fa1425df9b406d40774e7f7c95c4196fa1c1be24",
+    "anomaly-research/outbox/protocol.mjs": "771c8324634a58f59a6395e8cd0e8dd2dd151eaec678fa2828bab03e127cb468",
+    "anomaly-research/statistics/measured-scenarios.json": "6d7aeb01c7c141a5116d0b2e7a5a21aca87b95bb6b236cbeb96c44f807602f2c"
+  },
+  "validations": {
+    "backfill-admission-validation.txt": {
+      "sha256": "c4e001f4d0839b75e32cc584fa5cd532a2e78a5144a9907471543c67bd30166e",
+      "tests": 10,
+      "pass": 10,
+      "fail": 0
+    },
+    "backfill-legacy-limits-validation.txt": {
+      "sha256": "32e10de6911296034a7c979fdf03267942084d9f944aa8d061de1ae5828dbb49",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0
+    },
+    "backfill-affected-watch-validation.txt": {
+      "sha256": "95ff08b39074039fc03d9e94e9729a7f5151ff639af7c021d88695f4a7496eb7",
+      "tests": 12,
+      "pass": 12,
+      "fail": 0
+    },
+    "backfill-pending-outcome-validation.txt": {
+      "sha256": "4c26ebdd8d4da01a564a8b47652f4c4a7717f1d2b422f36cddc21196e7d1b855",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0
+    }
+  },
+  "new_tests": 11,
+  "affected_watch_checks": 12,
+  "affected_pending_outcome_check": 1,
+  "old_nonce6_protocol15_repeated": false,
+  "native_ingress_store_admission_retention_delivery_qualified": false,
+  "caller_owned_full_defer_not_durable_acceptance": true,
+  "legacy_active_not_evicted": true,
+  "no_limits_raised": true,
+  "no_main_score_or_strategy_effect": true,
+  "provider_HTTP_SQL_MAIN_Telegram": 0,
+  "files": {
+    "anomaly-research/durability/identity-retention-grid.test.mjs": "206b481334ec2c827e01f743cdd193b4a4a7c796c3a3abfde546d5d955a37a78",
+    "anomaly-research/observer/BACKFILL_WATCH_REPAIR_RU.md": "da77a07281e50c24deebdf559d7099e273dc64a145ea9de3c89474c7bccf6177",
+    "anomaly-research/observer/README_RU.md": "056f175c977f2d7a990b946ab257ee459d47a3bb41e6b2a02640475596b0921c",
+    "anomaly-research/observer/backfill-admission-evidence.json": "767032d8a84c2a411fc98495ff7458f5f7ecf17c221d6aeba2fee67de85c7fa6",
+    "anomaly-research/observer/backfill-admission-validation.txt": "c4e001f4d0839b75e32cc584fa5cd532a2e78a5144a9907471543c67bd30166e",
+    "anomaly-research/observer/backfill-admission.test.mjs": "2c335277506d0ceae0ff39b020b02c314f9478f5f0f46b8ee82810f76b694b13",
+    "anomaly-research/observer/backfill-affected-watch-validation.txt": "95ff08b39074039fc03d9e94e9729a7f5151ff639af7c021d88695f4a7496eb7",
+    "anomaly-research/observer/backfill-legacy-limits-validation.txt": "32e10de6911296034a7c979fdf03267942084d9f944aa8d061de1ae5828dbb49",
+    "anomaly-research/observer/backfill-pending-outcome-validation.txt": "4c26ebdd8d4da01a564a8b47652f4c4a7717f1d2b422f36cddc21196e7d1b855",
+    "anomaly-research/observer/observer.mjs": "6d57afe651304797cae36ae9f7194208567e0148f5cdce2a8e1b83cf91145e52",
+    "anomaly-research/observer/observer.test.mjs": "116544c142ffa5f2d56bc74479a56e4b643c4449fe9143341a273997f7faac9e",
+    "anomaly-research/statistics/replay-and-capacity.mjs": "a6d6a57d52f457ce2275c76acb6b243f543b2c3a348dbdb60b96d1987a9aea18"
+  }
+}

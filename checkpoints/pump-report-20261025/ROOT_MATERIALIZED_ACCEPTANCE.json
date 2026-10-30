@@ -1,0 +1,21 @@
+{
+  "schema": "PUMP_ROOT_MATERIALIZED_JOURNAL_ACCEPTANCE_V1",
+  "recorded_at": "2026-10-25 13:31:56 UTC",
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "H_frozen_files_sha256_verified": 13,
+  "H_offline27PASS": true,
+  "ROOT_affected23PASS": true,
+  "tests": "node --test pump-report/tests/runtime/outcome-journal.test.mjs pump-report/tests/runtime/materialized-journal.test.mjs pump-report/tests/runtime/native-budget.test.mjs pump-report/tests/runtime/runner.test.mjs",
+  "actual_SQLite_pair_CAS": true,
+  "atomic_wave_aggregate_and_source_cursor": true,
+  "independent_waves_tested": 42,
+  "global_wave_limit": null,
+  "max_records_is_page_bound": true,
+  "restart_and_budget_cursor_preserved": true,
+  "late_SENT_and_early_HIT_and_maturity_tested": true,
+  "raw_journals_preserved": true,
+  "immutable_record_conflict_stops_catchup": true,
+  "native_IO": 0,
+  "native_D1_cost_or_storage_capacity_proven": false,
+  "E_final_assembled_not_run": true
+}

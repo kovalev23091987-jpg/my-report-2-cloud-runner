@@ -1,0 +1,40 @@
+✖ compact actual Git rename exposes the removed protected root before source-only adoption (138.007167ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 195.714791
+
+✖ failing tests:
+
+test at runner/github-mirror-authority-and-control-followup.test.mjs:15:1
+✖ compact actual Git rename exposes the removed protected root before source-only adoption (138.007167ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /COMPACT_SOURCE_ONLY_ACK_REQUIRED/. Input:
+  
+  'Error: COMPACT_KNOWN_ACKED_SOURCE_ONLY_COMMIT_REQUIRED'
+  
+      at TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-schedule-fix/runner/github-mirror-authority-and-control-followup.test.mjs:15:890)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: COMPACT_KNOWN_ACKED_SOURCE_ONLY_COMMIT_REQUIRED
+        at deny (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-schedule-fix/runner/github-four-mirror-cas.mjs:12:39)
+        at need (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-schedule-fix/runner/github-four-mirror-cas.mjs:12:89)
+        at adoptCompactSourceCommit (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-schedule-fix/runner/github-four-mirror-cas.mjs:81:2)
+        at file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-schedule-fix/runner/github-mirror-authority-and-control-followup.test.mjs:15:901
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///Users/mac/Downloads/MY_REPORT_2_TRANSFER_20261011%203/report2-schedule-fix/runner/github-mirror-authority-and-control-followup.test.mjs:15:890)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.start (node:internal/test_runner/test:1262:17),
+    expected: /COMPACT_SOURCE_ONLY_ACK_REQUIRED/,
+    operator: 'throws',
+    diff: 'simple'
+  }

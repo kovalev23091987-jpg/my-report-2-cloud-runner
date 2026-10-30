@@ -1,0 +1,81 @@
+{
+  "schema": "ROOT_SELECTED_RUN_PACKET_AFFECTED_CASE_V1",
+  "status": "PASS",
+  "evidence_class": "CONTROLLED_STORE_MODEL_NOT_NATIVE",
+  "checks": [
+    {
+      "name": "busy_other_executor_does_not_displace_saved_original_run",
+      "status": "PASS",
+      "selected_run_status": "BOUND_SELECTED_SAVED_RUN_COMPLETE",
+      "run_PK_reads": 1,
+      "real_IO": 0
+    },
+    {
+      "name": "saved_INCOMPLETE_remains_INCOMPLETE",
+      "status": "PASS",
+      "selected_run_status": "BOUND_SELECTED_SAVED_RUN_INCOMPLETE",
+      "run_PK_reads": 1,
+      "real_IO": 0
+    },
+    {
+      "name": "not_yet_saved_run_is_unknown",
+      "status": "PASS",
+      "selected_run_status": "SELECTED_RUN_RESULT_NOT_SAVED",
+      "run_PK_reads": 1,
+      "real_IO": 0
+    },
+    {
+      "name": "different_run_identity_refused",
+      "status": "PASS",
+      "selected_run_status": "SELECTED_RUN_REFERENCE_MISMATCH",
+      "run_PK_reads": 1,
+      "real_IO": 0
+    },
+    {
+      "name": "unbound_checked_original_refused",
+      "status": "PASS",
+      "selected_run_status": "SELECTED_RUN_REFERENCE_MISMATCH",
+      "run_PK_reads": 1,
+      "real_IO": 0
+    },
+    {
+      "name": "nonfinal_run_status_is_unknown",
+      "status": "PASS",
+      "selected_run_status": "SELECTED_RUN_FINAL_STATUS_UNCONFIRMED",
+      "run_PK_reads": 1,
+      "real_IO": 0
+    },
+    {
+      "name": "wrong_pin_does_not_fallback_to_current_executor",
+      "status": "PASS",
+      "selected_run_status": "NO_BOUND_CURRENT_ORIGINAL",
+      "run_PK_reads": 0,
+      "real_IO": 0
+    },
+    {
+      "name": "different_original_runs_only_one_is_read",
+      "status": "PASS",
+      "selected_run_status": "BOUND_SELECTED_SAVED_RUN_COMPLETE",
+      "run_PK_reads": 1,
+      "real_IO": 0
+    },
+    {
+      "name": "invalid_selected_run_id_causes_no_PK_read",
+      "status": "PASS",
+      "selected_run_status": "SELECTED_RUN_ID_INVALID",
+      "run_PK_reads": 0,
+      "real_IO": 0
+    }
+  ],
+  "Node": 1,
+  "helper_calls": 9,
+  "build": 0,
+  "analytics_engine": 0,
+  "native_SQL": 0,
+  "Cloudflare_HTTP": 0,
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "existing_packet_read_only": true,
+  "real_saved_run_retrieved": false,
+  "first_genuine_AUTO_SENT": false
+}

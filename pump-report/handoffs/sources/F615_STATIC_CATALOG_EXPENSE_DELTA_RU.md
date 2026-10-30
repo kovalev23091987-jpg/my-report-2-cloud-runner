@@ -1,0 +1,15 @@
+# F615 — статическая добавка расходов catalogue snapshot
+
+Проверена конкретная новая ревизия ROOT writer922b29490907dc61c029764e8bad29e4fbcc84f258a9b5e67ee60d0312b604c8 вместе с существующими D1Store.set/get и futureScheduledSQL. Это узкий разбор delta, без повторного F560 или пересчёта старых резервов. Код не изменён, Node/HTTP/SQL/Telegram не выполнялись.
+
+Для валидного snapshot: один SET (один UPSERT statement, precheck forecast2R/2W) и один GET (один exact-PK SELECT, forecast1R/0W). Суммарная статическая добавка — 2queries,3R,2W. Это прогноз для precheck, не measured billing и не верхняя граница фактических meta.rows_read/rows_written. Новых provider HTTP и qualification calls writer не добавляет; прежний свежий catalog fetch с ttl0 остаётся прежним.
+
+D1Store проверяет действующий admission, remaining envelope и защищённый finalization reserve перед каждым statement; после ACK добавляет фактические native counters и проверяет ceiling снова. Missing/failed ACK увеличивает unknown и бросает ошибку. Finalization не объявляет такой run нулевым/успешным. Ошибка readback также пробрасывается; при наличии ACK его measured costs не исчезают.
+
+Два новых statement расходуются внутри существующего FULL run envelope5000R/300W/max800Q. FutureScheduledSQL уже держит целую такую per-run envelope один раз на scheduled invocation; второй full envelope или отдельный envelope за тот же deep candidate не добавляется. Резервационный/finalization overhead уже принадлежит прежнему run и не объявляется новым delta. Статический разбор не доказывает текущий headroom, whole-account day capacity или разрешение нового native IO; нужны свежий фактический admission и native ACK. Старые fixed floors, manual/future reserves, spends и unknowns сохранены.
+
+Сохраняется ровно один текущий ключ pump:catalog:last-observed:v1. UPSERT заменяет value_json этого ключа и увеличивает revision; новые history keys/append/pruning отсутствуют. ДоSQL ограничены2000 logical catalogue rows, body<=2097152UTF8 bytes и полный serialized record<=1900000UTF8 bytes. Invalid/oversize/clock-bound failure возвращает SKIPPED с0store calls; нормальный getCatalog output продолжается. 2000 элементов внутри JSON — не2000 D1 records и не доказанная стоимость2000R/W.
+
+ROOT сверил [официальный D1 limit](https://developers.cloudflare.com/d1/platform/limits/) 2000000bytes для row/string/BLOB. Новый более строгий record guard оставляет100000bytes headroom для key/row overhead; SOURCE использует сообщение ROOT и точные строки кода, без повторного HTTP. Это guard размера metadata record, не испытание физического хранения/throughput и не обход history cap200. Устойчивую ёмкость и обе OWNER deferrals он не закрывает.
+
+Receipt содержит exact hashes/строки методов и прогнозы. Actual billing нового пути — UNMEASURED; F615 actual source/native IO=0. Qualification24/24, остаток0; LOOKUP14 и расширение16/500/30 не разрешены. Старые расходы/unknowns/caps/reserves, девять пауз, два OWNER deferrals, профиль/registry/units/критерии сохранены. После freeze — только own release/FULL.

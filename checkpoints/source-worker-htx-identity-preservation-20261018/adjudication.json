@@ -1,0 +1,127 @@
+{
+  "schema": "HTX_IDENTITY_NEW_PATH_AND_SHARED_PROPOSAL_ADJUDICATION_V1",
+  "prior_accepted_paths_compared_not_retested": [
+    {
+      "reference": "PR422/N04 cache preservation",
+      "files": [
+        "current-generation/tests/n04-cache-preservation.test.mjs"
+      ],
+      "scope": "collectFinalizedChainEvents/collectNativeEvmFinalizedContext/collectXrplNativePayments preserve qualified final fact cache/backoff/quota writes and halt nativeunknown. Different collector and downstream cache from HTX_ASSET_REFERENCE identity root."
+    },
+    {
+      "reference": "PR454 Gate/Backpack integration",
+      "files": [
+        "checkpoints/gate-backpack-integration-20261018/scope.json"
+      ],
+      "scope": "Already bound Gate/Backpack source facts and N12 sample use. Upstream HTXreference-cache failure before identity handoff not covered."
+    },
+    {
+      "reference": "Existing identity normalizer/native handoff/headroom tests",
+      "files": [
+        "current-generation/tests/native-identity-source-handoff.test.mjs",
+        "current-generation/tests/htx-asset-identity.test.mjs",
+        "current-generation/tests/active-source-headroom.test.mjs"
+      ],
+      "scope": "Valid normalize, warmcacheFIL→consumer, sourcecaps and ordinary fallback are accepted. No HTXreference cacheINSERTthrow after qualified response. Tests notrerun."
+    }
+  ],
+  "reference_sha256": {
+    "current-generation/tests/n04-cache-preservation.test.mjs": "da036d85de58ba59199ee28c9539808d1bbe829ce710605c4b23f11065c8949f",
+    "current-generation/tests/native-identity-source-handoff.test.mjs": "937f23d1a518dc0e4c7e9fcb9c8e7949c0a2b2c2098d7385eca46f98e88616f5",
+    "current-generation/tests/htx-asset-identity.test.mjs": "3e6468729c0d1bb5f00b2ecf9796b2f7b76ea25677b51e75b65c210def94fc95",
+    "current-generation/tests/active-source-headroom.test.mjs": "3b6bfd7998832d2bb1d37020e6e649d19814454b1d7f3fda9c23c6b599ee1b8a",
+    "checkpoints/gate-backpack-integration-20261018/scope.json": "e0f174553bb0edc358798415126caf974bbfe4c2450af43fcec107147a62ea44"
+  },
+  "new_path": "HTX_ASSET_REFERENCE fresh qualified payload→normalizedbundle→optionalcacheINSERT→exactcandidateidentity→production supplemental seam/routeplanner. New controlled failures at that INSERT and original nativeunknown read boundaries.",
+  "BR_historical_original": {
+    "path": "checkpoints/native-scope-and-compact-repair-20261018/native-39123622796/BR-USDT.canonical.json.gz",
+    "gzip_sha256": "fb05cc25487c16355a93bb7094741e9d3f4f221a7e2b0bb398ee894e4ec4eb9e",
+    "run_id": "1792321965799-1792321975225",
+    "snapshot_id": "S392:BR-USDT:1792322059116",
+    "observed_ts": 1792322059116,
+    "identity_fields": {
+      "registry_status": "CLOSED",
+      "identity_status": "NOT_CLOSED",
+      "identity_method": null,
+      "asset_identity": null,
+      "asset_reference": {
+        "version": "htx-official-asset-identity-v6-network-aliases-20261012",
+        "status": "HTX_CURRENCY_NOT_FOUND",
+        "contract": "BR-USDT",
+        "currency": "BR",
+        "identity": null,
+        "identity_method": null,
+        "network_calls": 1,
+        "cache_status": "VALID_HTX_REFERENCE_CACHE",
+        "receipt": {
+          "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+          "http_status": 200,
+          "received_ts": 1792321999519,
+          "parsed_payload_sha256": "a15ef05d361f1beaea75e64b340c4ee382fe2d7a7549a5e68df7ea47cb70a6e0"
+        },
+        "reference_observed_ts": 1792321999519,
+        "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+        "internal_only": true,
+        "identity_fallback_status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+        "identity_fallback_receipts": [
+          {
+            "route": "HTX_MARKET_CATALOG",
+            "url": "https://api.coinpaprika.com/v1/exchanges/htx/markets",
+            "http_status": 200,
+            "status": "RECEIVED",
+            "received_ts": 1792322048702,
+            "body_sha256": "fc18a55befc2269d89c19a14f81d9723780327bf83a1b8fe58b1b2b1178e302b",
+            "actual_http": 1
+          }
+        ]
+      },
+      "identity_reference_network_calls": 1
+    },
+    "scope": "Historical original only. New39155268524 projection has no currentrawassetreference. No new BRbinding or actualcurrentcachefailure cause inferred."
+  },
+  "shared_proposal": {
+    "owner": "coordinator",
+    "target": "current-generation/files/src/htx-asset-identity.mjs",
+    "production_modified": false,
+    "copy": "proposal-htx-asset-identity.mjs",
+    "activation": false,
+    "changes": [
+      "Select exact normalized reference before optional persistence; use existingwriteOptionalEvidenceSourceCache and retain receipt/status/sourceclock/identity on failure.",
+      "Preserve normal atomic source reservation and spent attempt; no retry/refund or separatequota.",
+      "Nativeunknown before/after schema, cache-read and day-read stops new SQL/admission/fetch.",
+      "After unknown cache write retain qualifiedreference as evidence but stop supplemental consumer acquisition; expose STOP status and asset_reference, not green completed context.",
+      "Only genuinely unclosedidentity may use existing admitted CoinPaprika fallback; no substitution or guessedBRaddress."
+    ],
+    "ordinary_SQL_changes": 0,
+    "ordinary_simulated_HTTP_changes": 0,
+    "known_cache_failure_controlled_reduction": {
+      "HTTP": [
+        2,
+        1
+      ],
+      "SQL_statements": [
+        25,
+        12
+      ]
+    },
+    "unknown_case_contextstatus": "SOURCE_CHAIN_STOPPED_UNCLOSED_NATIVE_USAGE",
+    "known_retained_reference_status": "CLOSED is identity qualification only, never nativecostclosure/admission or sourceconnection.",
+    "integration_required": "Coordinator reviews unknown-stop shape against existing main consumers and overlays, adds exact shared regression only for new path, then one combined cloud qualification. This unusedcopy does not qualify production behavior."
+  },
+  "cost_limits": {
+    "SQL_counts_are_local_logical_statements_not_native_transport_or_billing": true,
+    "native_R_W_upper_bound": null,
+    "actualproviderHTTP": 0,
+    "nativeSQL": 0,
+    "no_extraordinary_normal_SQL": true,
+    "unknown_and_spent_reservations_preserved": true
+  },
+  "not_proven": [
+    "CurrentBRexactidentity",
+    "ActualBRcachefailure",
+    "CurrentCTprovideravailability",
+    "Newsourceconnection",
+    "DurablecurrentidentitycacheACK/nativecost",
+    "ManualTelegramorwhole105coveragefromcontrolledconsumer"
+  ]
+}

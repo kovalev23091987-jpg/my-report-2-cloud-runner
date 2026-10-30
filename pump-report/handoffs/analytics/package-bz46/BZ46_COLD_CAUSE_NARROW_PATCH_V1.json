@@ -1,0 +1,28 @@
+{
+  "schema": "BZ46_COLD_CAUSE_NARROW_PATCH_V1",
+  "status": "FROZEN_UNEXECUTED_SOURCE_F672_DEFECT_REPAIR",
+  "provenance": "ROOT explicit BZ46 instruction before first Node; F672 counterexample: scalar-only cold metadata could supply a protected base without canonical cold kind and linked LOW pivot. BZ45 frozen records not rewritten.",
+  "changed_files": {
+    "pump-report/analytics/post-breach-wave.mjs": {
+      "before_sha256": "cf300f76ac6cd555982735183ee71f24c6aafaf3559df1c0bbd35c9015c396ee",
+      "after_sha256": "ec1b8f0641e7c13f836e98a945ca6fe03a937b5569eec33ebff969753e75f9c4",
+      "bytes": 5461
+    },
+    "pump-report/tests/analytics/package-bz45/post-breach-vector-factories.mjs": {
+      "before_sha256": "ea6a9830fed3a3edb058474cb373039914ceb71958015f33dca274fbb2ee1fe8",
+      "after_sha256": "2addae14385b877ff164566381014879118f158183b86af2a900050c26e41fe9",
+      "bytes": 8845
+    }
+  },
+  "fix": "Require COLD_RULE_VERSION/LOW pivot/price equality/event<=known/known=observation start/old source fact link/known<=old receipt. Missing or malformed fields return null and retain legacy conservative boundary. Existing source/path/receipt/decision/TTL/threshold conditions unchanged.",
+  "new_vectors": [
+    "partial_cold_metadata_cannot_prove_cause",
+    "cold_low_pivot_wrong_fact_link_cannot_prove_cause"
+  ],
+  "vector_count_total": 16,
+  "new_vector_call_scope": "cause-only expected proved_cause:null; no extra movement/fullengine calls",
+  "existing14_expected_changed": false,
+  "helper_Node_import_engine_build_tests_SQL_CF_provider_Telegram": 0,
+  "ROOT_files_edited": 0,
+  "pending": "ROOT separately admitted single connected execution and same artifact static final review"
+}

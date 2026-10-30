@@ -1,0 +1,16 @@
+--- pump-report/handoffs/analytics/package-s/before-owner-removal/presentation.before.mjs	2026-10-25 20:28:41
++++ pump-report/analytics/presentation.mjs	2026-10-25 20:28:58
+@@ -24,11 +24,11 @@
+   return {code:'ACTIVITY_RELATION',text:'Активность текущего окна '+(ratio<1?'ниже':'выше')+' исходного импульса.',fact_ids:[...fact_ids]};
+ }
+ export function selectUserNarrative(result){
+-  const stage=result.findings.find(f=>f.code===result.wave_state),activity=result.findings.find(f=>f.code==='ACTIVITY_RELATION'),trade=result.findings.find(f=>f.code==='TRADE_PRICE_RESPONSE'),relative=result.findings.find(f=>f.code==='RELATIVE_RETURN');
++  const stage=result.findings.find(f=>f.code===result.wave_state),activity=result.findings.find(f=>f.code==='ACTIVITY_RELATION'),trade=result.findings.find(f=>f.code==='TRADE_PRICE_RESPONSE');
+   const confluence=result.plan_context?.liquidation_confluence;let map=null;
+   if(confluence?.entries?.length){const indices=confluence.entries.map(e=>e.entry_index+1);map={code:'MAP_PLAN_CONTEXT',text:(indices.length===1?'Область входа ':'Области входа ')+indices.join(', ')+(indices.length===1?' пересекается':' пересекаются')+' с пригодными нижними зонами карты.',fact_ids:[],zone_ids:confluence.entries.flatMap(e=>e.zone_ids)};}
+   else if(confluence?.exit_zone_ids?.length)map={code:'MAP_PLAN_CONTEXT',text:'Область фиксации пересекается с пригодной верхней зоной карты.',fact_ids:[],zone_ids:confluence.exit_zone_ids};
+-  const reasons=[];for(const candidate of [stage,activity,trade,map,relative])if(candidate&&!reasons.some(r=>r.code===candidate.code)){reasons.push(structuredClone(candidate));if(reasons.length===2)break;}
++  const reasons=[];for(const candidate of [stage,activity,trade,map])if(candidate&&!reasons.some(r=>r.code===candidate.code)){reasons.push(structuredClone(candidate));if(reasons.length===2)break;}
+   const warning=result.wave_state==='SHARP_PULLBACK_UNCONFIRMED'?'возврат пока не подтверждён, области входа предварительные':result.wave_state==='SHARP_PULLBACK_RECLAIMED'&&positive(result.next_wave?.reclaim_level)&&result.reference_price<result.next_wave.reclaim_level?'цена снова ниже уровня возврата':confluence?.intervening_upper_zone_ids?.length?'до фиксации показана верхняя зона карты':null;
+   return {version:USER_NARRATIVE_VERSION,reasons,warning,limitation:result.findings.some(f=>f.code==='SHORT_HISTORY')?'История сравнения короче обычной; вывод ограничен доступными закрытыми окнами.':null};
+ }

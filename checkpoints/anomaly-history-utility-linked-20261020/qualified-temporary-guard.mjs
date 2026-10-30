@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {makeGithubControl} from '../runner/github-bounded-phase-lease.mjs';
+import {readMirrorContext,assertMirrorOwner} from '../runner/github-four-mirror-cas.mjs';
+const prefix='checkpoints/anomaly-history-utility-linked-20261020',scope=JSON.parse(fs.readFileSync(prefix+'/qualification-scope.json'));
+const stage=process.argv[2],sha=x=>createHash('sha256').update(x).digest('hex');
+if(!['before','after'].includes(stage)||process.env.GITHUB_REPOSITORY!=='kovalev23091987-jpg/my-report-2-cloud-runner'||process.env.GITHUB_REF!=='refs/heads/work/anomaly-history-utility-linked-20261020')throw Error('EXACT_LINKED_OFFLINE_SCOPE_REQUIRED');
+for(const[p,h]of Object.entries(scope.files))if(sha(fs.readFileSync(p))!==h)throw Error('QUALIFIED_SOURCE_HASH_CHANGED:'+p);
+const control=makeGithubControl({repository:process.env.GITHUB_REPOSITORY,token:process.env.GITHUB_TOKEN,maximum_calls:1});
+const context=await readMirrorContext(control,{expected_main:scope.expected_main,maximum_blob_reads:0});
+const checked=assertMirrorOwner(context,scope.owner,Date.now(),scope.scope_prefix);
+if(JSON.stringify(checked.lease)!==JSON.stringify(scope.owned_lease))throw Error('EXACT_QUALIFIED_OWN_LEASE_REQUIRED');
+fs.mkdirSync('audit-output/anomaly-history-utility-linked',{recursive:true});
+fs.writeFileSync(`audit-output/anomaly-history-utility-linked/guard-${stage}.json`,JSON.stringify({status:'EXACT_FRESH_OWN_LINKED_OFFLINE_SCOPE',stage,main:context.head,owner:scope.owner,control:control.metrics,source_hashes:scope.files,execution_tree:'FULL_REPOSITORY_CANONICAL_RESEARCH_MODULES_NO_PRODUCTION_OVERLAY_CHANGE',sourceHTTP:0,nativeSQL:0,MAIN:0,Telegram:0},null,2));

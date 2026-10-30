@@ -1,0 +1,67 @@
+{
+  "schema": "SOURCE_F552_FIELD_PROOF_CONSUMER_MATRIX_V1",
+  "rows": [
+    {
+      "field": "native_contract_id",
+      "proof": "Exact catalog ID+selected row; not coinId",
+      "consumer_and_limit": "getCatalog identity match, not chain/unit proof"
+    },
+    {
+      "field": "symbol/base",
+      "proof": "Exact native tuple; preserve Unicode/numericprefix; no display alias",
+      "consumer_and_limit": "Exact request/response key, no price rebase"
+    },
+    {
+      "field": "instrument_id/asset_id",
+      "proof": "BINGX USDT_M native tuple and venue-scoped underlying",
+      "consumer_and_limit": "Registry/comparison key, no crossvenue equivalence"
+    },
+    {
+      "field": "quote/settle/margin/market",
+      "proof": "Exact method/currency + primary catalog descriptor",
+      "consumer_and_limit": "assertInstrument; not underlying crypto classifier"
+    },
+    {
+      "field": "economic_scope",
+      "proof": "U3 selected economic inference",
+      "consumer_and_limit": "Proposal only; ROOT classification decision required"
+    },
+    {
+      "field": "price",
+      "proof": "Reviewed native identity plus actual symbol/price/originalclock",
+      "consumer_and_limit": "No qualifications.price token; no normalization to one underlying coin"
+    },
+    {
+      "field": "relative_candles",
+      "proof": "Existing owner CCXT factory + reviewed instrument",
+      "consumer_and_limit": "Same native series only; BASE/USDT volume unknown"
+    },
+    {
+      "field": "execution_quantity/multiplier/steps",
+      "proof": "Not proved by size/precision/name/SOL",
+      "consumer_and_limit": "Null; no copied orderbook or optional qualification"
+    },
+    {
+      "field": "old13",
+      "proof": "Retained entries and evidence exact",
+      "consumer_and_limit": "Default resolve unchanged; no existing entry replacement"
+    },
+    {
+      "field": "negative380",
+      "proof": "Frozen negative reason+basis and exact native5tuple",
+      "consumer_and_limit": "Proposed resolveCatalogDecision; changed/new row UNKNOWN"
+    },
+    {
+      "field": "knownnegative/unresolved",
+      "proof": "Knownnegative reason distinct; invalid/conflict reuses identity mismatch",
+      "consumer_and_limit": "Old runner4reason filter unchanged, proposed index only"
+    },
+    {
+      "field": "membership/CORE/admission",
+      "proof": "Historical tuple is not fresh native/currentCORE",
+      "consumer_and_limit": "No native or IO admission"
+    }
+  ],
+  "new_native_IO": 0,
+  "active_index_patch_applied": false
+}

@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: an unknown attempt is charged across a new run and cannot be refunded
+ok 1 - an unknown attempt is charged across a new run and cannot be refunded
+  ---
+  duration_ms: 11.144333
+  type: 'test'
+  ...
+# Subtest: two concurrent consumers reuse one identical upstream request
+ok 2 - two concurrent consumers reuse one identical upstream request
+  ---
+  duration_ms: 26.252125
+  type: 'test'
+  ...
+# Subtest: loss of an HTTP reply leaves a durable unknown cost
+ok 3 - loss of an HTTP reply leaves a durable unknown cost
+  ---
+  duration_ms: 0.345792
+  type: 'test'
+  ...
+# Subtest: a BingX HTTP-200 business rate limit creates durable backoff without retry
+ok 4 - a BingX HTTP-200 business rate limit creates durable backoff without retry
+  ---
+  duration_ms: 0.732167
+  type: 'test'
+  ...
+# Subtest: parallel different requests are paced before the durable one-per-second reservation
+ok 5 - parallel different requests are paced before the durable one-per-second reservation
+  ---
+  duration_ms: 0.995208
+  type: 'test'
+  ...
+# Subtest: a queued request whose deadline is too close is refused before another HTTP attempt
+ok 6 - a queued request whose deadline is too close is refused before another HTTP attempt
+  ---
+  duration_ms: 0.348
+  type: 'test'
+  ...
+# Subtest: edge-compatible requests refuse redirects without following or refunding them
+ok 7 - edge-compatible requests refuse redirects without following or refunding them
+  ---
+  duration_ms: 0.553083
+  type: 'test'
+  ...
+# Subtest: delivery recheck may use its protected reserve while retaining the native market family
+ok 8 - delivery recheck may use its protected reserve while retaining the native market family
+  ---
+  duration_ms: 0.21
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 96.445708

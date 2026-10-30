@@ -1,0 +1,17 @@
+{
+  "schema": "HTX_NATIVE_4H_TURNOVER_DOCUMENTATION_BOUNDARY_V1",
+  "read_utc_date": "2026-10-19",
+  "primary_source": "https://huobiapi.github.io/docs/usdt_swap/v1/cn/",
+  "secondary_language_reference": "https://huobiapi.github.io/docs/usdt_swap/v1/en/",
+  "section": "REST /linear-swap-ex/market/history/kline response table, USDT-margined linear swap",
+  "paraphrase": {
+    "vol": "Contract volume; both sides counted",
+    "amount": "Coin volume from traded contracts and face value; both sides counted",
+    "trade_turnover": "Sum of traded contract quantities times face value times trade price; both sides counted",
+    "ts": "Response generation time in milliseconds"
+  },
+  "qualified_interpretation": "Exact native trade_turnover is retained as USDT quoted turnover for exact USDT-M contract. No current contract-face-value lookup or historical epoch inference.",
+  "restrictions": ["No division by2", "No signed taker or buy/sell inference", "No index/mark endpoints", "No assumption that EN inverse-style amount formula overrides native CN linear-swap table", "Documentation is not current runtime connection or delivery proof"],
+  "quoted_source_words": 0,
+  "new_market_requests": 0
+}

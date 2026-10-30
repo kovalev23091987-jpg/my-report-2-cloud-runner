@@ -1,0 +1,40 @@
+{
+  "schema": "OBSERVED_ZERO_STATISTICS_PROFILE_TARGET_V1",
+  "working_base": "4969da83d00e47c00e48d91ad898e4c1575c1f92",
+  "target": "current-generation/files/src/liquidation-source-weighting.mjs",
+  "before": {
+    "bytes": 14284,
+    "sha256": "85f9061717fa828e641c69c4deacfc16dcb6b25a50cf28615cc8bda99952d9dd"
+  },
+  "after": {
+    "bytes": 14460,
+    "sha256": "66173362440a7dec4ee9cead92e2b9d1020b8a174df8798299b507e3be76ce73"
+  },
+  "exact_new_local_variable": "  const reportedAccuracy=typeof row?.predictive_accuracy==='number'&&Number.isFinite(row.predictive_accuracy)&&row.predictive_accuracy>=0&&row.predictive_accuracy<=1?row.predictive_accuracy:null;\n",
+  "exact_field_before": "predictive_accuracy:predictiveObservations?Number(row?.predictive_accuracy)||null:null",
+  "exact_field_after": "predictive_accuracy:predictiveObservations>0?reportedAccuracy:null",
+  "unchanged_context": {
+    "current-generation/files/src/liquidation-outcome-calibration.mjs": {
+      "bytes": 9464,
+      "sha256": "60a0d03eea4938302532a30709e90d99c0b0d1283ec74c976331cf45c58ab493"
+    },
+    "current-generation/files/runner-main.mjs": {
+      "bytes": 202183,
+      "sha256": "ecc6cab8956fbcb8f9485a2f8c48e693cb2149b57985b485685c3d9e8699d20d"
+    },
+    "current-generation/files/src/worker.js": {
+      "bytes": 634229,
+      "sha256": "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4"
+    },
+    "current-generation/files/src/block-weight-calibration.mjs": {
+      "bytes": 13710,
+      "sha256": "fa8d0da672a4fc7e4746610dcfc868e32a9bb48bb120c7b2b3e63c34142d0840"
+    },
+    "current-generation/files/src/liquidation-extension/combined-runner-service.mjs": {
+      "bytes": 35372,
+      "sha256": "d60d386fa689a88e18a223eea66fea81832d271b65751cf77b0a33351a71eaa2"
+    }
+  },
+  "shared_runtime_applied": false,
+  "author_Node_import_syntax_tests": 0
+}

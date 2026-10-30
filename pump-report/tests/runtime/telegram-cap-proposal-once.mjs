@@ -1,0 +1,34 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {MemoryStore} from '../../runtime/store.mjs';
+import {createUnifiedBudget} from '../../runtime/budget.mjs';
+import {PROVIDER_POLICIES,PROVIDER_POLICY_VERSION} from '../../runtime/provider-policy.mjs';
+import {PRODUCTION_PLAN,productionPolicies,productionAdmission} from '../../runtime/production-policy.mjs';
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const a=JSON.parse(fs.readFileSync(process.argv[2],'utf8')),lease=JSON.parse(fs.readFileSync('checkpoints/CLOUD_PHASE_STATE_20261004.json','utf8')).lease;
+assert.equal(a.status,'ADMITTED_ONE_OFFLINE_POLICY_COMPARISON');assert.equal(a.max_cases,1);
+assert.ok(Date.now()<a.expires_ts&&a.expires_ts<=a.own_lease.expires_ts&&lease.owner===a.own_lease.owner&&!lease.released);
+for(const [p,h]of Object.entries(a.frozen_sources))assert.equal(sha(fs.readFileSync(p)),h,p);
+const bytes=fs.readFileSync(a.private_snapshot);assert.equal(sha(bytes),a.private_snapshot_sha256);
+const actual=JSON.parse(bytes),state=actual.project_resources,now=actual.completed_ts,day=new Date(now).toISOString().slice(0,10);
+assert.equal(day,'2026-10-27');assert.equal(PRODUCTION_PLAN.telegram_daily_cap,27);assert.equal(PRODUCTION_PLAN.telegram_monthly_cap,837);
+fs.writeFileSync(a.proof_path+'.attempt',JSON.stringify({started_ts:Date.now(),cases:1,actual_IO:0}),{flag:'wx',mode:0o600});
+const run_id='ARTIFICIAL_TELEGRAM_CAP_PROPOSAL',storeContext={evidence_ref:'ARTIFICIAL#PUMP:AUTO:'+run_id,expires_ts:now+900000,max_requests:800,max_rows_read:5000,max_rows_written:300};
+const protected_reserves=actual.known_run.resources.protected_reserves;
+async function compare(proposed){
+ const store=new MemoryStore();await store.set('pump:resources',state);store.admission=storeContext;store.usage=()=>({requests:0,rows_read:0,rows_written:0,unknown_ops:0});store.finalization_reserve={requests:3,rows_read:4,rows_written:2};
+ const policies=productionPolicies(PROVIDER_POLICIES);if(proposed)policies.TELEGRAM={...policies.TELEGRAM,project_daily_cap:47,project_monthly_cap:1457};
+ const admission=productionAdmission(storeContext,PROVIDER_POLICY_VERSION,{mode:'AUTO'});
+ const budget=createUnifiedBudget({store,run_id,mode:'AUTO',clock:()=>now,policies,protected_reserves,admission});
+ const decision=await budget.admitCandidate({http_upper_bound:12,http_by_provider:{BINGX:10,TELEGRAM:1},candidate_id:'BINGX:USDT_M:100500:SYN-USDT'});
+ const after=await store.get('pump:resources');
+ assert.deepEqual(after.days,state.days);assert.deepEqual(after.providers,state.providers);assert.deepEqual(after.unknown,state.unknown);assert.deepEqual(after.outstanding,state.outstanding);
+ assert.deepEqual(after.automatic_candidate_allocations,state.automatic_candidate_allocations);assert.deepEqual(after.automatic_deep_pacing,state.automatic_deep_pacing);
+ for(const [k,v]of Object.entries(state.automatic_surplus_grants))assert.deepEqual(after.automatic_surplus_grants[k],v,'old hold/counter unchanged');
+ return decision;
+}
+const current=await compare(false),proposed=await compare(true);
+assert.equal(current.allowed,false);assert.equal(current.detail,'WHOLE_CANDIDATE_PROVIDER_DAY');assert.equal(proposed.allowed,true);assert.equal(proposed.candidate_quota.kind,'UNASSIGNED_SURPLUS');
+const result={schema:'PUMP_TELEGRAM_PROJECT_CAP_PROPOSAL_COMPARISON_V1',status:'PASS_OFFLINE_PROPOSAL_ONLY_NOT_AUTHORIZED_OR_DEPLOYED',cases:1,arms:2,original_snapshot_sha256:a.private_snapshot_sha256,actual_snapshot_ts:now,current_project_Telegram_caps:{day:27,month:837},proposed_project_Telegram_caps:{day:47,month:1457},derivation:'20base checks across10hours +24maximum conditionalextra checks +3manual checks; uppercapacity only, not guaranteed due other preserved budgets',current_decision:current,proposed_decision:proposed,old_usage_unknowns_outstanding_holds_allocation_pacing_identical:true,actual_Telegram_sent_today:state.providers.TELEGRAM.days?.[day]??0,closed_today_unused_TG_holds:Object.values(state.automatic_surplus_grants).filter(g=>g.day===day&&g.state==='CLOSED').reduce((sum,g)=>sum+(g.remaining_by_provider.TELEGRAM??0),0),BingX_day_spent:state.providers.BINGX.days[day],other_HTTP_native_80percent_reserves_manual3_unchanged:true,official_free_transport_reference:'https://core.telegram.org/bots/faq#broadcasting-to-users',live_policy_changed:false,market_HTTP:0,native_SQL:0,Telegram:0,completed_ts:Date.now()};
+fs.writeFileSync(a.proof_path,JSON.stringify(result,null,2)+'\n',{flag:'wx',mode:0o600});console.log(JSON.stringify(result));

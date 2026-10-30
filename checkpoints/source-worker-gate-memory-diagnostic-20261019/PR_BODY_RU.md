@@ -1,0 +1,7 @@
+В текущем пути Gate вычисленный отказ binding остаётся в логе, а полные нормализованные identity-поля теряются при compact-проекции. Подготовлен ограниченный textpatch для трёх существующих shared-файлов: invocation-local memory → точный canonical tuple → технический экспорт. В этом PR только собственная папка checkpoints; production/shared-файлы не меняются.
+
+Carrier расположен вне canonical metadata/source_receipts/fingerprint. Он сохраняет только фактический возврат status/reason и до четырёх существующих нормализованных Gate строк; без raw values, URL, body или адресов токена. Пределы512/8192 UTF8 bytes, максимум6 временных записей без latest-wins. UNKNOWN/OVERFLOW не меняют исходный анализ, gates, score, SQL или текст отчёта. Исторический first reason392358 остаётся UNKNOWN; native reader/admission не запускается.
+
+Проверка:32 новых provenance/apply/syntax/preservation PASS. Единственный новый connected testcase первоначально выявил слишком маленький overflow-fixture; исправлен только fixture, proposalcode byteexact. Повторён исключительно failed new testcase:1PASS/0FAIL,31 связанных vectors; исходный NODE_SPEC и окончательный TAP сохранены. Старые suites не повторялись. Контрольный diagnostic4379 bytes/first-binding175 bytes не является native IO/cost/durable ACK.
+
+Детали, exact hashes и центральные ограничения: README_RU.md, source-manifest.json, verification.json и central-entry-plan.md в этой папке. ENTRY-followup и physical storage tests отложены владельцем; этот source diagnostic proposal их не затрагивает.

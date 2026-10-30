@@ -1,0 +1,35 @@
+{
+  "schema": "ROOT_BINGX_GENERAL_NATIVE_UNIT_PRIMARY_DELTA_V1",
+  "authority_main": "60e2794545e56956069c751100d680a340adb00e",
+  "reviewed_utc": "2026-10-25T21:47:26.724Z",
+  "primary_url": "https://bingx.com/en/support/articles/11263317738895",
+  "primary_title": "Perpetual Futures | Simplified Version Guide (WEB)",
+  "sections": [
+    "3.3 Size",
+    "3.4 Avg. Position Price"
+  ],
+  "paraphrased_vendor_semantics": {
+    "position_size": "The denomination of a perpetual position's size is its underlying currency.",
+    "average_price": "Contract value in USDT divided by total position quantity."
+  },
+  "retained_depth_descriptor": {
+    "path": "pump-report/handoffs/sources/evidence/depth-doc.literal.txt",
+    "sha256": "b4354f42e96becac9e68e9e3ce41b1869dfb60d4e7810a74d846b36fe2d3da9a",
+    "coin_fields": [
+      "bidsCoin",
+      "asksCoin"
+    ],
+    "quantity_semantics": "COIN"
+  },
+  "candidate_inference_not_yet_adopted": "Generic same-venue quantity denomination may support exact ordinary native asset tuples using explicit Coin fields, without one separate product page per ordinary asset. SOURCE review must establish the connection; generic STANDARD arrays and CCXT1 are not evidence.",
+  "exclusions_from_automatic_generalization": [
+    "Coin-M or USDC families",
+    "Unverified or changed native contract identity",
+    "Scaled/packaged or otherwise ambiguous denomination",
+    "Absent Coin arrays or missing original T",
+    "Cross-venue identity and multiplier assumptions"
+  ],
+  "source_HTTP_SQL_Telegram_deploy": 0,
+  "new_source_review_required": true,
+  "actual_CORE_coverage_proven": false
+}

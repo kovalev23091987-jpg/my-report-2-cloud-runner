@@ -1,0 +1,81 @@
+{
+  "schema": "SOURCE_F559_APT_NATIVE_COIN_UNIT_REVIEW_V1",
+  "status": "SUFFICIENT_MINIMUM_WITHIN_BINGX_NATIVE_APT_COIN_UNIT_FOR_ROOT_REVIEW_ACTUAL_RESPONSE_SEPARATE",
+  "authority_main": "3ba301f96eddcdb3c5d1bea5168cbf9fe14f4a11",
+  "evidence_transport": "TRUSTED_ROOT_FORWARDED_PRIMARY_LITERALS_NO_NEW_SOURCE_WEB_FETCH",
+  "forwarded_by_ROOT_thread": "01a171f7-596e-7dc0-a82f-3e92f57f4ef6",
+  "source_document_reads": 0,
+  "primary_refs": [
+    {
+      "url": "https://bingx.com/en/perpetual/APT-USDT",
+      "observed_by_ROOT": "Official indexed snippet; lastmonth crawl. Direct open HTTPerror; no repeat.",
+      "literal_fields": [
+        "APTUSDT",
+        "USDⓢ-M",
+        "Price(USDT)",
+        "Amount(APT)",
+        "Total(APT)",
+        "MaxLong(APT)",
+        "MaxShort(APT)"
+      ],
+      "current_prices_used": false,
+      "live_UI_response_claimed": false
+    },
+    {
+      "url": "https://bingx.com/en/support/articles/18029352879503",
+      "observed_by_ROOT": "Actualopen200, APTUSDTmaintenance17Oct2026",
+      "literal_formula": "Position(NotionalValue)=MarkPrice x PositionSize",
+      "notional_currency_from_ROOT_primary_read": "USDT",
+      "current_prices_used": false
+    },
+    {
+      "path": "pump-report/handoffs/sources/evidence/depth-doc.literal.txt",
+      "sha256": "b4354f42e96becac9e68e9e3ce41b1869dfb60d4e7810a74d846b36fe2d3da9a",
+      "selected_fields": [
+        "bidsCoin",
+        "asksCoin"
+      ],
+      "quantity_definition": "quantity(coin)",
+      "clock": "T systemtime milliseconds"
+    }
+  ],
+  "native_binding": {
+    "instrument_id": "BINGX:USDT_M:100164:APT-USDT",
+    "asset_id": "BINGX_UNDERLYING:APT",
+    "venue": "BINGX",
+    "native_symbol": "APT-USDT",
+    "market_type": "PERPETUAL",
+    "base": "APT",
+    "quote": "USDT",
+    "settle": "USDT",
+    "margin": "USDT"
+  },
+  "native_contract_id": "100164",
+  "native_binding_proposal_id": "F552:d7fc318a1131443136fe59b58d600c52ccc446595735018ebbfc8fed89c617fd",
+  "binding_bundle_sha256": "a1d1d8b96f6cf7106ba4224e1fbf4fe52059f4448cc4667e0332976b692eb66c",
+  "conclusion_steps": [
+    "The exact saved BingX native APT-USDT contract100164 uses assetAPT and USDT quote/settle.",
+    "The same perpetual product UI labels amountAPT and priceUSDT; APTUSDTmaintenance formula corroborates price×position size=notionalUSDT.",
+    "Official API Coin descriptor specifies coin quantity. For this exact ordinary native APT product the coin denominator is vendor-namedAPT, not an inferred contract count.",
+    "Therefore a per-tuple COIN/BASE_ASSET(APT) qualification has primary same-venue support. No project-wide or cross-venue identity proof is required for these within-BingX units."
+  ],
+  "not_used": [
+    "Generic STANDARD arrays",
+    "CCXTcontractSize1 or size/precision",
+    "Observed numerical quantity ratios including historicalBTC40/40",
+    "Ticker-based cross-venue canonical identity",
+    "Numeric prefix scaling",
+    "Project identity as blanket prerequisite for native exchange units"
+  ],
+  "scope_limits": [
+    "Only exact contract100164/APT-USDT/nativebaseAPT/USDT-M",
+    "No current catalog membership or native operational coverage claimed",
+    "Actual reply must contain both Coin arrays, valid originalT/receive, valid shape/bidask and fresh bounded depth",
+    "Semantic qualification does not establish fullCORE, freshprice/history, execution guarantees or provider admission",
+    "1000SHIB/scaledbaskets remainUNKNOWN; other539 require their own applicable native unit evidence"
+  ],
+  "qualified_unit": "NativeAPT quantity with USDT price perAPT",
+  "ROOT_actual_field_probe_required": true,
+  "ROOT_actual_native_admission_required": true,
+  "new_provider_HTTP_SQL_TG_deploy": 0
+}

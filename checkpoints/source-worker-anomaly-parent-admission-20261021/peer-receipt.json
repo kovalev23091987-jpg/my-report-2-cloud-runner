@@ -1,0 +1,42 @@
+{
+  "schema": "SOURCE_ANOMALY_PARENT_STATIC_PEER_RECEIPT_V1",
+  "reviewer_thread": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+  "owner_authorized_three_chat_peer": true,
+  "mode": "READONLY_STATIC_NO_EXECUTION",
+  "result": "ACCEPTED_WITH_LIMITS",
+  "open_findings": [],
+  "review_sequence": [
+    {
+      "scope": "ONE full initial function/case/recipe/dependencies",
+      "findings": [
+        "F1_REENTRY_AND_CALLBACK_SQL_PURITY",
+        "F2_ACTUAL_FINALIZER_AFTER_RESTORE"
+      ]
+    },
+    {
+      "scope": "ONLY F1/F2 and root completed-receipt retention delta",
+      "result": "0_OPEN_WITH_LIMITS",
+      "function_sha256": "e3ddb5c4188554ca7cf0f98ca84b8a03b4a12ef3cdf63ac5acca2cb044f861d5",
+      "case_sha256": "3e2c87dea2c690f4dd613b68bfe1df34ab0ce4a7b1d3a4213fd972e74e1ca8bd"
+    },
+    {
+      "scope": "ONLY final2line uncertainMap correction",
+      "result": "0_OPEN_WITH_LIMITS",
+      "function_sha256": "e813edcb5ac4fb2882530d24defb887e14b635e419ce65bd091dfb5817b139d1",
+      "case_unchanged": true,
+      "runner_after_sha256": "685e4fc0f5f1556f5e3da7f199578e9722af47d6bc4189cab789df5aa7bae3b1"
+    }
+  ],
+  "semantic_calls": 0,
+  "Node_import_SQL_tests": 0,
+  "old_component_replay": false,
+  "qualified_native_policy": null,
+  "native_schema_ACK_firstknowledge_independent105_SENDER_SENT": false,
+  "limits": [
+    "STATIC results are not semantic qualification or native cost/admission proof",
+    "Current617 pair requires exact THIRD props and root central artifact recipe rebind before FIRST common",
+    "Metadata artifact receipt is not durable native event ACK; full pending prepared is separate private root artifact only",
+    "No CPU heap latency physical growth qualification"
+  ],
+  "final_pin_only_readback_not_full_review_replay": true
+}

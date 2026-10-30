@@ -1,0 +1,91 @@
+{
+  "schema": "ANALYTICS_AA_ACTUAL_SOURCE_CONSUMER_GAPS_V1",
+  "scope": "Only saved F550 SOL input, not live market/universe qualification",
+  "original_received_moscow": "2026-10-25T22:57:02.570+03:00",
+  "current_stale_run_moscow": "2026-10-25T23:07:28.319+03:00",
+  "observed_source_gaps": [
+    {
+      "input": "orderbook",
+      "present": false,
+      "effect": "Mandatory liquidity/spread/sizes/independent pullback plan cannot be assessed; no substitution."
+    },
+    {
+      "input": "growth_24h",
+      "present": false,
+      "ticker_status": "INCOMPLETE",
+      "ticker_reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+      "effect": "No exact24h window/day threshold, no inferred daily base from reported change."
+    },
+    {
+      "input": "trades",
+      "status": "ERROR",
+      "reason": "BINGX_BOUNDED_TRADE_ARRAY_REQUIRED",
+      "ROOT_reported_cause": "Saved native response1000 rows vs adapter bound100; SOURCE fixes offline separately. AA did not replay that provider or alter ERROR fact."
+    },
+    {
+      "input": "open_interest/funding",
+      "status": "NOT_CHECKED",
+      "effect": "Unqualified units/source clock remain unavailable."
+    },
+    {
+      "input": "previous_wave/liquidation_map",
+      "present": false,
+      "effect": "No stored continuation/first-knowledge/outcome/map check. Map remains optional, not a replacement mandatory condition."
+    }
+  ],
+  "history125_result": {
+    "rows": 125,
+    "contiguous": true,
+    "closed": true,
+    "search_endpoints": 61,
+    "baseline_windows_each": 12,
+    "full_search_structural_coverage": true,
+    "independent_statistical_episodes_claimed": false
+  },
+  "original_consumer": {
+    "status": "REJECTED",
+    "wave_state": "CANCELLED",
+    "reasons": [
+      "MANDATORY_ORDERBOOK_NOT_USABLE",
+      "PLAN_INVALIDATED"
+    ],
+    "ready": false,
+    "plan_or_card": false,
+    "short_windows_known": 3,
+    "short_threshold_passed": false,
+    "day_window_known": false
+  },
+  "current_consumer": {
+    "status": "WAITING",
+    "reasons": [
+      "MANDATORY_PRICE_NOT_USABLE",
+      "MANDATORY_CANDLES_NOT_USABLE",
+      "MANDATORY_ORDERBOOK_NOT_USABLE"
+    ],
+    "movement_executed": false,
+    "source_clocks_shifted": false
+  },
+  "concrete_copy_defect": {
+    "proof": "No previous wave/plan yet PLAN_INVALIDATED manual template claimed saved plan boundary.",
+    "fixed": true,
+    "production_file": "pump-report/analytics/manual-text.mjs",
+    "before_sha256": "fdeaa3599d6d7096753ab9230ea0e760d73d678d9577c6d4fff98679d7d57892",
+    "after_sha256": "9bd30e2665f159e4077fad8c02d4b19596d195472e45d560e983321ff755248f",
+    "numeric_core_status_reason_plan_unchanged": true,
+    "new_focused_actual_case": "PASS_ONLY_NEW_ACTUAL_F550_COPY_CASE"
+  },
+  "unverifiable_actuals": [
+    "fresh live book/depth/execution size",
+    "exact observed24h history/growth",
+    "corrected trade adapter consuming observed normalized sample",
+    "OI/funding direction",
+    "map availability",
+    "stored prior wave and first-knowledge ordering",
+    "published independent plan/min10 potential",
+    "same-run Telegram",
+    "four-hour outcome/learning sample",
+    "operational readiness of550assets"
+  ],
+  "new_native_IO": 0,
+  "raw_private_prices_exported": false
+}

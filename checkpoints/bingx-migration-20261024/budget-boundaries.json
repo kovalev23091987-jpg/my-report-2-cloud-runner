@@ -1,0 +1,138 @@
+{
+  "schema": "BINGX_MIGRATION_BUDGET_BOUNDARIES_NOT_ADMISSION_V1",
+  "actual_N": null,
+  "selected_cadence_minutes": null,
+  "schedule_implemented": false,
+  "source_endpoints": [
+    {
+      "metric": "catalog",
+      "endpoint": "/openApi/swap/v2/quote/contracts",
+      "granularity": "BULK",
+      "provenance": "BingX-API/api-ai-skills swap-market reference",
+      "native_shape_verified": false
+    },
+    {
+      "metric": "last_price",
+      "endpoint": "/openApi/swap/v1/ticker/price",
+      "granularity": "BULK_OPTIONAL_SYMBOL",
+      "native_shape_verified": false
+    },
+    {
+      "metric": "24h_ticker",
+      "endpoint": "/openApi/swap/v2/quote/ticker",
+      "granularity": "BULK_OPTIONAL_SYMBOL",
+      "native_shape_verified": false
+    },
+    {
+      "metric": "mark_index_funding",
+      "endpoint": "/openApi/swap/v2/quote/premiumIndex",
+      "granularity": "BULK_OPTIONAL_SYMBOL",
+      "native_shape_verified": false
+    },
+    {
+      "metric": "closed_ohlcv",
+      "endpoint": "/openApi/swap/v3/quote/klines",
+      "granularity": "PER_SYMBOL",
+      "native_shape_verified": false,
+      "caution": "Official static docs found by SOURCE describe OBJECT open/close/high/low/volume/time; AI-skill array example conflicts. Final pinned source-contract receipt pending; no executed native response yet."
+    },
+    {
+      "metric": "open_interest",
+      "endpoint": "/openApi/swap/v2/quote/openInterest",
+      "granularity": "PER_SYMBOL_REQUIRED",
+      "native_shape_verified": false,
+      "unit": "UNKNOWN_UNTIL_QUALIFIED_NATIVE_UNIT_EVIDENCE",
+      "caution": "Official AI-skill says base asset but primary static schema identified by SOURCE lacks unambiguous native unit; do not propagate secondary description as accepted unit"
+    },
+    {
+      "metric": "funding_history",
+      "endpoint": "/openApi/swap/v2/quote/fundingRate",
+      "granularity": "SYMBOL_WINDOW_WHEN_NEEDED",
+      "native_shape_verified": false
+    }
+  ],
+  "existing_collector": {
+    "path": "cloudflare/public-collector/injected-worker-tail.js",
+    "slot_ms": 300000,
+    "nominal_slots_per_day": 288,
+    "daily_write_cap": 10000,
+    "provider_subrequests_without_catalog": 3,
+    "provider_subrequests_with_catalog": 4,
+    "old_HTX_OI_is_bulk": true,
+    "new_BingX_OI_documented_symbol_required": true,
+    "replace_URL_only_is_invalid": true,
+    "amortized_writes_formula": "2*S+3+L, L=0 or6 or10; S>=ceil(N/64) and can be larger due 64KiB payload bounds",
+    "native_row_scan_and_writes_not_measured_by_this_formula": true
+  },
+  "project_preserved": {
+    "max_rows_read_day": 3500000,
+    "max_rows_written_day": 70000,
+    "max_HTTP_run": 164,
+    "manual_HTTP_reserved": 24,
+    "next_full_rows_read_reserved": 59000,
+    "next_full_rows_written_reserved": 920,
+    "existing_full_minutes_until_replaced_after_qualification": 40,
+    "existing_collector_minutes_until_cutover": 5
+  },
+  "scenarios_NOT_actual_universe": [
+    {
+      "assumed_N": 105,
+      "minimum_shards_count_only": 2,
+      "minimum_all_OI_symbol_requests": 105,
+      "optimistic_all_OI_plus_2_bulk_requests": 107,
+      "exceeds_absolute_whole164_even_before_other_work": false,
+      "nominal_snapshot_writes_per_day_with_L10": 4896,
+      "exceeds_old10000_collector_write_cap_by_nominal_lower_bound": false
+    },
+    {
+      "assumed_N": 250,
+      "minimum_shards_count_only": 4,
+      "minimum_all_OI_symbol_requests": 250,
+      "optimistic_all_OI_plus_2_bulk_requests": 252,
+      "exceeds_absolute_whole164_even_before_other_work": true,
+      "nominal_snapshot_writes_per_day_with_L10": 6048,
+      "exceeds_old10000_collector_write_cap_by_nominal_lower_bound": false
+    },
+    {
+      "assumed_N": 500,
+      "minimum_shards_count_only": 8,
+      "minimum_all_OI_symbol_requests": 500,
+      "optimistic_all_OI_plus_2_bulk_requests": 502,
+      "exceeds_absolute_whole164_even_before_other_work": true,
+      "nominal_snapshot_writes_per_day_with_L10": 8352,
+      "exceeds_old10000_collector_write_cap_by_nominal_lower_bound": false
+    },
+    {
+      "assumed_N": 750,
+      "minimum_shards_count_only": 12,
+      "minimum_all_OI_symbol_requests": 750,
+      "optimistic_all_OI_plus_2_bulk_requests": 752,
+      "exceeds_absolute_whole164_even_before_other_work": true,
+      "nominal_snapshot_writes_per_day_with_L10": 10656,
+      "exceeds_old10000_collector_write_cap_by_nominal_lower_bound": true
+    },
+    {
+      "assumed_N": 1000,
+      "minimum_shards_count_only": 16,
+      "minimum_all_OI_symbol_requests": 1000,
+      "optimistic_all_OI_plus_2_bulk_requests": 1002,
+      "exceeds_absolute_whole164_even_before_other_work": true,
+      "nominal_snapshot_writes_per_day_with_L10": 12960,
+      "exceeds_old10000_collector_write_cap_by_nominal_lower_bound": true
+    }
+  ],
+  "required_native_measurements": [
+    "classified actual N per family",
+    "actual response body sizes and clocks",
+    "closed candle native object/array/timezone/volume definitions",
+    "availability of official bulk or WS OI",
+    "per asset OI cost and refresh requirements for unchanged candidate gates",
+    "actual disjoint D1 journals/readback/read-plan costs",
+    "full chain provider month/day/minute and current whole admission",
+    "same venue state/retention byte growth and overlap reuse"
+  ],
+  "new_provider_request_grant": false,
+  "HTTP0_under_first_scope": true,
+  "code_or_native_cost_savings_claimed": false,
+  "documentation_conflicts_preserved": true
+}

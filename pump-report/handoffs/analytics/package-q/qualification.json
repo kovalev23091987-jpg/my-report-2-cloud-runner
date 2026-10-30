@@ -1,0 +1,315 @@
+{
+  "schema": "PUMP_ANALYTICS_Q_QUALIFICATION_V1",
+  "status": "FROZEN_FOR_ROOT_INTEGRATION",
+  "ROOT_integrates": true,
+  "base_main": "cc42a97ce02760f1768a5fdca0fb33115b88f75f",
+  "test_dependency_main": "cc42a97ce02760f1768a5fdca0fb33115b88f75f",
+  "freeze_authority_main": "cc42a97ce02760f1768a5fdca0fb33115b88f75f",
+  "tz_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "plan_frozen_before_production_patch": {
+    "path": "pump-report/handoffs/analytics/package-q/PLAN_TZ_SEMANTICS_RU.md",
+    "sha256": "f4981e9b2488e1a3b9ebc6c23b9cf8050fd4160fce19bba16018d168df57a810"
+  },
+  "new_unique_cases": 5,
+  "initial_pass": 5,
+  "initial_fail": 0,
+  "final_unique_pass": 5,
+  "final_fail": 0,
+  "Q04_variants": 19,
+  "Q04_variant_names": [
+    "dedup-conflict-before-invalid-row-filter-partial-same-sample",
+    "tied-different-first-prices",
+    "tied-different-last-prices",
+    "tied-same-endpoint-price-is-unambiguous",
+    "no-time-span",
+    "interior-ties-do-not-order-market-path",
+    "units",
+    "estimated",
+    "incomplete",
+    "stale",
+    "future-receipt",
+    "before-source-receipt",
+    "expired",
+    "anonymous",
+    "unknown-side",
+    "unknown-quantity",
+    "empty",
+    "sum-overflow",
+    "return-overflow"
+  ],
+  "old_batteries_replayed": false,
+  "command": "node --import /private/tmp/pump-e-native-http-forbidden.mjs --test --test-reporter=tap pump-report/tests/analytics/trade-price-response.test.mjs",
+  "TAP_sha256": "15a40568dd1516d8d59d21cc651d073752f4e9892fd8195057fec9eccdac5112",
+  "rules_version": "pump-analytics-v4-first-qualification-20261025",
+  "price_response_scalars": [
+    "first_price",
+    "last_price",
+    "min_price",
+    "max_price",
+    "first_to_last_return_pct"
+  ],
+  "same_qualified_unique_fresh_sample_for_prices_and_amounts": true,
+  "endpoint_timestamp_ties_never_ordered_by_array_or_ID": true,
+  "undefined_or_nonfinite_return_has_null_and_reason": true,
+  "duplicate_stable_ID_deduplicated": true,
+  "conflict_rejected_before_row_filtering": true,
+  "anonymous_rows_excluded_with_reason": true,
+  "anonymous_fallback_legacy_D103_not_preserved_as_current_rule": true,
+  "price_only_unknown_side_or_quantity_has_no_buy_sell": true,
+  "unknown_side_or_quantity_excluded_from_both_sample_and_amounts": true,
+  "no_qualified_sample_sums_null_not_zero": true,
+  "all_market_coverage_claimed": false,
+  "absorption_causation_or_full_price_path_claimed": false,
+  "new_optional_second_reason": "TRADE_PRICE_RESPONSE",
+  "priority": [
+    "state",
+    "activity",
+    "trade response",
+    "map",
+    "relative"
+  ],
+  "max_selected_main_reasons": 2,
+  "connected_card_utf16": 902,
+  "required_mode_TEST_growth_future_event_plan_map_invalidation_preserved": true,
+  "readiness_plan_thresholds_wave_clocks_original_P0_t0_target_rules_changed": false,
+  "core_analytical_fields_compared_to_preQ_oracle": true,
+  "original240_rewritten": false,
+  "source_native_route_units_aggressor_qualified": false,
+  "conditional_normalized_consumer_only": true,
+  "frozen_P43_exact_using_Q_baseline_for_two_revised_modules": true,
+  "frozen_N21_exact_using_P_baseline_for_three_revised_modules": true,
+  "O14_exact": true,
+  "required_test_only_oracles": [
+    "pump-report/handoffs/analytics/package-q/baseline/context.before.mjs",
+    "pump-report/handoffs/analytics/package-q/baseline/index.before.mjs",
+    "pump-report/handoffs/analytics/package-q/baseline/presentation.before.mjs"
+  ],
+  "changed_production_files": [
+    "pump-report/analytics/context.mjs",
+    "pump-report/analytics/index.mjs",
+    "pump-report/analytics/presentation.mjs"
+  ],
+  "changed_test": "pump-report/tests/analytics/trade-price-response.test.mjs",
+  "readonly_dependencies": [
+    {
+      "path": "pump-report/analytics/day-growth.mjs",
+      "bytes": 3782,
+      "sha256": "3685160291227a51626ef5ba09f2923b3a95d53920fad809879b8ec7d21434a1",
+      "git_blob": "af726423c9fdc355a77a09d3613f044d5f5cd20d",
+      "remote_exact": true,
+      "frozen_P_manual_exact": null
+    },
+    {
+      "path": "pump-report/analytics/liquidity.mjs",
+      "bytes": 3326,
+      "sha256": "64f8d218f1e1843140a215d341dc6a5ef2b886826b95d7825d44f5d6fd20e66a",
+      "git_blob": "560ca16d61f7c7a0ca2b9a8a3e275252a074b356",
+      "remote_exact": true,
+      "frozen_P_manual_exact": null
+    },
+    {
+      "path": "pump-report/analytics/manual-text.mjs",
+      "bytes": 6616,
+      "sha256": "fdeaa3599d6d7096753ab9230ea0e760d73d678d9577c6d4fff98679d7d57892",
+      "git_blob": "c1bc9fe411179059fa269a0dc4f6684405d456fc",
+      "remote_exact": false,
+      "frozen_P_manual_exact": true
+    },
+    {
+      "path": "pump-report/analytics/math.mjs",
+      "bytes": 4477,
+      "sha256": "27ee1560c2dcc6af94a780d4d04fb3b87021b0216b399c4030368cc2e7a5598c",
+      "git_blob": "84d526f14c505e23aa5cb72a7d3fdca7d14081b4",
+      "remote_exact": true,
+      "frozen_P_manual_exact": null
+    },
+    {
+      "path": "pump-report/analytics/movement.mjs",
+      "bytes": 17043,
+      "sha256": "218f07b918efc0a5ee6cdb40749166674cc0723b49f0b49b5879054b61e17bb0",
+      "git_blob": "2f1e17256280ca1f143390f85f8f7d9201915389",
+      "remote_exact": true,
+      "frozen_P_manual_exact": null
+    },
+    {
+      "path": "pump-report/analytics/outcome.mjs",
+      "bytes": 9914,
+      "sha256": "07a9568c15e0cc5c13b0bae146144bf947244e86d9189da08e96dcb15bd62753",
+      "git_blob": "2abb12048aa0b909aec2e87cd843c77e2c345d58",
+      "remote_exact": true,
+      "frozen_P_manual_exact": null
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "bytes": 7668,
+      "sha256": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+      "git_blob": "02542b09ff5f157d701c79489369bce68456ca41",
+      "remote_exact": true,
+      "frozen_P_manual_exact": null
+    },
+    {
+      "path": "pump-report/contracts/index.mjs",
+      "bytes": 5701,
+      "sha256": "cfa9c8387561e08fbecb797f6cffafcfc6fc64a5acd93c0e2ae310d38db4bd94",
+      "git_blob": "7ab392bc5b3ca1748f0df7f31fccbd9f80132d4a",
+      "remote_exact": true,
+      "frozen_P_manual_exact": null
+    },
+    {
+      "path": "pump-report/profile/start-v1.mjs",
+      "bytes": 1774,
+      "sha256": "8e7100655d96a9b550e8a8c6debdfb9164280259394823e5c596d70c847d16ce",
+      "git_blob": "ec96d96656025dffbdffd4d296689d55ca2002b8",
+      "remote_exact": true,
+      "frozen_P_manual_exact": null
+    },
+    {
+      "path": "pump-report/tests/analytics/fixtures.mjs",
+      "bytes": 2854,
+      "sha256": "b8f48cac69d813a3ba025cf364145b96db4d7449914f5ba119ad9bb89c898fed",
+      "git_blob": "ea7a0aedbe6cac487850808f70834cca157ee7a5",
+      "remote_exact": true,
+      "frozen_P_manual_exact": null
+    }
+  ],
+  "audit_gap": "OBSERVED_SAMPLE_PRICE_RESPONSE_SUBSCOPE_VERIFIED_CODE; whole M-G02 remains partial",
+  "native_HTTP": 0,
+  "native_SQL": 0,
+  "Telegram": 0,
+  "deploy": 0,
+  "cron": 0,
+  "movement_outcome_shared_runtime_source_common_changes": false,
+  "old_ENTRY_followup_or_physical_capacity_reopened": false,
+  "nine_pauses_two_deferrals_preserved": true,
+  "new_chats_subagents_automations": 0,
+  "production_native_acceptance_claimed": false,
+  "probability_pct": null,
+  "own_lease": "Q own38min acquired16:47:20UTC expires17:25:20UTC; timely own release immediately after freeze with FULL file/ref readback. No new autonomous scope.",
+  "files": [
+    {
+      "path": "pump-report/analytics/context.mjs",
+      "bytes": 10203,
+      "sha256": "54451debcbcaf8535ab83f1620da7c4de479ab1b49db53099b04642bd3efe1d7"
+    },
+    {
+      "path": "pump-report/analytics/index.mjs",
+      "bytes": 16189,
+      "sha256": "e25dedc87048dc4fcbabc3b43c3bf6b7bd056e8102fca1e6c65834e48eee3ebd"
+    },
+    {
+      "path": "pump-report/analytics/presentation.mjs",
+      "bytes": 7341,
+      "sha256": "af232ce4fb741fc200ef96d94e77c7603ca02e07b81cd21b7a565903ba35d128"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/PLAN_TZ_SEMANTICS_RU.md",
+      "bytes": 7310,
+      "sha256": "f4981e9b2488e1a3b9ebc6c23b9cf8050fd4160fce19bba16018d168df57a810"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/README_RU.md",
+      "bytes": 7492,
+      "sha256": "915bd7e3b0eabd18c1e2dc4bc3c70a2290d1af79d73f91e63f09c9179f2414dc"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/ambiguous-partial.json",
+      "bytes": 5865,
+      "sha256": "bb07e3b027f44aaf3f63a3f56c72b75df2c35e274cf2c9b95fb468c660fd405a"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/audit-gap-delta.json",
+      "bytes": 3021,
+      "sha256": "7bf4f0665107c35db98c4a70b60e9b6b22966d6d4617e53dbe3f67c9c774f37a"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/authority.json",
+      "bytes": 5940,
+      "sha256": "9148a7ab278461843a805bda3dc5e47650f171f69d889921a3d9d1ee73c2a307"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/baseline/context.before.mjs",
+      "bytes": 6513,
+      "sha256": "704348a6c56bcdafe10d7335c89e4e092d92fadfe12bed856c9afb8bfc8285d6"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/baseline/index.before.mjs",
+      "bytes": 16109,
+      "sha256": "8cd90323908e22323be4ae784c33f3333bc7730f1550d81ba09a26faf68ec818"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/baseline/presentation.before.mjs",
+      "bytes": 7272,
+      "sha256": "f9afc81e854d0686720a7da31baa27a94d1f2dbb686553eec3ca4e1619511659"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/buy-rise.json",
+      "bytes": 1325,
+      "sha256": "d25b981b70a818aa8d2661fa06cf4a2f7e9eee862b42ef7548aae058c1b5d99b"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/connected-card.json",
+      "bytes": 26808,
+      "sha256": "7bac2db0a2f947ece417cd2d6cc1bef531c2dcf78844898059dbba99dd25926b"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/connected-card.txt",
+      "bytes": 1559,
+      "sha256": "86759f14433d57e2cf1e5afc1a2574a5194eed9bea60e08e455249b7f3507414"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/context.diff",
+      "bytes": 8466,
+      "sha256": "76b3746ba594dc6d1ed1fca5495c3da59b923d2b221feb565b6452b332ee2801"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/frozen-prior.json",
+      "bytes": 278,
+      "sha256": "fe7e95ca3a610d47be754c2255c50e894e15a4d02626753554a02b08e8ccbe71"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/index.diff",
+      "bytes": 747,
+      "sha256": "31fe19b03aa5b217bcb3b34cb9a5c55da05f4b848f75c245ea586293aa4698d9"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/integrity.json",
+      "bytes": 22616,
+      "sha256": "0a898062c94bcab5efb837d159f80f2fe1c137e8b4b5b307795938f552dd9dc0"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/presentation.diff",
+      "bytes": 2822,
+      "sha256": "9120762c47dbca855584686a77d7abde03571090a0edd3ade4bbcb2c1af17e6d"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/readonly-dependencies.json",
+      "bytes": 3267,
+      "sha256": "21a57d7e58daed5eeed5ee440d756585333f5c804d1d28301277fb9b7e9ff663"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/sell-fall.json",
+      "bytes": 1327,
+      "sha256": "13902344c8220b57bbf54bb0e9d0c76dce1570e3def3169af8a11e825891a80b"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/sell-flat.json",
+      "bytes": 1702,
+      "sha256": "2c05b01a2bbcc1e6d4556810ceae45e65c2e4be48c67aada0b7303c5e6a852e8"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/test-graph.json",
+      "bytes": 3095,
+      "sha256": "b16d5d307ffb5c3834e5d2e067fcf3160c25be551b3eea4c2ff40b14d492f8d4"
+    },
+    {
+      "path": "pump-report/handoffs/analytics/package-q/test-results.tap",
+      "bytes": 1591,
+      "sha256": "15a40568dd1516d8d59d21cc651d073752f4e9892fd8195057fec9eccdac5112"
+    },
+    {
+      "path": "pump-report/tests/analytics/trade-price-response.test.mjs",
+      "bytes": 13602,
+      "sha256": "0aae5adb4138e9c21c5ec15dc40e0619de320153aedd65911962c93ff05ee3f4"
+    }
+  ]
+}

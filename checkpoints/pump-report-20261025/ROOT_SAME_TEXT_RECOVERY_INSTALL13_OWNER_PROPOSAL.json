@@ -1,0 +1,217 @@
+{
+  "schema": "ROOT_SAME_TEXT_RECOVERY_INSTALL13_OWNER_PROPOSAL_V1",
+  "status": "INSTALLED_CONFIRMED_FULL_ALL3_ACCEPTED_OWNER13_SPENT",
+  "authority_main": "061c54c23e931025f2e5d727b3e64f8f3e870cf4",
+  "prepared_ts": 1793126169481,
+  "TZv2_sha256": "0674adf8bef087f63ddac8214b8e650ae14410f33970ed4f869c5ab2564975cc",
+  "unified_sha256": "384e038c734e02230845925fa564d46402ffc4be4555ca6345315ac5ea335048",
+  "problem": "KnownunsentSTALE/ERROR currentprimarywithsameexactrenderedtext silentlydeduplicatedfreshsavedanalysisintooldterminalcard; historicaluniversalcausenotproven.",
+  "solution": "Newcardonlyfreshdistinctimmutableoriginalwithstrictlynewersafeanalysisclock andknownhash==currentunsentprimary, confirmedagaininsidewaveCAS. PreserveSENTUNKNOWNREADYandoldoriginalcards; noexpiryextension.",
+  "before": {
+    "artifact": "pump-report/.private/native-20261026/pump-failed-attempt-fairness-v3-73-artifact.json",
+    "artifact_sha256": "48269a31a51b29535031108bfa5414be0c2d634a0ef08d12373e77c03c0658c2",
+    "implementation_sha256": "0a21641150808f4acaddb3bc18ed45805f3ae6eb7b5eee0a9bef7104ccab6e95",
+    "retained_rollback_material": true
+  },
+  "after": {
+    "schema": "ROOT_SAME_TEXT_UNSENT_RECOVERY_ARTIFACT_V3",
+    "status": "QUALIFIED_BUILT_NOT_INSTALLED",
+    "authority_main": "d78d24508e058345d88a6806c58a23f51cac9dd6",
+    "built_ts": 1793126085889,
+    "artifact_path": "pump-report/.private/native-20261026/pump-same-text-unsent-recovery-v3-73-artifact.json",
+    "artifact_sha256": "6f22b3c6f5ab281e78b87a0c0ec4de3562801efebe0f89f1a3c0502cd6fb370e",
+    "implementation_sha256": "1deb93e453d490adec4fd520484989c8cd618f1b107a85e75bd35cf36c438ca3",
+    "module_count": 73,
+    "changed": [
+      {
+        "name": "runtime/delivery.mjs",
+        "sha256": "4dcdede755e44956dca0b1972bd4e4058dd2ba53dc09e3055edd6c19e14ca0e2"
+      },
+      {
+        "name": "runtime/implementation-pin.mjs",
+        "sha256": "cbbde46cd0db5c582349ccda1bbe54bdc2b81266dc889372fd181d208ba12690"
+      }
+    ],
+    "unchanged_modules": 71,
+    "original_metadata_analytics_strategy_TTL_provider_manual3_caps_holds_unchanged": true,
+    "case_result_sha256": "f63299d1c020fa61a1b43c95f7a3e2569cf86199a21b5715cc02321f265065e4",
+    "builds": 1,
+    "native_SQL": 0,
+    "market_HTTP": 0,
+    "Telegram": 0,
+    "deployed": false
+  },
+  "affected_case": {
+    "path": "checkpoints/pump-report-20261025/ROOT_SAME_TEXT_UNSENT_RECOVERY_AFFECTED_CASE_V3.json",
+    "sha256": "f63299d1c020fa61a1b43c95f7a3e2569cf86199a21b5715cc02321f265065e4",
+    "status": "PASS",
+    "case_count": 1,
+    "arms": 12,
+    "actual_native_SQL": 0,
+    "market_HTTP": 0,
+    "Telegram": 0
+  },
+  "installer": {
+    "template": "pump-report/operator/cloudflare-same-text-control.template.js",
+    "exact_changed_modules": [
+      "runtime/delivery.mjs",
+      "runtime/implementation-pin.mjs"
+    ],
+    "unchanged_modules": 71,
+    "proof": "checkpoints/pump-report-20261025/ROOT_SAME_TEXT_SPARSE_CONTROL_QUALIFICATION_V3.json",
+    "proof_sha256": "bc88ed22670924882c6137dc969cb83334700abc81cb80fa92e7ba697c10e7af",
+    "status": "PASS",
+    "actual_CF_HTTP": 0,
+    "mock_calls": 11
+  },
+  "reviews": {
+    "SOURCE_F638": {
+      "path": "pump-report/handoffs/sources/F638_PACKAGE_FINAL_DELIVERY_RECOVERY_V1.json",
+      "sha256": "c80ac67378ab059b580a506906db1c3060fb97acefe3a38d63d65840bff72bad",
+      "status": "STATIC_PASS_WITH_LIMITS_TWO_REQUESTED_REPLAY_SCENARIOS",
+      "release_commit": "6001b57fe4af4debfad9b1ba413e6936ca891788",
+      "release_FULL_utc": "2026-10-27T18:37:28Z"
+    },
+    "ANALYTICS_BZ17": {
+      "path": "pump-report/handoffs/analytics/package-bz17/BZ17_REVIEW_MANIFEST.json",
+      "sha256": "8073820ca248b706212a2681f5f3468fa305d41dc79ef021c4fcb4d88366a95c",
+      "status": "PASS_TWO_BZ16_COUNTEREXAMPLES_CLOSED_STATIC_NO_NEW_BLOCKER",
+      "release_FULL": {
+        "sha": "26b64d88bed04f3e3f4fad23d784224cfc12665f",
+        "clock": {
+          "current_time": "2026-10-27 18:37:38 UTC"
+        },
+        "blob": "1980e710baaf8c4edf7a1a52bc6f4c0076e00ee4",
+        "exact_bytes": true,
+        "actual_ref_match": true
+      }
+    },
+    "ANALYTICS_BZ16": "2_CONCRETE_COUNTEREXAMPLES_FIXED_PRIOR_V1_NOT_INSTALLED"
+  },
+  "requested_single_exception": {
+    "schema": "OWNER_ONE_SAME_TEXT_RECOVERY_MAINTENANCE_LOOKUP13_V1",
+    "status": "APPROVED_AND_SPENT_FINALIZED",
+    "day_utc": "2026-10-27",
+    "exact_run_id": "pump-same-text-recovery-maintenance-20261027-one-owner-extra",
+    "previous_run_count": 12,
+    "additional_runs": 1,
+    "maximum_count_after": 13,
+    "max_queries": 16,
+    "rows_read": 500,
+    "rows_written": 30,
+    "purpose": "OnlyactualfreshquiescenceafterAUTO0beforecodePUT; sharedreservation/finalization, businessstateREADONLY, no market/noTelegram.",
+    "default_cap_unchanged": 10,
+    "old12spends": "RETAINED_NOT_REARMED",
+    "actual_usage": {
+      "requests": 5,
+      "rows_read": 130,
+      "rows_written": 4,
+      "unknown_ops": 0
+    }
+  },
+  "installation_sequence": [
+    "freshmain/all17/all4/newownboundedCASFULL",
+    "exactnative13ownergrantonlyafterapproval;actualpositivegovernor",
+    "freshFULL73actualcode/settings3schedulesAUTO1DL1",
+    "temporaryAUTO0DL1FULL",
+    "oneexact13quiescenceFINALIZEDexecutorowner=null<=5min",
+    "exact2modulesinstallFULLall73",
+    "restoreAUTO1DL1FULLandall3cronsimmediately",
+    "recordactualcost/pin/businessprogrampointer/nextrealAUTOacceptance"
+  ],
+  "other_constraints": "Allbudgetsunknownsholdsmanual3futurebase24extra/TG47day1457month/10–20MSK/oldpauses/2OWNERdeferralspreserved. NoSourceconnectionsorsearch. NoactualcurrentAUTOproof; nextordinarywindow28Oct10MSK.",
+  "production_install_admitted": true,
+  "final_reviewed_ts": 1793126309053,
+  "installation_completed": true,
+  "after_is_frozen_build_time_record": true,
+  "actual_installation": {
+    "schema": "ROOT_THREE_CHAT_RECOVERY13_DEPLOYMENT_ACCEPTANCE_V1",
+    "status": "LIVE73_1DEB_FULL_AUTO1_DELIVERY1_ALL3_INSTALL_ACCEPTED_FIRST_REAL_AUTO_OPEN",
+    "recorded_utc": "2026-10-27T19:02:29.615Z",
+    "authority_main": "a8fa94d5eec1a5d71aec6efffec9e794ad08ec9d",
+    "before_pin": "0a21641150808f4acaddb3bc18ed45805f3ae6eb7b5eee0a9bef7104ccab6e95",
+    "artifact_sha256": "6f22b3c6f5ab281e78b87a0c0ec4de3562801efebe0f89f1a3c0502cd6fb370e",
+    "implementation_sha256": "1deb93e453d490adec4fd520484989c8cd618f1b107a85e75bd35cf36c438ca3",
+    "module_count": 73,
+    "changed_modules": [
+      "runtime/delivery.mjs",
+      "runtime/implementation-pin.mjs"
+    ],
+    "unchanged_modules": 71,
+    "installed_proof": "checkpoints/pump-report-20261025/ROOT_RECOVERY13_INSTALL_FULL.json",
+    "installed_proof_sha256": "0ac4862d1a97d1eafc10676142098d0b6228181d3643951440408f34d2a1d754",
+    "auto_on_proof": "checkpoints/pump-report-20261025/ROOT_RECOVERY13_AUTO_ON_FULL.json",
+    "auto_on_proof_sha256": "2caaf4f23fcd362c8f8f83aae4d7fd910b65dffc27ba7d154be6b85cfbed8f8b",
+    "AUTO_delivery_FULL_ts": 1793127001903,
+    "all21bindings_and_all3schedules_exact": true,
+    "business_window": "10:00–20:00 Europe/Moscow",
+    "next_business": "2026-10-28T10:00:00+03:00",
+    "owner_extra13_actual": {
+      "reservation_id": "PUMP:LOOKUP:pump-same-text-recovery-maintenance-20261027-one-owner-extra",
+      "usage": {
+        "requests": 5,
+        "rows_read": 130,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "FINALIZED": true,
+      "default_day_cap": 10,
+      "UTC27_spent": 13,
+      "remaining": 0,
+      "no14": true
+    },
+    "engineering_known_lower": {
+      "SQL": 1441,
+      "rows_read": 3317,
+      "rows_written": 720,
+      "SQLunknown": 0,
+      "ordinary_AUTO_and_whole_account_day_excluded_unknown": true
+    },
+    "admin_control_calls": 33,
+    "physical_admin_OAuth_HTTP": "UNKNOWN_NONZERO_RETAINED",
+    "market_HTTP": 0,
+    "Telegram": 0,
+    "SOURCE_F639": {
+      "status": "PASS_SAVED_INSTALL_CONFIG_EVIDENCE_FIRST_REAL_AUTO_OPEN",
+      "path": "pump-report/handoffs/sources/F639_PACKAGE_INSTALL13_RECEIPT_FINAL_V1.json",
+      "sha256": "bf740cde4a83edb70fa6eb1ebf0de4b3068395ee60cf72c89806fe4a7b409fb8",
+      "git_ref": "242381254041c88e1bd2016e7bc14c78163d0638",
+      "release_FULL_utc": "2026-10-27T19:00:39Z",
+      "timely_own_release": true,
+      "new_native_provider_CF_Telegram_IO": 0
+    },
+    "ANALYTICS_BZ18": {
+      "status": "PASS_EXACT73_INSTALLED_AND_TARGET_CONSISTENT_CURRENT_AUTO_SENT_OPEN",
+      "path": "pump-report/handoffs/analytics/package-bz18/BZ18_REVIEW_MANIFEST.json",
+      "sha256": "be67da4aecb5a2ccb496502c9bcced2eb7689b9c457faed613df0a2b419b8755",
+      "git_ref": "59bff9ba9ab97d7b29c27aeafe994eabfb0c139b",
+      "release_FULL_utc": "2026-10-27T18:54:54Z",
+      "timely_own_release": true,
+      "new_native_provider_CF_Telegram_IO": 0
+    },
+    "first_genuine_current_AUTO_SENT_confirmed": false,
+    "full_TZ_complete": false,
+    "budgets_unknowns_holds_manual3_oldpauses_and_2deferrals_preserved": true,
+    "current_tracking_aliases_repaired_without_IO": true
+  },
+  "post_install_reviews": {
+    "SOURCE_F639": {
+      "status": "PASS_SAVED_INSTALL_CONFIG_EVIDENCE_FIRST_REAL_AUTO_OPEN",
+      "path": "pump-report/handoffs/sources/F639_PACKAGE_INSTALL13_RECEIPT_FINAL_V1.json",
+      "sha256": "bf740cde4a83edb70fa6eb1ebf0de4b3068395ee60cf72c89806fe4a7b409fb8",
+      "git_ref": "242381254041c88e1bd2016e7bc14c78163d0638",
+      "release_FULL_utc": "2026-10-27T19:00:39Z",
+      "timely_own_release": true,
+      "new_native_provider_CF_Telegram_IO": 0
+    },
+    "ANALYTICS_BZ18": {
+      "status": "PASS_EXACT73_INSTALLED_AND_TARGET_CONSISTENT_CURRENT_AUTO_SENT_OPEN",
+      "path": "pump-report/handoffs/analytics/package-bz18/BZ18_REVIEW_MANIFEST.json",
+      "sha256": "be67da4aecb5a2ccb496502c9bcced2eb7689b9c457faed613df0a2b419b8755",
+      "git_ref": "59bff9ba9ab97d7b29c27aeafe994eabfb0c139b",
+      "release_FULL_utc": "2026-10-27T18:54:54Z",
+      "timely_own_release": true,
+      "new_native_provider_CF_Telegram_IO": 0
+    }
+  }
+}

@@ -1,0 +1,250 @@
+TAP version 13
+# Subtest: actual NIL three represented IDs / two N12 facts become available 18970ms after base HTX
+ok 1 - actual NIL three represented IDs / two N12 facts become available 18970ms after base HTX
+  ---
+  duration_ms: 1.783833
+  type: 'test'
+  ...
+# Subtest: input order never changes the original maximum or mutates origins
+ok 2 - input order never changes the original maximum or mutates origins
+  ---
+  duration_ms: 0.16975
+  type: 'test'
+  ...
+# Subtest: Telegram represented subset recomputes its own clock, never inherits omitted Bitget
+ok 3 - Telegram represented subset recomputes its own clock, never inherits omitted Bitget
+  ---
+  duration_ms: 0.079041
+  type: 'test'
+  ...
+# Subtest: availability remains the original time at another still-valid evaluation
+ok 4 - availability remains the original time at another still-valid evaluation
+  ---
+  duration_ms: 0.061917
+  type: 'test'
+  ...
+# Subtest: missing component origin yields UNKNOWN/null
+ok 5 - missing component origin yields UNKNOWN/null
+  ---
+  duration_ms: 0.072708
+  type: 'test'
+  ...
+# Subtest: extra unrepresented origin yields UNKNOWN/null
+ok 6 - extra unrepresented origin yields UNKNOWN/null
+  ---
+  duration_ms: 0.0525
+  type: 'test'
+  ...
+# Subtest: duplicate expected ID yields UNKNOWN/null
+ok 7 - duplicate expected ID yields UNKNOWN/null
+  ---
+  duration_ms: 0.057292
+  type: 'test'
+  ...
+# Subtest: duplicate identical origin yields UNKNOWN/null
+ok 8 - duplicate identical origin yields UNKNOWN/null
+  ---
+  duration_ms: 0.06
+  type: 'test'
+  ...
+# Subtest: foreign evidence ID yields UNKNOWN/null
+ok 9 - foreign evidence ID yields UNKNOWN/null
+  ---
+  duration_ms: 0.07375
+  type: 'test'
+  ...
+# Subtest: foreign contract yields UNKNOWN/null
+ok 10 - foreign contract yields UNKNOWN/null
+  ---
+  duration_ms: 0.091041
+  type: 'test'
+  ...
+# Subtest: conflicting origin yields UNKNOWN/null
+ok 11 - conflicting origin yields UNKNOWN/null
+  ---
+  duration_ms: 0.062542
+  type: 'test'
+  ...
+# Subtest: unverified origin yields UNKNOWN/null
+ok 12 - unverified origin yields UNKNOWN/null
+  ---
+  duration_ms: 0.044333
+  type: 'test'
+  ...
+# Subtest: missing origin status yields UNKNOWN/null
+ok 13 - missing origin status yields UNKNOWN/null
+  ---
+  duration_ms: 0.046416
+  type: 'test'
+  ...
+# Subtest: null origin yields UNKNOWN/null
+ok 14 - null origin yields UNKNOWN/null
+  ---
+  duration_ms: 0.049
+  type: 'test'
+  ...
+# Subtest: empty expected ID yields UNKNOWN/null
+ok 15 - empty expected ID yields UNKNOWN/null
+  ---
+  duration_ms: 0.035125
+  type: 'test'
+  ...
+# Subtest: nonstring expected ID yields UNKNOWN/null
+ok 16 - nonstring expected ID yields UNKNOWN/null
+  ---
+  duration_ms: 0.044833
+  type: 'test'
+  ...
+# Subtest: missing contract yields UNKNOWN/null
+ok 17 - missing contract yields UNKNOWN/null
+  ---
+  duration_ms: 0.039458
+  type: 'test'
+  ...
+# Subtest: malformed contract yields UNKNOWN/null
+ok 18 - malformed contract yields UNKNOWN/null
+  ---
+  duration_ms: 0.034666
+  type: 'test'
+  ...
+# Subtest: missing decision clock yields UNKNOWN/null
+ok 19 - missing decision clock yields UNKNOWN/null
+  ---
+  duration_ms: 0.034333
+  type: 'test'
+  ...
+# Subtest: zero decision clock yields UNKNOWN/null
+ok 20 - zero decision clock yields UNKNOWN/null
+  ---
+  duration_ms: 0.02975
+  type: 'test'
+  ...
+# Subtest: string decision clock yields UNKNOWN/null
+ok 21 - string decision clock yields UNKNOWN/null
+  ---
+  duration_ms: 0.03175
+  type: 'test'
+  ...
+# Subtest: component not yet known yields UNKNOWN/null
+ok 22 - component not yet known yields UNKNOWN/null
+  ---
+  duration_ms: 0.029834
+  type: 'test'
+  ...
+# Subtest: observed before original knowledge yields UNKNOWN/null
+ok 23 - observed before original knowledge yields UNKNOWN/null
+  ---
+  duration_ms: 0.029417
+  type: 'test'
+  ...
+# Subtest: source after original knowledge yields UNKNOWN/null
+ok 24 - source after original knowledge yields UNKNOWN/null
+  ---
+  duration_ms: 0.030167
+  type: 'test'
+  ...
+# Subtest: expired base component yields UNKNOWN/null
+ok 25 - expired base component yields UNKNOWN/null
+  ---
+  duration_ms: 0.027417
+  type: 'test'
+  ...
+# Subtest: expired related component yields UNKNOWN/null
+ok 26 - expired related component yields UNKNOWN/null
+  ---
+  duration_ms: 0.029834
+  type: 'test'
+  ...
+# Subtest: expiry before original observation yields UNKNOWN/null
+ok 27 - expiry before original observation yields UNKNOWN/null
+  ---
+  duration_ms: 0.030542
+  type: 'test'
+  ...
+# Subtest: invalid original first-known undefined is not coerced or refreshed
+ok 28 - invalid original first-known undefined is not coerced or refreshed
+  ---
+  duration_ms: 0.035375
+  type: 'test'
+  ...
+# Subtest: invalid original first-known null is not coerced or refreshed
+ok 29 - invalid original first-known null is not coerced or refreshed
+  ---
+  duration_ms: 0.025375
+  type: 'test'
+  ...
+# Subtest: invalid original first-known 0 is not coerced or refreshed
+ok 30 - invalid original first-known 0 is not coerced or refreshed
+  ---
+  duration_ms: 0.024333
+  type: 'test'
+  ...
+# Subtest: invalid original first-known 1792395181364 is not coerced or refreshed
+ok 31 - invalid original first-known 1792395181364 is not coerced or refreshed
+  ---
+  duration_ms: 0.0265
+  type: 'test'
+  ...
+# Subtest: invalid original first-known NaN is not coerced or refreshed
+ok 32 - invalid original first-known NaN is not coerced or refreshed
+  ---
+  duration_ms: 0.028875
+  type: 'test'
+  ...
+# Subtest: invalid original first-known Infinity is not coerced or refreshed
+ok 33 - invalid original first-known Infinity is not coerced or refreshed
+  ---
+  duration_ms: 0.028083
+  type: 'test'
+  ...
+# Subtest: invalid original first-known 1792395181364.5 is not coerced or refreshed
+ok 34 - invalid original first-known 1792395181364.5 is not coerced or refreshed
+  ---
+  duration_ms: 0.027542
+  type: 'test'
+  ...
+# Subtest: invalid original first-known 9007199254740992 is not coerced or refreshed
+ok 35 - invalid original first-known 9007199254740992 is not coerced or refreshed
+  ---
+  duration_ms: 0.02425
+  type: 'test'
+  ...
+# Subtest: missing source_ts stays UNKNOWN
+ok 36 - missing source_ts stays UNKNOWN
+  ---
+  duration_ms: 0.036333
+  type: 'test'
+  ...
+# Subtest: missing observed_ts stays UNKNOWN
+ok 37 - missing observed_ts stays UNKNOWN
+  ---
+  duration_ms: 0.027458
+  type: 'test'
+  ...
+# Subtest: missing expires_at stays UNKNOWN
+ok 38 - missing expires_at stays UNKNOWN
+  ---
+  duration_ms: 0.028583
+  type: 'test'
+  ...
+# Subtest: explicit original expiry equality follows generic evidence boundary; no TTL extension
+ok 39 - explicit original expiry equality follows generic evidence boundary; no TTL extension
+  ---
+  duration_ms: 0.044375
+  type: 'test'
+  ...
+# Subtest: missing and empty input are unknown, never epoch zero
+ok 40 - missing and empty input are unknown, never epoch zero
+  ---
+  duration_ms: 0.057542
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 50.025333

@@ -1,0 +1,49 @@
+{
+  "schema": "ROOT_AZ_QUIESCENCE_AND_SAVED_AUTO_ACTUAL_V1",
+  "status": "FINALIZED_QUIESCENT_NO_AUTO_SENT_IN_BOUNDED_READ_SCOPE",
+  "recorded_at": "2026-10-26T10:44:07.273371+00:00",
+  "read_implementation_sha256": "af5e03781bf42ec58d9404c845b5995c97ab82c5226e7c60774b2539892f5824",
+  "native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-az-quiescence-and-saved-auto-20261026-one",
+    "usage": {
+      "requests": 8,
+      "rows_read": 65,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 65,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "private_result_sha256": "5bb1e24bd7dbd08a79c927b8a9f30ce882d5df968f1e88c824c87fde09af1bb4",
+  "read_completed_ts": 1793011233482,
+  "saved_AUTO": {
+    "status": "NO_PRODUCTION_AUTO_SENT_IN_READ_SCOPE",
+    "scope": {
+      "cards_read": 3,
+      "limit": 20,
+      "after_key": "pump:card:",
+      "next_after_key": "pump:card:PUMP:7505b17ae7bb53dcc63ee96978539b3345e18cc4aa8f6ea54b675e45d3c8510b",
+      "page_exhausted": true,
+      "whole_history_claimed": false,
+      "whole_market_claimed": false
+    },
+    "latest_run_id": "7097a645-38fb-4f67-8e69-a643d6aa8509",
+    "latest_run_status": "INCOMPLETE",
+    "first_genuine_same_original_SENT_observed": false
+  },
+  "LOOKUP_spent": 10,
+  "LOOKUP_remaining": 0,
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "known_engineering_lower_bound_excludes_AUTO_wholeaccountday": {
+    "requests": 1323,
+    "rows_read": 2211,
+    "rows_written": 656,
+    "unknown_ops": 0
+  },
+  "old_caps_unknowns_reserves_preserved": true
+}

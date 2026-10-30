@@ -1,0 +1,22 @@
+--- a/pump-report/sources/index.mjs
++++ b/pump-report/sources/index.mjs
+@@ -150,11 +150,17 @@
+   async function candles(entry, {force_refresh = false, purpose = 'CORE'} = {}) {
+     const step = profile.candle_interval_ms;
+     if (step !== 60000) fail('PACKAGE_A_ONE_MINUTE_INTERVAL_REQUIRED');
+-    const count = Math.ceil((profile.volume_baseline_ms + Math.max(...profile.automatic_growth.short_windows_ms)) / step) + 1;
++    // The oldest searched impulse needs its own preceding full baseline:
++    // wave search60m + impulse5m + baseline60m =125 closed minutes.
++    const durations = [profile.wave_search_ms, profile.impulse_window_ms, profile.volume_baseline_ms,
++      ...profile.automatic_growth.short_windows_ms];
++    if (durations.some(ms => !Number.isSafeInteger(ms) || ms <= 0)) fail('CORE_CANDLE_WINDOW_PROFILE_INVALID');
++    const count = Math.ceil(Math.max(Math.max(...profile.automatic_growth.short_windows_ms),
++      profile.wave_search_ms + profile.impulse_window_ms + profile.volume_baseline_ms) / step);
+     if (count > 1440) fail('BINGX_CANDLE_WINDOW_EXCEEDS_REQUEST_LIMIT');
+     const end = Math.floor(now() / step) * step, start = end - count * step;
+     try {
+-      const response = await request('candles', {instrument: entry.instrument, params: {interval: '1m', startTime: start, endTime: end, limit: count}, ttl_ms: force_refresh ? 0 : profile.freshness_ms.candles, purpose});
++      const response = await request('candles', {instrument: entry.instrument, params: {interval: '1m', startTime: start, endTime: end - 1, limit: count}, ttl_ms: force_refresh ? 0 : profile.freshness_ms.candles, purpose});
+       const parsed = decode(response, () => parseCandles(response.data, {start, end, interval_ms: step, received_ts: response.received_ts,
+         instrument: entry.instrument, windows_ms: profile.automatic_growth.short_windows_ms, qualification: entry.qualifications.candles}));
+       return fact(entry, 'candles', parsed.value, parsed.unit, parsed.event_ts, response,

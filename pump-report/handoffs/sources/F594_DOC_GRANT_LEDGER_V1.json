@@ -1,0 +1,64 @@
+{
+  "id": "ROOT_F594_THREE_PROVIDER_FREE_QUOTA_3SEARCH4READ_20261026",
+  "search_max": 3,
+  "open_max": 4,
+  "search_spent": 3,
+  "open_spent": 4,
+  "state": "CLOSED_SPENT_OR_UNKNOWN_NO_REARM",
+  "old_grants_rearmed": false,
+  "attempts": [
+    {
+      "kind": "search",
+      "q": "\"MidasFlow\" \"Flow API\" free quota",
+      "state": "SPENT_RESULT_RETAINED",
+      "ordinal": 1
+    },
+    {
+      "kind": "search",
+      "q": "site:coinfuty.com API MCP free rate limits",
+      "state": "SPENT_EMPTY_SEARCH",
+      "ordinal": 2
+    },
+    {
+      "kind": "search",
+      "q": "site:github.com/Coinversaa/mcp-server free tier rate limit API key",
+      "state": "SPENT_RESULT_RETAINED",
+      "ordinal": 3
+    },
+    {
+      "kind": "primary_doc_read",
+      "url": "https://midasflow.ai/docs/api",
+      "state": "SPENT_RESULT_RETAINED",
+      "ordinal": 4
+    },
+    {
+      "kind": "primary_doc_read",
+      "url": "https://coinfuty.com",
+      "state": "SPENT_FAILED_PRIMARY_READ",
+      "ordinal": 5
+    },
+    {
+      "kind": "primary_repository_read",
+      "url": "https://github.com/Coinversaa/mcp-server/blob/HEAD/README.md",
+      "state": "SPENT_RESULT_RETAINED",
+      "ordinal": 6
+    },
+    {
+      "kind": "primary_repository_read",
+      "url": "https://github.com/Coinversaa/mcp-server/blob/HEAD/src/coinversaServer.ts",
+      "state": "SPENT_RESULT_RETAINED",
+      "ordinal": 7
+    }
+  ],
+  "ROOT_unknown_marker": {
+    "marker": "exec69b84d58-6f60-4687-95de-a9dbf5af688c",
+    "status": "SPENT_OR_UNKNOWN_NO_RETRY",
+    "relation_to_retained_search_packet": "UNCONFIRMED;searchallowancealreadyfullyreserved3,noextraattempt/rearm",
+    "separate_upstream_cost": "UNKNOWN"
+  },
+  "search_remaining": 0,
+  "open_remaining": 0,
+  "failed_primary_reads": 1,
+  "empty_search_queries": 1,
+  "closed_utc": "2026-10-26 12:42:41 UTC"
+}
