@@ -1,0 +1,155 @@
+{
+  "schema": "F683_SOURCE_PUBLICATION_CLOCK_LINEAGE_V1",
+  "base_main": "f90e82e647a566fe8b612aafb791b66fc80d15da",
+  "amendment": {
+    "path": "checkpoints/pump-report-20261025/OWNER_LATE_PULLBACK_AND_LIQ_FRESHNESS_20261030.json",
+    "sha256": "950fa8a4c1ef04b1be6a4ed50112b0190a5276d8a5aa82a37e739ee4811d602d",
+    "verified": true
+  },
+  "authority": {
+    "fresh17_FULL": true,
+    "all4_equal": true,
+    "fence_active": false,
+    "root_owner": "CODEX:PUMP_IDOL_DELAY_AND_LIQ_PUBLICATION_20261030:1793350424000",
+    "root_expires_ts": 1793355824000,
+    "own_acquire_head": "4ad7239b9d713e97a87e7839864b5e1e1e10dac9",
+    "work_deadline_ts": 1793351281000
+  },
+  "finding": {
+    "Swole": "normalizeSwoleMap checks mapping event/expiry at normalization but drops both from price_comparability. Zone expiry uses only model event+TTL; a converted zone can remain selectable after its mapping expires.",
+    "Hyperliquid": "Native zone expiry already min(native expiry,mapping expiry,mapping event+priceTTL). Missing mapping event/expiry in price_comparability prevents independent final lineage proof.",
+    "Orderly": "Source generation event is unknown; documented source-asof bound is diagnostic. Normalizer emits observations with event_ts/expires_ts null, usablefalse and zones[]. Do not promote it."
+  },
+  "patch": {
+    "path": "pump-report/handoffs/sources/F683_SOURCE_MAPPING_CLOCKS.patch",
+    "sha256": "d970ed48f32024ce02520e0ec37141ddbd9712cddf8db8b8f848a2ce7b98b78f",
+    "bytes": 3938,
+    "status": "UNAPPLIED_STATIC_PROPOSAL",
+    "changes": [
+      "Swole parses already-supported mapping timestamp values once to numeric ms; prevents string concatenation when adding price TTL.",
+      "Swole effective expires_ts becomes min(native model expiry,mapping expiry,mapping event+unchanged priceTTL); native_expires_ts preserves original model bound.",
+      "Swole and HL copy qualified mapping event_ts/expires_ts into existing price_comparability object. Unknown mapping produces null clocks.",
+      "No registry, route, identity, proof predicate, unit, source TTL, model TTL, optional budget, runtime, analytics or delivery mutation."
+    ],
+    "files": [
+      {
+        "path": "pump-report/sources/liquidations.mjs",
+        "base_git_blob": "9364bbc269de4371debdf179539e92f44f47d8b3"
+      },
+      {
+        "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+        "base_git_blob": "47f044d8eec5ab52e2cb6a4f2ceb95af4a873e13"
+      }
+    ]
+  },
+  "field_map": [
+    {
+      "field": "zone.event_ts",
+      "OBSERVED_POSITION": "HL payload.time: native account-state response snapshot; explicitly not per-position update. Orderly remains null.",
+      "EXTERNAL_MODEL": "Swole payload.as_of parsed by timestamp(); absent/future rejected.",
+      "publication": "Use original native clock and basis-specific TTL; never substitute receipt, analysis or send time."
+    },
+    {
+      "field": "zone.received_ts",
+      "OBSERVED_POSITION": "Original broker response.received_ts",
+      "EXTERNAL_MODEL": "Original broker response.received_ts",
+      "publication": "event<=received<=publication; receipt is availability evidence, not source clock."
+    },
+    {
+      "field": "zone.native_expires_ts",
+      "OBSERVED_POSITION": "HL event+profile.observed_positions already retained",
+      "EXTERNAL_MODEL": "Swole event+profile.model_map proposed",
+      "publication": "Provenance only; converted zone cannot outlive price mapping."
+    },
+    {
+      "field": "zone.expires_ts",
+      "OBSERVED_POSITION": "HL existing min(native expiry,mapping expiry,mapping event+priceTTL)",
+      "EXTERNAL_MODEL": "Same conservative min proposed for Swole",
+      "publication": "At final send verify effective expiry for each selected component; do not renew it on cache fetch or queue wait."
+    },
+    {
+      "field": "price_comparability.event_ts / expires_ts",
+      "OBSERVED_POSITION": "HL qualified route.price_mapping fields copied exactly",
+      "EXTERNAL_MODEL": "Swole qualified route.price_mapping fields parsed to numeric ms and copied",
+      "publication": "Mapping event must not be future; age<=profile.price, explicit mapping expiry must still hold. Evidence_ref alone is insufficient."
+    },
+    {
+      "field": "price_comparability.received_ts",
+      "OBSERVED_POSITION": "Not established in current accepted route contract; not fabricated or emitted by proposal",
+      "EXTERNAL_MODEL": "Not established in current accepted route contract; not fabricated or emitted by proposal",
+      "publication": "Do not copy zone.received_ts or zone.event_ts into this missing mapping clock. Final freshness derives from qualified mapping event/expiry and retained proof; any future receipt claim needs its own actual evidence."
+    },
+    {
+      "field": "price mapping identity/proof",
+      "OBSERVED_POSITION": "Existing VERIFIED_SAME_UNDERLYING, explicit quote conversion/venue basis, mapping evidence, market IDs, target instrument, currencies, multiplier remain mandatory",
+      "EXTERNAL_MODEL": "Existing exact asset/model route and mapping proof/market/currency/multiplier requirements unchanged",
+      "publication": "Retain source venue/native bounds. Mapping of price is not conversion of model intensity or native position units."
+    },
+    {
+      "field": "basis_type / magnitude / coverage",
+      "OBSERVED_POSITION": "OBSERVED_POSITION; admitted account subset, current estimate may change; source-reported positionValue retains USDC unit",
+      "EXTERNAL_MODEL": "EXTERNAL_MODEL; model version and relative scale retained; RELATIVE_INTENSITY is not dollars",
+      "publication": "Keep limitations/primary-provider/overlap/position IDs; no full-market claim or double sum."
+    }
+  ],
+  "lineage": {
+    "source_entry": "pump-report/sources/index.mjs:418-456",
+    "Swole": "pump-report/sources/liquidations.mjs:16-29,51-67",
+    "HL": "pump-report/sources/hyperliquid-observed-positions.mjs:54-75,93-113",
+    "Orderly": "pump-report/sources/orderly-observed-positions.mjs:54-85,110-129",
+    "consumer": "pump-report/analytics/zones.mjs:6-9,31-43,48-65",
+    "verified_static": "lineage() copies event/received/expiry and entire price_comparability object into components. Selected/merged zone expiry is min(all component expiry). Therefore proposed nested mapping clocks survive existing selected-zone lineage without an analytics change for copying.",
+    "limitations": "lineage() does not copy every top-level identity/model proof reference. ROOT/ANALYTICS must retain or resolve exact protected originals for proof checks; do not infer these refs from a representative component. Publication must inspect every selected component, not only parent/newest. native_expires_ts is also not copied by current component lineage; effective expires_ts and event_ts are copied. Recompute native bound from each event plus the pinned basis TTL, or resolve that exact protected original; never substitute the representative's native expiry."
+  },
+  "ROOT_required_consumer": {
+    "not_implemented_here": true,
+    "pointers": "pump-report/runtime/delivery.mjs:63-75; analytics/zones.mjs:6-9,38-39,65",
+    "checks": [
+      "Validate actual selected components for source clock/received/TTL/expiry and asset/basis/proof eligibility at final publication, after waits and before send.",
+      "For cross-venue components validate nested mapping status/evidence/markets/target/currencies/multiplier and independent mapping event/priceTTL/expiry. Missing legacy clocks fail that proof.",
+      "Use conservative minimum across all displayed components, including dedup/merge lineage. Parent mapping fields alone cannot represent every member.",
+      "Do not send immutable enriched text whose displayed zones have expired. Optional-map absence alone must not block an otherwise valid signal: ROOT owns a fresh consistent mapless immutable text/analysis/hash path or refusal of that enriched version; stale map references/confluence cannot remain.",
+      "Preserve source_input and actual send/ACK times for readback. A pre-enqueue check is not send-time proof; this source patch alone cannot prove freshness on Telegram receipt or after network delay."
+    ],
+    "boundary": "Source normalizers/selectZones retain existing inclusive expiry equality. ROOT owns any stronger send-latency margin; no TTL relaxation or invented arrival timestamp."
+  },
+  "bounded_behavior": {
+    "stale_native": "Swole returns STALE/empty; HL marks stale observations unusable. New receipt cannot rejuvenate source.",
+    "missing_or_future_native": "Swole existing clock failure; HL existing PARTIAL/ERROR with unusable output. No receipt fallback.",
+    "stale_unqualified_mapping": "Existing mappingKnownfalse; diagnostic native bounds may remain but usablefalse and no exact BingX zone. Qualified zone later past effective expiry must not be displayed.",
+    "absence": "NO_VERIFIED_ROUTE/NOT_CHECKED and WITHOUT_MAP remain nonblocking by explicit owner amendment.",
+    "requests": "No automatic refresh/retry/search to repair missing proof. Existing bounded source arrays/accounts, deadlines, caps and paid/unknown costs unchanged."
+  },
+  "owner_policy": {
+    "signal_without_map_allowed": true,
+    "displayed_zones_fresh_at_publication": true,
+    "age_from_native_source_clock": true,
+    "late_pullback_age_over4h_alone_not_refusal": true,
+    "new_seed_end_cutoff": false,
+    "unlimited_TTL_extension": false,
+    "other_strategy_requirements_preserved": true,
+    "original_future_statistics_plus4h_unchanged": true,
+    "no_frequency_reduction": true
+  },
+  "affected_validation": {
+    "path": "pump-report/handoffs/sources/F683_AFFECTED_VECTORS_V1.json",
+    "synthetic": true,
+    "cases": 13,
+    "executed": false,
+    "plan": "ROOT one separately admitted targeted source→selected lineage/publication case group; no old full suite, Node or engine run here.",
+    "static_checks": "Pinned local source bytes verified against main Git blobs; patch generated in memory, original canonical files unchanged. Timestamp/deadline arithmetic checked administratively."
+  },
+  "acceptance": "Necessary source-field and expiry proposal for ROOT's final publication guard; not deployed, not native acceptance and not complete end-to-end Telegram freshness proof.",
+  "operations": {
+    "new_market_HTTP": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "Telegram": 0,
+    "search": 0,
+    "new_connections": 0,
+    "Node": 0,
+    "canonical_changes": 0,
+    "HOLD_SOL_BTC_activation": 0
+  },
+  "preservation": "BingX900/day27900/month10/min1/sec80% plan; TG47/day1457/month;3manual/day; all spent/unknown/holds/reserves/9pauses/2OWNERdeferrals retained. No raw IDOL/private16, no IDOL causal inference."
+}
