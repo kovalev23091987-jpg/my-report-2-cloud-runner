@@ -1,0 +1,88 @@
+{
+  "schema": "F692_BZ65_STATIC_PEER_REVIEW_V1",
+  "verdict": "PASS_STATIC_FACADE_AND_WRITER_HOLD_FULL_READER_INTEGRATION_AND_NATIVE_ADMISSION",
+  "authority_main": "ebce0f44fd5ff529fa6751da68ae60498b9b48e0",
+  "scope": "F692 boundedSTATICpeerreview BZ65manifest/case26/3proposedfilespatch version-awarefacade oldv2protected/rawseedUNKNOWN/v3namespace stable revision pointers PA->PB/originalproducerpin distinct/outcome links/missingpointerfirstwins/readbackfailclosed. Separate arithmetic D1StoreSQLupper get1/atomicnoop1/firstwrite2/CASmax5 vs Memorycalls; postpublication/nativeguard prerequisites no performancephysicaltesting/2deferrals. Onlyhandoffs/sources/F692_*+ownlease. NoNode/import/tests/engine/build/native/providerCF OAuthTG/main/canonical/private. Own<=18/work6/startclose4.5/FULL>=480 insideroot;onlyownrelease nooldBZ6235/BZ6526replay.",
+  "package_source": "Shared local package-bz65 exact SHA256 manifest verified; package path returned404 at authority main and sampled analytics ref; not installed",
+  "manifest_sha256": "dc01498b528c932b9bddd08853473a5cbaea5eb5fdb54caddbfde6f1cdb7282a",
+  "patch_sha256": "ba78574df626ad5edea1564cf49e9cfba947aed5ef531bab9efef44e70612ee3",
+  "case_sha256": "616b18cc916bac7f0ac7d1aa476ba7a0c03be0328dbce33db1b255e1f8849c91",
+  "proposed_sha256": {
+    "pump-report/analytics/feature-capsule.mjs": "7574a14b3bf3047141e1dd05f5cf512242c8e34b9d27c258f4898bef5137eb09",
+    "pump-report/analytics/feature-capsule-v2.mjs": "6f3ad60c9f235512bd762133c56f5e662fe9b78cbc8eec0cf76b76dc44942ec9",
+    "pump-report/runtime/retained-capsules.mjs": "e8f4fdaedbdb0c5da2e8271ee69d4024b1da97ad168fa760629dee6d8f837f1f"
+  },
+  "base_git_blobs": {
+    "feature": "dd3358d6ee010b19e5cd8c98efc243334323b740",
+    "writer": "bd0a2e1ec1d98374ad56ffab88ca26fc374c876b",
+    "D1Store": "8722da2c998e5b544e6c463af9e08e191171737e"
+  },
+  "static_pass": [
+    "Legacy file is byte-identical v2 base; facade validates old digest through legacy reader then masks eight nonnull bound seed features in cloned view UNKNOWN. Raw v2 bytes, original, card, outcome, link and protected rows not rewritten.",
+    "v3 uses seed-window-r1 namespaced feature/outcome/link/pointer keys. Full projection writer deployment pin is distinct from immutable original producer implementation_sha256. Existing validated PA projection is reused after unrelated PB; old raw original never acquires PB.",
+    "Pointer-present validates original input/analysis digest, original producer, saved timestamp, origin, reader/schema/revision and pointed digest. Missing pointer reuses existing feature before preparing any new candidate.",
+    "Feature CAS uses current??candidate; competing PA/PB first winner retained, exact readback and validation precede immutable pointer creation. Corrupt/mismatched pointer/readback/revision throws without rewrite or automatic retry.",
+    "Outcome originates from exact retained feature digest and same immutable origin; immutable outcome and namespaced summary link preserve stable core. Protected refs content addressed v2 shared deliberately; no closure/delete/TTL admission.",
+    "26 recorded BZ65 phases inspected as evidence only: HIT/MISS/UNKNOWN x7 plus orphan/race/badpointer/readback/revision. BZ62 35 and BZ65 26 NOT rerun."
+  ],
+  "gaps": [
+    {
+      "priority": "P1",
+      "path": "pump-report/analytics/saved-capsule-audit.mjs",
+      "git_blob": "260a015c6179c6ecfa81537ae0a21be0a982172b",
+      "lines": [
+        54,
+        55,
+        56,
+        101
+      ],
+      "finding": "Fresh-main normal saved reader still loads v2 summary link and demands v2 schema/key prefixes, while BZ65 writes only v3:r1. New v3 records fail reference resolution; replacing imported FEATURE_CAPSULE_VERSION alone does not fix it."
+    },
+    {
+      "priority": "P1",
+      "path": "pump-report/analytics/cohort-audit.mjs",
+      "git_blob": "e3584f019eb0210a2ef8cf7f18e3519fd6522c6a",
+      "lines": [
+        149,
+        150,
+        151,
+        156
+      ],
+      "finding": "Fresh-main cohort inspector calls facade but then checks raw fc/key/link as v2 and rebuilds feature using new facade without retained projection_writer_implementation_sha256. v3 rejects key/schema; PA->PB rebuild can produce different digest; old v2 rebuild creates v3. Need version-dispatched exact codec/key/rebuild retaining original projection-writer pin and using sanitized reader view for feature consumers."
+    },
+    {
+      "priority": "P2",
+      "path": "pump-report/analytics/scenario-frequency.mjs",
+      "evidence": "LOCAL_ONLY remote404",
+      "lines": [
+        161,
+        164
+      ],
+      "finding": "Local consumer discards readFeatureCapsule sanitized result and uses raw feature.capsule; seed mask can be bypassed by downstream feature selection. This is local static risk, not confirmed authority-main deployed file. Inventory normal consumers before claiming reader migration complete."
+    }
+  ],
+  "post_publication": {
+    "runner_git_blob": "8a9e71825e13fffe1b48ce5dc32d10eaa339c457",
+    "outcome_journal_git_blob": "6f46b297633e9eed0539951310339df10183d6db",
+    "finding": "runner dispatches before indexAnalysis/retained remember (121,194,197-202). A native projection exhaustion/failure after durable delivery is bookkeeping_error and result INCOMPLETE; no resend/refund/new market proof. Recovery recordPublished (214-229) uses saved originals, still consumes native budget. outcome-journal records summary/index before retained_features.record (95-99), so derived failures can leave acknowledged originals plus partial projection requiring bounded later recovery."
+  },
+  "native_guard_gap": "BZ65 Memory measurements do not pre-admit new D1 tail or query envelope. Before native integration ROOT must account full invocation including post-SENT tail, repair, other workers, original storage, journal, day/legacy outstanding and finalization. Reserve queries/read/write/time before publication where needed; no unbounded retry. Preserve unknown/spent/CLOSED/holds, finalization ACK/readback and2OWNERdeferrals.",
+  "actual": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "provider": 0,
+    "CF": 0,
+    "OAuth": 0,
+    "TG": 0,
+    "main_changes": 0,
+    "canonical_changes": 0
+  },
+  "preserved": "Live1941/AUTO1/DL1 only ROOT observed; parent native9 matured MAGMA HIT belongs oldDFD not current SENT. All budgets/unknowns/reserves/manual3/9pauses/2OWNERdeferrals unchanged.",
+  "own_lease_owner": "CODEX:SOURCES:01a171fd:1793359817000",
+  "deadline_ms": 1793360177000,
+  "start_release_no_later_than_ms": 1793360087000
+}

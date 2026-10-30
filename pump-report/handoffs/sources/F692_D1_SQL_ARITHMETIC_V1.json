@@ -1,0 +1,128 @@
+{
+  "schema": "F692_D1_SQL_ARITHMETIC_V1",
+  "kind": "STATIC_ARITHMETIC_NOT_NATIVE_MEASUREMENT",
+  "authority_main": "ebce0f44fd5ff529fa6751da68ae60498b9b48e0",
+  "D1Store_git_blob": "8722da2c998e5b544e6c463af9e08e191171737e",
+  "rules": {
+    "get": "1 SQL SELECT",
+    "atomic_no_change": "1 SQL SELECT when serialized current==next",
+    "atomic_first_successful_write": "2 SQL: SELECT + INSERT/UPDATE",
+    "atomic_CAS_max": "5 attempts; <=10 SQL. Unknown ACK aborts, not0. Atomic callback can repeat; Memory atomic count is not query count.",
+    "formula_no_contention": "G + A + C (C=atomic calls actually changing rows; not physical D1 row writes)",
+    "formula_max": "G + 10*A. R hinted upper same for get/atomic only; W conservative <=10*A because each attempt INSERT hintwrite2, max5. Actual metadata authoritative, these are not physical/performance guarantees."
+  },
+  "operations": [
+    {
+      "name": "cold_remember",
+      "G": 6,
+      "A": 3,
+      "C": 3,
+      "SQL_no_contention": 12,
+      "SQL_CAS_upper": 36
+    },
+    {
+      "name": "warm_remember",
+      "G": 4,
+      "A": 1,
+      "C": 0,
+      "SQL_no_contention": 5,
+      "SQL_CAS_upper": 14
+    },
+    {
+      "name": "first_warm_record_measured_fixture",
+      "G": 7,
+      "A": 3,
+      "C": 2,
+      "SQL_no_contention": 12,
+      "SQL_CAS_upper": 37
+    },
+    {
+      "name": "repeat_or_PB_record",
+      "G": 7,
+      "A": 3,
+      "C": 0,
+      "SQL_no_contention": 10,
+      "SQL_CAS_upper": 37
+    },
+    {
+      "name": "orphan_recovery_then_record",
+      "G": 12,
+      "A": 5,
+      "C": 1,
+      "SQL_no_contention": 18,
+      "SQL_CAS_upper": 62
+    },
+    {
+      "name": "two_racing_remember",
+      "G": 12,
+      "A": 6,
+      "C": 3,
+      "SQL_no_contention_reference_only": 21,
+      "SQL_CAS_upper": 72,
+      "note": "21 is formula with no failed CAS attempts, not guaranteed racing cost."
+    },
+    {
+      "name": "standalone_cold_record_static",
+      "G": 9,
+      "A": 5,
+      "C_max": 5,
+      "SQL_no_contention_max": 19,
+      "SQL_CAS_upper": 59,
+      "note": "Includes card read; no prior remember. Protected refs may already exist, reducingC only."
+    }
+  ],
+  "whole_recorded_case": {
+    "G": 136,
+    "A": 54,
+    "C": 20,
+    "SQL_no_contention_reference": 210,
+    "SQL_CAS_upper": 676,
+    "hinted_rows_read_upper": 676,
+    "hinted_rows_written_conservative": 540,
+    "SQL_actual": 0,
+    "note": "Cannot call190 logical Memory row reads or54 atomic attempts native SQL; no contention210 is hypothetical. Replaying fixture native forbidden in this task."
+  },
+  "memory_admitted_bounds": {
+    "G": 400,
+    "A": 160,
+    "SQL_CAS_upper": 2000,
+    "note": "Exceeds D1Store800 query cap and ordinary300W possible; controlled Memory admission cannot be ported to native."
+  },
+  "additional_vs_v2": {
+    "old_cold_remember": {
+      "G": 3,
+      "A": 2,
+      "SQL_no_contention": 7,
+      "SQL_CAS_upper": 23
+    },
+    "new_cold_remember": {
+      "G": 6,
+      "A": 3,
+      "SQL_no_contention": 12,
+      "SQL_CAS_upper": 36
+    },
+    "cold_delta_first_inserts": {
+      "SQL_no_contention": 5,
+      "delta_of_CAS_upper_bounds": 13
+    },
+    "old_warm_remember": {
+      "G": 3,
+      "A": 2,
+      "SQL_no_contention": 5,
+      "SQL_CAS_upper": 23
+    },
+    "new_warm_remember": {
+      "G": 4,
+      "A": 1,
+      "SQL_no_contention": 5,
+      "SQL_CAS_upper": 14
+    },
+    "record": "Old G6/A4, new warm G7/A3; matching immutable write existence gives same uncontended query total, at most13 for three newly inserted record rows. New cold record G9/A5 vsoldG6/A4 adds5 if all relevant new, upper bounds59vs46 (+13). If v2 feature/protected already exist, initial new v3 cold remember SQL11 vsold5 (+6). These are explicit path comparisons; not blanket +5 each invocation nor subtraction of independent actual costs."
+  },
+  "guards": [
+    "Separate fresh actual native admission with query/read/write/time caps, preserved run/day/shared/legacy protection and actual metadata ACK. Full invocation, not capsule slice, must fit requests<=800 and appropriate run row envelope5000R/300W unless ROOT authorizes separate bounded policy.",
+    "Keep finalization reserve including query requests; reserveNativeRun/finalizeNativeRun and unknown_ops failclosed. Existing per-statement hints precheck, actual meta may consume more and reject after ACK; no claim of physical hard row bound from hints.",
+    "Postpublication receipt remains durable on projection failure. Stop further work, mark incomplete, bounded exact-original recovery only after new admission; no market HTTP/TG duplicate/refund/reopen.",
+    "No performance/physical-capacity/expiry tests; both OWNERdeferrals retained."
+  ]
+}
