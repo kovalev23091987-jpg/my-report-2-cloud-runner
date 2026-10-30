@@ -1,0 +1,63 @@
+{
+  "schema": "F699_STATIC_ROOT_CASE_REVIEW_V1",
+  "verdict": "FIX_OR_CONSTRAIN_PROJECTION_FIXTURE_AND_COMPLETE_FIRST_READY_WITNESS_BEFORE_QUALIFICATION",
+  "findings": [
+    {
+      "id": "F699-R1",
+      "priority": "P2",
+      "file": "pump-report/tests/runtime/big-native-tail-projection-connected-case.mjs",
+      "start": 39,
+      "end": 41,
+      "title": "Hardcoded outcome prices assume factory P0 near100",
+      "trigger": "Any valid injected factory with signal.reference_price>112/1.10; public F697 P0=114 is a concrete available counterexample.",
+      "effect": "The maximum high112 cannot prove +10% from114 (target125.4), so evaluateOutcome returns MISS for complete bars and the HIT assertion fails before projection/recovery witnesses. This is fixture portability, not a strategy defect.",
+      "minimal_proposal": "Let p=signal.reference_price; use open/close=p, low=p*0.99, nonhit high=p*1.05 and one hit high=p*1.12. Keep original t0/windows and actual evaluateOutcome. Alternatively explicitly require P0=100 in the factory contract; do not silently assume it.",
+      "executed": false
+    },
+    {
+      "id": "F699-R2",
+      "priority": "P2",
+      "file": "pump-report/tests/runtime/big-native-tail-projection-connected-case.mjs",
+      "start": 66,
+      "end": 68,
+      "additional_lines": [
+        125,
+        130,
+        147
+      ],
+      "title": "Two first READY denominators are reported without both journal-anchor assertions",
+      "trigger": "immutableKeys excludes both pump:journal raw rows; audit is called only with sent.summary/sent.later; returned raw_first_READY_denominators is constant2.",
+      "effect": "The case checks two recovery references and immutable originals, but does not directly prove that both native raw journals retain their first READY analysis/recorded_ts/frozen anchor. A firstREADY shift in the UNSENT journal is not explicitly witnessed by the asserted denominator count.",
+      "minimal_proposal": "Before guarded work capture each raw journal first READY analysis_id, origin.t0, recorded_ts and frozen_anchor; after yield/repair/unknown assert them against originals. If claiming denominator2, audit both SENT and terminal UNSENT summary records, or report only the actually checked reference count. No new runtime IO is needed; these are controlled inspection assertions.",
+      "executed": false
+    }
+  ],
+  "fixed_during_review": [
+    {
+      "id": "F699-FIXED-A",
+      "original_saved_runner_lines": [
+        58,
+        60
+      ],
+      "issue": "Missing mandatory sources.getCore caused constructor refusal.",
+      "confirmed_fixed_lines": [
+        59,
+        61
+      ]
+    },
+    {
+      "id": "F699-FIXED-B",
+      "original_saved_runner_lines": [
+        34,
+        40
+      ],
+      "issue": "enqueue returns decision, not full saved card.",
+      "confirmed_fixed_lines": [
+        34,
+        36
+      ]
+    }
+  ],
+  "tests_executed": 0,
+  "native_provider_IO": 0
+}
