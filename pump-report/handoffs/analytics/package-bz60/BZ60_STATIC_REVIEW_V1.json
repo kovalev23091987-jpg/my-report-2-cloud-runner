@@ -1,0 +1,169 @@
+{
+  "schema": "BZ60_OPERATIONAL_CONTROL_MOCK_STATIC_REVIEW_V1",
+  "verdict": "PASS_FOR_CONTROLLED_OFFLINE_QUALIFICATION_ONLY_NOT_LIVE_ADMISSION",
+  "authority_main": "1763bf68ccbf7b02b55462a42c39c43eac699b3d",
+  "fresh_compatible_main": "faf88ee8ba8519a2c2dda2fb238a046af003c8dc",
+  "fresh_target_blobs_unchanged": true,
+  "own_lease": {
+    "owner": "CODEX:OFFLINE_ANOMALIES:1793354730000",
+    "active_commit": "91471a59289e130492b188fc4ec3ad16a07a6d75",
+    "full": {
+      "commit": "91471a59289e130492b188fc4ec3ad16a07a6d75",
+      "git_blob": "3506f165d6a1149944931cdb3c4e39f8864fc99a"
+    }
+  },
+  "files": {
+    "checkpoints/pump-report-20261025/ROOT_PUBLICATION_RECOVERY_ARTIFACT_V1.json": {
+      "git_blob": "f1b132777cd2290abb9a3f76fa41487b81621421",
+      "sha256": "0479cd36c127c53d0151d7d23f38e6da35e96bd16c96404ea9bb1cee5917d3d0"
+    },
+    "checkpoints/pump-report-20261025/ROOT_PUBLICATION_RECOVERY_CONTROL_MOCK_ADMISSION.json": {
+      "git_blob": "559c09837bac6f3365915eb952818ccaf15ca110",
+      "sha256": "9f7d89a7002de298c7f7c93b21ec5b5a88e63365aa03e94867db9e5ba5bf5f49"
+    },
+    "checkpoints/pump-report-20261025/ROOT_PUBLICATION_RECOVERY_CONTROL_MOCK_V1.json": {
+      "git_blob": "467e2ff8b641dbdfeb4ec05146d488900389968a",
+      "sha256": "012edcfc714ea95da718097d3d416b7e403095d439e81dd4a1126870e1a66fc8"
+    },
+    "pump-report/operator/cloudflare-publication-recovery-control.template.js": {
+      "git_blob": "a6b1b4c6ad461628fd4bcf1b3c86bbe7beeb791e",
+      "sha256": "6beed414ff526bb41f31ad9bce8be830a47ceaf71b9e2ca0c4b6985d14045ce7"
+    },
+    "pump-report/operator/cloudflare-publication-recovery-return.template.js": {
+      "git_blob": "0862f8731b92b98125399984a08df6484fde7fda",
+      "sha256": "62bb328e94f04258c3abb325725ed007176e0c03a93c69726251b0f3be06f9b3"
+    },
+    "pump-report/operator/publication-recovery-control-mock-once.mjs": {
+      "git_blob": "415326a8dab02322d50c1d585d787a42174e17ec",
+      "sha256": "687a920b6bfa363be4ea2df9b0e3a3bd13c43f408bbd14dc0f57f76048b25096"
+    }
+  },
+  "all_three_frozen_source_hashes_match": true,
+  "source_bundle_comparison": [
+    {
+      "source_bundle": "pump-report/.private/qualification/postlaunch-outcome-and-budget-v1/artifact.json",
+      "sha256": "1b4403a02c6d93a3555c5e1a0ce623c1e907a0edd52ce563878791cb7eba4378",
+      "modules": 78,
+      "map_sha256": "6a0c9387f60cd12882b64d331cf72638f52432e5db1b15263ca40c96bb9becfb",
+      "pin": "dfd7b37b9ce06ba3ce6b7a06ae0f7e17e2fafffc198aaa292185c97d18450452"
+    },
+    {
+      "source_bundle": "pump-report/.private/publication-recovery-20261030/artifact-v1.json",
+      "sha256": "2a1154eeccaa453d96c7b1a471722f8767ae2f71704fb820ccdbc79ceaefcca4",
+      "modules": 78,
+      "map_sha256": "350174cd02e013b713a075474c8d9aa8c324f4fbcda3f5bb6016f4c02f45dac4",
+      "pin": "1941e629f35a0b429caa159c283f0bdeecb488c5c23be33c2b88a3840e59e355"
+    },
+    {
+      "changed": [
+        "analytics/presentation.mjs",
+        "analytics/zones.mjs",
+        "runtime/delivery.mjs",
+        "runtime/implementation-pin.mjs",
+        "runtime/runner.mjs",
+        "runtime/telegram-send.mjs",
+        "runtime/worker.mjs",
+        "sources/hyperliquid-observed-positions.mjs",
+        "sources/liquidations.mjs"
+      ],
+      "changed_count": 9,
+      "new_hashes": {
+        "analytics/presentation.mjs": "a664dd6514fda80740138b0b68a6444961867cb7b842f91278185b393e3aeaa5",
+        "analytics/zones.mjs": "30a24a34f1c357e03411753aedeb86947394993fcc7fb4a795263014b80eacbf",
+        "runtime/delivery.mjs": "ff6d9e119b6e7a291280375273d3edefe7bbdab3508110cea77cb389a7ea2ad0",
+        "runtime/implementation-pin.mjs": "0668936646b85d14bfcf633a7ec4f3fc8895f1431dbd18226d3a080a3b56290a",
+        "runtime/runner.mjs": "df22e4a0c898ed236e4db25af9d00808b8873a0c8255b6b9c158d282afe36b94",
+        "runtime/telegram-send.mjs": "4c0bdcc2af170c3894cdd3e6753fec8c0b54df3ca007b3ada66c9691d5804d4d",
+        "runtime/worker.mjs": "0037e842775f099098d6dcd599262972c73474bb116da847ba627ef55010ef83",
+        "sources/hyperliquid-observed-positions.mjs": "e6315d844a183fecdc78bda293a248b19796d8ebd4a88a10b1ce3448dacf8c58",
+        "sources/liquidations.mjs": "d2014941a4c93ad472932180b4bb06114398b02d93bc2955da8f65c943a17002"
+      },
+      "old_hashes": {
+        "analytics/presentation.mjs": "7ef43971b2b185e8cb4da9960c10ade59558a24b90ff764128e567d5842281b1",
+        "analytics/zones.mjs": "5a7921a79bb8b894d35c43372b7a492bdf36f39017bb0dc66bece52872de2dc6",
+        "runtime/delivery.mjs": "4dcdede755e44956dca0b1972bd4e4058dd2ba53dc09e3055edd6c19e14ca0e2",
+        "runtime/implementation-pin.mjs": "00449a64b587342b3856e50a7b74a174db328a9acd3af42c55154f92f38fc795",
+        "runtime/runner.mjs": "081606a89849529f46baf017300380625656270bdab9f012f8995c9b33244c31",
+        "runtime/telegram-send.mjs": "be08fedc089455dc4d100428a7a6ff8b2fdbb6e364b2fdb2472c6f4403298d56",
+        "runtime/worker.mjs": "92dea6720d54f987df78e07cce34c8e350cc2d33f0b412136ee2366a75d5550a",
+        "sources/hyperliquid-observed-positions.mjs": "e3070458333381de055f237f22aaab5b0150290d031f862adcdd69392b027b65",
+        "sources/liquidations.mjs": "7fd1e6cca4eb6037ecbe5d6e9296c681aaa19dfb6248ef38da8bf0e5c2de744e"
+      },
+      "unchanged_count": 69
+    }
+  ],
+  "findings": [
+    {
+      "id": "EXACT78_NINE_FORWARD_REVERSE",
+      "status": "PASS",
+      "evidence": "both templates10-53,67-81,101-114; mock13-15,49-65",
+      "detail": "Both complete JSON source bundles independently SHA256-matched: old1b44/new2a1154, pins DFD/1941, module maps6a0c/350174. Exactly same78 names,9 changed and69 byte-equal. Both controllers hardcode artifact/pin/maps, exact nine override names and hashes, unchanged analytics/index/rules. Return swaps frozen old/new maps and old runner hash, rebuilds upload from preimage+exact old nine bytes, and FULL reads every module after upload."
+    },
+    {
+      "id": "COUNTS_AND_NEGATIVES",
+      "status": "PASS",
+      "evidence": "mock49-65; aggregate receipt",
+      "detail": "Each direction PAUSE11+INSTALL11+RESUME11+READ_ONLY5 =38 logical stub requests. Two directions76; (4normal+3negative)*2=14 controllers. Three negative mutations each direction: wrong after artifact hash, busy executor, extra analytics/index override; all rejected with0 stub requests. Two content PUT and4 settings PATCH, final module/settings equality to initial baseline. Scope does not cover every error/network failure path."
+    },
+    {
+      "id": "BINDINGS_AND_SCHEDULES",
+      "status": "PASS_WITH_MOCK_SCOPE",
+      "evidence": "mock20-38,54-63; template83-93,115-129",
+      "detail": "21 bindings unique; AUTO toggles alone, delivery remains1; DATA_DB exact; other20 bindings readback-equal via inherit; INSTALL compares whole settings. Three worker schedule collections are checked: hub one */5 7-16 * * * cron, other two empty. This means3 collections, not3 enabled crons. Mock18 placeholders prove inherit/preservation algorithm, not actual secret/service binding contents."
+    },
+    {
+      "id": "NETWORK_AND_DATA_BOUNDARY",
+      "status": "PASS",
+      "evidence": "mock18-39,67-68; template55-65,115-129",
+      "detail": "Root controlled execution receives only in-memory cloudflare.request stub, global fetch throws, no engine/module import/SQL/TG. Controllers use allowlisted script/settings/schedule/content paths and only update main worker code/AUTO. No SQL mutation, data deletion, SENT/UNKNOWN/oldTTL edit, quota reset or grant reopening in controller. Runtime BZ59 not re-reviewed or executed."
+    },
+    {
+      "id": "ACTUAL_QUIESCENCE_ADMISSION_BOUNDARY",
+      "status": "OPEN_OUTSIDE_MOCK",
+      "evidence": "template5,18,26-29,38-54,60,97,102; mock40-45",
+      "detail": "Mock supplies synthetic FINALIZED/quiescent object and action admission. Template verifies exact pin/free owner/age<=300s, rechecks quiescence after preimage reads and requires AUTO0 for INSTALL. It does not itself query native executor, live GitHub lease or admission-spent registry. Before actual IO ROOT must bind new factual quiescence/current DFD pin and compatible fresh own lease, and consume a new exact-action admission once. No reuse of spent mock/expired17; reverse permission also absent."
+    },
+    {
+      "id": "LOGICAL_VS_PHYSICAL_COST",
+      "status": "OPEN_OUTSIDE_MOCK",
+      "evidence": "template58-65,133; admission and mock status",
+      "detail": "76 is controlled logical request count. Real wrappers retain physical_admin_HTTP UNKNOWN_NONZERO_RETAINED; neither mock nor local call cap proves physical transport cost or whole-account remainder. Actual phase admissions/caps, every old cost/unknown/reserve/CLOSED hold and manual3 must remain."
+    },
+    {
+      "id": "PRESERVATION_AND_ROLLBACK_LIMIT",
+      "status": "PASS_OPERATIONAL_SCOPE",
+      "evidence": "frozen complete maps and controller allowlist",
+      "detail": "Exact original module return is qualified, actual rollback is not authorized. Controller never rewrites persisted original/card/outcome/budget rows; no operational command reopens old reports,9paused blocks or2OWNERdeferrals. This mock does not independently certify unchanged runtime data-schema interpretation or all9 block states; existing accepted BZ59 and owner contracts remain distinct."
+    },
+    {
+      "id": "PROOF_LABEL_BOUNDARY",
+      "status": "KEEP_OUTER_EVIDENCE_CLASS",
+      "evidence": "template58,131; aggregate evidence_class",
+      "detail": "Inner template proof uses EXISTING_CLOUDFLARE_CONNECTOR and wording Actual/live even under injected stub. Aggregate CONTROLLED_OFFLINE_NOT_NATIVE plus actual_Cloudflare0 is the applicable provenance; inner strings do not establish native installation or delivery."
+    }
+  ],
+  "actual_install_authorized": false,
+  "actual_rollback_authorized": false,
+  "reviewer_execution": {
+    "Node": 0,
+    "import": 0,
+    "engine": 0,
+    "testcase": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "OAuth": 0,
+    "provider_HTTP": 0,
+    "Telegram": 0,
+    "production_mutations": 0,
+    "outbound_messages": 0
+  },
+  "preserved": [
+    "live DFD78/artifact1b44 AUTO1DL1 remains current by ROOT context; not independently reread live",
+    "SENT/UNKNOWN and saved old TTL",
+    "all earlier spends/unknowns/CLOSEDholds/reserves/caps and manual3",
+    "old report/actions/cron plus9pauses and2OWNERdeferrals",
+    "no raw/private16/recipient read or shared",
+    "no new source search/connections/chats/subagents/automations"
+  ]
+}
