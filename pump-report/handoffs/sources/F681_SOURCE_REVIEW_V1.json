@@ -1,0 +1,712 @@
+{
+  "schema": "F681_SOURCE_REVIEW_V1",
+  "authority_main": "f9eefb8cec8bd72b3224ef35376d69c8da520815",
+  "final_authority_main": "6b3658c2e0003ba752d72ac274c75da17c5d0f03",
+  "fresh17_FULL": true,
+  "all4_equal": true,
+  "root_owner": "CODEX:PUMP_RECENT_SIGNAL_QUALITY_20261030:1793348312000",
+  "fence_active": false,
+  "projection": {
+    "path": "checkpoints/pump-report-20261025/ROOT_RECENT_THREE_SIGNAL_STRATEGY_AUDIT_V1.json",
+    "sha256": "e1f16d25acc704923694f7c0b8448ae7aaadd44cb6c900198687fe1dc398afaa",
+    "verified_local_bytes": true,
+    "basis": "Native saved immutable originals and bound Telegram receipts, no engine replay",
+    "scope": {
+      "one_page_limit": 20,
+      "page_rows": 10,
+      "page_exhausted": true,
+      "selected_max": 3,
+      "selected_actual": 3,
+      "selection": "LATEST_CONFIRMED_WITHIN_THIS_BOUNDED_PAGE",
+      "whole_history_claimed": false,
+      "whole_market_claimed": false,
+      "business_queries_max": 10,
+      "total_queries_max": 14,
+      "shared_query_cap": 16,
+      "rows_read_cap": 500,
+      "rows_write_cap": 30
+    }
+  },
+  "review": {
+    "patch": "pump-report/handoffs/analytics/package-bz54/BZ54_ANALYTICS_DISPLAY_RELEVANCE.patch",
+    "bytes": 2001,
+    "sha256": "32bff2d89a481f767b9f5315e6d2c25ee2c4540dcb6b1a0a73735ead735fb466",
+    "verdict": "ACCEPT_STATIC_DISPLAY_ONLY",
+    "base_main": "f9eefb8cec8bd72b3224ef35376d69c8da520815",
+    "base_blob": "24c406d27d9575605c7fd9781d5128f236ee9a01",
+    "finding": "planExitLines JUSTIFIED_TARGETS_V1 filters only displayed intermediate highs: positive price, below exit.lower, above upper boundary of at least one entry. Correctly removes MAGMA highs below every entry; wording explicitly says at least one entry. Set/sort/limit preserved. No mutation of plan, target selection, entries, potential, gates, frequency, TTL or budgets. No actionable defect within requested scope.",
+    "limits": "Static review only; patch not applied or executed; reviewed main pin, not a claim of native installation."
+  },
+  "actual_signal_matrix": [
+    {
+      "symbol": "IDOL-USDT",
+      "instrument_id": "BINGX:USDT_M:101334:IDOL-USDT",
+      "message_id": "245",
+      "analysis_msk": "2026-10-30T11:04:31.487000+03:00",
+      "confirmed_msk": "2026-10-30T11:04:41.513000+03:00",
+      "original_checks": {
+        "same_original": true,
+        "receipt_bound": true,
+        "original_implementation_bound": true
+      },
+      "source_facts": [
+        {
+          "kind": "price",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347460000,
+          "received_ts": 1793347461788,
+          "expires_ts": 1793347490000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "ticker_24h",
+          "status": "INCOMPLETE",
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "event_ts": 1793347460000,
+          "received_ts": 1793347461788,
+          "expires_ts": 1793347490000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "candles",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347440000,
+          "received_ts": 1793347465628,
+          "expires_ts": 1793347530000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "orderbook",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347466808,
+          "received_ts": 1793347466908,
+          "expires_ts": 1793347481808,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "growth_24h",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347440000,
+          "received_ts": 1793347463623,
+          "expires_ts": 1793347530000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "price_structure",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347440000,
+          "received_ts": 1793347463623,
+          "expires_ts": 1793347530000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "open_interest",
+          "status": "NOT_CHECKED",
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "event_ts": null,
+          "received_ts": 1793347468075,
+          "expires_ts": null,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "trades",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347468609,
+          "received_ts": 1793347469176,
+          "expires_ts": 1793347498609,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "funding",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347200000,
+          "received_ts": 1793347470939,
+          "expires_ts": 1793347500000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        }
+      ],
+      "growth": {
+        "day_pct": 20.858388454600107,
+        "threshold_pct": 20,
+        "short_windows_pass": [
+          {
+            "minutes": 5,
+            "passed": false
+          },
+          {
+            "minutes": 15,
+            "passed": false
+          },
+          {
+            "minutes": 60,
+            "passed": false
+          }
+        ]
+      },
+      "activity": {
+        "impulse_relative_ratio": 6.03751983834219,
+        "current_to_impulse": 0.13789781815245192,
+        "quantity_unit": "UNKNOWN_NATIVE_UNIT",
+        "meaning": "Same native reported quantity only; not USDT notional or cross-venue absolute flow."
+      },
+      "liquidity": {
+        "status": "USABLE",
+        "sizes_usdt": [
+          700,
+          1000,
+          1500,
+          2000,
+          3000
+        ],
+        "all_both_sides_usable": true,
+        "snapshot_only": true,
+        "quantity_step_known": false
+      },
+      "plan": {
+        "minimum_gross_pct": 10.029518893818313,
+        "entries_known_before_analysis": true,
+        "target_known_before_analysis": true,
+        "target_selected_before_potential": true,
+        "all_entries_below_reference_above_invalidation": true,
+        "historical_highs": 73,
+        "highs_below_all_entries": 0,
+        "future_entry_not_executed": true,
+        "gross_excludes_fees_and_funding": true
+      },
+      "trades": {
+        "returned_rows": 1000,
+        "qualified_unique_rows": 80,
+        "buy_usdt": 430.46999999999997,
+        "sell_usdt": 405.7000000000001,
+        "sample_seconds": 26,
+        "price_response": {
+          "first_price": null,
+          "last_price": 0.016038,
+          "min_price": 0.016011,
+          "max_price": 0.01608,
+          "first_to_last_return_pct": null
+        },
+        "full_market_coverage": false,
+        "absorption_proven": false
+      },
+      "funding": {
+        "status": "USABLE",
+        "used": true,
+        "rate_fraction": 3.5e-05,
+        "rate_percent": 0.0034999999999999996,
+        "period_ms": 14400000,
+        "event_ts": 1793347200000,
+        "received_ts": 1793347470939,
+        "expires_ts": 1793347500000,
+        "clock_authority": "ADAPTER_BASED_INFERENCE",
+        "vendor_clock_guarantee": false
+      },
+      "open_interest": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED"
+      },
+      "liquidations": {
+        "status": "NOT_CHECKED",
+        "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+        "zones_up": [],
+        "zones_down": [],
+        "coverage": null,
+        "rejected_zones": [],
+        "checked_sources": [],
+        "map_mode": "WITHOUT_MAP",
+        "qualified_zone_count": 0
+      },
+      "statistical_outcome": "NOT_READ_NOT_HIT_MISS"
+    },
+    {
+      "symbol": "SOPH-USDT",
+      "instrument_id": "BINGX:USDT_M:101302:SOPH-USDT",
+      "message_id": "244",
+      "analysis_msk": "2026-10-30T11:02:05.053000+03:00",
+      "confirmed_msk": "2026-10-30T11:02:15.361000+03:00",
+      "original_checks": {
+        "same_original": true,
+        "receipt_bound": true,
+        "original_implementation_bound": true
+      },
+      "source_facts": [
+        {
+          "kind": "price",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347311000,
+          "received_ts": 1793347314463,
+          "expires_ts": 1793347341000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "ticker_24h",
+          "status": "INCOMPLETE",
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "event_ts": 1793347311000,
+          "received_ts": 1793347314463,
+          "expires_ts": 1793347341000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "candles",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347260000,
+          "received_ts": 1793347318348,
+          "expires_ts": 1793347350000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "orderbook",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347320008,
+          "received_ts": 1793347320106,
+          "expires_ts": 1793347335008,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "growth_24h",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347260000,
+          "received_ts": 1793347316623,
+          "expires_ts": 1793347350000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "price_structure",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347260000,
+          "received_ts": 1793347316623,
+          "expires_ts": 1793347350000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "open_interest",
+          "status": "NOT_CHECKED",
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "event_ts": null,
+          "received_ts": 1793347321252,
+          "expires_ts": null,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "trades",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347321132,
+          "received_ts": 1793347322173,
+          "expires_ts": 1793347351132,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "funding",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347200000,
+          "received_ts": 1793347323916,
+          "expires_ts": 1793347500000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        }
+      ],
+      "growth": {
+        "day_pct": 20.93837535014005,
+        "threshold_pct": 20,
+        "short_windows_pass": [
+          {
+            "minutes": 5,
+            "passed": false
+          },
+          {
+            "minutes": 15,
+            "passed": false
+          },
+          {
+            "minutes": 60,
+            "passed": false
+          }
+        ]
+      },
+      "activity": {
+        "impulse_relative_ratio": 2.123568507799726,
+        "current_to_impulse": 0.31835338911819144,
+        "quantity_unit": "UNKNOWN_NATIVE_UNIT",
+        "meaning": "Same native reported quantity only; not USDT notional or cross-venue absolute flow."
+      },
+      "liquidity": {
+        "status": "USABLE",
+        "sizes_usdt": [
+          700,
+          1000,
+          1500,
+          2000,
+          3000
+        ],
+        "all_both_sides_usable": true,
+        "snapshot_only": true,
+        "quantity_step_known": false
+      },
+      "plan": {
+        "minimum_gross_pct": 11.049278167594178,
+        "entries_known_before_analysis": true,
+        "target_known_before_analysis": true,
+        "target_selected_before_potential": true,
+        "all_entries_below_reference_above_invalidation": true,
+        "historical_highs": 20,
+        "highs_below_all_entries": 0,
+        "future_entry_not_executed": true,
+        "gross_excludes_fees_and_funding": true
+      },
+      "trades": {
+        "returned_rows": 1000,
+        "qualified_unique_rows": 12,
+        "buy_usdt": 219.06,
+        "sell_usdt": 149.24,
+        "sample_seconds": 25.999,
+        "price_response": {
+          "first_price": 0.001734,
+          "last_price": 0.001726,
+          "min_price": 0.001715,
+          "max_price": 0.001734,
+          "first_to_last_return_pct": -0.46136101499423265
+        },
+        "full_market_coverage": false,
+        "absorption_proven": false
+      },
+      "funding": {
+        "status": "USABLE",
+        "used": true,
+        "rate_fraction": -0.0012936,
+        "rate_percent": -0.12936,
+        "period_ms": 14400000,
+        "event_ts": 1793347200000,
+        "received_ts": 1793347323916,
+        "expires_ts": 1793347500000,
+        "clock_authority": "ADAPTER_BASED_INFERENCE",
+        "vendor_clock_guarantee": false
+      },
+      "open_interest": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED"
+      },
+      "liquidations": {
+        "status": "NOT_CHECKED",
+        "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+        "zones_up": [],
+        "zones_down": [],
+        "coverage": null,
+        "rejected_zones": [],
+        "checked_sources": [],
+        "map_mode": "WITHOUT_MAP",
+        "qualified_zone_count": 0
+      },
+      "statistical_outcome": "NOT_READ_NOT_HIT_MISS"
+    },
+    {
+      "symbol": "MAGMA-USDT",
+      "instrument_id": "BINGX:USDT_M:102176:MAGMA-USDT",
+      "message_id": "243",
+      "analysis_msk": "2026-10-30T10:03:01.755000+03:00",
+      "confirmed_msk": "2026-10-30T10:03:06.784000+03:00",
+      "original_checks": {
+        "same_original": true,
+        "receipt_bound": true,
+        "original_implementation_bound": true
+      },
+      "source_facts": [
+        {
+          "kind": "price",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343774000,
+          "received_ts": 1793343776016,
+          "expires_ts": 1793343804000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "ticker_24h",
+          "status": "INCOMPLETE",
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "event_ts": 1793343774000,
+          "received_ts": 1793343776016,
+          "expires_ts": 1793343804000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "candles",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343720000,
+          "received_ts": 1793343777843,
+          "expires_ts": 1793343810000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "orderbook",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343778769,
+          "received_ts": 1793343778835,
+          "expires_ts": 1793343793769,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "growth_24h",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343720000,
+          "received_ts": 1793343776968,
+          "expires_ts": 1793343810000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "price_structure",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343720000,
+          "received_ts": 1793343776968,
+          "expires_ts": 1793343810000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "open_interest",
+          "status": "NOT_CHECKED",
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "event_ts": null,
+          "received_ts": 1793343780055,
+          "expires_ts": null,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "trades",
+          "status": "USABLE",
+          "reason": "LATEST_RETURNED_TRADE_SAMPLE_PARTIAL",
+          "event_ts": 1793343779862,
+          "received_ts": 1793343780538,
+          "expires_ts": 1793343809862,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "funding",
+          "status": "STALE",
+          "reason": "SOURCE_FACT_STALE",
+          "event_ts": 1793332800000,
+          "received_ts": 1793343781489,
+          "expires_ts": 1793333100000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        }
+      ],
+      "growth": {
+        "day_pct": 28.904062296213915,
+        "threshold_pct": 20,
+        "short_windows_pass": [
+          {
+            "minutes": 5,
+            "passed": false
+          },
+          {
+            "minutes": 15,
+            "passed": false
+          },
+          {
+            "minutes": 60,
+            "passed": false
+          }
+        ]
+      },
+      "activity": {
+        "impulse_relative_ratio": 2.161794565326959,
+        "current_to_impulse": 0.3956874418900177,
+        "quantity_unit": "UNKNOWN_NATIVE_UNIT",
+        "meaning": "Same native reported quantity only; not USDT notional or cross-venue absolute flow."
+      },
+      "liquidity": {
+        "status": "USABLE",
+        "sizes_usdt": [
+          700,
+          1000,
+          1500,
+          2000,
+          3000
+        ],
+        "all_both_sides_usable": true,
+        "snapshot_only": true,
+        "quantity_step_known": false
+      },
+      "plan": {
+        "minimum_gross_pct": 10.333713492339003,
+        "entries_known_before_analysis": true,
+        "target_known_before_analysis": true,
+        "target_selected_before_potential": true,
+        "all_entries_below_reference_above_invalidation": true,
+        "historical_highs": 165,
+        "highs_below_all_entries": 157,
+        "future_entry_not_executed": true,
+        "gross_excludes_fees_and_funding": true
+      },
+      "trades": {
+        "returned_rows": 1000,
+        "qualified_unique_rows": 14,
+        "buy_usdt": 95.33,
+        "sell_usdt": 84.8,
+        "sample_seconds": 26.004,
+        "price_response": {
+          "first_price": 0.33529,
+          "last_price": 0.33467,
+          "min_price": 0.3343,
+          "max_price": 0.33529,
+          "first_to_last_return_pct": -0.18491455158219372
+        },
+        "full_market_coverage": false,
+        "absorption_proven": false
+      },
+      "funding": {
+        "status": "STALE",
+        "used": false,
+        "kind": "funding",
+        "reason": "SOURCE_FACT_STALE",
+        "event_ts": 1793332800000,
+        "received_ts": 1793343781489,
+        "expires_ts": 1793333100000,
+        "used_fact_id": false,
+        "received_before_analysis": true
+      },
+      "open_interest": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED"
+      },
+      "liquidations": {
+        "status": "NOT_CHECKED",
+        "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+        "zones_up": [],
+        "zones_down": [],
+        "coverage": null,
+        "rejected_zones": [],
+        "checked_sources": [],
+        "map_mode": "WITHOUT_MAP",
+        "qualified_zone_count": 0
+      },
+      "statistical_outcome": "NOT_READ_NOT_HIT_MISS"
+    }
+  ],
+  "other_blocks": {
+    "market_comparison": "REMOVED_BY_OWNER; no BTC/ETH restoration",
+    "support_stability_block7": "CONDITIONALLY_DISABLED; later improvement, not launch prerequisite",
+    "probability": "Not estimated; outcome evidence not read in this batch"
+  },
+  "funding_clock": {
+    "code": [
+      "pump-report/sources/bingx.mjs:188-211",
+      "pump-report/sources/index.mjs:112-121",
+      "pump-report/registry/funding-quote-profile.mjs",
+      "pump-report/analytics/context.mjs:60-83"
+    ],
+    "primary_snapshot": "pump-report/handoffs/sources/evidence/F555_CCXT_d3159f7_bingx.ts.snapshot:1827-1867",
+    "primary_sha256": "94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+    "accepted": "Pinned CCXT adapter maps native updateTime to unified timestamp and lastFundingRate to fundingRate; nextFundingTime is separate. fundingIntervalHours is actual period; no default 8h. This is accepted adapter convention, not vendor guarantee of rate-clock meaning/cadence.",
+    "actual": "IDOL/SOPH event08:00UTC fresh inside 5min TTL and used; MAGMA event04:00UTC received07:03UTC expired04:05UTC and excluded.",
+    "continuous_evidence": false,
+    "conclusion": "Retained evidence proves useful momentary funding on two actual signals, not continuous current funding across the four-hour period or all assets. updateTime cannot be relabelled last payment/metadata without evidence. Receipt time/nextFundingTime cannot refresh it; no automatic TTL=period relaxation. Historical fundingRate/fundingTime is settlement history, not current-quote proof."
+  },
+  "unclosed_source_requirements": [
+    {
+      "requirement": "Qualified meaning/cadence of current funding event clock and continuous freshness coverage",
+      "status": "OPEN_EVIDENCE_GAP",
+      "pointer": "funding_clock above; registry/funding-quote-profile.mjs",
+      "scope": "No new request/source/clock fabrication or freshness relaxation."
+    },
+    {
+      "requirement": "Exact instrument OI quantity unit and independent proof before selecting OI",
+      "status": "NOT_REQUESTED_AND_UNQUALIFIED",
+      "pointer": "pump-report/runtime/runner.mjs:149-164; pump-report/sources/index.mjs:338-415; pump-report/sources/bingx.mjs:180-185; pump-report/registry/native-reviewed550.mjs:20-21",
+      "scope": "Current optional stage selects trades+funding within 2-slot cap; reviewed candle/orderbook/funding qualification does not prove OI units. No extra slot/call."
+    },
+    {
+      "requirement": "Verified liquidation route for exact identity, clock, price basis and admitted bounded account/model",
+      "status": "NO_VERIFIED_ROUTE",
+      "pointer": "pump-report/sources/index.mjs:425-443",
+      "scope": "No route means NOT_CHECKED, zero checked sources/zones, WITHOUT_MAP; not UNSUPPORTED. Saved SOL account subset cannot stand for MAGMA or full coverage. Optional map does not block useful card."
+    },
+    {
+      "requirement": "Actual provider HTTP/cache cost attribution by source/block",
+      "status": "NOT_EXPOSED_IN_SAFE_PROJECTION",
+      "pointer": "pump-report/sources/index.mjs:459-495; projection native_receipt and own_UTC30_known_service_totals",
+      "scope": "Whole run/native audit SQL is not per-symbol market-provider cost. No inferred zero for trades/funding."
+    }
+  ],
+  "truthful_partial_trade_boundary": {
+    "pointer": "pump-report/analytics/context.mjs:4,14-42; pump-report/sources/recent-trades.mjs",
+    "status": "CURRENT_BEHAVIOR_LIMITATION_NOT_NEW_BLOCKER",
+    "meaning": "1000 returned rows do not mean all rows qualified. Actual 30s fresh native row subset is 80/12/14 unique rows over about26s. No full-market or absorption proof; no lookback/window/gate expansion."
+  },
+  "costs": {
+    "source_operational_HTTP": 0,
+    "source_native_CF_SQL": 0,
+    "source_Telegram": 0,
+    "new_connections": 0,
+    "projection_native_receipt": {
+      "state": "FINALIZED",
+      "reservation_id": "PUMP:LOOKUP:pump-recent-signal-quality-20261030-one",
+      "usage": {
+        "requests": 14,
+        "rows_read": 43,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "accounted_upper_bound": {
+        "rows_read": 43,
+        "rows_written": 4
+      },
+      "original_envelope_never_reduced": true
+    },
+    "own_UTC30_known_service_totals": {
+      "LOOKUP_runs": 3,
+      "SQL": 32,
+      "rows_read": 81,
+      "rows_written": 12,
+      "unknown_ops": 0,
+      "not_whole_account": true
+    },
+    "not_whole_account": true,
+    "no_budget_refund": true
+  },
+  "preservation": "Many valid signals welcome; frequency/thresholds/target/potential10/TTL/caps unchanged. Existing unknowns/reserves, 9 old pauses,2 OWNER deferrals preserved. Prior F679/F680/F678 timing deviations not cured. No raw originals, candles, recipients or private16 opened. No Node/tests/build/engine/provider/search/native/CF/TG/product changes.",
+  "acceptance": "ONE offline source evidence package, not full-TZ completion, continuous-coverage guarantee or statistical success."
+}
