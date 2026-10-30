@@ -1,10 +1,11 @@
 import {validTime} from '../contracts/index.mjs';
 import {auditCohortSample} from './cohort-audit.mjs';
-import {FEATURE_CAPSULE_VERSION,capsuleDigest} from './feature-capsule.mjs';
+import {FEATURE_CAPSULE_VERSION,FEATURE_PROJECTION_REVISION,capsuleDigest} from './feature-capsule.mjs';
+import {CAPSULE_READER_SET,capsuleDialect,v3SummaryLinkKey,v2SummaryLinkKey,projectionPointerKey} from './capsule-version-reader.mjs';
 import {selectOutcomeAnchor} from './anchors.mjs';
 
-export const SAVED_CAPSULE_AUDIT_VERSION='pump-saved-capsule-audit-v1-20261025';
-export const SAVED_CAPSULE_AUDIT_BOUNDS=Object.freeze({records:10,records_bytes:262144,read_calls:90,read_value_bytes:524288,read_bytes:2000000,evidence_bytes:2000000,journal_analyses:64,journal_publications:64,key_chars:512});
+export const SAVED_CAPSULE_AUDIT_VERSION='pump-saved-capsule-audit-v2-versioned-20261030';
+export const SAVED_CAPSULE_AUDIT_BOUNDS=Object.freeze({records:10,records_bytes:262144,read_calls:100,base_read_calls:90,additional_version_reads:10,read_value_bytes:524288,read_bytes:2000000,evidence_bytes:2000000,journal_analyses:64,journal_publications:64,key_chars:512});
 const text=v=>typeof v==='string'&&v.length>0&&v.length<=512&&!/[\u0000-\u001f]/u.test(v);
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 const stable=v=>v&&typeof v==='object'?Array.isArray(v)?'['+v.map(stable).join(',')+']':'{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+stable(v[k])).join(',')+'}':JSON.stringify(v);
@@ -28,9 +29,9 @@ export async function auditSavedCapsules({records,read,as_of_ts,split_plan}={}){
   need(rows.every(r=>keyIs(r?.record_id,'pump:summary-record:')),'SAVED_CAPSULE_SUMMARY_KEY_REQUIRED');
   const cache=new Map(),usage={read_calls:0,read_bytes:0,cache_hits:0,evidence_bytes:0,records_resolved:0},failures=[];let fatal=null;
   const abort=code=>{fatal=error(code);throw error('AUDIT_EVIDENCE_BOUND_EXCEEDED');};
-  async function load(key){
+  async function load(key,optional=false){
     need(text(key),'SAVED_CAPSULE_STATE_KEY_UNBOUND');
-    if(cache.has(key)){usage.cache_hits++;const value=cache.get(key);need(value!==null,'SAVED_CAPSULE_REFERENCE_MISSING');return value;}
+    if(cache.has(key)){usage.cache_hits++;const value=cache.get(key);if(!optional)need(value!==null,'SAVED_CAPSULE_REFERENCE_MISSING');return value;}
     if(usage.read_calls>=limits.read_calls)abort('SAVED_CAPSULE_READ_CALL_BOUND_EXCEEDED');
     usage.read_calls++;let value;
     try{value=await read(key);}catch{abort('SAVED_CAPSULE_STORE_READ_FAILED');}
@@ -38,7 +39,7 @@ export async function auditSavedCapsules({records,read,as_of_ts,split_plan}={}){
     const bytes=new TextEncoder().encode(raw).byteLength;
     if(bytes>limits.read_value_bytes)abort('SAVED_CAPSULE_READ_VALUE_BYTES_EXCEEDED');
     usage.read_bytes+=bytes;if(usage.read_bytes>limits.read_bytes)abort('SAVED_CAPSULE_TOTAL_READ_BYTES_EXCEEDED');
-    const copy=JSON.parse(raw);cache.set(key,copy);need(copy!==null,'SAVED_CAPSULE_REFERENCE_MISSING');return copy;
+    const copy=JSON.parse(raw);cache.set(key,copy);if(!optional)need(copy!==null,'SAVED_CAPSULE_REFERENCE_MISSING');return copy;
   }
   async function cardAt(card_id,analysis_key,saved){
     need(typeof card_id==='string'&&/^PUMP:[a-f0-9]{64}$/.test(card_id),'SAVED_CAPSULE_CARD_KEY_UNBOUND');
@@ -51,10 +52,20 @@ export async function auditSavedCapsules({records,read,as_of_ts,split_plan}={}){
     need(expected===card_id,'SAVED_CAPSULE_CARD_ID_MISMATCH');return {key,card};
   }
   async function resolve(row){
-    const link=await load('pump:summary-capsule-link:v2:'+row.record_id.slice(-64));
-    need(link.schema==='pump-summary-capsule-link-v2-20261025'&&link.summary_record_id===row.record_id&&link.originals_required===true&&link.global_reference_closure===false,'SAVED_CAPSULE_LINK_UNBOUND');
-    need(keyIs(link.feature_key,'pump:feature-capsule:v2:')&&keyIs(link.outcome_key,'pump:outcome-capsule:v2:')&&keyIs(link.analysis_key,'pump:analysis:')&&keyIs(link.protected_refs?.key,'pump:protected-refs:v2:'),'SAVED_CAPSULE_LINK_KEY_UNBOUND');
+    const preferredKey=v3SummaryLinkKey(row.record_id),legacyKey=v2SummaryLinkKey(row.record_id);
+    const upgraded=await load(preferredKey,true),selectedLinkKey=upgraded!==null?preferredKey:legacyKey;
+    if(upgraded!==null)need(upgraded.schema==='pump-summary-capsule-link-v3-seed-window-20261030'&&upgraded.projection_revision===FEATURE_PROJECTION_REVISION,'SAVED_CAPSULE_SELECTED_LINK_DIALECT_MISMATCH');
+    const link=upgraded??await load(legacyKey);
+    need((link.schema==='pump-summary-capsule-link-v2-20261025'||link.schema==='pump-summary-capsule-link-v3-seed-window-20261030')&&link.summary_record_id===row.record_id&&link.originals_required===true&&link.global_reference_closure===false,'SAVED_CAPSULE_LINK_UNBOUND');
+    need(keyIs(link.analysis_key,'pump:analysis:')&&keyIs(link.protected_refs?.key,'pump:protected-refs:v2:'),'SAVED_CAPSULE_LINK_KEY_UNBOUND');
+    const modernLink=link.schema==='pump-summary-capsule-link-v3-seed-window-20261030';
+    const keyVersion=modernLink?'v3:'+FEATURE_PROJECTION_REVISION+':':'v2:';
+    need(keyIs(link.feature_key,'pump:feature-capsule:'+keyVersion)&&keyIs(link.outcome_key,'pump:outcome-capsule:'+keyVersion),'SAVED_CAPSULE_LINK_KEY_UNBOUND');
     const feature=await load(link.feature_key),outcome=await load(link.outcome_key),saved_analysis=await load(link.analysis_key),protectedRefs=await load(link.protected_refs.key);
+    const dialect=capsuleDialect(feature.capsule);
+    need(selectedLinkKey===dialect.link_prefix+row.record_id.slice(-64),'SAVED_CAPSULE_SELECTED_LINK_DIALECT_MISMATCH');
+    need(link.schema===dialect.link_schema&&(!dialect.revision||link.projection_revision===dialect.revision)&&keyIs(link.feature_key,dialect.feature_prefix)&&keyIs(link.outcome_key,dialect.outcome_prefix),'SAVED_CAPSULE_VERSIONED_LINK_MISMATCH');
+    const pointerKey=projectionPointerKey(feature.capsule),projection_pointer=pointerKey?{key:pointerKey,pointer:await load(pointerKey)}:null;
     need(protectedRefs.key===link.protected_refs.key&&protectedRefs.sha256===link.protected_refs.sha256&&await capsuleDigest(protectedRefs.projection)===protectedRefs.sha256,'SAVED_CAPSULE_PROTECTED_REFS_DIGEST_MISMATCH');
     need(protectedRefs.projection?.delete_allowed===false&&protectedRefs.projection.approved_delete_ttl_ms===null&&protectedRefs.projection.inventory_complete_for_global_cleanup===false,'SAVED_CAPSULE_PROTECTED_REFS_NOT_CLOSED');
     need(saved_analysis?.analysis&&saved_analysis.input&&text(row.origin?.instrument_id)&&text(row.origin?.wave_id)&&text(row.origin?.signal_id),'SAVED_CAPSULE_ORIGINAL_REQUIRED');
@@ -92,18 +103,18 @@ export async function auditSavedCapsules({records,read,as_of_ts,split_plan}={}){
         need(journal.publications.some(e=>e.state==='SENT'&&e.analysis_id===link.analysis_key&&e.card_id===c.card_id&&e.receipt_ref===row.publication.receipt_ref&&String(e.message_id)===String(row.publication.message_id)&&e.event_ts===r.confirmed_ts&&validTime(e.recorded_ts)&&e.recorded_ts<=row.recorded_ts),'SAVED_CAPSULE_SENT_JOURNAL_EVENT_UNBOUND');
       }
     }
-    const evidence={link,feature,outcome,saved_analysis,anchor_meta};
+    const evidence={link,feature,outcome,saved_analysis,anchor_meta,projection_pointer};
     usage.evidence_bytes+=new TextEncoder().encode(JSON.stringify(evidence)).byteLength;
     if(usage.evidence_bytes>limits.evidence_bytes)abort('SAVED_CAPSULE_EVIDENCE_BYTES_EXCEEDED');usage.records_resolved++;return evidence;
   }
   let audit;
   try{
-    audit=await auditCohortSample(rows,{feature_schema_version:FEATURE_CAPSULE_VERSION,as_of_ts,split_plan,resolve_evidence:async row=>{
+    audit=await auditCohortSample(rows,{feature_schema_version:CAPSULE_READER_SET,as_of_ts,split_plan,resolve_evidence:async row=>{
       try{return await resolve(row);}catch(e){if(fatal)throw error('AUDIT_EVIDENCE_BOUND_EXCEEDED');const code=typeof e?.code==='string'&&e.code.startsWith('SAVED_CAPSULE_')?e.code:'SAVED_CAPSULE_EVIDENCE_UNQUALIFIED';failures.push({record_id:row.record_id,code});throw error(code);}
     }});
   }catch(e){if(fatal)throw fatal;if(e?.message==='AUDIT_EVIDENCE_BOUND_EXCEEDED')throw error('SAVED_CAPSULE_EVIDENCE_BYTES_EXCEEDED');throw error('SAVED_CAPSULE_AUDIT_REJECTED');}
   if(fatal)throw fatal;
   return {...audit,saved_capsule_reader:{version:SAVED_CAPSULE_AUDIT_VERSION,limits:{...limits},...usage,distinct_keys_read:cache.size,required_references_resolved:failures.length===0,reference_failures:failures,
-    scope:'SUPPLIED_AT_MOST_TEN_SAVED_RECORDS_ONLY',readback_completion_not_qualification:true,source_history_complete:false,global_reference_closure:false,raw_private_output:false,native_admission_proven:false},
+    versioned_reader_set:CAPSULE_READER_SET,additional_version_read_calls_max:rows.length,scope:'SUPPLIED_AT_MOST_TEN_SAVED_RECORDS_ONLY',readback_completion_not_qualification:true,source_history_complete:false,global_reference_closure:false,raw_private_output:false,native_admission_proven:false},
     retention:{...audit.retention,delete_allowed:false,approved_delete_ttl_ms:null,originals_required:true,global_reference_closure:false}};
 }

@@ -1,6 +1,7 @@
 import {auditSavedCapsules,SAVED_CAPSULE_AUDIT_BOUNDS} from '../analytics/saved-capsule-audit.mjs';
 import {createSummaryRecordIndex} from './summary-index.mjs';
 import {textHash} from './text-hash.mjs';
+import {CAPSULE_READER_SET} from '../analytics/capsule-version-reader.mjs';
 import {validTime} from '../contracts/index.mjs';
 
 const PLAN_SCHEMA='PUMP_PRECOMMITTED_COHORT_SPLIT_PLAN_V1',PLAN_PREFIX='pump:cohort-split-plan:v1:';
@@ -47,6 +48,6 @@ export function createSavedStatisticsAudit({store,clock=Date.now}){
     }
     const audit=await auditSavedCapsules({records,read:key=>readAuditPoint({store,key,max_bytes:SAVED_CAPSULE_AUDIT_BOUNDS.read_value_bytes}),as_of_ts,split_plan:{split_ts:plan.split_ts,declared_ts:plan.declared_ts,plan_ref:PLAN_PREFIX+plan_id}});
     const boundary=await index.boundary(),cursor=page.items.at(-1)?.seq??after;
-    return {status:'SAVED_PAGE_AUDITED_NOT_CALIBRATED',as_of_ts,plan_id,source_cursor:cursor,source_records_at_boundary:page.total,has_more:cursor<page.total,source_boundary_changed:boundary.count!==page.total||boundary.pending||!boundary.ready,records_audited:records.length,source_history_complete:false,whole_history_complete:false,probability_pct:null,publication_allowed:false,audit};
+    return {status:'SAVED_PAGE_AUDITED_NOT_CALIBRATED',as_of_ts,plan_id,source_cursor:cursor,source_records_at_boundary:page.total,has_more:cursor<page.total,source_boundary_changed:boundary.count!==page.total||boundary.pending||!boundary.ready,records_audited:records.length,source_history_complete:false,whole_history_complete:false,probability_pct:null,publication_allowed:false,capsule_reader_set:CAPSULE_READER_SET,additional_version_point_reads_max:records.length,user_profit:null,realized_pnl:null,price_event_is_not_executed_profit:true,audit};
   };
 }

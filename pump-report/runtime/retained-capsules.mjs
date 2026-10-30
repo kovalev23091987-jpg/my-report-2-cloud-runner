@@ -1,7 +1,7 @@
-import {prepareFeatureCapsule,prepareOutcomeCapsule,readFeatureCapsule,projectProtectedReferences,capsuleDigest} from '../analytics/feature-capsule.mjs';
+import {prepareFeatureCapsule,prepareOutcomeCapsule,readFeatureCapsule,projectProtectedReferences,capsuleDigest,FEATURE_CAPSULE_VERSION,FEATURE_PROJECTION_REVISION,featureCapsuleKey} from '../analytics/feature-capsule.mjs';
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const digest=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
-const sameLinkCore=(current,next)=>current?.schema==='pump-summary-capsule-link-v2-20261025'
+const sameLinkCore=(current,next)=>current?.schema==='pump-summary-capsule-link-v3-seed-window-20261030'
   &&same({...current,protected_refs:null},{...next,protected_refs:null})
   &&digest(current.protected_refs?.sha256)
   &&current.protected_refs.key==='pump:protected-refs:v2:'+current.protected_refs.sha256
@@ -18,15 +18,54 @@ export function createRetainedCapsuleWriter({store,implementation_sha256,evidenc
     });
     const readback=await store.get(key);if(!same(readback,retained))throw Error('RETAINED_CAPSULE_READBACK_FAILED');return readback;
   }
+  async function validateFeature(prepared,saved,analysis_key){
+    const a=saved.analysis,c=prepared?.capsule;
+    if(prepared?.key!==featureCapsuleKey(await capsuleDigest(a))||c?.schema!==FEATURE_CAPSULE_VERSION||
+      c.projection_revision!==FEATURE_PROJECTION_REVISION||c.analysis_key!==analysis_key||
+      c.analysis_sha256!==await capsuleDigest(a)||c.input_sha256!==await capsuleDigest(saved.input)||
+      c.implementation_sha256!==saved.implementation_sha256||c.recorded_ts!==saved.saved_ts)
+      throw Error('FEATURE_V3_ORIGINAL_BINDING_MISMATCH');
+    await readFeatureCapsule({capsule:c,sha256:prepared.sha256});
+    const expected={instrument_id:a.instrument.instrument_id,asset_id:a.instrument.asset_id,wave_id:a.wave_id,
+      signal_id:'pump:signal:'+a.instrument.instrument_id+':'+a.wave_id,t0:a.analysis_ts,reference_price:a.reference_price,
+      rules_version:a.rules_version,profile_version:a.profile_version,mode:a.mode,
+      map_mode:a.liquidations?.map_mode==='WITHOUT_MAP'?'NO_MAP':a.liquidations?.status==='PARTIAL'?'PARTIAL_MAP':'MAP',
+      evidence_class:saved.evidence_class,run_purpose:saved.input.run_purpose??a.run_purpose??'UNCLASSIFIED',ready:true};
+    if(!same(c.origin,expected))throw Error('FEATURE_V3_ORIGIN_MISMATCH');
+    return prepared;
+  }
   async function original(analysis_key){
     const saved=await store.get(analysis_key);if(!saved?.analysis||!saved.input)throw Error('RETAINED_ORIGINAL_ANALYSIS_REQUIRED');
-    if(analysis_key!=='pump:analysis:'+await capsuleDigest(saved.analysis))throw Error('RETAINED_ORIGINAL_ANALYSIS_HASH_MISMATCH');
-    // An old original cannot acquire the current implementation retrospectively.
+    const analysis_sha256=await capsuleDigest(saved.analysis);
+    if(analysis_key!=='pump:analysis:'+analysis_sha256)throw Error('RETAINED_ORIGINAL_ANALYSIS_HASH_MISMATCH');
     if(!digest(saved.implementation_sha256))return {status:'ORIGINAL_IMPLEMENTATION_PIN_UNBOUND',saved};
     if(typeof saved.evidence_class!=='string')return {status:'ORIGINAL_EVIDENCE_CLASS_UNBOUND',saved};
-    const prepared=await prepareFeatureCapsule({analysis:saved.analysis,input:saved.input,analysis_key,implementation_sha256:saved.implementation_sha256,recorded_ts:saved.saved_ts,evidence_class:saved.evidence_class});
-    await immutable(prepared.key,prepared);await readFeatureCapsule({capsule:prepared.capsule,sha256:prepared.sha256});
-    return {status:'SAVED',saved,prepared};
+    const key=featureCapsuleKey(analysis_sha256),pointerKey='pump:feature-capsule-pointer:v3:'+FEATURE_PROJECTION_REVISION+':'+analysis_sha256;
+    const pointer=await store.get(pointerKey);
+    if(pointer){
+      if(pointer.schema!=='pump-feature-pointer-v3-seed-window-20261030'||pointer.projection_revision!==FEATURE_PROJECTION_REVISION||
+        pointer.analysis_key!==analysis_key||pointer.feature_key!==key||!digest(pointer.feature_sha256))
+        throw Error('FEATURE_V3_POINTER_INVALID');
+      const retained=await validateFeature(await store.get(key),saved,analysis_key);
+      if(pointer.feature_sha256!==retained.sha256)throw Error('FEATURE_V3_POINTER_HASH_MISMATCH');
+      return {status:'SAVED',saved,prepared:retained};
+    }
+    // Recover an acknowledged feature whose pointer write was interrupted.
+    let retained=await store.get(key);
+    if(!retained){
+      const candidate=await prepareFeatureCapsule({analysis:saved.analysis,input:saved.input,analysis_key,
+        implementation_sha256:saved.implementation_sha256,projection_writer_implementation_sha256:implementation_sha256,
+        recorded_ts:saved.saved_ts,evidence_class:saved.evidence_class});
+      // First valid projection wins. A later unrelated overall deployment pin
+      // cannot rewrite it or cause a comparison against newly generated bytes.
+      retained=await store.atomic(key,current=>({state:current??candidate,result:current??candidate}));
+      const readback=await store.get(key);if(!same(readback,retained))throw Error('FEATURE_V3_READBACK_FAILED');
+    }
+    retained=await validateFeature(retained,saved,analysis_key);
+    const link={schema:'pump-feature-pointer-v3-seed-window-20261030',projection_revision:FEATURE_PROJECTION_REVISION,
+      analysis_key,feature_key:key,feature_sha256:retained.sha256};
+    await immutable(pointerKey,link);
+    return {status:'SAVED',saved,prepared:retained};
   }
   async function projection({saved,analysis_key,signal=null,record=null,card=null}){
     const value=await projectProtectedReferences({analysis_key,analysis:saved.analysis,input:saved.input,signal,card,summary_records:record?[record]:[]});
@@ -49,8 +88,8 @@ export function createRetainedCapsuleWriter({store,implementation_sha256,evidenc
     const cardKey=typeof signal.original_card_id==='string'?'pump:card:'+signal.original_card_id:typeof receipt==='string'&&receipt.startsWith('pump:card:')&&receipt.endsWith('#receipt')?receipt.slice(0,-8):null;
     const card=cardKey?await store.get(cardKey):null;
     const refs=await projection({saved:row.saved,analysis_key:signal.analysis_key,signal,record:summary_record,card});
-    const link={schema:'pump-summary-capsule-link-v2-20261025',summary_record_id:summary_record.record_id,analysis_key:signal.analysis_key,feature_key:row.prepared.key,feature_sha256:row.prepared.sha256,outcome_key:prepared.key,outcome_sha256:prepared.sha256,protected_refs:refs,originals_required:true,global_reference_closure:false};
-    const retained=await immutable('pump:summary-capsule-link:v2:'+summary_record.record_id.slice(-64),link,{preserve_link_refs:true});return {status:'SAVED',...retained};
+    const link={schema:'pump-summary-capsule-link-v3-seed-window-20261030',projection_revision:FEATURE_PROJECTION_REVISION,summary_record_id:summary_record.record_id,analysis_key:signal.analysis_key,feature_key:row.prepared.key,feature_sha256:row.prepared.sha256,outcome_key:prepared.key,outcome_sha256:prepared.sha256,protected_refs:refs,originals_required:true,global_reference_closure:false};
+    const retained=await immutable('pump:summary-capsule-link:v3:'+FEATURE_PROJECTION_REVISION+':'+summary_record.record_id.slice(-64),link,{preserve_link_refs:true});return {status:'SAVED',...retained};
   }
   return {remember,record,implementation_sha256,evidence_class};
 }

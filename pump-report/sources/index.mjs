@@ -1,5 +1,6 @@
 import {assertInstrument, createFact, factUsable, emptyMap, CONTRACT_VERSION, ownerInstrumentExcluded} from '../contracts/index.mjs';
 import {START_PROFILE} from '../profile/start-v1.mjs';
+import {createCandidateRouteCostQuotes} from './candidate-route-cost.mjs';
 import {object, text, numeric, positive, timestamp, proof, fail, wireRows, selectRow, requestUrl,
   parsePrice, parseCandles, parseOrderbook, parseOpenInterest, parseFunding} from './bingx.mjs';
 import {verifiedSwoleRoute, normalizeSwoleMap} from './liquidations.mjs';
@@ -36,7 +37,7 @@ function entriesOf(registry) {
   fail('INDEPENDENT_IDENTITY_REGISTRY_REQUIRED');
 }
 
-export function createPumpSources({broker, identityRegistry, clock = Date.now, profile = START_PROFILE, on_catalog_snapshot = null} = {}) {
+export function createPumpSources({broker, identityRegistry, clock = Date.now, profile = START_PROFILE, on_catalog_snapshot = null, candidate_cost_binding = null} = {}) {
   if (typeof broker?.request !== 'function' || typeof clock !== 'function') fail('PUMP_SOURCE_DEPENDENCIES_REQUIRED');
   if (on_catalog_snapshot !== null && typeof on_catalog_snapshot !== 'function') fail('CATALOG_SNAPSHOT_CALLBACK_INVALID');
   const registry = new Map(), registryRejected = [], blockedIds = new Set(), blockedSymbols = new Set();
@@ -494,5 +495,7 @@ export function createPumpSources({broker, identityRegistry, clock = Date.now, p
         map_not_checked: registry.size - targetChecked.length},
       expense_ledger: 'ROOT_BROKER_ONLY', actual_provider_cost: null, actual_SQL_cost: null};
   }
-  return {getCatalog, getOverview, getCore, getDayGrowth, getOptional, getLiquidations, getOutcomeHistory, getCoverage};
+  const candidateCosts=createCandidateRouteCostQuotes({resolve_entry:resolve,binding:candidate_cost_binding});
+  return {getCatalog, getOverview, getCore, getDayGrowth, getOptional, getLiquidations, getOutcomeHistory, getCoverage,
+    quoteCandidateRouteCost:candidateCosts.issue,verifyCandidateRouteCostQuote:candidateCosts.verify,commitCandidateRouteCostQuote:candidateCosts.commit};
 }

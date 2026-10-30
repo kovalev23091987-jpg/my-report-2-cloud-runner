@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import {formatSavedStatisticsInterpretation} from './format-saved-statistics-interpretation.mjs';
 import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -23,7 +24,7 @@ export async function savedStatisticsOnce({admission_file,artifact_file,control_
     try{for(;;){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>2000000)throw Error('CONTROL_RESPONSE_BODY_LIMIT');parts.push(value);}}finally{await reader.cancel().catch(()=>{});}
     const data=Buffer.concat(parts.map(p=>Buffer.from(p))),body=JSON.parse(data.toString('utf8'));
     const result={schema:'PUMP_SAVED_STATISTICS_CONTROL_CAPTURE_V1',request:{method:'POST',url:URL,grant_id:ID,started_ts},http_status:response.status,received_ts:clock(),body,body_sha256:hash(data),body_bytes:size};
-    await exclusive(output_file,result);const saved=await fs.readFile(output_file);return {status:'REPLY_SAVED_NO_RETRY',http_status:response.status,output_file,sha256:hash(saved),bytes:saved.length,network_attempts:1,provider_HTTP:0,Telegram:0};
+    await exclusive(output_file,result);const saved=await fs.readFile(output_file);return {status:'REPLY_SAVED_NO_RETRY',http_status:response.status,output_file,sha256:hash(saved),bytes:saved.length,network_attempts:1,provider_HTTP:0,Telegram:0,interpretation:formatSavedStatisticsInterpretation(body)};
   }catch(error){await exclusive(attempt_file+'.ack-unknown.json',{state:'ACK_UNKNOWN_STOP_NO_RETRY',run_id:ID,recorded_ts:clock()});throw Error('SAVED_STATISTICS_ACK_UNKNOWN_STOP_NO_RETRY');}
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){

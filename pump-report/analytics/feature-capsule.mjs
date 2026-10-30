@@ -1,8 +1,13 @@
-import {assertInput, finite, positive, validTime, TRADE_BASE_QUANTITY_UNIT, TRADE_QUOTE_NOTIONAL_UNIT} from '../contracts/index.mjs';
-import {plusTenPrice} from './math.mjs';
+import {assertInput, finite, positive, validTime, CANDLE_NATIVE_RELATIVE_UNIT, CANDLE_NATIVE_RELATIVE_KIND, CANDLE_CCXT_TIME_BASIS, candleNativeComparisonKey, TRADE_BASE_QUANTITY_UNIT, TRADE_QUOTE_NOTIONAL_UNIT} from '../contracts/index.mjs';
+import {plusTenPrice,closedCandles,windowRows,sum,median,pct} from './math.mjs';
+import {START_PROFILE} from '../profile/start-v1.mjs';
+import * as legacyV2 from './feature-capsule-v2.mjs';
 
-export const FEATURE_CAPSULE_VERSION='pump-feature-capsule-v2-20261025';
-export const OUTCOME_CAPSULE_VERSION='pump-outcome-capsule-v2-20261025';
+export const FEATURE_CAPSULE_VERSION='pump-feature-capsule-v3-seed-window-20261030';
+export const FEATURE_PROJECTION_REVISION='seed-window-r1';
+export const SEED_BINDING_POLICY='SUPPLIED_CLOSED_ROWS_NOT_FIRST_SOURCE_AUTHENTICATION';
+export const featureCapsuleKey=sha=>'pump:feature-capsule:v3:'+FEATURE_PROJECTION_REVISION+':'+sha;
+export const OUTCOME_CAPSULE_VERSION='pump-outcome-capsule-v3-seed-window-20261030';
 export const CAPSULE_BOUNDS=Object.freeze({bytes:65536,features:48,facts:16,refs:256,journal_rows:64,strings:512});
 const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=CAPSULE_BOUNDS.strings;
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
@@ -57,6 +62,82 @@ function planProvenance(a,input){
   if(history_used&&(!history||!text(history.fact_id)))facts.push(undefined);
   return {facts,history_used};
 }
+// Reconfirm retained seed scalars only from supplied original closed rows.
+// Header freshness alone never proves an older numerator/baseline window.
+function seedWindowSources(a,input){
+  const f=input.facts.candles,i=a.activity?.impulse,b=a.activity?.volume_basis,p=START_PROFILE,at=a.analysis_ts;
+  const unknown=reason=>({facts:[undefined],reason,status:'UNKNOWN',range:null});
+  if(a.profile_version!==p.version||!i||!b||i.baseline_status!=='FULL'||
+    i.baseline_windows!==p.volume_baseline_ms/p.impulse_window_ms||
+    !validTime(i.start_ts)||!validTime(i.end_ts)||i.end_ts-i.start_ts!==p.impulse_window_ms)
+    return unknown('SEED_OR_FULL_BASELINE_RANGE_UNKNOWN');
+  if(!f||f.kind!=='candles'||f.origin!=='OBSERVED'||f.venue!=='BINGX'||f.instrument_id!==input.instrument.instrument_id||
+    !['USABLE','INCOMPLETE'].includes(f.status)||!text(f.source)||!provenance([f],at).bound||
+    !Array.isArray(a.fact_ids)||a.fact_ids.filter(id=>id===f.fact_id).length!==1||
+    a.activity.candle_evidence_ref!==f.evidence_ref||!a.activity.candle_provenance||
+    ['event_ts','received_ts','source','venue'].some(k=>a.activity.candle_provenance[k]!==f[k])||
+    stable(a.activity.candle_provenance.coverage)!==stable(f.coverage))
+    return unknown('SEED_SOURCE_ID_EVIDENCE_OR_CLOCK_MISMATCH');
+  const c=f.coverage,interval=p.candle_interval_ms;
+  if(c?.time_qualified!==true||c.interval_ms!==interval||b.interval_ms!==interval||
+    ['field','unit','comparison_kind','comparison_key','interval_ms'].some(k=>i[k]!==b[k]))
+    return unknown('SEED_VOLUME_COMPARABILITY_UNKNOWN');
+  const native=b.field==='volume_native';
+  if(native){
+    if(f.unit!==CANDLE_NATIVE_RELATIVE_UNIT||b.unit!=='UNKNOWN_NATIVE_UNIT'||
+      b.comparison_kind!==CANDLE_NATIVE_RELATIVE_KIND||b.comparison_key!==candleNativeComparisonKey(input.instrument,interval)||
+      c.relative_volume_qualified!==true||c.volume_qualified!==false||c.time_basis!==CANDLE_CCXT_TIME_BASIS||
+      c.comparison_kind!==b.comparison_kind||c.volume_comparison_key!==b.comparison_key||c.native_quantity_unit!=='UNKNOWN'||
+      [c.base_volume_qualified,c.quote_volume_qualified,c.turnover_quote_qualified,c.absolute_base_amount_qualified,c.absolute_USD_amount_qualified].includes(true))
+      return unknown('SEED_NATIVE_VOLUME_COMPARABILITY_UNKNOWN');
+  }else if(f.unit!=='OHLC_USDT_VOLUME_BASE'||b.comparison_kind!=='QUALIFIED_ABSOLUTE_SAME_FIELD'||b.comparison_key!==null||
+    !(b.field==='volume_base'&&b.unit==='BASE'&&c.volume_qualified===true||
+      b.field==='turnover_quote'&&b.unit==='USDT'&&c.exact_turnover_available===true))
+    return unknown('SEED_ABSOLUTE_VOLUME_COMPARABILITY_UNKNOWN');
+  if(!Array.isArray(f.value)||f.value.length>1440)return unknown('SEED_ROW_RANGE_UNAVAILABLE');
+  const normalized=closedCandles(f.value,f.event_ts,interval,native?{native_comparison_key:b.comparison_key}:{});
+  if(normalized.reason)return unknown('SEED_CLOSED_ROWS_INVALID');
+  const rows=normalized.rows,seed=windowRows(rows,i.end_ts,p.impulse_window_ms,interval),prior=[];
+  for(let end=i.start_ts;end>i.start_ts-p.volume_baseline_ms;end-=p.impulse_window_ms){
+    const w=windowRows(rows,end,p.impulse_window_ms,interval);
+    if(!w)return unknown('RETAINED_SEED_BASELINE_WINDOW_UNREAD');
+    prior.push(w);
+  }
+  if(!seed)return unknown('RETAINED_SEED_NUMERATOR_WINDOW_UNREAD');
+  const used=[...seed,...prior.flat()];
+  if(used.some(r=>r.close_ts>f.event_ts||r.native_time!==r.open_ts||r.native_time_semantics!=='OPEN_TIME'||
+    !text(r.time_evidence_ref)||!text(r.volume_evidence_ref)||text(c.time_evidence_ref)&&r.time_evidence_ref!==c.time_evidence_ref||!finite(r[b.field])||r[b.field]<0))
+    return unknown('SEED_ROW_CLOCK_EVIDENCE_OR_VOLUME_UNBOUND');
+  const volume=sum(seed.map(r=>r[b.field])),background=median(prior.map(w=>sum(w.map(r=>r[b.field]))));
+  const range=median(prior.map(w=>Math.max(...w.map(r=>r.high))-Math.min(...w.map(r=>r.low))));
+  if(!positive(background)||!finite(volume)||i.volume!==volume||i.baseline_median!==background||
+    i.ratio!==volume/background||i.normal_range!==range||i.return_pct!==pct(seed[0].open,seed.at(-1).close)||
+    i.open!==seed[0].open||i.close!==seed.at(-1).close||i.low!==Math.min(...seed.map(r=>r.low)))
+    return unknown('SAVED_SEED_SCALAR_RECONFIRMATION_MISMATCH');
+  return {facts:[f],reason:null,status:'RECONFIRMED_SUPPLIED_CLOSED_ROWS',
+    range:{seed_start_ts:i.start_ts,seed_end_ts:i.end_ts,baseline_start_ts:i.start_ts-p.volume_baseline_ms,
+      baseline_end_ts:i.start_ts,baseline_windows:prior.length,interval_ms:interval},rows,field:b.field,time_evidence_ref:c.time_evidence_ref??null};
+}
+function seedFeature(name,value,unit,source,at,reason){
+  const out=feature(name,value,unit,source.facts,at,reason);
+  return {...out,...(!out.bound?{absence_reason:source.reason??'RETAINED_SEED_SOURCE_WINDOW_UNKNOWN'}:{}),
+    source_window_status:source.status,source_window:source.range};
+}
+function currentSeedRatioSources(a,source){
+  if(source.status!=='RECONFIRMED_SUPPLIED_CLOSED_ROWS')return source;
+  const p=START_PROFILE,end=source.rows.at(-1)?.close_ts,current=windowRows(source.rows,end,p.impulse_window_ms,p.candle_interval_ms);
+  const unknown=reason=>({facts:[undefined],reason,status:'UNKNOWN',range:null});
+  const declared=a.activity.details?.activity_windows?.find(w=>w.window_ms===p.impulse_window_ms);
+  if(!current||declared?.start_ts!==end-p.impulse_window_ms||declared?.end_ts!==end||current.some(r=>r.native_time!==r.open_ts||r.native_time_semantics!=='OPEN_TIME'||
+    !text(r.time_evidence_ref)||!text(r.volume_evidence_ref)||text(source.time_evidence_ref)&&r.time_evidence_ref!==source.time_evidence_ref||!finite(r[source.field])||r[source.field]<0))
+    return unknown('CURRENT_NUMERATOR_WINDOW_UNBOUND');
+  const volume=sum(current.map(r=>r[source.field]));
+  if(!positive(a.activity.impulse.volume)||a.activity.current_volume!==volume||
+    a.activity.current_to_impulse_volume_ratio!==volume/a.activity.impulse.volume)
+    return unknown('CURRENT_TO_SEED_RATIO_RECONFIRMATION_MISMATCH');
+  return {...source,range:{...source.range,current_start_ts:end-p.impulse_window_ms,current_end_ts:end}};
+}
+
 function initialFeatures(a,input,planSources){
   const f=input.facts,at=a.analysis_ts,out=[],add=(name,value,unit,fs,reason)=>out.push(feature(name,value,unit,fs,at,reason));
   const core=[f.price,f.candles],book=[f.orderbook],trades=[f.trades],oi=[f.open_interest],funding=[f.funding];
@@ -66,16 +147,17 @@ function initialFeatures(a,input,planSources){
     const sources=w?.fact_ids?.length?w.fact_ids.map(id=>Object.values(f).find(f=>f?.fact_id===id)):[f.candles];
     add('growth_'+(day?'24h':minutes+'m')+'_pct',w?.return_pct,'PERCENT',sources,w?.reason??'EXACT_WINDOW_UNAVAILABLE');
   }
-  add('current_to_impulse_volume_ratio',a.activity?.current_to_impulse_volume_ratio,'RATIO',[f.candles],a.activity?.current_to_impulse_volume_ratio_reason);
-  add('impulse_to_baseline_volume_ratio',a.activity?.impulse?.ratio,'RATIO',[f.candles],a.activity?.impulse?.ratio_reason);
+  const seed=seedWindowSources(a,input),addSeed=(name,value,unit,reason)=>out.push(seedFeature(name,value,unit,seed,at,reason));
+  out.push(seedFeature('current_to_impulse_volume_ratio',a.activity?.current_to_impulse_volume_ratio,'RATIO',currentSeedRatioSources(a,seed),at,a.activity?.current_to_impulse_volume_ratio_reason));
+  addSeed('impulse_to_baseline_volume_ratio',a.activity?.impulse?.ratio,'RATIO',a.activity?.impulse?.ratio_reason);
   const volumeUnit=a.activity?.volume_basis?.unit??'UNKNOWN';
   add('current_volume_counter',a.activity?.current_volume,volumeUnit,[f.candles]);
-  add('impulse_volume_counter',a.activity?.impulse?.volume,volumeUnit,[f.candles]);
-  add('baseline_median_volume_counter',a.activity?.impulse?.baseline_median,volumeUnit,[f.candles]);
-  add('impulse_return_pct',a.activity?.impulse?.return_pct,'PERCENT',[f.candles]);
-  add('impulse_baseline_windows',a.activity?.impulse?.baseline_windows,'COUNT',[f.candles]);
-  add('impulse_baseline_status',a.activity?.impulse?.baseline_status,'STATE',[f.candles]);
-  add('normal_range',a.activity?.impulse?.normal_range,'USDT_PER_BASE',[f.candles]);
+  addSeed('impulse_volume_counter',a.activity?.impulse?.volume,volumeUnit);
+  addSeed('baseline_median_volume_counter',a.activity?.impulse?.baseline_median,volumeUnit);
+  addSeed('impulse_return_pct',a.activity?.impulse?.return_pct,'PERCENT');
+  addSeed('impulse_baseline_windows',a.activity?.impulse?.baseline_windows,'COUNT');
+  addSeed('impulse_baseline_status',a.activity?.impulse?.baseline_status,'STATE');
+  addSeed('normal_range',a.activity?.impulse?.normal_range,'USDT_PER_BASE');
   add('position_limit_usdt',a.liquidity?.position_limit_usdt,'USDT',book);
   add('spread_pct',a.liquidity?.spread_pct,'PERCENT',book);
   const size=a.liquidity?.sizes?.find(s=>s.usable&&s.notional_usdt===a.liquidity.position_limit_usdt);
@@ -110,8 +192,31 @@ function tradeProjection(a,f){
     exclusion_reasons:strings(c?.coverage?.exclusion_reasons??d?.coverage?.exclusion_reasons??[],32),
     full_market_coverage:false,absorption_proven:false,market_path_proven:false,causation_proven:false};
 }
-export async function prepareFeatureCapsule({analysis,input,analysis_key,implementation_sha256,recorded_ts,evidence_class='UNCLASSIFIED'}={}){
+const seedFeatureNames=new Set(['current_to_impulse_volume_ratio','impulse_to_baseline_volume_ratio','impulse_volume_counter','baseline_median_volume_counter','impulse_return_pct','impulse_baseline_windows','impulse_baseline_status','normal_range']);
+function legacySeedView(view){
+  return {...view,seed_binding_policy:'LEGACY_SOURCE_WINDOW_UNVERIFIED',features:view.features.map(f=>seedFeatureNames.has(f.name)&&f.bound===true&&f.value!==null?
+    {...f,value:null,bound:false,absence_reason:'LEGACY_SOURCE_WINDOW_UNVERIFIED',source_window_status:'UNKNOWN',source_window:null}:f)};
+}
+function assertSeedWindowView(capsule,f){
+  if(!seedFeatureNames.has(f.name)||f.value===null)return;
+  const w=f.source_window,p=START_PROFILE,headers=capsule.source_facts?.filter(h=>h.fact_id===f.source_fact_ids?.[0]);
+  if(f.source_window_status!=='RECONFIRMED_SUPPLIED_CLOSED_ROWS'||!w||f.source_fact_ids?.length!==1||headers?.length!==1)
+    throw Error('V3_SEED_WINDOW_POLICY_REQUIRED');
+  const h=headers[0];
+  if(capsule.origin.profile_version!==p.version||h.kind!=='candles'||h.instrument_id!==capsule.origin.instrument_id||f.evidence_refs?.length!==1||f.evidence_refs[0]!==h.evidence_ref||
+    f.source_event_ts!==h.event_ts||f.received_ts!==h.received_ts||!validTime(w.seed_start_ts)||!validTime(w.seed_end_ts)||
+    !validTime(w.baseline_start_ts)||w.seed_end_ts-w.seed_start_ts!==p.impulse_window_ms||
+    w.baseline_end_ts!==w.seed_start_ts||w.baseline_end_ts-w.baseline_start_ts!==p.volume_baseline_ms||
+    w.baseline_windows!==p.volume_baseline_ms/p.impulse_window_ms||w.interval_ms!==p.candle_interval_ms||
+    w.seed_end_ts>f.source_event_ts)throw Error('V3_SEED_WINDOW_HEADER_OR_RANGE_MISMATCH');
+  if(f.name==='current_to_impulse_volume_ratio'&&(!validTime(w.current_start_ts)||!validTime(w.current_end_ts)||
+    w.current_end_ts-w.current_start_ts!==p.impulse_window_ms||w.current_end_ts>f.source_event_ts))
+    throw Error('V3_CURRENT_SEED_WINDOW_MISMATCH');
+}
+
+export async function prepareFeatureCapsule({analysis,input,analysis_key,implementation_sha256,projection_writer_implementation_sha256=implementation_sha256,recorded_ts,evidence_class='UNCLASSIFIED'}={}){
   assertInput(input);
+  if(!digest(projection_writer_implementation_sha256))throw Error('PROJECTION_WRITER_PIN_REQUIRED');
   if(!analysis?.ready||!text(analysis.wave_id)||!positive(analysis.reference_price)||!validTime(analysis.analysis_ts)||!validTime(recorded_ts)||recorded_ts<analysis.analysis_ts||!digest(implementation_sha256))throw Error('CAPSULE_READY_ORIGINAL_AND_IMPLEMENTATION_REQUIRED');
   if(analysis.analysis_ts!==input.analysis_ts||analysis.run_id!==input.run_id||analysis.mode!==input.mode||stable(analysis.instrument)!==stable(input.instrument))throw Error('CAPSULE_ANALYSIS_INPUT_BINDING_MISMATCH');
   if(!['OBSERVED','ARTIFICIAL','NON_NATIVE','BACKFILLED','UNCLASSIFIED'].includes(evidence_class))throw Error('CAPSULE_EVIDENCE_CLASS_INVALID');
@@ -124,7 +229,7 @@ export async function prepareFeatureCapsule({analysis,input,analysis_key,impleme
   if(!text(analysis.rules_version)||!text(analysis.profile_version)||!analysis.plan)throw Error('CAPSULE_ORIGINAL_RULES_AND_PLAN_REQUIRED');
   const origin={instrument_id:analysis.instrument.instrument_id,asset_id:analysis.instrument.asset_id,wave_id:analysis.wave_id,signal_id:signalKey(analysis),t0:analysis.analysis_ts,
     reference_price:analysis.reference_price,rules_version:analysis.rules_version,profile_version:analysis.profile_version,mode:analysis.mode,map_mode:mapMode(analysis),evidence_class,run_purpose:input.run_purpose??analysis.run_purpose??'UNCLASSIFIED',ready:true};
-  const capsule=bounded({schema:FEATURE_CAPSULE_VERSION,analysis_key,analysis_sha256,input_sha256:await capsuleDigest(input),implementation_sha256,
+  const capsule=bounded({schema:FEATURE_CAPSULE_VERSION,projection_revision:FEATURE_PROJECTION_REVISION,seed_binding_policy:SEED_BINDING_POLICY,projection_writer_implementation_sha256,analysis_key,analysis_sha256,input_sha256:await capsuleDigest(input),implementation_sha256,
     recorded_ts,origin,contract_version:analysis.contract_version,analysis_schema_version:analysis.schema_version,
     instrument:pick(analysis.instrument,['instrument_id','asset_id','native_symbol','venue','market_type','base','quote','settle','classification_status','identity_evidence_ref']),
     original_plan_sha256:await capsuleDigest(analysis.plan),plan:planProjection(analysis.plan),features,
@@ -132,24 +237,27 @@ export async function prepareFeatureCapsule({analysis,input,analysis_key,impleme
     candle_comparison:pick(analysis.activity?.volume_basis,['field','unit','comparison_kind','comparison_key','interval_ms']),
     map_sources:[...(analysis.liquidations?.zones_up??[]),...(analysis.liquidations?.zones_down??[])].map(z=>({...pick(z,['zone_id','source','primary_provider','venue','basis_type','model_id','model_version','lower','upper','magnitude_value','magnitude_unit','event_ts','received_ts','expires_ts','evidence_ref']),relative_scale:pick(z.relative_scale,['scale_id','model_version'])})),
     probability:{value_pct:null,reason:analysis.probability?.reason??'NOT_CALIBRATED'},
-    audit_compatibility:'EXPLICIT_V2_READER_REQUIRED_NO_V1_PROMOTION',external_provenance_authenticated:false,
+    audit_compatibility:'EXPLICIT_V3_READER_WITH_LEGACY_V2_UNVERIFIED_VIEW',external_provenance_authenticated:false,
     retention:{automatic_delete:false,approved_delete_ttl_ms:null,originals_required:true,reference_closure_established:false}});
-  return {key:'pump:feature-capsule:v2:'+analysis_sha256,sha256:await capsuleDigest(capsule),capsule};
+  return {key:featureCapsuleKey(analysis_sha256),sha256:await capsuleDigest(capsule),capsule};
 }
 export async function readFeatureCapsule({capsule,sha256}={}){
+  if(capsule?.schema===legacyV2.FEATURE_CAPSULE_VERSION)return clone(legacySeedView(await legacyV2.readFeatureCapsule({capsule,sha256})));
   if(capsule?.schema!==FEATURE_CAPSULE_VERSION||!digest(sha256)||await capsuleDigest(bounded(capsule))!==sha256)throw Error('FEATURE_CAPSULE_SCHEMA_OR_DIGEST_MISMATCH');
   list(capsule.features,CAPSULE_BOUNDS.features);
+  if(capsule.projection_revision!==FEATURE_PROJECTION_REVISION||capsule.seed_binding_policy!==SEED_BINDING_POLICY||!digest(capsule.projection_writer_implementation_sha256))throw Error('V3_PROJECTION_REVISION_REQUIRED');
   if(!validTime(capsule.origin?.t0)||!positive(capsule.origin.reference_price)||!text(capsule.origin.wave_id)||!digest(capsule.analysis_sha256)||!digest(capsule.input_sha256)||!digest(capsule.implementation_sha256)||capsule.analysis_key!=='pump:analysis:'+capsule.analysis_sha256)throw Error('FEATURE_CAPSULE_ORIGIN_INVALID');
   const names=new Set();
   for(const f of capsule.features){
     if(!featureNames.has(f.name)||names.has(f.name)||!(f.value===null&&text(f.absence_reason)||categorical.has(f.name)&&text(f.value)||!categorical.has(f.name)&&finite(f.value)))throw Error('FEATURE_CAPSULE_SCALAR_INVALID');
-    names.add(f.name);
+    names.add(f.name);assertSeedWindowView(capsule,f);
     if(f.value!==null&&(f.bound!==true||!validTime(f.known_ts)||f.known_ts>capsule.origin.t0||!validTime(f.source_event_ts)||!validTime(f.received_ts)||f.source_event_ts>f.received_ts||f.received_ts>f.known_ts||!f.source_fact_ids?.length||f.source_fact_ids.some(x=>!text(x))||!f.evidence_refs?.length||f.evidence_refs.some(x=>!text(x))))throw Error('FEATURE_CAPSULE_FUTURE_OR_UNBOUND_VALUE');
   }
-  return clone({schema:capsule.schema,origin:capsule.origin,features:capsule.features,implementation_sha256:capsule.implementation_sha256,
+  return clone({schema:capsule.schema,projection_revision:capsule.projection_revision,seed_binding_policy:capsule.seed_binding_policy,projection_writer_implementation_sha256:capsule.projection_writer_implementation_sha256,origin:capsule.origin,features:capsule.features,implementation_sha256:capsule.implementation_sha256,
     analysis_sha256:capsule.analysis_sha256,plan:capsule.plan,trade_sample:capsule.trade_sample,probability:capsule.probability,external_provenance_authenticated:false});
 }
 export async function prepareOutcomeCapsule({feature_capsule,feature_sha256,outcome=null,publication=null,recorded_ts,summary_record_id=null}={}){
+  if(feature_capsule?.schema===legacyV2.FEATURE_CAPSULE_VERSION)return legacyV2.prepareOutcomeCapsule({feature_capsule,feature_sha256,outcome,publication,recorded_ts,summary_record_id});
   const view=await readFeatureCapsule({capsule:feature_capsule,sha256:feature_sha256}),o=view.origin;
   if(!validTime(recorded_ts)||recorded_ts<o.t0)throw Error('OUTCOME_CAPSULE_RECORDED_TIME_REQUIRED');
   if(summary_record_id!==null&&!text(summary_record_id))throw Error('OUTCOME_CAPSULE_SUMMARY_REFERENCE_INVALID');
@@ -163,7 +271,7 @@ export async function prepareOutcomeCapsule({feature_capsule,feature_sha256,outc
     for(const k of ['drawdown_before_hit_pct','drawdown_total_pct'])if(outcome[k]!==null&&(!finite(outcome[k])||outcome[k]<0||outcome[k]>100))throw Error('OUTCOME_CAPSULE_DRAWDOWN_INVALID');
   }
   const scenario=outcome?.scenario_outcome,excursion=scenario?.entry_area_excursion;
-  const capsule=bounded({schema:OUTCOME_CAPSULE_VERSION,feature_schema:FEATURE_CAPSULE_VERSION,feature_sha256,feature_key:'pump:feature-capsule:v2:'+feature_capsule.analysis_sha256,
+  const capsule=bounded({schema:OUTCOME_CAPSULE_VERSION,projection_revision:FEATURE_PROJECTION_REVISION,feature_schema:FEATURE_CAPSULE_VERSION,feature_sha256,feature_key:featureCapsuleKey(feature_capsule.analysis_sha256),
     analysis_key:feature_capsule.analysis_key,analysis_sha256:feature_capsule.analysis_sha256,original_plan_sha256:feature_capsule.original_plan_sha256,origin:clone(o),recorded_ts,
     outcome_key:'pump:outcome:'+o.signal_id,summary_record_id,original_outcome_sha256:outcome?await capsuleDigest(outcome):null,
     label:outcome?{...pick(outcome,['status','target_price','deadline_ts','hit_ts','drawdown_before_hit_pct','drawdown_total_pct','hit_after_invalidation']),hit_interval:outcome.hit_interval?pick(outcome.hit_interval,['start_ts','end_ts']):null,
@@ -176,7 +284,7 @@ export async function prepareOutcomeCapsule({feature_capsule,feature_sha256,outc
     original_publication_sha256:publication?await capsuleDigest(publication):null,
     aggregate_counters_do_not_replace_per_wave_labels:true,external_provenance_authenticated:false,
     retention:{automatic_delete:false,approved_delete_ttl_ms:null,originals_required:true,reference_closure_established:false}});
-  const sha256=await capsuleDigest(capsule);return {key:'pump:outcome-capsule:v2:'+sha256,sha256,capsule};
+  const sha256=await capsuleDigest(capsule);return {key:'pump:outcome-capsule:v3:'+FEATURE_PROJECTION_REVISION+':'+sha256,sha256,capsule};
 }
 
 // This is a bounded projection of supplied originals, never a global liveness

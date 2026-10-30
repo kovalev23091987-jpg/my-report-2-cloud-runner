@@ -1,4 +1,5 @@
 import {createPumpSources} from '../sources/index.mjs';
+import {createCandidateCostQuoteBridge} from './candidate-cost-quote-bridge.mjs';
 import {requestUrl} from '../sources/bingx.mjs';
 import {analyzePump,evaluateOutcome} from '../analytics/index.mjs';
 import {BINGX_IDENTITY_REGISTRY} from '../registry/index.mjs';
@@ -142,7 +143,9 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
   try{
   if(mode!=='LOOKUP')await store.install();
   const feasibility=PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&mode==='CONTROL'&&run_id===SOURCE_FEASIBILITY_ID;
-  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,policies:production?productionPolicies(PROVIDER_POLICIES):PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:production?productionAdmission(native.admission,PROVIDER_POLICY_VERSION,{mode,maximum_http_attempts:launch_capture?PRODUCTION_PLAN.manual_capture_http_max:undefined}):{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(feasibility?{allowed_providers:['BINGX'],max_http_attempts:3}:{}),...(PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?{discovery:DISCOVERY_PLAN}:{}),...(['SUMMARY_INDEX_ACCEPTANCE_ONLY','SAVED_STATISTICS_AUDIT_SINGLE'].includes(PROVIDER_STAGE)?{allowed_providers:[]}:mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});
+  const candidateCostBinding=Object.freeze({implementation_sha256:IMPLEMENTATION_PIN.sha256,registry_sha256:await textHash(JSON.stringify(Object.entries(IMPLEMENTATION_PIN.modules??{}).filter(([n])=>n.startsWith('registry/')||n==='sources/index.mjs').sort(([a],[b])=>a.localeCompare(b)))),cost_contract:'BINGX10_TG1_MAP1_ALLOC12_V1'});
+  const candidateCostBridge=createCandidateCostQuoteBridge(candidateCostBinding);
+  const budget=createUnifiedBudget({store,run_id,mode:['MAP_CHECK','DAY_CHECK','METADATA_CHECK'].includes(mode)?'AUTO':['CONTROL','DELIVERY_CHECK'].includes(mode)?'MANUAL':mode==='LOOKUP'?'STATISTICS':mode,clock,candidate_cost_quotes:candidateCostBridge.hooks,policies:production?productionPolicies(PROVIDER_POLICIES):PROVIDER_POLICIES,protected_reserves:PROTECTED_HTTP,admission:production?productionAdmission(native.admission,PROVIDER_POLICY_VERSION,{mode,maximum_http_attempts:launch_capture?PRODUCTION_PLAN.manual_capture_http_max:undefined}):{provider_policy_version:PROVIDER_POLICY_VERSION,expires_ts:QUALIFICATION_EXPIRES_TS,strict_automatic_window:mode==='AUTO',run_purpose,...(feasibility?{allowed_providers:['BINGX'],max_http_attempts:3}:{}),...(PROVIDER_STAGE==='PRODUCTION_QUALIFIED'?{discovery:DISCOVERY_PLAN}:{}),...(['SUMMARY_INDEX_ACCEPTANCE_ONLY','SAVED_STATISTICS_AUDIT_SINGLE'].includes(PROVIDER_STAGE)?{allowed_providers:[]}:mode==='METADATA_CHECK'?{allowed_providers:['BINGX_WEB_METADATA']}:PROVIDER_STAGE==='J_INTEGRATION_ACCEPTANCE'&&run_id===J_DIAGNOSTIC_ID?{allowed_providers:['BINGX']}:{})}});
   const baseBroker=createRequestBroker({budget,store,clock,fetch_impl,max_response_bytes:mode==='MAP_CHECK'?262144:2000000}),captured=[],privateCapture=launch_capture?createPrivateCapture(env):null;let operationFailure=false;
   const broker=feasibility?{...baseBroker,operationFailed:()=>operationFailure,request:async args=>{
     try{const response=await baseBroker.request(args);captured.push({request:{url:args.url,method:'GET',started_ts:response.request_started_ts},response});if(response.semantic_status!=='SUCCESS')operationFailure=true;return response;}
@@ -153,7 +156,8 @@ async function services(env,{run_id,mode,launch_capture=false,clock=Date.now,fet
   }}:baseBroker;
   const identityRegistry=withReviewedFundingQuoteRegistry(createReviewedNativeScopeRegistry(BINGX_IDENTITY_REGISTRY));
   const on_catalog_snapshot=production?createCatalogSnapshotWriter({store,implementation_sha256:IMPLEMENTATION_PIN.sha256,evidence_class:'OBSERVED',clock}):null;
-  const sources=createPumpSources({broker,identityRegistry,profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock,on_catalog_snapshot});
+  const sources=createPumpSources({broker,identityRegistry,profile:feasibility?{...START_PROFILE,optional_http_upper_bound:1}:START_PROFILE,clock,on_catalog_snapshot,candidate_cost_binding:candidateCostBinding});
+  candidateCostBridge.bind(sources);
   const delivery=createDelivery({store,clock,recipient:String(env.TELEGRAM_CHAT_ID??'UNCONFIGURED'),prepare:context=>preparePumpPublication({...context,sources,clock}),revalidate:async (card,context)=>{
     if(card.analysis.kind==='DELIVERY_DIAGNOSTIC')return {valid:mode==='DELIVERY_CHECK'&&card.analysis.diagnostic_id===TELEGRAM_DIAGNOSTIC_ID&&card.expires_ts>clock()&&card.text===TELEGRAM_DIAGNOSTIC_TEXT};
     return revalidatePumpCard({card,store,sources,clock,prepared_input:context?.prepared_input??null});

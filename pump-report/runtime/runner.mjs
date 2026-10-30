@@ -10,6 +10,7 @@ import {candidatePriority,analysisQueueEvidence,queueWaveMetadata,queueWaveState
 import {captureDecision} from './candidate-diagnostics.mjs';
 import {PRODUCTION_PLAN} from './production-policy.mjs';
 
+export const candidateAdmissionQuote=(sources,instrument,run_id)=>sources.quoteCandidateRouteCost?.({instrument,run_id})??null;
 const instrumentKey=instrument=>instrument.instrument_id;
 const symbolKey=text=>String(text??'').trim().toUpperCase().replace(/\s+/g,'').replace(/(?:[-/]?USDT)$/,'');
 const globalBudgetReason=result=>[...(result.analysis?.reasons??[]),result.source_coverage?.reason,...Object.values(result.source_coverage?.facts??{}).map(f=>f.reason)].some(reason=>/PROTECTED_DAY|MONTH_EXHAUSTED|RUN_HTTP|RUN_MANUAL|PROVIDER_SECOND|PROVIDER_MINUTE|PROVIDER_BACKOFF|NATIVE_SQL|AUTOMATIC_WINDOW_CLOSED/.test(typeof reason==='string'?reason:reason?.code??''));
@@ -127,7 +128,7 @@ export function createPumpRunner({store,sources,analyzePump,evaluateOutcome,budg
     if(!evidence.eligible)return {status:'DEFERRED_SOURCE_EVIDENCE',source_coverage:{status:'NOT_CHECKED',reason:evidence.reason,asset_remains_in_discovery:true},delivery:null};
     budget.setMode(mode);
     await assert_execution();
-    const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider,candidate_id:instrument.instrument_id});
+    const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider,candidate_id:instrument.instrument_id,source_cost_token:candidateAdmissionQuote(sources,instrument,run_id)});
     if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail,...(admitted.surplus_limit?{surplus_limit:admitted.surplus_limit}:{})},delivery:null};
     let checked_result=null,failure_stage='SOURCE_WINDOW';
     try {
