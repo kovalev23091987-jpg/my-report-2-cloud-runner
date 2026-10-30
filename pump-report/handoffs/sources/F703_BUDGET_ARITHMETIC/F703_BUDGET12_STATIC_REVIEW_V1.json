@@ -1,0 +1,63 @@
+{
+  "schema": "PUMP_F703_BUDGET12_SQL_EXCEPTION_STATIC_V1",
+  "authority_main": "f494013453588fb371db21bd2dbd296b4fd88faa",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793371865000",
+  "implementation_sha256": "da52262978c5bb1037993b72d8b98c6185182e0a98d69fa3846ee6e21b7ed688",
+  "artifact_sha256": "8522aac0753fcfd471fd99d6920c30f0ab89ecf689f2726f9bb1986e715633a6",
+  "scope": "STATIC_SOURCE_PROVIDER_GLOBAL_ARITHMETIC_ONLY",
+  "runtime_execution": 0,
+  "native_SQL": 0,
+  "provider_HTTP": 0,
+  "Telegram": 0,
+  "CF": 0,
+  "tests": 0,
+  "hourly_state_machine_reviewed": false,
+  "status": "STATIC_COMPATIBLE_PREPARED_NOT_ACTUALLY_ADMITTED",
+  "inputs": [
+    {
+      "path": "pump-report/operator/big83-budget12-observation-once.mjs",
+      "sha256": "9f02cc87cbfd4ffa9611531506bb701efab6e117bc098ecfe607c2cbc0643621"
+    },
+    {
+      "path": "pump-report/operator/big83-budget12-sql-policy.mjs",
+      "sha256": "54fc45eb4307ad13b077405634445411a6dcdeb5597237790bbf4faf6303e051"
+    },
+    {
+      "path": "pump-report/operator/saved-big83-budget-packet.mjs",
+      "sha256": "d92b460adc470264ab44a6d19efa89e404a06f9eb4aa459e3c31c074de9f3b0f"
+    },
+    {
+      "path": "checkpoints/pump-report-20261025/ROOT_BIG83_BUDGET12_OWNER_PROPOSAL_RU.md",
+      "sha256": "76646b9f24813e0e98603eb702b3400e4fb0799656b143590dd680891e653c62"
+    }
+  ],
+  "findings": [
+    {
+      "ref": "big83-budget12-sql-policy.mjs:3-16",
+      "result": "ExactUTC2026-10-30, named run, direct-owner admission fields, pin/artifact,11previous+1max12,500R30W16Q,<=15min bounded expiry. approval hash shape alone is not proof of a real owner message; ROOT must supply positive actual approval."
+    },
+    {
+      "ref": "big83-budget12-sql-policy.mjs:19-25",
+      "result": "Only named original reservation INSERT altered, once per policy instance. Original cap param10 required. Adds atomic lookup_count=11 and substitutes bound cap12; default runtime constant10 unchanged. Duplicate ID still INSERT OR IGNORE; no decrease/reset of counts."
+    },
+    {
+      "ref": "native-budget.mjs:24-49",
+      "result": "Original aggregate r/w SUM(MAX(reserve,measured)) over every old row stays. unknown_count=0/unacknowledged=0, manual3 shortfall, future schedule, delivery/outcomes/bootstrap/next_full protection and global3.5mR/70kW predicates remain unchanged. No bypass for named12."
+    },
+    {
+      "ref": "native-budget.mjs:62-71",
+      "result": "Finalization updates exact own reservation only, preserves MAX(original,measured). UNKNOWN does not finalize/refund. All11 old envelopes remain counted."
+    },
+    {
+      "ref": "big83-budget12-observation-once.mjs; saved-big83-budget-packet.mjs",
+      "result": "Operator pins own lease and frozen files/current83artifact/FULL proof, uses private wx attempt, no auto retry; calls actual shared reservation and finalization. Reader gets exactly savedrun PK and resources PK, no executor/market/TG/business writes. Planned total6SQL;16Q500R30W is a cap, not measured actual."
+    }
+  ],
+  "limits": [
+    "No Node/import/test/native/CF/authorization action performed by SOURCES.",
+    "No independent replay of ROOT SQLite controlledcase; ROOT PASS claim remains separately sourced.",
+    "SQL wrapper passes nonmatching statements unchanged. Scope depends on exact frozen artifact/reader hashes checked by operator, not a general SQL allowlist.",
+    "New approval/admissions remain required; static review does not authorize or spend #12.",
+    "Additional engineeringLOOKUP is separate from owner's3manual coin checks."
+  ]
+}

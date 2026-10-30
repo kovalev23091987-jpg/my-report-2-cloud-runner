@@ -1,0 +1,209 @@
+{
+  "schema": "PUMP_F703_STATIC_BUDGET_REVIEW_V1",
+  "authority_main": "f494013453588fb371db21bd2dbd296b4fd88faa",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793371865000",
+  "implementation_sha256": "da52262978c5bb1037993b72d8b98c6185182e0a98d69fa3846ee6e21b7ed688",
+  "artifact_sha256": "8522aac0753fcfd471fd99d6920c30f0ab89ecf689f2726f9bb1986e715633a6",
+  "scope": "STATIC_SOURCE_PROVIDER_GLOBAL_ARITHMETIC_ONLY",
+  "runtime_execution": 0,
+  "native_SQL": 0,
+  "provider_HTTP": 0,
+  "Telegram": 0,
+  "CF": 0,
+  "tests": 0,
+  "hourly_state_machine_reviewed": false,
+  "status": "FORMULAS_RECONCILED_CURRENT_DENIAL_NOT_DIAGNOSED",
+  "conclusion": "No concrete duplicate charge or missing expense proved in reviewed source/global formulas. This does not establish that PROTECTED_DAY_RESERVE on the named AUTO was correct. Exact saved detail and timestamped current resources remain required.",
+  "notation": {
+    "G": "state.days[UTCday]",
+    "A": "automatic_plans[UTCday].charged",
+    "L": "saved plan.limit",
+    "D": "futureDiscoveryHttp(now): strictly later 5-minute starts before20MSK,2HTTP each",
+    "S": "futureCandidateReserve.slots: strictly later hourly starts before20MSK",
+    "k": "saved automatic_candidate_allocations[day].candidates_per_period; interface value only",
+    "H": "surplusHeld.http, summed residuals of all qualifying grants, including prior-day OPEN/UNKNOWN",
+    "Hp": "surplusHeld provider day/month residual",
+    "F": "futureCandidates.http=12*S",
+    "E": "surplusBaseExtra.http=12*S*max(k-1,0) when enabled or today's grants exist",
+    "C": "whole candidate operation upper bound: base12, only positively bound new surplus quote11"
+  },
+  "caps": {
+    "global_HTTP_UTC_day": 900,
+    "BINGX": {
+      "UTC_day": 900,
+      "UTC_month": 27900,
+      "minute": 10,
+      "second": 1
+    },
+    "TELEGRAM": {
+      "UTC_day": 47,
+      "UTC_month": 1457,
+      "minute": 1
+    },
+    "fraction": 0.8,
+    "manual_checks": 3,
+    "manual_BINGX": 51,
+    "manual_TG": 3,
+    "global_manual": 54,
+    "generic_delivery": 24,
+    "generic_outcomes": 24,
+    "global_fixed": 102,
+    "BINGX_CORE_fixed": 99,
+    "TELEGRAM_CORE_fixed": 3,
+    "old_BINGX_qualification_attempts": 24,
+    "old_attempts_rearmed": false
+  },
+  "formulas": [
+    {
+      "id": "PLAN",
+      "ref": "budget.mjs:23-32",
+      "formula": "new L=floor(max(0,900-102-baseline)*0.8); baseline=G at creation; A starts0. Saved plan is retained; G>=baseline+A is validated.",
+      "baseline0_limit": 638,
+      "interpretation": "Fixed102 is deducted once in plan construction. The separate global predicate is another ceiling, not a second102 term in the plan predicate."
+    },
+    {
+      "id": "WHOLE_GLOBAL_DAY",
+      "ref": "budget.mjs:183-190",
+      "formula": "G+C+H+E+102+D+12*S<=900 in AUTO"
+    },
+    {
+      "id": "WHOLE_PLAN",
+      "ref": "budget.mjs:191-192",
+      "formula": "A+C+H+E+D+12*S<=L in AUTO"
+    },
+    {
+      "id": "WHOLE_BINGX_DAY",
+      "ref": "budget.mjs:196-199",
+      "formula": "Bday+10+Hp_day[BINGX]+10*S*max(k-1,0)+99+D+10*S<=900"
+    },
+    {
+      "id": "WHOLE_TG_DAY",
+      "ref": "budget.mjs:196-199; production-policy.mjs:35-36",
+      "formula": "Tday+1+Hp_day[TG]+S*max(k-1,0)+3+S<=47; generic24delivery/24outcomes excluded from TG provider protection via flags"
+    },
+    {
+      "id": "PROVIDER_MONTH",
+      "ref": "budget.mjs:199,127",
+      "formula": "provider month spent + candidate/provider request cost + held.provider_month + baseExtra.by_provider + same fixed provider protection + current-local-day remaining discovery/candidate reserve <= provider month cap",
+      "limitation": "MONTH clips at UTC month-end; it does not enumerate all later calendar days. Here10-20MSK lies07-17UTC. No global monthly cap is implemented in RESOURCE_LIMITS."
+    },
+    {
+      "id": "REQUEST_CONVERSION",
+      "ref": "budget.mjs:109-138; candidate-surplus.mjs:40-54",
+      "formula": "For active OPEN own grant: forecast uses H-cost; CAS increments G/provider/day/month/A by cost and decrements grant remaining by cost; spent+remaining invariant is preserved."
+    },
+    {
+      "id": "FUTURE_BASE",
+      "ref": "candidate-surplus.mjs:56-63; future-candidate-reserve.mjs:9-15",
+      "formula": "F+E=12*S*k for integer k>=1; BINGX10*S*k; TG S*k. E supplies additional base places beyond the first; it is not the same single place added twice."
+    }
+  ],
+  "hold_semantics": [
+    "Grant invariant remaining_http+consumed_http=original_http; provider invariants also checked. Historical12 grants are not rewritten to11.",
+    "CLOSED residuals held for original UTC day; OPEN and UNKNOWN residuals remain day-held even from previous day. UNKNOWN has no expiry release here. Native expiry alone does not refund.",
+    "HTTP outstanding/unknown attempts were already added to monotonic day/month/plan spent at reservation. The maps are not added again as another numeric HTTP expense.",
+    "closeCandidate early unknown/native-expired branch returns UNKNOWN/hold_retained without writing grant.state; persisted OPEN remains fail-closed held. No claim that every such return persisted UNKNOWN.",
+    "Base candidate admission forecasts capacity and increments logical quota; it does not precharge whole12 to G. Each broker HTTP is charged. Surplus grant reserves residual capacity; logical grant count is never refunded."
+  ],
+  "source_cost": {
+    "allocation": 12,
+    "by_provider": {
+      "BINGX": 10,
+      "TELEGRAM": 1
+    },
+    "unassigned_optional_map": 1,
+    "core_BINGX_components": {
+      "overview": 1,
+      "closed_day": 1,
+      "price_primary_plus_fallback_max": 2,
+      "candles": 1,
+      "book": 1,
+      "optional": 2,
+      "forced_delivery_price_book": 2
+    },
+    "discovery_separate": {
+      "contracts": 1,
+      "bulk_ticker": 1
+    },
+    "new_surplus_empty_route_quote": {
+      "operation": 11,
+      "allocation_still": 12,
+      "by_provider": {
+        "BINGX": 10,
+        "TELEGRAM": 1
+      },
+      "map": 0,
+      "proof": "exact own token; frozen empty array; run/instrument/registry/implementation binding; commit to grant",
+      "old_grants_repriced": false,
+      "future_reserve_repriced": false,
+      "OI_extra_requests": 0,
+      "new_routes": 0
+    },
+    "boundary": "admitCandidate first assesses12. Quote11 recovery is entered for EVEN_DAY_CANDIDATE_ALLOCATION or WHOLE_CANDIDATE_PLANNED_ALLOCATION plus exhausted base; a first WHOLE_CANDIDATE_DAY_CAPACITY/provider refusal is not universally retried at11. Static one-HTTP boundary behavior, not a demonstrated cause of the actual run."
+  },
+  "static_three_per_hour": {
+    "assumptions": [
+      "hypothetical clean UTC day baseline0, no earlier expense/holds",
+      "10 hourly periods10..19MSK,3 candidate places each; state-machine behavior not reviewed",
+      "120 scheduled light scans counting current+future over full10h; no extra retries",
+      "cold candidate bound12, provider B10/TG1",
+      "no monthly exhaustion/backoff/unknown/native bottleneck"
+    ],
+    "candidate_places": 30,
+    "discovery_HTTP": 240,
+    "candidate_HTTP": 360,
+    "AUTO_HTTP": 600,
+    "plan_limit": 638,
+    "plan_slack": 38,
+    "global_with_fixed": 702,
+    "global_slack": 198,
+    "BINGX_with_fixed": 639,
+    "TG_with_manual": 33,
+    "TG_day_slack": 14,
+    "interpretation": "Arithmetic can fit under clean assumptions; it is not a guarantee of three analyses every hour or a proof of actual remaining capacity. Manual3 remains additional protected reserve. Same-run, minute, native and source evidence guards still apply."
+  },
+  "historical_context": {
+    "source": "ROOT message only; coherent-current1941-auto.full.json not reread by SOURCES",
+    "asof_UTC": "2026-10-30T12:03:39Z",
+    "reported": {
+      "plan_charged": 259,
+      "plan_limit": 638,
+      "global_day": 261,
+      "base_per_hour": 3,
+      "today_CLOSED_grants": 11,
+      "consumed": 54,
+      "residual_hold": 78
+    },
+    "derived_historical_only": {
+      "grant_original": 132,
+      "residual_plus_consumed": 132,
+      "future_hour_starts": 4,
+      "future_candidates_including_extra": 144,
+      "future_discovery": 118,
+      "with_candidate12_plan_LHS": 611,
+      "plan_slack": 27,
+      "with_candidate12_global_LHS": 815,
+      "global_slack": 85
+    },
+    "warning": "Conditional illustration from ROOT-reported values, not independently read current counters. Provider/month/native state not supplied; no full admission conclusion."
+  },
+  "actual_run": {
+    "run_id": "5c6b2756-187d-4766-b7fa-94453474151a",
+    "log_UTC": "2026-10-30T14:25:46Z",
+    "log_MSK": "17:25:46",
+    "selected": "IDOL",
+    "reported_deferred": 1,
+    "reported_analyses": 0,
+    "reported_reason": "PROTECTED_DAY_RESERVE",
+    "reported_summary_detail": "OTHER_CODE",
+    "exact_detail": "NOT_READ",
+    "current_counters": "NOT_READ",
+    "inference": "Neither all900 spent nor correctness of denial established."
+  },
+  "missing_expense_limits": [
+    "No external account/provider aggregate quota closure from project-local counters.",
+    "D1/native envelope separate from HTTP; cannot infer native remaining from pump:resources.",
+    "Delivery/outcomes24 are capacity protections; determining whether a particular queued obligation overlaps candidate delivery needs exact current obligations and policy evidence, not subtraction by assumption.",
+    "No permanent cap/fraction/future reserve/route/manual policy changes proposed."
+  ]
+}

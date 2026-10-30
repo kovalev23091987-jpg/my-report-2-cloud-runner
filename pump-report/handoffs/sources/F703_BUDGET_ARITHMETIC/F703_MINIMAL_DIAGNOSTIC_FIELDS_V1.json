@@ -1,0 +1,110 @@
+{
+  "schema": "PUMP_F703_MINIMAL_DIAGNOSTIC_FIELDS_V1",
+  "authority_main": "f494013453588fb371db21bd2dbd296b4fd88faa",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793371865000",
+  "implementation_sha256": "da52262978c5bb1037993b72d8b98c6185182e0a98d69fa3846ee6e21b7ed688",
+  "artifact_sha256": "8522aac0753fcfd471fd99d6920c30f0ab89ecf689f2726f9bb1986e715633a6",
+  "scope": "STATIC_SOURCE_PROVIDER_GLOBAL_ARITHMETIC_ONLY",
+  "runtime_execution": 0,
+  "native_SQL": 0,
+  "provider_HTTP": 0,
+  "Telegram": 0,
+  "CF": 0,
+  "tests": 0,
+  "hourly_state_machine_reviewed": false,
+  "business_PK_reads": 2,
+  "read_keys": [
+    "pump:run:5c6b2756-187d-4766-b7fa-94453474151a",
+    "pump:resources"
+  ],
+  "original_run": {
+    "fields": [
+      "run_id",
+      "deferred[].status",
+      "deferred[].source_coverage.reason",
+      "deferred[].source_coverage.detail",
+      "deferred[].source_coverage.surplus_limit if present",
+      "checked[] existence/count"
+    ],
+    "binding": "Expected implementation comes from exact scheduled log and current artifact evidence. Saved run has no invented mode/pin field. runner.mjs148-149 preserves admitCandidate detail.",
+    "historical_state_limit": "Original exact detail identifies the old branch. Current resources cannot reconstruct historical numbers at14:25:46UTC without timestamped original resource snapshot."
+  },
+  "current_resources": {
+    "time": [
+      "started_ts",
+      "observed_ts",
+      "UTCday and UTCmonth derived from actual observation",
+      "exact artifact pin and fresh FULL control readback time"
+    ],
+    "global": [
+      "schema",
+      "days[UTCday]"
+    ],
+    "plan": [
+      "automatic_plans[day].baseline_charged",
+      "charged",
+      "limit",
+      "fraction",
+      "protected_at_creation",
+      "created_ts"
+    ],
+    "provider_fields": [
+      "providers.BINGX.days[day]",
+      "providers.BINGX.months[month]",
+      "providers.TELEGRAM.days[day]",
+      "providers.TELEGRAM.months[month]",
+      "recent[].ts/cost if diagnosing broker minute/second gates",
+      "backoff_until",
+      "retained qualification_totals (do not reset/rearm)"
+    ],
+    "future_interface": [
+      "automatic_candidate_allocations[day].candidates_per_period for E",
+      "hourly quota/count/carry interface supplied by ANALYTICS, no SOURCES state-machine review"
+    ],
+    "grants": "All retained automatic_surplus_grants, not only today: key,run_id,candidate_id,state,day,created_ts,original/remaining/consumed_http,original/remaining/consumed_by_provider,logical_spent,native_expires_ts,hold_until_ts,source_cost_quote/allocation binding if present.",
+    "unknowns": "outstanding/unknown maps and linked grant IDs for unresolved holds; already charged attempts are not added twice."
+  },
+  "earliest_deny_order": {
+    "admitCandidate_assess": [
+      "185 cost shape",
+      "186 operation maximum",
+      "190 WHOLE_CANDIDATE_DAY_CAPACITY",
+      "191 automaticPlan state validity",
+      "192 WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+      "193-195 pacing interface validity/quota (ANALYTICS)",
+      "198 first provider day in insertion order BINGX then TELEGRAM",
+      "199 same provider month; repeats per provider",
+      "200 surplus backoff only ignore_pacing"
+    ],
+    "surplus_branch": [
+      "221 known nonOPEN denies",
+      "225/228/232 source-quote/idempotency binding",
+      "233 re-assess ignoring quota but retaining global/provider/plan",
+      "235 native admission/floors",
+      "236-237 grant logical limits; 243-244 quote commit uncertain keeps hold"
+    ],
+    "broker_reserve": [
+      "78-101 window/admission/run/lane/manual/map/candidate guards",
+      "106 duplicate request",
+      "119 second /120 minute /121 active qualification cap",
+      "124 provider day",
+      "126 global day",
+      "127 provider month",
+      "128 backoff",
+      "129 plan validity /130 planned allocation",
+      "131 pacing interface"
+    ],
+    "note": "Use earliest failing predicate, not all negative headrooms indiscriminately. Broker provider/global day refusals share a code without detail; numeric evidence is required."
+  },
+  "numeric_output_required": [
+    "For original detail, show exact saved reason/detail without OTHER_CODE collapse.",
+    "For observation time, show every LHS term+cap and signed cap-LHS; label C12 vs specifically admitted NEW quote11.",
+    "Show H by OPEN/CLOSED/UNKNOWN and original UTCday; future F and E separately and total; retained spend separately.",
+    "Separate historical original-run cause from present capacity; no retroactive current-snapshot claims."
+  ],
+  "not_in_resources": [
+    "store usage/native admission/finalization reserve for current exact AUTO; needed only to evaluate surplus native floor600Q600R140W and unknown_ops0",
+    "external account usage",
+    "positive direct owner authorization for LOOKUP12"
+  ]
+}
