@@ -1,0 +1,93 @@
+--- 83/budget.mjs
++++ proposal/budget.mjs
+@@ -1,5 +1,6 @@
+ // One coordinator-owned budget. Adapters receive only its request broker.
+ import {automaticWindowOpen} from '../contracts/index.mjs';
++import {candidateBudgetDiagnostic} from './candidate-budget-diagnostic.mjs';
+ import {responseDisposition,temporaryDelay,SOURCE_ERROR_PROFILE} from './source-error-policy.mjs';
+ import {futureDiscoveryHttp} from './discovery-reserve.mjs';
+ import {futureCandidateReserve,utcBudgetPeriodEnd} from './future-candidate-reserve.mjs';
+@@ -179,24 +180,29 @@
+   async function admitCandidate({http_upper_bound,http_by_provider,candidate_id=null,source_cost_token=null}={}){
+     if(admission?.run_purpose!=='PRODUCTION')return {allowed:true,scope:'NO_PRODUCTION_FORECAST_APPLIED'};
+     assertWorkWindow();
+-    const deny=detail=>({allowed:false,reason:'PROTECTED_DAY_RESERVE',detail});
+-    const assess=(state,{ignore_pacing=false,operation_http_upper_bound=http_upper_bound}={})=>{
++    const deny=(detail,budget_diagnostic=null)=>({allowed:false,reason:'PROTECTED_DAY_RESERVE',detail,...(budget_diagnostic?{budget_diagnostic}:{})});
++    const assess=(state,{ignore_pacing=false,operation_http_upper_bound=http_upper_bound,assessment_stage='READ_ONLY_ASSESSMENT'}={})=>{
+       const now=clock();
+       if(!integer(http_upper_bound)||http_upper_bound<1||!http_by_provider||Object.values(http_by_provider).some(n=>!integer(n))||Object.values(http_by_provider).reduce((a,b)=>a+b,0)>http_upper_bound||!integer(operation_http_upper_bound)||operation_http_upper_bound>http_upper_bound||operation_http_upper_bound<Object.values(http_by_provider).reduce((a,b)=>a+b,0))return deny('CANDIDATE_COST_UNQUALIFIED');
+       if(admission.max_http_attempts!==undefined&&run.total+operation_http_upper_bound>admission.max_http_attempts)return deny('WHOLE_CANDIDATE_OPERATION_HTTP_LIMIT');
+       const day=utcDay(now),month=utcMonth(now),future=futureCandidateReserve(now,admission.future_candidates),futureMonth=futureCandidateReserve(now,admission.future_candidates,{period:'MONTH'});
+       const discovery=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'DAY')}),discoveryMonth=futureDiscoveryHttp(now,admission.discovery,{until_ts:utcBudgetPeriodEnd(now,'MONTH')});
+       const manual=mode==='MANUAL'?0:Object.values(protected_reserves.http_by_provider).reduce((a,b)=>a+b,0),fixed=manual+protected_reserves.delivery_http+protected_reserves.outcomes_http,held=surplusHeld(state,now),baseExtra=surplusBaseExtra(state,now,admission);
+-      if((state.days[day]??0)+operation_http_upper_bound+held.http+baseExtra.http+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY');
+-      const plan=mode==='AUTO'?automaticPlan(state,now):null;
+-      if(plan&&plan.charged+operation_http_upper_bound+held.http+baseExtra.http+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION');
+-      const pacing=candidatePacing(state,now,plan,discovery);
++      let diagnosticPlan=null,diagnosticPacing=null;
++      const capture=(detail,equation,lhs,cap,provider=null,providerTerms={})=>candidateBudgetDiagnostic({
++        evaluated_ts:now,detail,stage:assessment_stage,equation,lhs,cap,provider,
++        terms:{global_spent:state.days[day]??0,auto_charged:diagnosticPlan?.charged??null,held_http:held.http,base_extra_http:baseExtra.http,fixed_http:fixed,future_discovery_http:discovery,future_candidate_http:future.http,operation_http_upper_bound,...providerTerms},
++        pacing:diagnosticPacing?{maximum:diagnosticPacing.maximum,issued_current:diagnosticPacing.candidate_count,issued_before:diagnosticPacing.issued_before,base_per_period:diagnosticPacing.allocation.candidates_per_period}:null});
++      if((state.days[day]??0)+operation_http_upper_bound+held.http+baseExtra.http+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY',capture('WHOLE_CANDIDATE_DAY_CAPACITY','GLOBAL_DAY',(state.days[day]??0)+operation_http_upper_bound+held.http+baseExtra.http+fixed+discovery+future.http,limits.project_http_day));
++      const plan=mode==='AUTO'?automaticPlan(state,now):null;diagnosticPlan=plan;
++      if(plan&&plan.charged+operation_http_upper_bound+held.http+baseExtra.http+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION',capture('WHOLE_CANDIDATE_PLANNED_ALLOCATION','PLANNED_ALLOCATION',plan.charged+operation_http_upper_bound+held.http+baseExtra.http+discovery+future.http,plan.limit));
++      const pacing=candidatePacing(state,now,plan,discovery);diagnosticPacing=pacing;
+       if(pacing&&http_upper_bound!==pacing.allocation.http_upper_bound)return deny('CANDIDATE_PACING_COST_CHANGED');
+-      if(!ignore_pacing&&pacing&&pacing.candidate_count>=pacing.maximum)return deny('EVEN_DAY_CANDIDATE_ALLOCATION');
++      if(!ignore_pacing&&pacing&&pacing.candidate_count>=pacing.maximum)return deny('EVEN_DAY_CANDIDATE_ALLOCATION',capture('EVEN_DAY_CANDIDATE_ALLOCATION','PACING',pacing.candidate_count,pacing.maximum));
+       for(const [provider,cost]of Object.entries(http_by_provider)){
+         const policy=providerPolicy(provider),p=state.providers?.[provider]??{},reserve=(mode==='MANUAL'?0:protected_reserves.http_by_provider[provider])+(policy.delivery_source===false?0:protected_reserves.delivery_http)+(policy.outcome_source===false?0:protected_reserves.outcomes_http);
+-        if(!integer(reserve)||(p.days?.[day]??0)+cost+(held.provider_day[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0)>policy.project_daily_cap)return deny('WHOLE_CANDIDATE_PROVIDER_DAY');
+-        if((p.months?.[month]??0)+cost+(held.provider_month[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)return deny('WHOLE_CANDIDATE_PROVIDER_MONTH');
++        if(!integer(reserve)||(p.days?.[day]??0)+cost+(held.provider_day[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0)>policy.project_daily_cap)return deny('WHOLE_CANDIDATE_PROVIDER_DAY',capture('WHOLE_CANDIDATE_PROVIDER_DAY','PROVIDER_DAY',(p.days?.[day]??0)+cost+(held.provider_day[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0),policy.project_daily_cap,provider,{provider_spent:p.days?.[day]??0,provider_held:held.provider_day[provider]??0,provider_fixed:reserve,provider_future_discovery:provider===admission.discovery?.provider?discovery:0,provider_future_candidate:future.http_by_provider[provider]??0,provider_base_extra:baseExtra.http_by_provider[provider]??0,provider_operation:cost}));
++        if((p.months?.[month]??0)+cost+(held.provider_month[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)return deny('WHOLE_CANDIDATE_PROVIDER_MONTH',capture('WHOLE_CANDIDATE_PROVIDER_MONTH','PROVIDER_MONTH',(p.months?.[month]??0)+cost+(held.provider_month[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0),policy.project_monthly_cap,provider,{provider_spent:p.months?.[month]??0,provider_held:held.provider_month[provider]??0,provider_fixed:reserve,provider_future_discovery:provider===admission.discovery?.provider?discoveryMonth:0,provider_future_candidate:futureMonth.http_by_provider[provider]??0,provider_base_extra:baseExtra.http_by_provider[provider]??0,provider_operation:cost}));
+         if(ignore_pacing&&(p.backoff_until??0)>now)return deny('SURPLUS_PROVIDER_BACKOFF');
+       }
+       return {allowed:true,scope:'BOUNDED_WHOLE_CANDIDATE_FORECAST_NOT_AN_IO_RESERVATION',http_upper_bound,operation_http_upper_bound,...(pacing?{pacing}:{})};
+@@ -230,7 +236,7 @@
+           operation=11;
+         }
+         if(known&&(known.original_http!==operation||JSON.stringify(known.original_by_provider)!==JSON.stringify(http_by_provider)))return {state:current,result:deny('SURPLUS_IDEMPOTENCY_COST_MISMATCH')};
+-        const checked=known?{allowed:true}:assess(current,{ignore_pacing:true,operation_http_upper_bound:operation});
++        const checked=known?{allowed:true}:assess(current,{ignore_pacing:true,operation_http_upper_bound:operation,assessment_stage:'ATOMIC_ASSESSMENT'});
+         if(!checked.allowed)return {state:current,result:checked};
+         const native=surplusNativeCapacity(store,run_id,policy,clock());if(!native.allowed)return {state:current,result:deny(native.detail)};
+         const s=makeSurplusGrant({state:current,run_id,candidate_id,policy,native,now:clock(),http_upper_bound:operation,http_by_provider});
+@@ -248,7 +254,7 @@
+     }
+     if(!first.allowed||!first.pacing)return first;
+     return store.atomic('pump:resources',current=>{
+-      current??={days:{},providers:{}};const checked=assess(current);if(!checked.allowed)return {state:current,result:checked};
++      current??={days:{},providers:{}};const checked=assess(current,{assessment_stage:'ATOMIC_ASSESSMENT'});if(!checked.allowed)return {state:current,result:checked};
+       const {pacing,...result}=checked,{allocation,...bucket}=pacing;
+       current.automatic_candidate_allocations??={};current.automatic_candidate_allocations[pacing.day]??=allocation;
+       current.automatic_deep_pacing??={};current.automatic_deep_pacing[pacing.day]??={};current.automatic_deep_pacing[pacing.day][pacing.key]={...bucket,candidate_count:bucket.candidate_count+1};
+
+--- 83/runner.mjs
++++ proposal/runner.mjs
+@@ -146,7 +146,7 @@
+     budget.setMode(mode);
+     await assert_execution();
+     const admitted=await budget.admitCandidate?.({http_upper_bound:PRODUCTION_PLAN.candidate_http_upper_bound,http_by_provider:PRODUCTION_PLAN.candidate_http_by_provider,candidate_id:instrument.instrument_id,source_cost_token:candidateAdmissionQuote(sources,instrument,run_id)});
+-    if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail,...(admitted.surplus_limit?{surplus_limit:admitted.surplus_limit}:{})},delivery:null};
++    if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail,...(admitted.surplus_limit?{surplus_limit:admitted.surplus_limit}:{}),...(admitted.budget_diagnostic?{budget_diagnostic:admitted.budget_diagnostic}:{})},delivery:null};
+     let checked_result=null,failure_stage='SOURCE_WINDOW',native_ticket=null;
+     try {
+     // After catalog/discovery, wait BEFORE the fresh phase. Cold upper bound:
+
+--- 83/candidate-budget-diagnostic.mjs
++++ proposal/candidate-budget-diagnostic.mjs
+@@ -0,0 +1,11 @@
++// A bounded copy of scalars from the exact admission assessment; never IO.
++const nat=n=>Number.isSafeInteger(n)&&n>=0;
++const details=new Set(['WHOLE_CANDIDATE_DAY_CAPACITY','WHOLE_CANDIDATE_PLANNED_ALLOCATION','WHOLE_CANDIDATE_PROVIDER_DAY','WHOLE_CANDIDATE_PROVIDER_MONTH','EVEN_DAY_CANDIDATE_ALLOCATION']);
++const equations=new Set(['GLOBAL_DAY','PLANNED_ALLOCATION','PROVIDER_DAY','PROVIDER_MONTH','PACING']);
++const termKeys=['global_spent','auto_charged','held_http','base_extra_http','fixed_http','future_discovery_http','future_candidate_http','operation_http_upper_bound','provider_spent','provider_held','provider_fixed','provider_future_discovery','provider_future_candidate','provider_base_extra','provider_operation'];
++export function candidateBudgetDiagnostic({evaluated_ts,detail,stage,equation,lhs,cap,terms,provider=null,pacing=null}={}){
++  if(!nat(evaluated_ts)||!details.has(detail)||!['READ_ONLY_ASSESSMENT','ATOMIC_ASSESSMENT'].includes(stage)||!equations.has(equation)||!nat(lhs)||!nat(cap)||!terms||typeof terms!=='object'||Array.isArray(terms)||provider!==null&&!['BINGX','TELEGRAM'].includes(provider))return null;
++  const copied={};for(const key of termKeys){const n=terms[key]??null;if(n!==null&&!nat(n))return null;copied[key]=n;}
++  let quota=null;if(pacing!==null){quota={};for(const key of ['maximum','issued_current','issued_before','base_per_period']){if(!nat(pacing[key]))return null;quota[key]=pacing[key];}}
++  return {schema:'PUMP_CANDIDATE_BUDGET_DIAGNOSTIC_V1',evaluated_ts,detail,stage,equation,operator:equation==='PACING'?'GTE':'GT',lhs,cap,terms:copied,provider,pacing:quota};
++}

@@ -1,0 +1,123 @@
+{
+  "schema": "PUMP_F705_DENIAL_WITNESS_STATIC_CHECKLIST_V1",
+  "status": "STATIC_ACCEPTED_PENDING_ROOT_CONNECTED_QUALIFICATION",
+  "authority_main": "3a437fb3a4f64fed36c2d5562f6b4a2bc5120230",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793374367000",
+  "baseline": {
+    "implementation": "da52262978c5bb1037993b72d8b98c6185182e0a98d69fa3846ee6e21b7ed688",
+    "budget_sha256": "6cc5cd3342e345831842dfa4b717570e837723e24ca9073ed717fe16d96c6ff0",
+    "runner_sha256": "dd3be8d0852e951332d3b3be8e6d80889d83f779f198589305b38d1d45bb8f23",
+    "reuse": "Existing accepted83 static input hashes; no F703/F704/BZ78/BZ79 audit replay."
+  },
+  "proposal": {
+    "ready_paths_and_hashes": "RECEIVED_AND_EXACT",
+    "inputs": [
+      {
+        "path": "pump-report/handoffs/coordinator/budget-diagnostic-v1/proposals/pump-report/runtime/budget.mjs",
+        "sha256": "9b74aa1abb0f28289d59e96e4938f269a9feeb39ef7c4e74d1ef30cabc2f6b5a"
+      },
+      {
+        "path": "pump-report/handoffs/coordinator/budget-diagnostic-v1/proposals/pump-report/runtime/runner.mjs",
+        "sha256": "8ee9e67d3e1cea0256bdfbc8e02af7d25cc35faa6af0289d7f3f780d8725c08e"
+      },
+      {
+        "path": "pump-report/handoffs/coordinator/budget-diagnostic-v1/proposals/pump-report/runtime/candidate-budget-diagnostic.mjs",
+        "sha256": "3ae8ec6d966a756b02b4728da6ceba48a0206d5d75b979f14947f7be4718f63f"
+      }
+    ],
+    "root_frozen_manifest": "ROOT delegated frozen path/SHA packet in this lease"
+  },
+  "review_scope": "Static only budget-denial witness capture and runner saved-result transfer. Summary/UI belongs ANALYTICS. Controlled fixtures only; no actual receipts/counters/auth/CF proofs in this package.",
+  "checks": [
+    {
+      "id": "C01",
+      "requirement": "Exact proposal path/hash matches ROOT freeze; baseline budget/runner retained. Review diff only; distinguish STATIC_REVIEW from ROOT connected qualification.",
+      "evidence": "SHA256 and exact diff",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C02",
+      "requirement": "Existing comparisons, operators, cost values, sum order, first-deny order, provider iteration and detail/reason remain unchanged. No catch converting existing errors or extra diagnostic failure replacing a decision.",
+      "evidence": "Diff of assess paths/call sites including early invalid-cost/global/plan/provider returns",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C03",
+      "requirement": "Capture the same already evaluated terms from the same assess state and cached now used by its global/plan/future/provider forecasts. No independent clock(), Date.now(), state reread or recomputation to obtain another-time witness; preserve existing provider-policy admission clock calls.",
+      "evidence": "Clock/call-site inventory and value flow",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C04",
+      "requirement": "Do not evaluate later branch work solely for a witness: an earlier global denial must not call automaticPlan/candidatePacing/providerPolicy/quote hooks that previously would not run.",
+      "evidence": "Control-flow comparison at every first-deny point",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C05",
+      "requirement": "Witness uses the exact C for the evaluated pass: base allocation vs owned NEW quote operation distinguished. Keep quote verify/commit ownership checks, their call count/order, existing/exhausted/surplus entry conditions and idempotency unchanged.",
+      "evidence": "All quote/exhausted/known-grant/assess call sites",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C06",
+      "requirement": "No changes to reserve/finalize/closeCandidate, charged counters, residual holds, grant states, future reservations, manual reserve or caps. No automatic refund, removal, repricing or new source route.",
+      "evidence": "Unchanged mutation spans and resource-state parity acceptance criterion",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C07",
+      "requirement": "Bounded output has explicit fixed schema, field/term/provider/string limits; only primitive derived terms and enum identifiers needed for explanation. Never clone/serialize whole resource state, credentials, raw source bodies or private records.",
+      "evidence": "Diagnostic helper allowlist, size bound, optional-field validation",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C08",
+      "requirement": "Diagnostic formatting is pure and total for call-site inputs; invalid/missing/nonfinite terms must not introduce a throw, allow or refusal into the old decision path. No mutable references to saved state or witness-driven policy changes.",
+      "evidence": "Helper code and caller contracts, invalid-shape controlled fixture requirements",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C09",
+      "requirement": "No extra HTTP, SQL query, store get/atomic/set, native stage or source/provider/admission call. Use the existing result-save call only. Additional serialized bytes must be explicitly bounded; zero new calls does not prove byte-identical CPU/storage/physical cost.",
+      "evidence": "Import/call graph and existing runner-save transfer",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C10",
+      "requirement": "runner carries diagnostic only for the already denied result; preserves status/source_coverage.reason/detail/delivery and does not mark it checked, ready or sent. No extra save or execution.",
+      "evidence": "Focused runner diff and return shape",
+      "result": "PASS_STATIC"
+    },
+    {
+      "id": "C11",
+      "requirement": "ROOT ONE new connected controlled case should compare old/new decisions and resource state, quote-hook call order/count, clock sequence and IO counts; permitted result difference is bounded witness only. Include earlier/later denial boundaries, new/existing quote, invalid terms and runner saved transfer.",
+      "evidence": "Qualification requirement only: SOURCES no Node/import/tests and no PASS claim for unexecuted case",
+      "result": "PENDING_ROOT_NEW_CONNECTED_CASE_NOT_EXECUTED_BY_SOURCES"
+    },
+    {
+      "id": "C12",
+      "requirement": "No live acceptance or current-state inference from controlled fixtures. Live83 settings/caps/manual reserve/strategy and paused work untouched; actual-data restriction maintained.",
+      "evidence": "Scope and changed-file manifest",
+      "result": "PASS_STATIC"
+    }
+  ],
+  "not_reviewed": [
+    "hourly pacing state-machine implementation",
+    "summary/UI formatting",
+    "fresh actual budget state",
+    "native qualification or deployment readiness"
+  ],
+  "execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "nativeSQL": 0,
+    "CF": 0,
+    "providerHTTP": 0,
+    "Telegram": 0
+  },
+  "cutoff_policy": "If frozen code not received before work cutoff, preserve this checklist as PENDING with no invented PASS and release own lease in time."
+}

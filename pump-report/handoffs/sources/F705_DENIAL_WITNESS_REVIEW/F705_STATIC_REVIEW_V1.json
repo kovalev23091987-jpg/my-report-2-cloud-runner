@@ -1,0 +1,321 @@
+{
+  "schema": "PUMP_F705_DENIAL_WITNESS_STATIC_REVIEW_V1",
+  "status": "STATIC_ACCEPTED_PENDING_ROOT_CONNECTED_QUALIFICATION",
+  "authority_main": "3a437fb3a4f64fed36c2d5562f6b4a2bc5120230",
+  "own_owner": "CODEX:SOURCES:01a171fd:1793374367000",
+  "scope": "Focused static existing83 vs frozen ROOT proposal, not summary/UI or hourly state-machine review",
+  "inputs": [
+    {
+      "path": "pump-report/handoffs/coordinator/budget-diagnostic-v1/proposals/pump-report/runtime/budget.mjs",
+      "sha256": "9b74aa1abb0f28289d59e96e4938f269a9feeb39ef7c4e74d1ef30cabc2f6b5a",
+      "bytes_UTF8": "recorded in manifest"
+    },
+    {
+      "path": "pump-report/handoffs/coordinator/budget-diagnostic-v1/proposals/pump-report/runtime/runner.mjs",
+      "sha256": "8ee9e67d3e1cea0256bdfbc8e02af7d25cc35faa6af0289d7f3f780d8725c08e",
+      "bytes_UTF8": "recorded in manifest"
+    },
+    {
+      "path": "pump-report/handoffs/coordinator/budget-diagnostic-v1/proposals/pump-report/runtime/candidate-budget-diagnostic.mjs",
+      "sha256": "3ae8ec6d966a756b02b4728da6ceba48a0206d5d75b979f14947f7be4718f63f",
+      "bytes_UTF8": "recorded in manifest"
+    }
+  ],
+  "baseline": {
+    "implementation": "da52262978c5bb1037993b72d8b98c6185182e0a98d69fa3846ee6e21b7ed688",
+    "budget_sha256": "6cc5cd3342e345831842dfa4b717570e837723e24ca9073ed717fe16d96c6ff0",
+    "runner_sha256": "dd3be8d0852e951332d3b3be8e6d80889d83f779f198589305b38d1d45bb8f23",
+    "reuse": "Existing accepted83 static input hashes; no F703/F704/BZ78/BZ79 audit replay."
+  },
+  "static_comparison": {
+    "budget_prefix_except_import_exact": true,
+    "budget_closeCandidate_and_rest_exact": true,
+    "surplus_quote_commit_and_mutation_segment_exact_except_stage_argument": true,
+    "runner_exact_except_existing_denied_return": true,
+    "five_predicates": [
+      {
+        "detail": "WHOLE_CANDIDATE_DAY_CAPACITY",
+        "old_count": 1,
+        "new_count": 1,
+        "predicate_exact": true
+      },
+      {
+        "detail": "WHOLE_CANDIDATE_PLANNED_ALLOCATION",
+        "old_count": 1,
+        "new_count": 1,
+        "predicate_exact": true
+      },
+      {
+        "detail": "EVEN_DAY_CANDIDATE_ALLOCATION",
+        "old_count": 1,
+        "new_count": 1,
+        "predicate_exact": true
+      },
+      {
+        "detail": "WHOLE_CANDIDATE_PROVIDER_DAY",
+        "old_count": 1,
+        "new_count": 1,
+        "predicate_exact": true
+      },
+      {
+        "detail": "WHOLE_CANDIDATE_PROVIDER_MONTH",
+        "old_count": 1,
+        "new_count": 1,
+        "predicate_exact": true
+      }
+    ],
+    "helper_imports": 0,
+    "helper_await": 0,
+    "helper_clock_calls": 0,
+    "structural_compact_JSON_upper_bound_bytes": 978,
+    "bound_assumptions": "ASCIIfixedschema/enums +15terms+4pacingfields; each integer<=MAX_SAFE_INTEGER; numeric serialization<=16digits; no whole-state refs. Bound is for compact JSON, not arbitrary pretty indentation.",
+    "budget_clock_call_count_before": 25,
+    "budget_clock_call_count_after": 25,
+    "budget_store_get_count_before": 4,
+    "budget_store_get_count_after": 4,
+    "budget_store_atomic_count_before": 2,
+    "budget_store_atomic_count_after": 2
+  },
+  "line_refs": {
+    "budget": [
+      {
+        "pattern": "const deny=",
+        "lines": [
+          {
+            "line": 183,
+            "text": "    const deny=(detail,budget_diagnostic=null)=>({allowed:false,reason:'PROTECTED_DAY_RESERVE',detail,...(budget_diagnostic?{budget_diagnostic}:{})});"
+          }
+        ]
+      },
+      {
+        "pattern": "const assess=",
+        "lines": [
+          {
+            "line": 184,
+            "text": "    const assess=(state,{ignore_pacing=false,operation_http_upper_bound=http_upper_bound,assessment_stage='READ_ONLY_ASSESSMENT'}={})=>{"
+          }
+        ]
+      },
+      {
+        "pattern": "const capture=",
+        "lines": [
+          {
+            "line": 192,
+            "text": "      const capture=(detail,equation,lhs,cap,provider=null,providerTerms={})=>candidateBudgetDiagnostic({"
+          }
+        ]
+      },
+      {
+        "pattern": "WHOLE_CANDIDATE_DAY_CAPACITY',capture",
+        "lines": [
+          {
+            "line": 196,
+            "text": "      if((state.days[day]??0)+operation_http_upper_bound+held.http+baseExtra.http+fixed+discovery+future.http>limits.project_http_day)return deny('WHOLE_CANDIDATE_DAY_CAPACITY',capture('WHOLE_CANDIDATE_DAY_CAPACITY','GLOBAL_DAY',(state.days[day]??0)+operation_http_upper_bound+held.http+baseExtra.http+fixed+discovery+future.http,limits.project_http_day));"
+          }
+        ]
+      },
+      {
+        "pattern": "WHOLE_CANDIDATE_PLANNED_ALLOCATION',capture",
+        "lines": [
+          {
+            "line": 198,
+            "text": "      if(plan&&plan.charged+operation_http_upper_bound+held.http+baseExtra.http+discovery+future.http>plan.limit)return deny('WHOLE_CANDIDATE_PLANNED_ALLOCATION',capture('WHOLE_CANDIDATE_PLANNED_ALLOCATION','PLANNED_ALLOCATION',plan.charged+operation_http_upper_bound+held.http+baseExtra.http+discovery+future.http,plan.limit));"
+          }
+        ]
+      },
+      {
+        "pattern": "EVEN_DAY_CANDIDATE_ALLOCATION',capture",
+        "lines": [
+          {
+            "line": 201,
+            "text": "      if(!ignore_pacing&&pacing&&pacing.candidate_count>=pacing.maximum)return deny('EVEN_DAY_CANDIDATE_ALLOCATION',capture('EVEN_DAY_CANDIDATE_ALLOCATION','PACING',pacing.candidate_count,pacing.maximum));"
+          }
+        ]
+      },
+      {
+        "pattern": "WHOLE_CANDIDATE_PROVIDER_DAY',capture",
+        "lines": [
+          {
+            "line": 204,
+            "text": "        if(!integer(reserve)||(p.days?.[day]??0)+cost+(held.provider_day[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0)>policy.project_daily_cap)return deny('WHOLE_CANDIDATE_PROVIDER_DAY',capture('WHOLE_CANDIDATE_PROVIDER_DAY','PROVIDER_DAY',(p.days?.[day]??0)+cost+(held.provider_day[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discovery:0)+(future.http_by_provider[provider]??0),policy.project_daily_cap,provider,{provider_spent:p.days?.[day]??0,provider_held:held.provider_day[provider]??0,provider_fixed:reserve,provider_future_discovery:provider===admission.discovery?.provider?discovery:0,provider_future_candidate:future.http_by_provider[provider]??0,provider_base_extra:baseExtra.http_by_provider[provider]??0,provider_operation:cost}));"
+          }
+        ]
+      },
+      {
+        "pattern": "WHOLE_CANDIDATE_PROVIDER_MONTH',capture",
+        "lines": [
+          {
+            "line": 205,
+            "text": "        if((p.months?.[month]??0)+cost+(held.provider_month[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0)>policy.project_monthly_cap)return deny('WHOLE_CANDIDATE_PROVIDER_MONTH',capture('WHOLE_CANDIDATE_PROVIDER_MONTH','PROVIDER_MONTH',(p.months?.[month]??0)+cost+(held.provider_month[provider]??0)+(baseExtra.http_by_provider[provider]??0)+reserve+(provider===admission.discovery?.provider?discoveryMonth:0)+(futureMonth.http_by_provider[provider]??0),policy.project_monthly_cap,provider,{provider_spent:p.months?.[month]??0,provider_held:held.provider_month[provider]??0,provider_fixed:reserve,provider_future_discovery:provider===admission.discovery?.provider?discoveryMonth:0,provider_future_candidate:futureMonth.http_by_provider[provider]??0,provider_base_extra:baseExtra.http_by_provider[provider]??0,provider_operation:cost}));"
+          }
+        ]
+      },
+      {
+        "pattern": "assessment_stage:'ATOMIC_ASSESSMENT'",
+        "lines": [
+          {
+            "line": 239,
+            "text": "        const checked=known?{allowed:true}:assess(current,{ignore_pacing:true,operation_http_upper_bound:operation,assessment_stage:'ATOMIC_ASSESSMENT'});"
+          },
+          {
+            "line": 257,
+            "text": "      current??={days:{},providers:{}};const checked=assess(current,{assessment_stage:'ATOMIC_ASSESSMENT'});if(!checked.allowed)return {state:current,result:checked};"
+          }
+        ]
+      }
+    ],
+    "runner": [
+      {
+        "pattern": "admitted?.allowed===false",
+        "lines": [
+          {
+            "line": 149,
+            "text": "    if(admitted?.allowed===false)return {status:'DEFERRED',source_coverage:{status:'NOT_CHECKED',reason:admitted.reason,detail:admitted.detail,...(admitted.surplus_limit?{surplus_limit:admitted.surplus_limit}:{}),...(admitted.budget_diagnostic?{budget_diagnostic:admitted.budget_diagnostic}:{})},delivery:null};"
+          }
+        ]
+      }
+    ],
+    "helper": [
+      {
+        "pattern": "const termKeys=",
+        "lines": [
+          {
+            "line": 5,
+            "text": "const termKeys=['global_spent','auto_charged','held_http','base_extra_http','fixed_http','future_discovery_http','future_candidate_http','operation_http_upper_bound','provider_spent','provider_held','provider_fixed','provider_future_discovery','provider_future_candidate','provider_base_extra','provider_operation'];"
+          }
+        ]
+      },
+      {
+        "pattern": "export function",
+        "lines": [
+          {
+            "line": 6,
+            "text": "export function candidateBudgetDiagnostic({evaluated_ts,detail,stage,equation,lhs,cap,terms,provider=null,pacing=null}={}){"
+          }
+        ]
+      },
+      {
+        "pattern": "if(!nat(evaluated_ts)",
+        "lines": [
+          {
+            "line": 7,
+            "text": "  if(!nat(evaluated_ts)||!details.has(detail)||!['READ_ONLY_ASSESSMENT','ATOMIC_ASSESSMENT'].includes(stage)||!equations.has(equation)||!nat(lhs)||!nat(cap)||!terms||typeof terms!=='object'||Array.isArray(terms)||provider!==null&&!['BINGX','TELEGRAM'].includes(provider))return null;"
+          }
+        ]
+      },
+      {
+        "pattern": "const copied=",
+        "lines": [
+          {
+            "line": 8,
+            "text": "  const copied={};for(const key of termKeys){const n=terms[key]??null;if(n!==null&&!nat(n))return null;copied[key]=n;}"
+          }
+        ]
+      },
+      {
+        "pattern": "let quota=",
+        "lines": [
+          {
+            "line": 9,
+            "text": "  let quota=null;if(pacing!==null){quota={};for(const key of ['maximum','issued_current','issued_before','base_per_period']){if(!nat(pacing[key]))return null;quota[key]=pacing[key];}}"
+          }
+        ]
+      },
+      {
+        "pattern": "return {schema:",
+        "lines": [
+          {
+            "line": 10,
+            "text": "  return {schema:'PUMP_CANDIDATE_BUDGET_DIAGNOSTIC_V1',evaluated_ts,detail,stage,equation,operator:equation==='PACING'?'GTE':'GT',lhs,cap,terms:copied,provider,pacing:quota};"
+          }
+        ]
+      }
+    ]
+  },
+  "conclusions": [
+    "Five existing GT/GTE predicates and first-deny order remain byte-identical. Deny status/reason/detail unchanged; new optional budget_diagnostic is attached only to these five diagnostic branches.",
+    "Reserve/finalize and prefix before admitCandidate are exact except new helper import; closeCandidate and remainder exact. Quote/surplus commit/idempotency/counter/grant mutation segment exact except assessment_stage metadata argument.",
+    "Each assess captures one existing now and the same state. No new clock/read/reassessment is added for diagnostics. Global denial leaves auto_charged:null before automaticPlan was evaluated; pacing remains null until its original point. Provider day/month reuse same captured time and precomputed futures.",
+    "Read-only vs atomic reassessment stage is explicit. Quote11 reassessment captures the existing atomic current state and exact operation bound, not initial12. Known-grant branch behavior and quote hooks unchanged.",
+    "Helper has no imports, IO, await or clocks; fixed primitive allowlists and nonnegative safe integers bound compact UTF8 JSON at978bytes. No whole state, source payload, credentials or identity strings are copied.",
+    "Runner changes only the existing denied return payload; NOT_CHECKED/DEFERRED/reason/detail/delivery unchanged; no new read/save/CAS or source execution."
+  ],
+  "equation_contract": {
+    "GLOBAL_DAY": {
+      "operator": "GT",
+      "lhs_terms": [
+        "global_spent",
+        "operation_http_upper_bound",
+        "held_http",
+        "base_extra_http",
+        "fixed_http",
+        "future_discovery_http",
+        "future_candidate_http"
+      ]
+    },
+    "PLANNED_ALLOCATION": {
+      "operator": "GT",
+      "lhs_terms": [
+        "auto_charged",
+        "operation_http_upper_bound",
+        "held_http",
+        "base_extra_http",
+        "future_discovery_http",
+        "future_candidate_http"
+      ],
+      "exclude_from_lhs": [
+        "fixed_http",
+        "global_spent"
+      ]
+    },
+    "PROVIDER_DAY_AND_MONTH": {
+      "operator": "GT",
+      "lhs_terms": [
+        "provider_spent",
+        "provider_operation",
+        "provider_held",
+        "provider_base_extra",
+        "provider_fixed",
+        "provider_future_discovery",
+        "provider_future_candidate"
+      ],
+      "note": "Global contextual terms are not additive provider terms. Month uses the month terms supplied at the original branch."
+    },
+    "PACING": {
+      "operator": "GTE",
+      "lhs": "pacing.issued_current",
+      "cap": "pacing.maximum"
+    },
+    "note": "Do not sum every field in terms; it contains context as well as the selected equation's terms."
+  },
+  "qualifications_and_limits": [
+    "No ROOT connected case executed/verified by SOURCES. One new controlled old/new decision/resource-state/clock/quote-hook/IO parity case remains required; only optional witness is an allowed result difference.",
+    "Diagnostic construction repeats the selected sum after the unchanged denial predicate, synchronously without await against same ordinary saved JSON state and cached time. This is bounded extra arithmetic, not extra IO or literal reuse of a cached LHS scalar.",
+    "On provider invalid-reserve short-circuit, capture may form an invalid numeric sum which helper rejects to null; original refusal remains. Include invalid provider reserve and nonfinite/unsafe terms in the one controlled ROOT case, rather than claiming numeric witness coverage for malformed state.",
+    "Only five equation denials are instrumented. Validation, operation bound, policy errors, backoff, surplus logical/native/quote-binding denials may still omit witness; no claim of complete diagnosis of every refusal.",
+    "No extra IO calls is a static call-graph conclusion. Extra payload<=978 compact bytes and formatting CPU are nonzero; no claim of identical storage bytes/physical costs or external budget closure.",
+    "Summary/UI contract/application is ANALYTICS scope and not reviewed here. Build/new module graph/live deployment readiness remains ROOT work after qualification."
+  ],
+  "root_new_case_acceptance": [
+    "Exact old/new decision/detail and resource state equality for controlled global/plan/provider day/month/PACING boundaries; same earlier branch skips later evaluation.",
+    "Same clock sequence and quote verify/commit call order/count; base vs positively owned NEW11 read-only/atomic branch metadata.",
+    "Invalid reserve, missing/null/nonfinite/unsafe fields omit witness or reject helper input without changing existing refusal; no new exceptions in valid call-site shapes.",
+    "Bounded schema/operator/equation-specific term sum and existing runner saved-result transfer; no additional HTTP/SQL/native stage/store reads/CAS.",
+    "All fixtures synthetic; no actual prior receipts/counters/auth/CF proof copied."
+  ],
+  "execution": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "nativeSQL": 0,
+    "CF": 0,
+    "providerHTTP": 0,
+    "Telegram": 0,
+    "canonical_changes": 0,
+    "prior_audit_replay": false,
+    "actual_data_payload_included": false
+  },
+  "recommended_code_change": "NONE_FROM_STATIC_REVIEW"
+}
