@@ -1,0 +1,287 @@
+{
+  "schema": "F680_MAGMA_ACTUAL_SOURCE_BLOCK_EVIDENCE_V1",
+  "status": "COMPLETE_EVIDENCE_REVIEW_GAPS_EXPLICIT_NO_PRODUCT_CHANGE",
+  "authority": {
+    "main": "167676a34af0b0bb0fda881b8d8a69dab5233746",
+    "owner": "CODEX:SOURCES:01a171fd:1793348035000",
+    "acquire_head": "1ae5727fa36d96c7785daefaa2523e08861443b9",
+    "root_owner": "CODEX:PUMP_MAGMA_STRATEGY_BLOCK_AUDIT_20261030:1793346333861",
+    "working_deadline_ts": 1793348755000,
+    "expiry_ts": 1793349535000,
+    "FULL_min_margin_sec": 480,
+    "closure_started": "2026-10-30 08:24:32 UTC",
+    "all4_equal": true,
+    "fence_active": false
+  },
+  "evidence": {
+    "safe_projection": {
+      "projection_sha256": "8e93c54df729f8c29db8f350458be5180e5247d4f22302f4878ba60ddc15b6fc",
+      "projection_bytes": 25618,
+      "projection_Gitblob": "090daacc9e02f4f17f3aa8ca569038aeab2716c4",
+      "saved_primary_path": "pump-report/handoffs/sources/evidence/F555_CCXT_d3159f7_bingx.ts.snapshot",
+      "saved_primary_sha256": "94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+      "funding_parse_lines": [
+        1827,
+        1867
+      ],
+      "funding_history_lines": [
+        1870,
+        1945
+      ]
+    },
+    "code_hashes": [
+      {
+        "path": "pump-report/sources/index.mjs",
+        "sha256": "97cd320d9f5e64047fd5b8ace37fa0ba172cbd256c1b6df2bfcea51fb78541ae",
+        "git_blob": "6e68af536c215034bdc85747e4d41d5cb2c84992"
+      },
+      {
+        "path": "pump-report/sources/bingx.mjs",
+        "sha256": "d0df081365f35c0f8c238c79cc71cafb0cc4bead6123fd691ce28b966d0ffd02",
+        "git_blob": "9c406a87ee75cda9c00b3f8600d95ab4246bcff8"
+      },
+      {
+        "path": "pump-report/sources/recent-trades.mjs",
+        "sha256": "b9a317ec8d003701118a3cffaf152b07b0e9abf8e8a525a1a12ab642d22f11ba",
+        "git_blob": "5b3810fdcb69a16969168b3ee91f06ebab44146a"
+      },
+      {
+        "path": "pump-report/analytics/context.mjs",
+        "sha256": "d749653d74d3ebec27819c3ec3174819bb000130d5399987e5f5d3d996ca5bfd",
+        "git_blob": "beea46b858adba218c3b44cb8931c21db1ae2f00"
+      },
+      {
+        "path": "pump-report/runtime/budget.mjs",
+        "sha256": "c2ffa92d691acb6bb7e517fa483b010b688960e91054313e53ab8007ab3838bd",
+        "git_blob": "c1da8700dd1006338f9f8aa4f60cc2fe1f53227c"
+      },
+      {
+        "path": "pump-report/runtime/source-error-policy.mjs",
+        "sha256": "2f51fbe6caf9ea37990998a12542ad00e2861d3aefddc160bedc0d0b6e5526ce",
+        "git_blob": "d69993bdb178e6956fe8bb2828cab891be8480d8"
+      },
+      {
+        "path": "pump-report/registry/native-reviewed550.mjs",
+        "sha256": "6fe133b2e59e18f7479e87cd82b9bb1d0eed4e9383ac90cc3f8e2d6cb3766f45",
+        "git_blob": "689e56e13085b407c4724e802cc4b961822d4b12"
+      },
+      {
+        "path": "pump-report/registry/native-execution-qualifications.mjs",
+        "sha256": "15698655488ba9cd5e2f992e11fe875e20184822215b05732cd530b43621a5ad",
+        "git_blob": "5b40fc0791fd8e20e0022bbc6613a6aca38d91d9"
+      },
+      {
+        "path": "pump-report/registry/funding-quote-profile.mjs",
+        "sha256": "2c784ba354ef78ec257267db834417081bc4e7040a1b5b5f03dad5df0a8dd858",
+        "git_blob": "699dbbbe36b8e4d66386e69a6ec9dd5c32714c54"
+      },
+      {
+        "path": "pump-report/runtime/worker.mjs",
+        "sha256": "92dea6720d54f987df78e07cce34c8e350cc2d33f0b412136ee2366a75d5550a",
+        "git_blob": "40e10b6651e680ed62a1bf606b3a2ce96254f281"
+      },
+      {
+        "path": "pump-report/profile/start-v1.mjs",
+        "sha256": "a4b9745429f80cee0e35945c962d803e916e75d1977fd741cf0b5fc1bf394521",
+        "git_blob": "d61f2fa57141dc042ab1e2a9055b26703ac57da8"
+      }
+    ],
+    "scope": "Only ROOTsafe derived actualprojection and public code/saved primarysnapshot, no raworiginal/candlearray/recipient/private16."
+  },
+  "instrument": "BINGX:USDT_M:102176:MAGMA-USDT",
+  "run_id": "4ec20570-d784-489b-aa05-0b5b8a86db74",
+  "analysis_ts": 1793343781755,
+  "blocks": [
+    {
+      "block": 1,
+      "data_received": true,
+      "usable": true,
+      "used": true,
+      "result": "USED_PASS",
+      "source": "getOverview/getDayGrowth/getCore ->parsePrice/parseCandles/native-relative ->analytics movement/consumeObservedDayGrowth",
+      "actual": "305/305 closedcandles complete,1440additionalprice rows; observeddaygrowth28.9040622962%, relativeimpulsevolume2.1617945653 vs2; nativevolumeunitUNKNOWN with same-source comparisonkey, not BASE/USD. Short5/15/60m growth below10%; daybranch>=20 passed. Currentvolume lowerthanoldimpulse is not a new2x observation.",
+      "cost": {
+        "actual_HTTP_by_block": null,
+        "reason": "Projection contains only run total19; shared/cached price/day/candle calls not individually allocated."
+      },
+      "nextfix": "No source defect proven. Do not describe historical2.16x as current buying pressure or change quality gates."
+    },
+    {
+      "block": 2,
+      "data_received": true,
+      "usable": "PARTIAL_RETURNED_SAMPLE",
+      "used": true,
+      "result": "PARTIALLY_USED",
+      "source": "getOptional requestedtrades ->parseRecentTrades ->explainOptionalFacts/summarizeTradeSample",
+      "actual": "API returned1000 against requested100; bound1000 allowed. Parserqualified999, invalidnotional1. Consumer kept14/excluded986 with TRADE_ROW_CLOCK_UNQUALIFIED. Nativeclocks valid/no future/null inparser; at originalanalysis consumer requires rowage<=30s, producing26.004s retainedspan. Invalidnotional counter and rowclock exclusions overlap; do not sum to987.",
+      "useful_context": {
+        "buy_USDT": 95.33,
+        "sell_USDT": 84.8,
+        "net_USDT": 10.53,
+        "first_to_last_return_pct": -0.1849145516,
+        "absorption_proven": false,
+        "full_market": false,
+        "causation": false
+      },
+      "cost": {
+        "actual_new_HTTP": null,
+        "broker_cold_upper": 1,
+        "warm_lower": 0
+      },
+      "nextfix": "RowTTL30s is concrete consumerpolicy, not APIabsence. A boundedhistorical-sample view separate from freshflow would need explicit ROOT semantic agreement; do not blindly relabel all1000fresh or widen gates."
+    },
+    {
+      "block": 3,
+      "data_received": true,
+      "usable": true,
+      "used": true,
+      "result": "USED_PASS",
+      "source": "getCore/orderbook ->parseOrderbook exactCOIN BASE proof ->measureLiquidity/plan",
+      "actual": "USABLE originalfreshsnapshot, spread0.0418272534%; simulated700/1000/1500/2000/3000USDT buy and samebase sell fill. NativeCOIN qualification is orderbook-only. No futureexecution, quantity-step, fees/funding guarantee.",
+      "cost": {
+        "actual_HTTP_by_block": null,
+        "book_cold_upper": 1,
+        "delivery_recheck_separate": true
+      },
+      "nextfix": "Keep independent liquidity/plan; no source unit bug shown."
+    },
+    {
+      "block": 4,
+      "facts": {
+        "open_interest": {
+          "data_received": false,
+          "usable": false,
+          "used": false,
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "actual_HTTP": 0
+        },
+        "funding": {
+          "data_received": true,
+          "usable": false,
+          "used": false,
+          "reason": "SOURCE_FACT_STALE",
+          "native_update_ts": 1793332800000,
+          "received_ts": 1793343781489,
+          "expires_ts": 1793333100000,
+          "original_clock_age_sec": 10981.489,
+          "period_ms": 14400000,
+          "rate_fraction": 0.000284
+        }
+      },
+      "source": "runner161 requested['trades','funding']; getOptional338–415 ->qualifyFunding/parseFunding ->context74–83",
+      "OI_current_qualification": "NONE for exactMAGMA102176: new539registry suppliescandles, reviewedNativeExecution addsorderbook only, withReviewedFunding attachesfunding only. No qualifications.open_interest proof/unit. COINbook BASE does not qualify nativeopenInterest. Merely requestingOI would produce OPEN_INTEREST_UNIT_UNQUALIFIED/0HTTP.",
+      "budget2_decision": "Do not replace funding with OI or requestextra until exactOIunit andsourceclock proof exists. A singlequalified OIsnapshot is context, not change/direction.",
+      "cost": {
+        "OI_actual": 0,
+        "funding_actual_new_HTTP": null,
+        "funding_broker_cold_upper": 1,
+        "warm_lower": 0
+      },
+      "nextfix": "Funding needs clockevidence; OI needs unitqualification. Neither fixed by receiptTime/defaultBASE/slotchange."
+    },
+    {
+      "block": 5,
+      "result": "REMOVED_BY_OWNER",
+      "must_not_restore": true
+    },
+    {
+      "block": 6,
+      "data_received": false,
+      "usable": false,
+      "used": false,
+      "result": "NOT_ATTEMPTED",
+      "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+      "actual_provider_HTTP": 0,
+      "source": "getLiquidations425–443 beforebroker; registry routes[]; selectZones noqualifiedzones",
+      "nextfix": "Only savedroutes. SavedHL_SOL is differentasset OBSERVED_POSITION/HOLD, cannotbind MAGMA by ticker or replace EXTERNAL_MODEL; needs exactMAGMAidentity, admittedfiniteaccounts, nativeclock, pricebasis/currentconversion and actualadmissions. No unsupported/no-liquidations conclusion, ordinarylevels notmap."
+    },
+    {
+      "block": 7,
+      "result": "CONDITIONAL_DISABLED",
+      "not_first_launch_mandatory": true
+    }
+  ],
+  "funding_primary_verdict": {
+    "saved_primary_sha256": "94bcede8e332f7c877fa6099708d3ce9e0642463366e13e09a068f116ffc98b0",
+    "pin": "d3159f7036f93db086cd0414642132fba5401710",
+    "path": "pump-report/handoffs/sources/evidence/F555_CCXT_d3159f7_bingx.ts.snapshot",
+    "parse_lines": "1827–1867",
+    "literal": "CCXT copies nativeupdateTime to unifiedtimestamp/datetime; lastFundingRate to fundingRate, fundingTimestamp undefined; nextFundingTimestamp separate.",
+    "what_it_does_not_prove": "No vendor guarantee whether updateTime means currentquote generation, periodicpublication, lastpayment or other lifecycle. Actual04UTC alignment with4h boundary is not proof of meaning. Existingprofile explicitly ADAPTER_BASED_INFERENCE/rate_event_clock_provenfalse/vendor_guaranteefalse.",
+    "current_result": "Under accepted snapshotinterpretation and300sTTL, originalMAGMAfundingSTALE is correct. Do not substitute received_ts/nextFundingTime, removeclockgate, multiplyTTL byperiod or claim livefunding worked.",
+    "saved_alternative": {
+      "path": "same CCXT snapshot1870–1945",
+      "route": "known fundingRateHistory/quote/fundingRate",
+      "clock": "fundingTime explicitlyhistoricalfunding timestamp",
+      "usefulness": "Historicalsettled fundingcontext only; not currentquote or newlyqualifiedMAGMA producer. SourcecurrentlypremiumIndex only; no new request/activation proposed."
+    },
+    "fresh_current_path_with_proven_clock": "NONE established in inspected retainedprimarymaterials; must acquire/accept exactsourceclock proof under futureauthorization, not invent it."
+  },
+  "Q_rate_limit": {
+    "actual_scope": "ROOTreportsQratelimit same run; safe8e93projection omitsQrequest/code/headers/receipt/backoffrow, so no exactcause or perQcost independently established.",
+    "static_paths": [
+      "source-error-policy.responseDisposition:HTTP429 or BINGX String(code)100410=>RATE_LIMIT evenHTTP200",
+      "budget broker299–305 finalizes charged receipt, no refund; positiveRetryAfter applied, absentheader fallback60000; successcache only SUCCESS",
+      "bingx.assertEnvelope34–37 rejects numeric100410 asBINGX_RATE_LIMITED; genericerror remainsnotusable",
+      "reserve/providerWindow honor recorded providerbackoff; noauto retry"
+    ],
+    "not_inferred": "Run19/unknown0 doesnot identify vendorquota dimension, account/IP usage, concurrentcalls or which earlier request causedQ. Do not blame MAGMA/funding or assume local1/sec guarantees vendorallowance.",
+    "one_conditional_code_hardening_proposal": {
+      "target": "ROOT-owned runtime/budget.mjs effectiveBackoff301",
+      "finding": "Supplied Retry-After0/invaliddate gives0/NaN; because?? treats them nonnull, current fallback60s is bypassed, finalize only setsbackoff forpositiveinteger. This conditional staticbranch is NOT proven actualQcause.",
+      "proposal": "If ROOT confirms intended rate-limitfloor60s, validate parsedRetryAfter and choose max(60000,validpositiveRetryAfter or0) forRATE_LIMIT only. Keep caps, singlecharge, no retry/strategychange; no productedit here.",
+      "minimal_affected_case_UNEXECUTED": "One controlled brokercase, HTTP200 code100410 with missing/0/invalid/validRetryAfter variants: one charge/noSUCCESScache/correctmaxbackoff; laterrequest refused whilebackoff; preserve counters/unknowns. This is proposed only, not rerun or approval."
+    }
+  },
+  "minimal_noncode_acceptance_vectors_UNEXECUTED": [
+    "Trades: preserve freshfactTTL and explicit rowwindow; 1000returned/14fresh/986age-rejected with overlappinginvalidcounter, nofullmarket/absorption claim.",
+    "Funding: native04UTC+receipt07UTC staysSTALE even4hperiod/nextscheduledfuture; paymentclocknull/receivednotreplacement.",
+    "OI: exactMAGMA with noOIqualification yields0HTTP ifrequested; no COIN-to-OIunit promotion; upper2unchanged."
+  ],
+  "cost_and_provenance": {
+    "original_AUTO_run_total_HTTP": 19,
+    "scope": "Whole4ec20570run inclothercandidates/delivery; NOT MAGMA19 and not perblockcost.",
+    "original_run_unknown": 0,
+    "original_liquidation_counter": 0,
+    "saved_audit_cost": {
+      "requests": 13,
+      "rows_read": 33,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "own_UTC30_control_total": {
+      "LOOKUP_runs": 2,
+      "SQL": 18,
+      "rows_read": 38,
+      "rows_written": 8,
+      "unknown_ops": 0
+    },
+    "not_original_source_cost": true,
+    "whole_account_spending": "UNKNOWN_NOT_CLOSED",
+    "optional_slots_max": 2,
+    "exact_kind_costs": "Only OI0/LIQ0 explicit; pertrades/funding freshHTTP vs cache split absent fromsafeprojection, not fabricated."
+  },
+  "scope": {
+    "SOURCE_Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "provider_market": 0,
+    "CF": 0,
+    "Telegram": 0,
+    "new_search_connections": 0,
+    "raw_original_candles_recipient_private16": 0,
+    "product_edits": 0,
+    "otherchatmessages": 0
+  },
+  "preserve": {
+    "caps_reserves_unknowns_issued_CLOSEDholds": true,
+    "manual3": true,
+    "legacy_pauses": 9,
+    "OWNER_deferrals": 2,
+    "prior_deviations": "F679capacity/workdeadline overrun andFULL376<420;F678work+43;F66692<120;F667+101;F671+2 retained, not retroactivelycured."
+  },
+  "final_conclusion": "ActualMAGMAmandatorysourceblocks1/3 used; tradecontextpartial; fundingreceivedbutstale; OInotaskedandnoqualifiedunit; LIQnotcalled. Optionalabsence doesnotmean thoseblocksworked, yet owneroptionalmapruleunchanged. No productpatch or gate/capchange performed; evidence-dependent quality gaps and one conditionalbackoffhardening proposal clearlyseparate from actualQcause."
+}
