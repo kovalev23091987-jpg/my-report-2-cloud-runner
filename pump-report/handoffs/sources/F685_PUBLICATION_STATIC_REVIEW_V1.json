@@ -1,0 +1,170 @@
+{
+  "schema": "F685_INDEPENDENT_STATIC_PUBLICATION_REVIEW_V1",
+  "verdict": "PASS_STATIC_REQUESTED_SCOPE",
+  "reviewed_main": "e6f92f6c406b5ce0cd28b53ccf7813bc55d0e255",
+  "own_acquire": "81df3c436861dc7400b965adeab8fd2f24b050b6",
+  "authority": {
+    "fresh17_FULL": true,
+    "all4_equal": true,
+    "fence_active": false,
+    "root_owner": "CODEX:PUMP_PUBLICATION_RECOVERY_BUNDLE_20261030:1793351690000"
+  },
+  "qualification": {
+    "path": "checkpoints/pump-report-20261025/ROOT_PUBLICATION_PREFLIGHT_MAP_CONNECTED_QUALIFICATION_V1.json",
+    "sha256": "da6e5802ea2ae0b5994065e75c1aa1c55c14ae6fd0f4ba87fb4a985668c07f94",
+    "git_blob": "4309ff1a25e200c294b1f53ef7994785fd723b13",
+    "status": "PASS_CONTROLLED_MEMORY_NOT_NATIVE",
+    "interpretation": "ROOT's saved controlled result, not independently rerun here and not native acceptance. Initial failed stub process and repaired actual-writer process both remain spent.",
+    "Node_processes_reported_total": 2,
+    "previous_failed_fixture_process_spent": 1,
+    "successful_repair_processes": 1
+  },
+  "reviewed_files": [
+    {
+      "path": "pump-report/runtime/worker.mjs",
+      "git_blob": "93c112ab1de520674873ed34c729761cf843687b",
+      "sha256": "0037e842775f099098d6dcd599262972c73474bb116da847ba627ef55010ef83"
+    },
+    {
+      "path": "pump-report/runtime/delivery.mjs",
+      "git_blob": "3a68884ce4b68e4c10de91a53094e73a9f671fbd",
+      "sha256": "ff6d9e119b6e7a291280375273d3edefe7bbdab3508110cea77cb389a7ea2ad0"
+    },
+    {
+      "path": "pump-report/runtime/runner.mjs",
+      "git_blob": "8a9e71825e13fffe1b48ce5dc32d10eaa339c457",
+      "sha256": "df22e4a0c898ed236e4db25af9d00808b8873a0c8255b6b9c158d282afe36b94"
+    },
+    {
+      "path": "pump-report/runtime/telegram-send.mjs",
+      "git_blob": "2e986fce185523a10d90d9eeef00f4c4c4f89604",
+      "sha256": "4c0bdcc2af170c3894cdd3e6753fec8c0b54df3ca007b3ada66c9691d5804d4d"
+    },
+    {
+      "path": "pump-report/analytics/zones.mjs",
+      "git_blob": "fc7489a8695f3efcafe3ca9a2b3a1c643fdc5b24",
+      "sha256": "30a24a34f1c357e03411753aedeb86947394993fcc7fb4a795263014b80eacbf"
+    },
+    {
+      "path": "pump-report/sources/liquidations.mjs",
+      "git_blob": "0e912c77b6e165fa5c727eaf11fc3fea99f23fe9",
+      "sha256": "d2014941a4c93ad472932180b4bb06114398b02d93bc2955da8f65c943a17002"
+    },
+    {
+      "path": "pump-report/sources/hyperliquid-observed-positions.mjs",
+      "git_blob": "dd10370908eb8b5ae888e02c7f7ccc23a62ffc1c",
+      "sha256": "e6315d844a183fecdc78bda293a248b19796d8ebd4a88a10b1ce3448dacf8c58"
+    }
+  ],
+  "findings": [],
+  "checks": [
+    {
+      "id": "EXACT_IMMUTABLE_PREPARATION",
+      "status": "PASS_STATIC",
+      "pointers": [
+        "runtime/delivery.mjs:15-27,71-90",
+        "runtime/worker.mjs:61-74",
+        "runtime/runner.mjs:166-194"
+      ],
+      "evidence": "Private callback issues opaque WeakMap token only on accepted result; snapshot cloned, result cloned again. dispatch consumes token before use, rejects unknown/reuse, compares full immutable analysis and SHA-derived source_input_key. Worker compares prepared input to stored original and saved-analysis key before using retained prepared facts. No caller JSON boolean can manufacture preparation. Failure consumes token and does not reopen holds."
+    },
+    {
+      "id": "BINGX_UPPER10_NO_SECOND_REFRESH",
+      "status": "PASS_STATIC",
+      "pointers": [
+        "runtime/runner.mjs:134-145,159-171,192-194",
+        "runtime/worker.mjs:46,68",
+        "sources/index.mjs:141-162",
+        "runtime/production-policy.mjs:19,23"
+      ],
+      "evidence": "Cold upper bound1 overview+1 day+2 core price(primary/fallback)+2 core candles/book+2 optional+2 forced DELIVERY price/book=10 BingX attempts. force_refresh price returns even on failure, so DELIVERY has no second price fallback. With accepted token dispatch uses prepared facts and performs no new getCore HTTP. Map/TG/shared discovery remain their separately admitted costs. Normal path bound, not a guarantee of two successful HTTP or day-wide sustainability."
+    },
+    {
+      "id": "DUPLICATE_AND_TERMINAL_BOUNDARY",
+      "status": "PASS_STATIC",
+      "pointers": [
+        "runtime/delivery.mjs:16-22,38-67,75-86",
+        "runtime/runner.mjs:169-194"
+      ],
+      "evidence": "Known SENT without permitted substantial update skips preparation before source refresh; enqueue/hash/wave checks retain known identity and dispatch terminal state prevents resend. UNKNOWN/SENDING likewise are not revived. Existing READY queue fallback revalidation and later drain are separate existing paths; no claim that process restarts need zero revalidation."
+    },
+    {
+      "id": "SOURCE_CLOCKS_NOT_RECEIPT_TIMES",
+      "status": "PASS_STATIC",
+      "pointers": [
+        "runtime/worker.mjs:46-59,65-74",
+        "sources/liquidations.mjs:16-33,59-72",
+        "sources/hyperliquid-observed-positions.mjs:54-75,103-115"
+      ],
+      "evidence": "Fresh DELIVERY price/book are actual returned facts in a NEW final original. Source event/received/expiry fields are not retimed; retained candles require independent engine usability. F684 mapping event/expiry and native/effective expiry remain exact accepted hashes. No source timestamp replaced by received/analysis/send time."
+    },
+    {
+      "id": "ALL_COMPONENTS_AND_MAPPING",
+      "status": "PASS_STATIC",
+      "pointers": [
+        "analytics/zones.mjs:6-9,82-149"
+      ],
+      "evidence": "Validates <=3 zones/side, total component bound2000 before scanning, every selected component's asset/venue/market/provider/basis, original event<=received<=at, basis TTL/effective expiry and nested mapping proof/target/currency/multiplier/event/expiry. Mapping and source deadlines conservatively minimized. No arbitrary prefix truncation. Invalid/legacy mapping without clocks fails qualification. WITHOUT_MAP requires empty displayed arrays; not a claim of full source coverage."
+    },
+    {
+      "id": "MAPLESS_PREPARED_ORIGINAL",
+      "status": "PASS_STATIC",
+      "pointers": [
+        "runtime/worker.mjs:50-59",
+        "runtime/runner.mjs:172-194"
+      ],
+      "evidence": "Invalid or short-lifetime selected map is omitted before final original and reanalyzed from empty displayed map. No in-place edit to saved old text/hash; new original stores publication_map_omission and preserved checked-source coverage. Remaining readiness/plan-overlap/price-move and owner gates still required. Old/new source coverage must be interpreted by stage, not as receipt-level complete bill."
+    },
+    {
+      "id": "POST_RESERVE_FINAL_GUARD_AND_ACK",
+      "status": "PASS_STATIC",
+      "pointers": [
+        "runtime/telegram-send.mjs:4-30",
+        "runtime/delivery.mjs:96-107"
+      ],
+      "evidence": "Map assessed before reserve and again after potentially slow durable reserve. Final effective map deadline must cover existing15000ms transport timeout; card/window checked again. Refusal finalizes already charged receipt network_attemptedfalse and performs no fetch. Source age not renewed. ACK clocks have explicit call/parsed-response basis; fresh_at_ACK can be false and is copied into saved receipt, not relabelled fresh."
+    },
+    {
+      "id": "NO_REFUND_OR_EXTRA_CANDIDATE_ADMISSION",
+      "status": "PASS_STATIC",
+      "pointers": [
+        "runtime/budget.mjs:147-161,231-242",
+        "runtime/runner.mjs:130,207-211",
+        "runtime/telegram-send.mjs:13-30"
+      ],
+      "evidence": "No second admitCandidate in preflight/dispatch, no CLOSED reopening, monotonic provider/day/month counts unchanged. Known pre-HTTP refusal remains charged; uncertain finalization/network stays UNKNOWN. Current 3manual/BingX90027900/10min1sec80pct/TG471457 and prior unknowns/holds/reserves are not reset."
+    },
+    {
+      "id": "PRIVACY_AND_COVERAGE_CLAIMS",
+      "status": "PASS_STATIC",
+      "pointers": [
+        "runtime/worker.mjs:160-168",
+        "runtime/telegram-send.mjs:23-29",
+        "ROOT qualification lines23-56"
+      ],
+      "evidence": "Reviewed new paths add no logging/export of private originals, recipient or token. Review opened only named public code/safe qualification. Controlled transport PASS remains controlled memory, with actual_provider_HTTP/nativeSQL/Telegram0 and live pin unchanged. It does not qualify a route, full-map coverage or native Telegram chain."
+    }
+  ],
+  "limitations": [
+    "No Node, testcase read/execution, native/provider/CF/SQL/Telegram operation or raw/private packet/recipient access performed by SOURCE.",
+    "Static PASS covers immutable e6f92f6c code and recorded controlled qualification; it does not approve later edits, main advancement, deploy or native admission.",
+    "ACK freshness is separately measured; actual wire/recipient-arrival freshness and live behavior are not established by static review or mock transport.",
+    "No new source search/connection, HOLD SOL/BTC activation, source units/proof/TTL/strategy/frequency change."
+  ],
+  "informational": {
+    "source_coverage": "runner returns initial core.coverage while final original may contain refreshed DELIVERY price/book. It is initial-core provenance, not a final all-source receipt census; F682 receipt-union rule remains applicable.",
+    "component_bound": "Connected Swole ceiling2000 remains correct; actual connected HL limit1, so comment <=2 is conservative and not an additional entitlement."
+  },
+  "live_pin_unchanged": "dfd7b37b9ce06ba3ce6b7a06ae0f7e17e2fafffc198aaa292185c97d18450452",
+  "source_new_operations": {
+    "Node": 0,
+    "market_HTTP": 0,
+    "native_SQL": 0,
+    "Cloudflare": 0,
+    "Telegram": 0,
+    "private_reads": 0,
+    "main_mutation": 0,
+    "deploy": 0
+  },
+  "preservation": "Prior ROOT failed process is not refunded; all original budgets/UNKNOWN/CLOSEDholds/reserves/9pauses2OWNERdeferrals and SOURCE prior timing deviations retained."
+}
