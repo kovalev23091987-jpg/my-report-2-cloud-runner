@@ -1,0 +1,1296 @@
+{
+  "schema": "ROOT_RECENT_THREE_SIGNAL_STRATEGY_AUDIT_V1",
+  "basis": "Native saved immutable originals and bound Telegram receipts, no engine replay",
+  "authority_main": "ec6e6a1b5dc6dfb6694f11b66c0b19b523adc1a0",
+  "implementation_sha256": "dfd7b37b9ce06ba3ce6b7a06ae0f7e17e2fafffc198aaa292185c97d18450452",
+  "scope": {
+    "one_page_limit": 20,
+    "page_rows": 10,
+    "page_exhausted": true,
+    "selected_max": 3,
+    "selected_actual": 3,
+    "selection": "LATEST_CONFIRMED_WITHIN_THIS_BOUNDED_PAGE",
+    "whole_history_claimed": false,
+    "whole_market_claimed": false,
+    "business_queries_max": 10,
+    "total_queries_max": 14,
+    "shared_query_cap": 16,
+    "rows_read_cap": 500,
+    "rows_write_cap": 30
+  },
+  "sent_eligible_in_page": 3,
+  "duplicate_same_wave_groups_count": 0,
+  "market_HTTP": 0,
+  "Telegram": 0,
+  "reanalysis": false,
+  "signals": [
+    {
+      "symbol": "IDOL-USDT",
+      "instrument_id": "BINGX:USDT_M:101334:IDOL-USDT",
+      "message_id": "245",
+      "analysis_msk": "2026-10-30T11:04:31.487000+03:00",
+      "confirmed_msk": "2026-10-30T11:04:41.513000+03:00",
+      "reference_price": 0.016029,
+      "original_checks": {
+        "same_original": true,
+        "receipt_bound": true,
+        "original_implementation_bound": true
+      },
+      "delivery_wave_primary_matches": true,
+      "wave_id": "PUMP:BINGX:USDT_M:101334:IDOL-USDT:1793329320000",
+      "wave_state": "CALM_PULLBACK",
+      "growth": {
+        "window": {
+          "window_ms": 86400000,
+          "start_ts": 1793261040000,
+          "end_ts": 1793347440000,
+          "start_price": 0.013304,
+          "end_price": 0.016079,
+          "return_pct": 20.858388454600107
+        },
+        "independent_return_pct": 20.858388454600107,
+        "threshold_pct": 20,
+        "short_windows": [
+          {
+            "minutes": 5.0,
+            "return_pct": -0.47044258743422773,
+            "passed": false
+          },
+          {
+            "minutes": 15.0,
+            "return_pct": 0.783502569888439,
+            "passed": false
+          },
+          {
+            "minutes": 60.0,
+            "return_pct": 0.808777429467078,
+            "passed": false
+          }
+        ]
+      },
+      "volume": {
+        "impulse": {
+          "field": "volume_native",
+          "unit": "UNKNOWN_NATIVE_UNIT",
+          "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+          "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:101334:IDOL-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+          "interval_ms": 60000,
+          "volume": 5229251.7,
+          "baseline_median": 866125.8,
+          "ratio": 6.03751983834219,
+          "ratio_unit": "RATIO",
+          "ratio_reason": null,
+          "baseline_windows": 12,
+          "baseline_status": "FULL",
+          "normal_range": 0.00026099999999999995,
+          "start_ts": 1793329320000,
+          "end_ts": 1793329620000,
+          "open": 0.014786,
+          "close": 0.014834,
+          "low": 0.014328,
+          "return_pct": 0.324631408088738
+        },
+        "independent_ratio": 6.03751983834219,
+        "current_to_impulse_ratio": 0.13789781815245192,
+        "recent_windows": [
+          {
+            "window_ms": 180000,
+            "start_ts": 1793347260000,
+            "end_ts": 1793347440000,
+            "previous_start_ts": 1793347080000,
+            "previous_end_ts": 1793347260000,
+            "price_return_pct": 0.20565873114792854,
+            "price_return_pct_reason": null,
+            "previous_price_return_pct": -0.6931550934521469,
+            "previous_price_return_pct_reason": null,
+            "speed_pct_per_min": 0.06855291038264284,
+            "previous_speed_pct_per_min": -0.2310516978173823,
+            "speed_change_pct_per_min": 0.29960460820002516,
+            "volume_counter": 399223.29999999993,
+            "previous_volume_counter": 478036,
+            "volume_basis": {
+              "field": "volume_native",
+              "unit": "UNKNOWN_NATIVE_UNIT",
+              "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+              "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:101334:IDOL-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+              "interval_ms": 60000
+            },
+            "current_to_previous_volume_ratio": 0.8351322912918691,
+            "current_to_previous_volume_ratio_reason": null,
+            "baseline_median": 469599.05,
+            "baseline_windows": 20,
+            "baseline_status": "FULL",
+            "current_to_baseline_ratio": 0.8501365153954207,
+            "current_to_baseline_ratio_reason": null,
+            "volume_at_least_previous_with_less_growth": null,
+            "positive_growth_accelerated": true,
+            "reason": null
+          },
+          {
+            "window_ms": 300000,
+            "start_ts": 1793347140000,
+            "end_ts": 1793347440000,
+            "previous_start_ts": 1793346840000,
+            "previous_end_ts": 1793347140000,
+            "price_return_pct": -0.47044258743422773,
+            "price_return_pct_reason": null,
+            "previous_price_return_pct": 0.23577588881305012,
+            "previous_price_return_pct_reason": null,
+            "speed_pct_per_min": -0.09408851748684555,
+            "previous_speed_pct_per_min": 0.04715517776261002,
+            "speed_change_pct_per_min": -0.14124369524945557,
+            "volume_counter": 721102.4,
+            "previous_volume_counter": 549135.4,
+            "volume_basis": {
+              "field": "volume_native",
+              "unit": "UNKNOWN_NATIVE_UNIT",
+              "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+              "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:101334:IDOL-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+              "interval_ms": 60000
+            },
+            "current_to_previous_volume_ratio": 1.313159559554893,
+            "current_to_previous_volume_ratio_reason": null,
+            "baseline_median": 848347.05,
+            "baseline_windows": 12,
+            "baseline_status": "FULL",
+            "current_to_baseline_ratio": 0.8500087316859297,
+            "current_to_baseline_ratio_reason": null,
+            "volume_at_least_previous_with_less_growth": true,
+            "positive_growth_accelerated": false,
+            "reason": null
+          }
+        ]
+      },
+      "wave_clock": {
+        "created_ts": 1793344028015,
+        "expires_ts": 1793358428015,
+        "created_msk": "2026-10-30T10:07:08.015000+03:00",
+        "expires_msk": "2026-10-30T14:07:08.015000+03:00",
+        "impulse_end_msk": "2026-10-30T06:07:00+03:00",
+        "impulse_age_minutes": 297.52478333333335,
+        "previous_exists": true,
+        "previous_created_ts": 1793344028015,
+        "previous_expires_ts": 1793358428015,
+        "retained_ttl_not_extended": true,
+        "lifetime_anchor_ts": null,
+        "initial_anchor": "FIRST_DETECTION_CREATED_TS",
+        "original_qualification_known_ts": 1793344028015,
+        "needs_fresh_wave_semantic_review": true
+      },
+      "plan": {
+        "entries": [
+          {
+            "lower": 0.01435175,
+            "upper": 0.014482249999999999,
+            "basis_price": 0.014417,
+            "basis_known_ts": 1793326380000,
+            "known_before_analysis": true,
+            "preliminary": true,
+            "independent_gross_pct": 10.029518893818313
+          }
+        ],
+        "exit": {
+          "lower": 0.01593475,
+          "upper": 0.01606525,
+          "basis_level": {
+            "kind": "HIGH",
+            "price": 0.016,
+            "event_ts": 1793342580000,
+            "known_ts": 1793342700000,
+            "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:3d5799ea-83f2-482e-a636-e356e14ca971",
+            "evidence_ref": "3d5799ea-83f2-482e-a636-e356e14ca971"
+          }
+        },
+        "invalidation": {
+          "kind": "PRICE_BELOW",
+          "price": 0.014328,
+          "explanation": "Цена ниже сохранённой границы основания волны."
+        },
+        "independent_minimum_gross_pct": 10.029518893818313,
+        "recorded_minimum_gross_pct": 10.029518893818313,
+        "potential_matches": true,
+        "all_entries_below_reference_above_invalidation": true,
+        "exit_known_before_analysis": true,
+        "target_selected_before_potential": true,
+        "target_kind": "NEARER_STRUCTURAL_BARRIER",
+        "historical_intermediate_highs": 73,
+        "highs_below_all_entries": 0,
+        "future_entry_not_executed": true,
+        "gross_excludes_fees_and_funding": true
+      },
+      "liquidity": {
+        "status": "USABLE",
+        "spread_pct": 0.03741114852225378,
+        "independent_spread_pct": 0.03741114852225378,
+        "sizes": [
+          {
+            "size_usdt": 700,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.026277184018108635,
+            "exit_slippage_pct": 0.06837612561871875,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 1000,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.027745016516922405,
+            "exit_slippage_pct": 0.07226122074592833,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 1500,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.03329152162290239,
+            "exit_slippage_pct": 0.07959852356788089,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 2000,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.04249631535455656,
+            "exit_slippage_pct": 0.08613101953369728,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 3000,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.061121759833726585,
+            "exit_slippage_pct": 0.09799056358036351,
+            "recorded_usable": true
+          }
+        ],
+        "quantity_step_known": false,
+        "snapshot_only": true
+      },
+      "source_facts": [
+        {
+          "kind": "price",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347460000,
+          "received_ts": 1793347461788,
+          "expires_ts": 1793347490000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "ticker_24h",
+          "status": "INCOMPLETE",
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "event_ts": 1793347460000,
+          "received_ts": 1793347461788,
+          "expires_ts": 1793347490000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "candles",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347440000,
+          "received_ts": 1793347465628,
+          "expires_ts": 1793347530000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "orderbook",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347466808,
+          "received_ts": 1793347466908,
+          "expires_ts": 1793347481808,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "growth_24h",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347440000,
+          "received_ts": 1793347463623,
+          "expires_ts": 1793347530000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "price_structure",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347440000,
+          "received_ts": 1793347463623,
+          "expires_ts": 1793347530000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "open_interest",
+          "status": "NOT_CHECKED",
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "event_ts": null,
+          "received_ts": 1793347468075,
+          "expires_ts": null,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "trades",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347468609,
+          "received_ts": 1793347469176,
+          "expires_ts": 1793347498609,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "funding",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347200000,
+          "received_ts": 1793347470939,
+          "expires_ts": 1793347500000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        }
+      ],
+      "trades": {
+        "returned_rows": 1000,
+        "qualified_unique_rows": 80,
+        "buy_usdt": 430.46999999999997,
+        "sell_usdt": 405.7000000000001,
+        "sample_seconds": 26.0,
+        "price_response": {
+          "first_price": null,
+          "last_price": 0.016038,
+          "min_price": 0.016011,
+          "max_price": 0.01608,
+          "first_to_last_return_pct": null
+        },
+        "full_market_coverage": false,
+        "absorption_proven": false
+      },
+      "funding": {
+        "value": {
+          "rate": 3.5e-05,
+          "period_ms": 14400000
+        },
+        "unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+        "source": "BINGX_OFFICIAL_PUBLIC_API",
+        "venue": "BINGX",
+        "origin": "OBSERVED",
+        "event_ts": 1793347200000,
+        "received_ts": 1793347470939,
+        "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:funding:71f77f7f-a30c-4b59-ae32-2a7247f953bb",
+        "kind": "funding",
+        "status": "USABLE",
+        "instrument_id": "BINGX:USDT_M:101334:IDOL-USDT",
+        "expires_ts": 1793347500000,
+        "evidence_ref": "71f77f7f-a30c-4b59-ae32-2a7247f953bb"
+      },
+      "open_interest": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED"
+      },
+      "liquidations": {
+        "status": "NOT_CHECKED",
+        "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+        "zones_up": [],
+        "zones_down": [],
+        "coverage": null,
+        "rejected_zones": [],
+        "checked_sources": [],
+        "map_mode": "WITHOUT_MAP",
+        "qualified_zone_count": 0
+      },
+      "narrative": {
+        "version": "pump-user-narrative-v1-tz2-20261025",
+        "reasons": [
+          {
+            "code": "CALM_PULLBACK",
+            "text": "Цена ниже вершины; текущий сценарий — спокойный откат.",
+            "fact_ids": [
+              "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:3d5799ea-83f2-482e-a636-e356e14ca971"
+            ]
+          },
+          {
+            "code": "PRICE_ACTIVITY_DECELERATION",
+            "text": "Последние 5 минут не дали роста при активности не ниже предыдущих 5 минут.",
+            "fact_ids": [
+              "pump-report-sources-v1:BINGX:USDT_M:101334:IDOL-USDT:candles:3d5799ea-83f2-482e-a636-e356e14ca971"
+            ],
+            "observations_version": "pump-closed-movement-details-v1-20261026",
+            "causation_proven": false
+          }
+        ],
+        "warning": null,
+        "limitation": null
+      },
+      "statistical_outcome_not_read_in_this_batch": true
+    },
+    {
+      "symbol": "SOPH-USDT",
+      "instrument_id": "BINGX:USDT_M:101302:SOPH-USDT",
+      "message_id": "244",
+      "analysis_msk": "2026-10-30T11:02:05.053000+03:00",
+      "confirmed_msk": "2026-10-30T11:02:15.361000+03:00",
+      "reference_price": 0.00173,
+      "original_checks": {
+        "same_original": true,
+        "receipt_bound": true,
+        "original_implementation_bound": true
+      },
+      "delivery_wave_primary_matches": true,
+      "wave_id": "PUMP:BINGX:USDT_M:101302:SOPH-USDT:1793335620000",
+      "wave_state": "CALM_PULLBACK",
+      "growth": {
+        "window": {
+          "window_ms": 86400000,
+          "start_ts": 1793260860000,
+          "end_ts": 1793347260000,
+          "start_price": 0.001428,
+          "end_price": 0.001727,
+          "return_pct": 20.93837535014005
+        },
+        "independent_return_pct": 20.93837535014005,
+        "threshold_pct": 20,
+        "short_windows": [
+          {
+            "minutes": 5.0,
+            "return_pct": 0.6997084548105104,
+            "passed": false
+          },
+          {
+            "minutes": 15.0,
+            "return_pct": 1.6480282519128808,
+            "passed": false
+          },
+          {
+            "minutes": 60.0,
+            "return_pct": 2.431791221826818,
+            "passed": false
+          }
+        ]
+      },
+      "volume": {
+        "impulse": {
+          "field": "volume_native",
+          "unit": "UNKNOWN_NATIVE_UNIT",
+          "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+          "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:101302:SOPH-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+          "interval_ms": 60000,
+          "volume": 7370076.4,
+          "baseline_median": 3470609.2,
+          "ratio": 2.123568507799726,
+          "ratio_unit": "RATIO",
+          "ratio_reason": null,
+          "baseline_windows": 12,
+          "baseline_status": "FULL",
+          "normal_range": 1.9499999999999878e-05,
+          "start_ts": 1793335620000,
+          "end_ts": 1793335920000,
+          "open": 0.001542,
+          "close": 0.001566,
+          "low": 0.001535,
+          "return_pct": 1.5564202334630295
+        },
+        "independent_ratio": 2.123568507799726,
+        "current_to_impulse_ratio": 0.31835338911819144,
+        "recent_windows": [
+          {
+            "window_ms": 180000,
+            "start_ts": 1793347080000,
+            "end_ts": 1793347260000,
+            "previous_start_ts": 1793346900000,
+            "previous_end_ts": 1793347080000,
+            "price_return_pct": 0.5824111822946954,
+            "price_return_pct_reason": null,
+            "previous_price_return_pct": 0,
+            "previous_price_return_pct_reason": null,
+            "speed_pct_per_min": 0.19413706076489845,
+            "previous_speed_pct_per_min": 0,
+            "speed_change_pct_per_min": 0.19413706076489845,
+            "volume_counter": 1699100.9,
+            "previous_volume_counter": 1274207.2000000002,
+            "volume_basis": {
+              "field": "volume_native",
+              "unit": "UNKNOWN_NATIVE_UNIT",
+              "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+              "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:101302:SOPH-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+              "interval_ms": 60000
+            },
+            "current_to_previous_volume_ratio": 1.3334573058447634,
+            "current_to_previous_volume_ratio_reason": null,
+            "baseline_median": 1837878.35,
+            "baseline_windows": 20,
+            "baseline_status": "FULL",
+            "current_to_baseline_ratio": 0.9244904049280519,
+            "current_to_baseline_ratio_reason": null,
+            "volume_at_least_previous_with_less_growth": null,
+            "positive_growth_accelerated": true,
+            "reason": null
+          },
+          {
+            "window_ms": 300000,
+            "start_ts": 1793346960000,
+            "end_ts": 1793347260000,
+            "previous_start_ts": 1793346660000,
+            "previous_end_ts": 1793346960000,
+            "price_return_pct": 0.6997084548105104,
+            "price_return_pct_reason": null,
+            "previous_price_return_pct": 0.3510825043885335,
+            "previous_price_return_pct_reason": null,
+            "speed_pct_per_min": 0.13994169096210207,
+            "previous_speed_pct_per_min": 0.0702165008777067,
+            "speed_change_pct_per_min": 0.06972519008439537,
+            "volume_counter": 2346288.8,
+            "previous_volume_counter": 3327398.7,
+            "volume_basis": {
+              "field": "volume_native",
+              "unit": "UNKNOWN_NATIVE_UNIT",
+              "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+              "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:101302:SOPH-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+              "interval_ms": 60000
+            },
+            "current_to_previous_volume_ratio": 0.7051420678862439,
+            "current_to_previous_volume_ratio_reason": null,
+            "baseline_median": 2906305.65,
+            "baseline_windows": 12,
+            "baseline_status": "FULL",
+            "current_to_baseline_ratio": 0.8073097198156016,
+            "current_to_baseline_ratio_reason": null,
+            "volume_at_least_previous_with_less_growth": false,
+            "positive_growth_accelerated": true,
+            "reason": null
+          }
+        ]
+      },
+      "wave_clock": {
+        "created_ts": 1793347325053,
+        "expires_ts": 1793361725053,
+        "created_msk": "2026-10-30T11:02:05.053000+03:00",
+        "expires_msk": "2026-10-30T15:02:05.053000+03:00",
+        "impulse_end_msk": "2026-10-30T07:52:00+03:00",
+        "impulse_age_minutes": 190.08421666666666,
+        "previous_exists": false,
+        "previous_created_ts": null,
+        "previous_expires_ts": null,
+        "retained_ttl_not_extended": null,
+        "lifetime_anchor_ts": null,
+        "initial_anchor": "FIRST_DETECTION_CREATED_TS",
+        "original_qualification_known_ts": 1793347325053,
+        "needs_fresh_wave_semantic_review": false
+      },
+      "plan": {
+        "entries": [
+          {
+            "lower": 0.001540125,
+            "upper": 0.0015498749999999998,
+            "basis_price": 0.001545,
+            "basis_known_ts": 1793336100000,
+            "known_before_analysis": true,
+            "preliminary": true,
+            "independent_gross_pct": 11.049278167594178
+          }
+        ],
+        "exit": {
+          "lower": 0.0017211250000000002,
+          "upper": 0.001730875,
+          "basis_level": {
+            "kind": "HIGH",
+            "price": 0.001726,
+            "event_ts": 1793343120000,
+            "known_ts": 1793343240000,
+            "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101302:SOPH-USDT:candles:c077587e-72fe-41f0-b917-7451baea23bc",
+            "evidence_ref": "c077587e-72fe-41f0-b917-7451baea23bc"
+          }
+        },
+        "invalidation": {
+          "kind": "PRICE_BELOW",
+          "price": 0.001535,
+          "explanation": "Цена ниже сохранённой границы основания волны."
+        },
+        "independent_minimum_gross_pct": 11.049278167594178,
+        "recorded_minimum_gross_pct": 11.049278167594178,
+        "potential_matches": true,
+        "all_entries_below_reference_above_invalidation": true,
+        "exit_known_before_analysis": true,
+        "target_selected_before_potential": true,
+        "target_kind": "NEARER_STRUCTURAL_BARRIER",
+        "historical_intermediate_highs": 20,
+        "highs_below_all_entries": 0,
+        "future_entry_not_executed": true,
+        "gross_excludes_fees_and_funding": true
+      },
+      "liquidity": {
+        "status": "USABLE",
+        "spread_pct": 0.17386264850767688,
+        "independent_spread_pct": 0.17386264850767688,
+        "sizes": [
+          {
+            "size_usdt": 700,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.04041620027415149,
+            "exit_slippage_pct": 0,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 1000,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.045661862178136836,
+            "exit_slippage_pct": 0,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 1500,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.049742201780111905,
+            "exit_slippage_pct": 0.0072125265367040114,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 2000,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.05470136636258616,
+            "exit_slippage_pct": 0.019908666786172535,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 3000,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.07506187410177834,
+            "exit_slippage_pct": 0.0326021564525214,
+            "recorded_usable": true
+          }
+        ],
+        "quantity_step_known": false,
+        "snapshot_only": true
+      },
+      "source_facts": [
+        {
+          "kind": "price",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347311000,
+          "received_ts": 1793347314463,
+          "expires_ts": 1793347341000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "ticker_24h",
+          "status": "INCOMPLETE",
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "event_ts": 1793347311000,
+          "received_ts": 1793347314463,
+          "expires_ts": 1793347341000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "candles",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347260000,
+          "received_ts": 1793347318348,
+          "expires_ts": 1793347350000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "orderbook",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347320008,
+          "received_ts": 1793347320106,
+          "expires_ts": 1793347335008,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "growth_24h",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347260000,
+          "received_ts": 1793347316623,
+          "expires_ts": 1793347350000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "price_structure",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347260000,
+          "received_ts": 1793347316623,
+          "expires_ts": 1793347350000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "open_interest",
+          "status": "NOT_CHECKED",
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "event_ts": null,
+          "received_ts": 1793347321252,
+          "expires_ts": null,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "trades",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347321132,
+          "received_ts": 1793347322173,
+          "expires_ts": 1793347351132,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "funding",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793347200000,
+          "received_ts": 1793347323916,
+          "expires_ts": 1793347500000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        }
+      ],
+      "trades": {
+        "returned_rows": 1000,
+        "qualified_unique_rows": 12,
+        "buy_usdt": 219.06,
+        "sell_usdt": 149.24,
+        "sample_seconds": 25.999,
+        "price_response": {
+          "first_price": 0.001734,
+          "last_price": 0.001726,
+          "min_price": 0.001715,
+          "max_price": 0.001734,
+          "first_to_last_return_pct": -0.46136101499423265
+        },
+        "full_market_coverage": false,
+        "absorption_proven": false
+      },
+      "funding": {
+        "value": {
+          "rate": -0.0012936,
+          "period_ms": 14400000
+        },
+        "unit": "RATE_FRACTION_PER_ACTUAL_PERIOD",
+        "source": "BINGX_OFFICIAL_PUBLIC_API",
+        "venue": "BINGX",
+        "origin": "OBSERVED",
+        "event_ts": 1793347200000,
+        "received_ts": 1793347323916,
+        "fact_id": "pump-report-sources-v1:BINGX:USDT_M:101302:SOPH-USDT:funding:d61da456-864a-4616-9b4d-cfcf65bfff0c",
+        "kind": "funding",
+        "status": "USABLE",
+        "instrument_id": "BINGX:USDT_M:101302:SOPH-USDT",
+        "expires_ts": 1793347500000,
+        "evidence_ref": "d61da456-864a-4616-9b4d-cfcf65bfff0c"
+      },
+      "open_interest": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED"
+      },
+      "liquidations": {
+        "status": "NOT_CHECKED",
+        "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+        "zones_up": [],
+        "zones_down": [],
+        "coverage": null,
+        "rejected_zones": [],
+        "checked_sources": [],
+        "map_mode": "WITHOUT_MAP",
+        "qualified_zone_count": 0
+      },
+      "narrative": {
+        "version": "pump-user-narrative-v1-tz2-20261025",
+        "reasons": [
+          {
+            "code": "CALM_PULLBACK",
+            "text": "Цена ниже вершины; текущий сценарий — спокойный откат.",
+            "fact_ids": [
+              "pump-report-sources-v1:BINGX:USDT_M:101302:SOPH-USDT:candles:c077587e-72fe-41f0-b917-7451baea23bc"
+            ]
+          },
+          {
+            "code": "CLOSED_WINDOW_ACCELERATION",
+            "text": "Рост по закрытиям за последние 3 мин ускорился относительно предыдущих 3 мин при не меньшей активности.",
+            "fact_ids": [
+              "pump-report-sources-v1:BINGX:USDT_M:101302:SOPH-USDT:candles:c077587e-72fe-41f0-b917-7451baea23bc"
+            ],
+            "observations_version": "pump-closed-movement-details-v1-20261026",
+            "causation_proven": false
+          }
+        ],
+        "warning": null,
+        "limitation": null
+      },
+      "statistical_outcome_not_read_in_this_batch": true
+    },
+    {
+      "symbol": "MAGMA-USDT",
+      "instrument_id": "BINGX:USDT_M:102176:MAGMA-USDT",
+      "message_id": "243",
+      "analysis_msk": "2026-10-30T10:03:01.755000+03:00",
+      "confirmed_msk": "2026-10-30T10:03:06.784000+03:00",
+      "reference_price": 0.3343,
+      "original_checks": {
+        "same_original": true,
+        "receipt_bound": true,
+        "original_implementation_bound": true
+      },
+      "delivery_wave_primary_matches": true,
+      "wave_id": "PUMP:BINGX:USDT_M:102176:MAGMA-USDT:1793337420000",
+      "wave_state": "CALM_PULLBACK",
+      "growth": {
+        "window": {
+          "window_ms": 86400000,
+          "start_ts": 1793257320000,
+          "end_ts": 1793343720000,
+          "start_price": 0.26069,
+          "end_price": 0.33604,
+          "return_pct": 28.904062296213915
+        },
+        "independent_return_pct": 28.904062296213915,
+        "threshold_pct": 20,
+        "short_windows": [
+          {
+            "minutes": 5.0,
+            "return_pct": 1.2351629812616727,
+            "passed": false
+          },
+          {
+            "minutes": 15.0,
+            "return_pct": 1.3359066373149098,
+            "passed": false
+          },
+          {
+            "minutes": 60.0,
+            "return_pct": -4.311179452132807,
+            "passed": false
+          }
+        ]
+      },
+      "volume": {
+        "impulse": {
+          "field": "volume_native",
+          "unit": "UNKNOWN_NATIVE_UNIT",
+          "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+          "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:102176:MAGMA-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+          "interval_ms": 60000,
+          "volume": 39031.590000000004,
+          "baseline_median": 18055.18,
+          "ratio": 2.161794565326959,
+          "ratio_unit": "RATIO",
+          "ratio_reason": null,
+          "baseline_windows": 12,
+          "baseline_status": "FULL",
+          "normal_range": 0.0020600000000000063,
+          "start_ts": 1793337420000,
+          "end_ts": 1793337720000,
+          "open": 0.28331,
+          "close": 0.2957,
+          "low": 0.28163,
+          "return_pct": 4.373301330697821
+        },
+        "independent_ratio": 2.161794565326959,
+        "current_to_impulse_ratio": 0.3956874418900177,
+        "recent_windows": [
+          {
+            "window_ms": 180000,
+            "start_ts": 1793343540000,
+            "end_ts": 1793343720000,
+            "previous_start_ts": 1793343360000,
+            "previous_end_ts": 1793343540000,
+            "price_return_pct": 1.495061765683059,
+            "price_return_pct_reason": null,
+            "previous_price_return_pct": -0.510832657231286,
+            "previous_price_return_pct_reason": null,
+            "speed_pct_per_min": 0.49835392189435296,
+            "previous_speed_pct_per_min": -0.17027755241042866,
+            "speed_change_pct_per_min": 0.6686314743047816,
+            "volume_counter": 9432.6,
+            "previous_volume_counter": 7631.75,
+            "volume_basis": {
+              "field": "volume_native",
+              "unit": "UNKNOWN_NATIVE_UNIT",
+              "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+              "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:102176:MAGMA-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+              "interval_ms": 60000
+            },
+            "current_to_previous_volume_ratio": 1.2359681593343599,
+            "current_to_previous_volume_ratio_reason": null,
+            "baseline_median": 26316.355,
+            "baseline_windows": 20,
+            "baseline_status": "FULL",
+            "current_to_baseline_ratio": 0.3584310973157187,
+            "current_to_baseline_ratio_reason": null,
+            "volume_at_least_previous_with_less_growth": null,
+            "positive_growth_accelerated": true,
+            "reason": null
+          },
+          {
+            "window_ms": 300000,
+            "start_ts": 1793343420000,
+            "end_ts": 1793343720000,
+            "previous_start_ts": 1793343120000,
+            "previous_end_ts": 1793343420000,
+            "price_return_pct": 1.2351629812616727,
+            "price_return_pct_reason": null,
+            "previous_price_return_pct": -0.05118785944415727,
+            "previous_price_return_pct_reason": null,
+            "speed_pct_per_min": 0.24703259625233454,
+            "previous_speed_pct_per_min": -0.010237571888831454,
+            "speed_change_pct_per_min": 0.257270168141166,
+            "volume_counter": 15444.309999999998,
+            "previous_volume_counter": 38912.65,
+            "volume_basis": {
+              "field": "volume_native",
+              "unit": "UNKNOWN_NATIVE_UNIT",
+              "comparison_kind": "SAME_NATIVE_REPORTED_QUANTITY",
+              "comparison_key": "BINGX|USDT_M|BINGX:USDT_M:102176:MAGMA-USDT|/openApi/swap/v3/quote/klines|volume|60000",
+              "interval_ms": 60000
+            },
+            "current_to_previous_volume_ratio": 0.39689689599654604,
+            "current_to_previous_volume_ratio_reason": null,
+            "baseline_median": 45312.53,
+            "baseline_windows": 12,
+            "baseline_status": "FULL",
+            "current_to_baseline_ratio": 0.3408397191681859,
+            "current_to_baseline_ratio_reason": null,
+            "volume_at_least_previous_with_less_growth": null,
+            "positive_growth_accelerated": true,
+            "reason": null
+          }
+        ]
+      },
+      "wave_clock": {
+        "created_ts": 1793343781755,
+        "expires_ts": 1793358181755,
+        "created_msk": "2026-10-30T10:03:01.755000+03:00",
+        "expires_msk": "2026-10-30T14:03:01.755000+03:00",
+        "impulse_end_msk": "2026-10-30T08:22:00+03:00",
+        "impulse_age_minutes": 101.02925,
+        "previous_exists": false,
+        "previous_created_ts": null,
+        "previous_expires_ts": null,
+        "retained_ttl_not_extended": null,
+        "lifetime_anchor_ts": null,
+        "initial_anchor": "FIRST_DETECTION_CREATED_TS",
+        "original_qualification_known_ts": 1793343781755,
+        "needs_fresh_wave_semantic_review": false
+      },
+      "plan": {
+        "entries": [
+          {
+            "lower": 0.301475,
+            "upper": 0.30250499999999997,
+            "basis_price": 0.30199,
+            "basis_known_ts": 1793337840000,
+            "known_before_analysis": true,
+            "preliminary": true,
+            "independent_gross_pct": 10.333713492339003
+          },
+          {
+            "lower": 0.299055,
+            "upper": 0.300085,
+            "basis_price": 0.29957,
+            "basis_known_ts": 1793327640000,
+            "known_before_analysis": true,
+            "preliminary": true,
+            "independent_gross_pct": 11.223486678774353
+          },
+          {
+            "lower": 0.29801500000000003,
+            "upper": 0.299045,
+            "basis_price": 0.29853,
+            "basis_known_ts": 1793291460000,
+            "known_before_analysis": true,
+            "preliminary": true,
+            "independent_gross_pct": 11.610292765302898
+          }
+        ],
+        "exit": {
+          "lower": 0.33376500000000003,
+          "upper": 0.334795,
+          "basis_level": {
+            "kind": "HIGH",
+            "price": 0.33428,
+            "event_ts": 1793343060000,
+            "known_ts": 1793343180000,
+            "fact_id": "pump-report-sources-v1:BINGX:USDT_M:102176:MAGMA-USDT:candles:000afa83-c7de-423e-bc8e-98824ecfa533",
+            "evidence_ref": "000afa83-c7de-423e-bc8e-98824ecfa533"
+          }
+        },
+        "invalidation": {
+          "kind": "PRICE_BELOW",
+          "price": 0.28163,
+          "explanation": "Цена ниже сохранённой границы основания волны."
+        },
+        "independent_minimum_gross_pct": 10.333713492339003,
+        "recorded_minimum_gross_pct": 10.333713492339003,
+        "potential_matches": true,
+        "all_entries_below_reference_above_invalidation": true,
+        "exit_known_before_analysis": true,
+        "target_selected_before_potential": true,
+        "target_kind": "NEARER_STRUCTURAL_BARRIER",
+        "historical_intermediate_highs": 165,
+        "highs_below_all_entries": 157,
+        "future_entry_not_executed": true,
+        "gross_excludes_fees_and_funding": true
+      },
+      "liquidity": {
+        "status": "USABLE",
+        "spread_pct": 0.041827253443287915,
+        "independent_spread_pct": 0.041827253443287915,
+        "sizes": [
+          {
+            "size_usdt": 700,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.01078700412548983,
+            "exit_slippage_pct": 0.01445905998410657,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 1000,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.02559723327861807,
+            "exit_slippage_pct": 0.024369336178298173,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 1500,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.040336095583382026,
+            "exit_slippage_pct": 0.03352905532572059,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 2000,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.05075166213925897,
+            "exit_slippage_pct": 0.03859249611634086,
+            "recorded_usable": true
+          },
+          {
+            "size_usdt": 3000,
+            "both_sides_cover_same_quantity": true,
+            "entry_quantity_matches": true,
+            "exit_quote_matches": true,
+            "entry_slippage_pct": 0.0664372245908762,
+            "exit_slippage_pct": 0.04836946742297066,
+            "recorded_usable": true
+          }
+        ],
+        "quantity_step_known": false,
+        "snapshot_only": true
+      },
+      "source_facts": [
+        {
+          "kind": "price",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343774000,
+          "received_ts": 1793343776016,
+          "expires_ts": 1793343804000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "ticker_24h",
+          "status": "INCOMPLETE",
+          "reason": "ROLLING_24H_OPEN_UNQUALIFIED",
+          "event_ts": 1793343774000,
+          "received_ts": 1793343776016,
+          "expires_ts": 1793343804000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "candles",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343720000,
+          "received_ts": 1793343777843,
+          "expires_ts": 1793343810000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "orderbook",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343778769,
+          "received_ts": 1793343778835,
+          "expires_ts": 1793343793769,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "growth_24h",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343720000,
+          "received_ts": 1793343776968,
+          "expires_ts": 1793343810000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "price_structure",
+          "status": "USABLE",
+          "reason": null,
+          "event_ts": 1793343720000,
+          "received_ts": 1793343776968,
+          "expires_ts": 1793343810000,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "open_interest",
+          "status": "NOT_CHECKED",
+          "reason": "OPTIONAL_KIND_NOT_REQUESTED",
+          "event_ts": null,
+          "received_ts": 1793343780055,
+          "expires_ts": null,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "trades",
+          "status": "USABLE",
+          "reason": "LATEST_RETURNED_TRADE_SAMPLE_PARTIAL",
+          "event_ts": 1793343779862,
+          "received_ts": 1793343780538,
+          "expires_ts": 1793343809862,
+          "used_fact_id": true,
+          "received_before_analysis": true
+        },
+        {
+          "kind": "funding",
+          "status": "STALE",
+          "reason": "SOURCE_FACT_STALE",
+          "event_ts": 1793332800000,
+          "received_ts": 1793343781489,
+          "expires_ts": 1793333100000,
+          "used_fact_id": false,
+          "received_before_analysis": true
+        }
+      ],
+      "trades": {
+        "returned_rows": 1000,
+        "qualified_unique_rows": 14,
+        "buy_usdt": 95.33,
+        "sell_usdt": 84.8,
+        "sample_seconds": 26.004,
+        "price_response": {
+          "first_price": 0.33529,
+          "last_price": 0.33467,
+          "min_price": 0.3343,
+          "max_price": 0.33529,
+          "first_to_last_return_pct": -0.18491455158219372
+        },
+        "full_market_coverage": false,
+        "absorption_proven": false
+      },
+      "funding": null,
+      "open_interest": {
+        "status": "NOT_CHECKED",
+        "reason": "OPTIONAL_KIND_NOT_REQUESTED"
+      },
+      "liquidations": {
+        "status": "NOT_CHECKED",
+        "reason": "NO_VERIFIED_LIQUIDATION_ROUTE",
+        "zones_up": [],
+        "zones_down": [],
+        "coverage": null,
+        "rejected_zones": [],
+        "checked_sources": [],
+        "map_mode": "WITHOUT_MAP",
+        "qualified_zone_count": 0
+      },
+      "narrative": {
+        "version": "pump-user-narrative-v1-tz2-20261025",
+        "reasons": [
+          {
+            "code": "CALM_PULLBACK",
+            "text": "Цена ниже вершины; текущий сценарий — спокойный откат.",
+            "fact_ids": [
+              "pump-report-sources-v1:BINGX:USDT_M:102176:MAGMA-USDT:candles:000afa83-c7de-423e-bc8e-98824ecfa533"
+            ]
+          },
+          {
+            "code": "CLOSED_WINDOW_ACCELERATION",
+            "text": "Рост по закрытиям за последние 3 мин ускорился относительно предыдущих 3 мин при не меньшей активности.",
+            "fact_ids": [
+              "pump-report-sources-v1:BINGX:USDT_M:102176:MAGMA-USDT:candles:000afa83-c7de-423e-bc8e-98824ecfa533"
+            ],
+            "observations_version": "pump-closed-movement-details-v1-20261026",
+            "causation_proven": false
+          }
+        ],
+        "warning": null,
+        "limitation": null
+      },
+      "statistical_outcome_not_read_in_this_batch": true
+    }
+  ],
+  "native_receipt": {
+    "state": "FINALIZED",
+    "reservation_id": "PUMP:LOOKUP:pump-recent-signal-quality-20261030-one",
+    "usage": {
+      "requests": 14,
+      "rows_read": 43,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "accounted_upper_bound": {
+      "rows_read": 43,
+      "rows_written": 4
+    },
+    "original_envelope_never_reduced": true
+  },
+  "own_UTC30_known_service_totals": {
+    "LOOKUP_runs": 3,
+    "SQL": 32,
+    "rows_read": 81,
+    "rows_written": 12,
+    "unknown_ops": 0,
+    "not_whole_account": true
+  },
+  "configuration_mutation": false,
+  "frequency_or_threshold_changed": false
+}
