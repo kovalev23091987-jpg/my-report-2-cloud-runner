@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {MemoryStore} from '../../runtime/store.mjs';
 import {createDelivery} from '../../runtime/delivery.mjs';
 import {createPumpRunner} from '../../runtime/runner.mjs';
+import {createRetainedCapsuleWriter} from '../../runtime/retained-capsules.mjs';
 import {preparePumpPublication,revalidatePumpCard} from '../../runtime/worker.mjs';
 import {sendSavedTelegram} from '../../runtime/telegram-send.mjs';
 import {selectZones,assessPublicationMap} from '../../analytics/zones.mjs';
@@ -50,10 +51,12 @@ const runnerSources={getOverview:async()=>({observations:[{facts:{price:f.price,
   getLiquidations:async()=>structuredClone(original.input.liquidations),
   getOptional:async()=>({facts:{trades:f.trades,funding:f.funding,open_interest:f.open_interest}})};
 let retained=0;
+const retainedWriter=createRetainedCapsuleWriter({store:after.store,implementation_sha256:original.implementation_sha256,evidence_class:'OBSERVED'});
+const remember=retainedWriter.remember;retainedWriter.remember=async(...args)=>{retained++;return remember(...args);};
 const runner=createPumpRunner({store:after.store,sources:runnerSources,delivery,clock:after.clock,
   analyzePump:(await import('../../analytics/index.mjs')).analyzePump,evaluateOutcome:()=>{throw Error('NO_OUTCOME_COLLECTION');},
   budget:{setMode:()=>{},admitCandidate:async()=>({allowed:true})},profile:START_PROFILE,evidence_class:'OBSERVED',run_purpose:'PRODUCTION',
-  retained_features:{implementation_sha256:original.implementation_sha256,evidence_class:'CONTROLLED_OFFLINE_FIXTURE',remember:async()=>{retained++;}}});
+  retained_features:retainedWriter});
 if(original.input.previous_wave)await after.store.set('pump:wave:'+original.analysis.instrument.instrument_id,original.input.previous_wave);
 const answer=await runner.checkInstrument(original.analysis.instrument,{run_id:original.analysis.run_id,mode:'AUTO',publish:true});
 assert.equal(prepared.accepted,true);assert.equal(prepared.analysis.ready,true);assert.equal(prepared.input.publication_preflight.purpose,'DELIVERY');
