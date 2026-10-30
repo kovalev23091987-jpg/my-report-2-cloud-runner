@@ -1,0 +1,19 @@
+--- a/pump-report/runtime/runner.mjs
++++ b/pump-report/runtime/runner.mjs
+@@ -260,7 +260,15 @@
+     const candidate=profile.core_http_upper_bound+(profile.optional_http_upper_bound??2)+(profile.map_http_upper_bound??1)+profile.delivery_http_reserve;
+     const http=summary.total+candidate+manual<=summary.limits.http_per_run&&summary.lanes.hot+candidate+manual<=summary.limits.lanes.hot;
+     if(!http)return false;
+-    if(store.admission&&typeof store.usage==='function'){const used=store.usage();return used.rows_read+profile.core_sql_upper_bound.rows_read+profile.delivery_sql_reserve.rows_read<=store.admission.max_rows_read&&used.rows_written+profile.core_sql_upper_bound.rows_written+profile.delivery_sql_reserve.rows_written<=store.admission.max_rows_written;}
++    if(store.admission&&typeof store.usage==='function'){
++      const used=store.usage(),reserve=store.finalization_reserve??{},floor=PRODUCTION_PLAN.candidate_surplus?.native_remaining_floor;
++      // Reuse the existing query floor; this is necessary headroom, not a
++      // qualification of the publication/index/materialization tail.
++      return used.unknown_ops===0&&store.admission.expires_ts>clock()&&Number.isSafeInteger(floor?.requests)&&floor.requests>0
++        &&used.requests+floor.requests+(reserve.requests??0)<=(store.max_requests??store.admission.max_requests)
++        &&used.rows_read+profile.core_sql_upper_bound.rows_read+profile.delivery_sql_reserve.rows_read+(reserve.rows_read??0)<=store.admission.max_rows_read
++        &&used.rows_written+profile.core_sql_upper_bound.rows_written+profile.delivery_sql_reserve.rows_written+(reserve.rows_written??0)<=store.admission.max_rows_written;
++    }
+     return true;
+   }
+ 

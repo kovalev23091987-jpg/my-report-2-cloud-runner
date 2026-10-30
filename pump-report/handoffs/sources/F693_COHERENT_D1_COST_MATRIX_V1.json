@@ -1,0 +1,509 @@
+{
+  "schema": "F693_COHERENT_D1_COST_MATRIX_V1",
+  "verdict": "STATIC_PATHS_REVIEWED_NATIVE_COMPLETION_ENVELOPE_NOT_PROVEN",
+  "authority_main": "9f053a01ea59e148a0ffcbaa03cb6788656679e8",
+  "compatible_final_main": "d6d78485bc6ee2c6142fe746733e18e21823e8ef",
+  "units": {
+    "G": "store.get",
+    "A": "single-key atomic",
+    "P": "atomicPair",
+    "S": "store.set",
+    "D": "removeWorkPointer",
+    "X": "scanPrefix",
+    "B": "boundedArray",
+    "Q": "native SQL requests",
+    "R_W": "D1 admission hints; actual meta authoritative, not physical storage/performance bounds"
+  },
+  "primitives": [
+    {
+      "operator": "G",
+      "Q": 1,
+      "R_hint": 1,
+      "W_hint": 0
+    },
+    {
+      "operator": "S",
+      "Q": 1,
+      "R_hint": 2,
+      "W_hint": 2
+    },
+    {
+      "operator": "D",
+      "Q": 1,
+      "R_hint": 1,
+      "W_hint": 2,
+      "restriction": "derived ready work pointer only"
+    },
+    {
+      "operator": "X(limit=L<=40)",
+      "Q": 1,
+      "R_hint": "L",
+      "W_hint": 0
+    },
+    {
+      "operator": "B",
+      "Q": 1,
+      "R_hint": 1,
+      "W_hint": 0,
+      "restriction": "SQL bounds JSON array40/items10000bytes"
+    },
+    {
+      "operator": "A unchanged",
+      "Q": 1,
+      "R_hint": 1,
+      "W_hint": 0
+    },
+    {
+      "operator": "A write succeeds first attempt",
+      "Q": 2,
+      "R_hint": 2,
+      "W_hint": "existing UPDATE1; INSERT OR IGNORE2"
+    },
+    {
+      "operator": "A CAS retries",
+      "attempts_max": 5,
+      "Q_max": 10,
+      "R_hint_max": 10,
+      "W_hint_conservative_max": 10
+    },
+    {
+      "operator": "P unchanged",
+      "Q": 1,
+      "R_hint": 2,
+      "W_hint": 0
+    },
+    {
+      "operator": "P write succeeds first attempt",
+      "Q": 2,
+      "R_hint": 6,
+      "W_hint": 4
+    },
+    {
+      "operator": "P CAS retries",
+      "attempts_max": 5,
+      "Q_max": 10,
+      "R_hint_max": 30,
+      "W_hint_conservative_max": 20
+    }
+  ],
+  "formula": {
+    "no_failed_CAS_Q": "G+S+D+X+B+A+P+C_A+C_P, where C_A/C_P are changing atomic calls, not D1 rows_written",
+    "CAS_upper_Q": "G+S+D+X+B+10*A+10*P",
+    "CAS_hint_R": "G+2*S+D+sum(scan_limits)+B+10*A+30*P",
+    "CAS_hint_W": "2*S+2*D+10*A+20*P",
+    "exclusions": "Add direct reserve/finalize/install separately. Callback exceptions can stop earlier. Never equate Memory get/atomic calls to SQL; all upper sums stop at actual D1Store admission refusal."
+  },
+  "constructor_and_native": [
+    {
+      "stage": "worker services before runner",
+      "F691_lines": "worker138-160,174-175",
+      "cost": "reserveNativeRun2SQL; install1SQL for AUTO/MANUAL (hint20R20W); registry/binding SHA/WeakMap/budget/source/writer constructors0SQL. No per-module query."
+    },
+    {
+      "stage": "reserveNativeRun",
+      "lines": "native-budget14-69",
+      "Q": 2,
+      "R_W": "actual shared-ledger INSERT SELECT day-index SUM + exactPK readback; no finite constant row-read assumption",
+      "envelope": "AUTO/MANUAL5000R300W800Q,15min; LOOKUP500R30W800Q existingmax10day (not helper admission). Starts cost with these2queries."
+    },
+    {
+      "stage": "finalization",
+      "lines": "native-budget72-87; store.check/query",
+      "Q": 2,
+      "R_hint": 2,
+      "W_hint": 1,
+      "protected_in_advance": true,
+      "failure": "unknown_ops>0 remains RESERVED; no finalize/release/refund guess"
+    },
+    {
+      "stage": "whole AUTO fixed wrapper",
+      "Q": 5,
+      "composition": "reserve2 + existing install1 + finalize2; Q_work<=795, rows available = cap - actual reservation cost -installactual -finalizationreserve"
+    }
+  ],
+  "broker_and_HTTP": [
+    {
+      "stage": "cold positive cached source request",
+      "F691_budget_lines": "298-331",
+      "calls": {
+        "G": 2,
+        "A": 2,
+        "S": 1
+      },
+      "Q_no_failed_CAS_max": 7,
+      "Q_CAS_max": 23,
+      "note": "negative-cacheG + positive-cacheG + resources reserve/finalizeA + cacheS. 0HTTP cache hit still1-2G. Set is conditional; no extra automatic retry."
+    },
+    {
+      "stage": "ttl0 successful source request",
+      "calls": {
+        "G": 1,
+        "A": 2
+      },
+      "Q_no_failed_CAS_max": 5,
+      "Q_CAS_max": 21
+    },
+    {
+      "stage": "source request failure/negative",
+      "cost": "same two resourceA if receiptreserved; possibly negative-cacheS; unknown HTTP remains charged; SQL unknown aborts, doesnot mean0"
+    },
+    {
+      "stage": "provider-minute wait forecast",
+      "F691_budget_lines": "342-352",
+      "cost": "<=3G plus <=3 executor assertionA in before_wait; checkInstrument adds its own assertions. No HTTP reservation from forecast."
+    },
+    {
+      "stage": "catalog ingress retained",
+      "lines": "catalog-snapshot30-31",
+      "calls": {
+        "S": 1,
+        "G": 1
+      },
+      "Q": 2,
+      "R_hint": 3,
+      "W_hint": 2,
+      "note": "one current row, no per-contract SQL"
+    },
+    {
+      "stage": "Telegram send wrapper",
+      "lines": "F691worker165; telegram-send13,26",
+      "calls": {
+        "G": 1,
+        "A": 2
+      },
+      "Q_no_failed_CAS_max": 5,
+      "Q_CAS_max": 21,
+      "note": "resource reserve before fetch and finalize after ACK; card claim/start/finish/readback additional below"
+    }
+  ],
+  "v3_retained": [
+    {
+      "path": "cold remember",
+      "G": 6,
+      "A": 3,
+      "C_A": 3,
+      "Q_no_failed_CAS": 12,
+      "Q_CAS_max": 36
+    },
+    {
+      "path": "warm remember / unrelated PB",
+      "G": 4,
+      "A": 1,
+      "C_A": 0,
+      "Q_no_failed_CAS": 5,
+      "Q_CAS_max": 14
+    },
+    {
+      "path": "first warm record measured BZ65 fixture",
+      "G": 7,
+      "A": 3,
+      "C_A": 2,
+      "Q_no_failed_CAS": 12,
+      "Q_CAS_max": 37,
+      "note": "generic first record canhave3new atomicrows ->13Q; protectedref existence controls this."
+    },
+    {
+      "path": "repeat/PB record",
+      "G": 7,
+      "A": 3,
+      "C_A": 0,
+      "Q_no_failed_CAS": 10,
+      "Q_CAS_max": 37
+    },
+    {
+      "path": "orphan recover then record composed recorded phase",
+      "G": 12,
+      "A": 5,
+      "C_A": 1,
+      "Q_no_failed_CAS": 18,
+      "Q_CAS_max": 62
+    },
+    {
+      "path": "standalone cold record",
+      "G": 9,
+      "A": 5,
+      "C_A_max": 5,
+      "Q_no_failed_CAS_max": 19,
+      "Q_CAS_max": 59
+    },
+    {
+      "path": "two racing remember",
+      "G": 12,
+      "A": 6,
+      "C_A": 3,
+      "Q_reference_no_failed_CAS": 21,
+      "Q_CAS_max": 72,
+      "note": "21 is hypothetical no-failed-CAS accounting, not observed native racing cost"
+    }
+  ],
+  "v2_delta": "Cold new remember12 vsold7Q (+5), CAS-bound36vs23 (+13 bounds difference); warm5vs5. If protected v2 already exists, initialv3 remember11 vsoldwarm5 (+6). Originalallocation12 and futureHTTP12 are unrelated to SQL.",
+  "index_helpers_initialized_no_pending_entry": [
+    {
+      "name": "work.add new membership",
+      "lines": "work-index35-49,69; recover14-33",
+      "G": 7,
+      "P": 2,
+      "Q_no_failed_CAS": 11,
+      "Q_CAS_max": 27,
+      "note": "One successful outer attempt; includes initializeG and final pending recover. Outerbusy retries/migration add costs below."
+    },
+    {
+      "name": "work.add existing membership",
+      "G": 4,
+      "P": 1,
+      "Q_no_failed_CAS": 5,
+      "Q_CAS_max": 14
+    },
+    {
+      "name": "work.complete active member",
+      "G": "4+E",
+      "A": 1,
+      "D": 1,
+      "Q_no_failed_CAS": "7+E",
+      "Q_CAS_max": "15+E",
+      "E": "completion callback reads: delivery0; journal1(signal); outcomes1(outcome); manual1(result). Evidence get included."
+    },
+    {
+      "name": "work.complete DONE",
+      "G": 2,
+      "D": 1,
+      "Q": 3
+    },
+    {
+      "name": "work.page L ready rows",
+      "G": "2+L",
+      "X_max": 2,
+      "A_max": 1,
+      "D_max": "L",
+      "Q_no_failed_CAS_upper": "6+2L",
+      "Q_CAS_upper": "14+2L",
+      "R_hint_upper": "12+4L",
+      "W_hint_upper": "10+2L",
+      "note": "Conservative wrapscan2; initialize/recover1G each, memberL, DONE deletionL, cursorA<=1. Empty/noadvance path cheaper."
+    },
+    {
+      "name": "summary.append new",
+      "lines": "summary-index22-35,52",
+      "G": 6,
+      "P": 2,
+      "Q_no_failed_CAS": 10,
+      "Q_CAS_max": 26
+    },
+    {
+      "name": "summary.append existing",
+      "G": 4,
+      "P": 1,
+      "Q_no_failed_CAS": 5,
+      "Q_CAS_max": 14
+    },
+    {
+      "name": "summary.page initialized",
+      "G": 2,
+      "X": 1,
+      "Q": 3,
+      "R_hint": "2+L"
+    },
+    {
+      "name": "materialized.recover no intent",
+      "G": 1,
+      "Q": 1
+    },
+    {
+      "name": "materialized.recover active pending",
+      "lines": "materialized-v3-store15-26",
+      "G": 4,
+      "A": 3,
+      "Q_no_failed_CAS_max": 10,
+      "Q_CAS_max": 34
+    },
+    {
+      "name": "materialized.fold new active wave",
+      "lines": "materialized-v3-store35-45",
+      "G": 7,
+      "A": 5,
+      "P": 1,
+      "Q_no_failed_CAS_max": 19,
+      "Q_CAS_max": 67,
+      "note": "Entry recover has no pending; exit active intent recovered. Existing binding/nointent makes fewer writes. Add pending-entry recover excess explicitly."
+    },
+    {
+      "name": "work/summary initialization and contention",
+      "cost": "legacy boundedArray1Q<=40items10000B, <=4imports per initialize; every imported item uses addRaw/appendRaw; work adds cursorA per item plus migrationheadA. Each outeradd max8 attempts, each P internallymax5 CAS. recover pending can itselfP. These nested repeats are not one SQL. No fullycold migration cost is silently included in initialized helper rows."
+    }
+  ],
+  "whole_pipeline": [
+    {
+      "stage": "execute prefix",
+      "lines": "F691runner267-300",
+      "composition": "executor claimA; sourcecatalog broker +catalogsnapshot; discovery below; each loop assertionA; manualWork.page(limit1,advancefalse); claimManual page4 plus <=4jobG/A and completions; selectAutomaticG. Manual enqueue/finish paths additionally index operations and final resultG."
+    },
+    {
+      "stage": "discovery",
+      "F691_runner_lines": "50-84",
+      "calls": {
+        "G": "3+H+K",
+        "S": 2,
+        "A": 1
+      },
+      "bounds": "H=retained overview timestamps in last hour; K<=4wave hydrations; usual5min valid indexH<=12 is assumption, no hard array count check in this function. Include brokeroverview separately."
+    },
+    {
+      "stage": "candidate before publication",
+      "F691_runner_lines": "129-182",
+      "composition": "candidateadmissionG+A; source-window G/assertionA, CORE/day/overview/optional/preflight sourcecalls via broker; previouswaveG; publicationprepare1-2G; immutableoriginalA; journal anchorA withdefer_indextrue; no derived projection beforedispatch."
+    },
+    {
+      "stage": "enqueue/dispatch successful currentcard",
+      "lines": "delivery35-106; F691worker66,165; telegram-send13,26",
+      "composition": "work.ensureReady; wave/priorcard1-2G; cardA+readbackG; waveA; optional suppressedcardA; work.add; claimA; revalidate savedoriginalG (prepared no newpriceHTTP); send_startedA; worker savedcardG +TG resources2A; finishSENT A +cardreadbackG. Every nested work helper expands using table."
+    },
+    {
+      "stage": "post-SENT indexAnalysis",
+      "F691_runner_lines": "106-123,197-202",
+      "composition": "latestS + wave/queueP +activeA + v3remember +journal.remember(deferindexfalse=>ensureReadyG+A+conditionalwork.add). Example initialized newready/journalpreanchored: G14/A5/P3/S1, uncontended30Q with4changingA/3changingP; conservative CAS95Q,156Rhint,112Whint. Not a promise physical rowcost."
+    },
+    {
+      "stage": "post-SENT recordPublished",
+      "F691_runner_lines": "215-232",
+      "composition": "cardG; recoverybranch originalG+remember+Jremember ifanalysis_registeredfalse; observations.publication(cardG+eventA), sync(journalG+originalG+anchorA+signalA+outcomeWork.add+outcomeG+record), journalWork.complete; delivery.acknowledge(A+work.complete). Registered fresh path beforecatchUp: G36/A10/P4/D2 under initialized newmembers, no migrations; conservative178Q258Rhint184Whint. catchUp extra below; idempotent rowexistence reduces writing."
+    },
+    {
+      "stage": "journal.record",
+      "lines": "outcome-journal94-99",
+      "composition": "sourceIndex.initialize +summaryrecordA+sourceIndex.append+summaryrecordG+retained.record +catchUp(max_records4,maturity_limit0). Originals/index durable before derivedprojection; failure partial, no overwrite/resend."
+    },
+    {
+      "stage": "catchUp",
+      "lines": "outcome-journal102-124",
+      "composition": "materialized.recover +summary.page +up to4*(aggregateG+summaryrowG+materialized.fold/exclude) +materialized.read(maturity_limit0)+summary.boundaryG. materialized.read still scans up to40DUE references (evenlimit0), maycommitSCAN P. Pendingrecover independently counted. Excludedrecords use recover+A. No constant100R25W proof from resourcesAvailable."
+    },
+    {
+      "stage": "default backlog after candidate loop",
+      "F691_runner_lines": "325-335",
+      "composition": "delivery.pending(limit20) +up to20 recordPublished; assertionA; delivery.drain(default20 with anotherpage) +up to20dispatch/recordPublished; journal.syncTerminal page20 withresourcesAvailable +peritemG/sync; outcomes.page20 +peritemG and record/history/complete; final runS, optionalmanualresultG, executorreleaseA. Nativeguard may stop earlier; page20 is not full-tail reservation."
+    },
+    {
+      "stage": "finalize success/error",
+      "F691_worker_lines": "292,295,303",
+      "composition": "2SQL UPDATE/PKreadback on knownusage. Unknown remains RESERVED. PUMP_AUTO_SUMMARY console0SQL; binding/modulehash generation0SQL. DurableSENT doesnot mean derivedtail/finalize completed."
+    }
+  ],
+  "whole_invocation_requirement": {
+    "caps_retained": {
+      "Q": 800,
+      "R": 5000,
+      "W": 300,
+      "day_R": 3500000,
+      "day_W": 70000
+    },
+    "inequalities": "actual_reserved_prefix + exactboundedworkplan(Q/R/W,including CAS/cache,index,migration,recovery,postSENT,runrow,executorrelease) +finalization(2Q/2R/1W) <=800Q/5000R/300W; expiry includes allwork andACK. R/W values use actual meta, with conservative estimates before IO.",
+    "sufficiency": "NOT PROVEN for every currently permitted81+module workload; modulecountnot quota. D1Store enforces stop/finalization reserve, not complete-work promise. Existing generic capacity ignoresQ; surplus floor600Q600R140W is availabilitycheck, not durable whole-tail reservation. Default20backlogs/nestedCAS/migrations must be bounded separately.",
+    "minimum_ROOT_adjustment": [
+      "Add Q/unknown/expiry/finalization to general candidatecapacity; supplied focused patch uses existing600request floor, no capraise. This fixes a real necessary guard omission but is not whole-tail qualification.",
+      "Freeze workload: separate immediate receipt/journal/v3 tail from optional catchUp/backlog; assign finite counts and compute table expansion before starting each stage. Defer optionalwork instead of raisingcaps or treating reserves as free. Protect final runrow/executorrelease/finalize too.",
+      "Before publication prove remaining envelope for senderACK and required durable receipt/tail; partialderivedwrites remain recoverable via exactoriginal next separately admitted run, no duplicateTG. One new affected constructor→runner→publication→v3reader combined qualification should measure wholeusage, not rerun9/26cases.",
+      "Fresh positive actual shared/day/legacy/native admission remains mandatory; ownLOOKUP9 doesnot prove free1/currentaccount. Preserve unknowns and physicalstoragedeferral; no throughput/capacity tests requested or performed.",
+      "See bounded_AUTO_tail_option65Q87Rhint75Whint mandatoryyield plan; this isolates a concrete finite operator path without asserting140W currently fails. Source-only F691 canbe separately coherent with v2 features unchanged, afteractualworker proof and ordinaryadmissions."
+    ]
+  },
+  "quote11": {
+    "F691_lines": "budget214-245,249-268; candidate-route-cost9-27; worker146-160; candidate-surplus65-88",
+    "SQL_added_by_quote_or_bridge": 0,
+    "SQL": "same candidateG+A and closeA as existing surplus path; quote binding SHA/WeakMapverify/commit synchronous0SQL",
+    "durable_commit": "verify in retriable CAS callback doesnot consume token; commit only after awaitstore.atomic returns acknowledged success. Unknown nativeACK throws so commit isnot reached; failedcommit returnsdeny withhold retained.",
+    "limits": "OnlyNEWsurplus after basepacing exhausted canuse11; public12allocation/future3manual/80pctplan638/provider B10TG1 unchanged. OldOPEN12 stays12; knownOPEN11 needs exact originalsourcequote; CLOSED/UNKNOWN denied; no repricing/refund. A newsourceinstance has newinstance_id, so cannot manufacture oldquote recovery; failclosed holds retained.",
+    "HTTPhardmax": "activequote noLIQUIDATIONS before reserve, converterremaining_http11 andproviderremaining B10TG1. 12th not admitted; global900/BingX900month27900/TG47month1457/provider10min1sec/backoff/manual3/future12/CLOSEDholds preserved.",
+    "unknown_price": "No marketprice ororiginalproducer data is repriced by costtoken. Unknown costproof/identity/run/instance/implementation/registry rejects; original savedanalysis and preparedpublication still exact; unknown HTTP/native cost remains charged."
+  },
+  "versioning": {
+    "schema_migration_required": false,
+    "reason": "All v3 keys are new TEXT state_key values in existing pump_report_state_v1; getSELECT/atomicINSERT/UPDATE unchanged. BZ65 noCREATE/ALTER/DROP/DELETE; generic store.install existing CREATEIFNOTEXISTS persists1SQL.",
+    "operators": "store.get SELECTstatekeyPK; atomicSELECTrevision thenINSERTORIGNORE/UPDATErevision, max5; feature-pointer/r1 from retained43; featurekey facade8; outcome287; summarylinkretained92. Protectedrefs stays v2contentaddressed bydesign.",
+    "readers": "Facade schema-dispatches oldv2 digest→sanitizedUNKNOWN seed view, v3 checksrevision/digest/origin/sourcewindow. Raw v2 protected. F692 mainreadergaps remain until BZ67 exactcodec/key/consumerpatch; BZ67 not present at last11:49UTC local inventory, nohash/review falselyclaimed.",
+    "pin": "Originalproducer implementation_sha256 staysP0; projectionwriter pinPA preserved onPB via firstwins pointer/readback; version-aware audit rebuild must use exact retainedwriterpin and codec, notcurrentpin."
+  },
+  "actual": {
+    "Node": 0,
+    "imports": 0,
+    "tests": 0,
+    "engine": 0,
+    "build": 0,
+    "native_SQL": 0,
+    "provider_HTTP": 0,
+    "CF": 0,
+    "OAuth": 0,
+    "TG": 0,
+    "canonical_changes": 0,
+    "main_changes": 0
+  },
+  "preserved": "live1941/78modulesAUTO1DL1 unchanged; sourcebudgetcaps/spendsunknownsCLOSEDholds/reserves/manual3/9pauses/2OWNERdeferrals retained; no oldcase replay",
+  "proposed_patch": {
+    "path": "pump-report/handoffs/sources/F693_QUERY_GUARD_ONLY_PROPOSED.patch",
+    "sha256": "480be87efcf40f4118044ffa9db049391695848e297b3a9b2f4ef800881fa8c8",
+    "base_F691_runner_sha256": "4bbe2f99e7a09dc87ca32fe6bd40fb25bd9a16607706e85660d10ef2a6a3b712",
+    "status": "UNEXECUTED_NECESSARY_GUARD_ONLY_NOT_WHOLE_TAIL_FIX",
+    "counterexample": "AtQ799/R100/W100 knownunexpired, oldcapacity rowcheck555R110W passes despite noQ space afterfinalization2; nextnativecall refuses. Newcheck defers before candidate, neverraisescaps."
+  },
+  "clarification": "No native failure or observed140W breach asserted. Conservative CAS summed W hints, current floors/guards, and real risk of post-SENT partiallycompleted derivedtail are separate. Allbounds static, actual0.",
+  "bounded_AUTO_tail_option": {
+    "status": "ROOT_DESIGN_REQUIREMENT_HOLD_NOT_IMPLEMENTED_NOT_QUALIFIED",
+    "scope": "One AUTO candidate; no concurrent same-invocation SQL while tail held; manual enqueue/finish must be bounded separately. Pending work migration absent/known; no added sourceHTTP. Check immediately beforeTelegram HTTP after existing resource reservation and freshness recheck.",
+    "mandatory_operators_after_TG_HTTP_before_yield": [
+      {
+        "stage": "resources finalize +card finishSENT +exactcard readback",
+        "A": 2,
+        "G": 1,
+        "Q_CAS_upper": 21,
+        "R_hint_upper": 21,
+        "W_hint_upper": 20
+      },
+      {
+        "stage": "persist latest analysis +wave/queue pair +active index before optional feature",
+        "S": 1,
+        "P": 1,
+        "A": 1,
+        "Q_CAS_upper": 21,
+        "R_hint_upper": 42,
+        "W_hint_upper": 32
+      },
+      {
+        "stage": "surplus close if present",
+        "A": 1,
+        "Q_CAS_upper": 10,
+        "R_hint_upper": 10,
+        "W_hint_upper": 10
+      },
+      {
+        "stage": "runrow +executor release",
+        "S": 1,
+        "A": 1,
+        "Q_CAS_upper": 11,
+        "R_hint_upper": 12,
+        "W_hint_upper": 12
+      },
+      {
+        "stage": "native finalize alreadyprotected",
+        "Q_CAS_upper": 2,
+        "R_hint_upper": 2,
+        "W_hint_upper": 1
+      }
+    ],
+    "total": {
+      "Q": 65,
+      "R_hint": 87,
+      "W_hint": 75
+    },
+    "check": "cap-used >=65Q/87R/75W inclusive of existing finalize2Q2R1W, or store.check(85,74,63) with its current finalize reserve2/2/1. Do not doublecount finalize. This is a bound for listed operators only, not extra optional recovery/materialization/manual branches. Q exactstatement upper; R/W are conservative implementation admission hints, native metadata can consume differently.",
+    "reserve_requirement": "Retain/protect thattail across all awaited pre-SENT native operations; release its stage share only as spent. Existing finalize-onlyreserve isnot a whole65Q tailreserve. Atactualmetadataunexpectedgrowth orunknown failclosed; do not infer successfulSENT orrefund.",
+    "yield": "After mandatory latest/wave/queue/active writes, before retained_features.remember, permit optionalprojection only if its exactbounded projection+journal allowance remains above protected run/close/release/finalize. Otherwise return existing bookkeeping_error/INCOMPLETE path and skip defaultbacklogs; originalpreanchor and existing delivery work reference remain. Do not acknowledge delivery work complete before journalrepair.",
+    "recovery": "Existing recordPublished terminalcard branch loads savedoriginal, verifies digest/equality, reuses feature pointer/version codec, journals retainedreceipt, and never dispatches terminalSENT again. Next recovery requires new bounded actualnative admission, exactfinite items andQ guard; preserve PA/PB producer/projection pin separation. No assumed next-free budget or oldgrant repricing.",
+    "limits": "Safe design option only, no patch changes runner ordering in F693. Minimal usable ROOT implementation must wire protected stage reservation+yield/recovery and qualify one new coupled path; supplied queryguard-only patch ispartial and mustnot be mistaken for thisimplementation."
+  },
+  "source_only_coherent_option": {
+    "status": "STATIC_DEPENDENCY_SEPARABLE_CONDITIONAL_NOT_INSTALL_ADMISSION",
+    "package": "Exactly six F691 changed files over current1941 base; quote bridge+sourcehelper add2modules ->expected80 if current78exactmoduleinventory unchanged. Count mustbe derived byROOT artifact/controller, not assumed81. Do notcopy staged legacydependencies wholesale.",
+    "feature_readers": "Keep canonical legacy feature-capsule/retained writer/saved/cohort readers byteexact at current1941. No BZ65 v3namespace, no newv2copy module, no BZ67 dependency introduced. F691 staged deps alreadycarry oldfeatureSHA6f3ad60c9f235512bd762133c56f5e662fe9b78cbc8eec0cf76b76dc44942ec9 andretainedSHA688aaec7d1414dd1699a08c9d60b0b529bb2a5496db8d9cae6c62bc71faeaed8.",
+    "independence": "No F691 changed module imports v3 feature/projectionrevision/pointer or BZ67; quote token instance/binding and budget path independent of capsuleversion. Selfpin regeneration binds complete80moduleartifact; originalproducerpin of historical originals still retained.",
+    "conditions": "One new actualworker constructor→source quote→budget durable grant→runner publication proof, exactartifact/moduleaddition controller/rollback, currentwhole native/provider/CF admissions and preservedlegacypublication/receipt behavior. No rerun9/26, no capraise/nativefreeclaim. Existingpost-SENT/whole-budget risk remains; source-only separation doesnot repair it or constitute native deployment acceptance."
+  }
+}

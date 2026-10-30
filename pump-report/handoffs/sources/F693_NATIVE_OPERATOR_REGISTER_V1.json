@@ -1,0 +1,816 @@
+{
+  "schema": "F693_NATIVE_OPERATOR_REGISTER_V1",
+  "scope": "F691 full staged runtime direct callsites incl nonproduction branches; BZ65 retained overrides legacy staged writer. Only production reached branches are charged. Module construction has no inferredSQL.",
+  "operators": [
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 103,
+      "text": "try {row=await store.atomic('pump:resources',state=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 150,
+      "text": "await store.atomic('pump:resources',current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 170,
+      "text": "const state=await store.get('pump:resources'),p=state?.providers?.[provider];"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 214,
+      "text": "const state=await store.get('pump:resources')??{days:{},providers:{}},first=assess(state),existing=key?surplusGrants(state)[key]:null;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 218,
+      "text": "const answer=await store.atomic('pump:resources',current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 249,
+      "text": "return store.atomic('pump:resources',current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 263,
+      "text": "return store.atomic('pump:resources',state=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 298,
+      "text": "const negative=await store.get('pump:negative-cache:'+key);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 300,
+      "text": "const cached=ttl_ms>0?await store.get('pump:cache:'+key):null;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 330,
+      "text": "if(disposition==='ROUTE_UNAVAILABLE')await store.set('pump:negative-cache:'+key,{reason:'EXACT_ROUTE_UNAVAILABLE_NOT_ASSET_CLASSIFICATION',expires_ts:result.received_ts+SOURCE_ERROR_PROFILE.negative_ttl_ms,result});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/budget.mjs",
+      "line": 331,
+      "text": "if(disposition==='SUCCESS'&&ttl_ms>0)await store.set('pump:cache:'+key,result);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/catalog-snapshot.mjs",
+      "line": 30,
+      "text": "await store.set(CATALOG_SNAPSHOT_KEY,record);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/catalog-snapshot.mjs",
+      "line": 31,
+      "text": "const saved=await store.get(CATALOG_SNAPSHOT_KEY);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 18,
+      "text": "const wave=await store.get('pump:delivery-wave:'+analysis.instrument.instrument_id+':'+analysis.wave_id);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 19,
+      "text": "const prior=wave?.primary_card_id?await store.get('pump:card:'+wave.primary_card_id):null;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 38,
+      "text": "const previousWave=await store.get(waveKey);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 39,
+      "text": "const previousCard=previousWave?.primary_card_id?await store.get('pump:card:'+previousWave.primary_card_id):null;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 51,
+      "text": "await store.atomic('pump:card:'+id,current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 55,
+      "text": "const saved=await store.get('pump:card:'+id);if(saved?.text!==card.text||saved.text_hash!==hash)throw new BudgetRefusal('SAVED_CARD_READBACK_FAILED');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 56,
+      "text": "const decision=await store.atomic(waveKey,current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 67,
+      "text": "if(decision.card_id!==id)await store.atomic('pump:card:'+id,current=>({state:current?.state==='READY'&&current.attempts===0?{...current,state:'SUPPRESSED',reason:'NO_SUBSTANTIAL_PLAN_CHANGE'}:current,result:true}));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 75,
+      "text": "const card=await store.atomic('pump:card:'+card_id,current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 96,
+      "text": "await store.atomic('pump:card:'+card.card_id,current=>{if(current?.state!=='SENDING'||current.owner!==card.owner)throw new BudgetRefusal('DELIVERY_CLAIM_NOT_OWNED');return {state:{...current,send_started_ts:clock()},result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 105,
+      "text": "const saved=await store.get('pump:card:'+card_id);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 114,
+      "text": "async function finish(card,changes){return store.atomic('pump:card:'+card.card_id,current=>{if(current?.state!=='SENDING'||current.owner!==card.owner)throw new BudgetRefusal('DELIVERY_CLAIM_NOT_OWNED');return {state:{...current,...changes,owner:null,claim_until:null,updated_ts:clock()},result:true};});}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/delivery.mjs",
+      "line": 117,
+      "text": "await store.atomic('pump:card:'+card_id,card=>{if(!terminal(card))throw new BudgetRefusal('TERMINAL_DELIVERY_REQUIRED');return {state:{...card,publication_registered:true},result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 10,
+      "text": "const aggregate=async()=>await store.get(AGG)??empty();"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 12,
+      "text": "await store.atomic(key,current=>{if(current&&!equal(current,value))throw Error('MATERIALIZED_V3_POINT_CELL_CONFLICT');return {state:current??value,result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 13,
+      "text": "const back=await store.get(key);if(!equal(back,value))throw Error('MATERIALIZED_V3_POINT_READBACK_FAILED');return back;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 19,
+      "text": "await store.atomic(key,current=>{if(current&&(current.wave_state_revision>reference.wave_state_revision||current.wave_state_revision===reference.wave_state_revision&&!equal(current,reference)))throw Error('MATERIALIZED_V3_CURRENT_REFERENCE_CONFLICT');return {state:reference,result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 21,
+      "text": "const back=await store.get(key);if(!equal(back,reference))throw Error('MATERIALIZED_V3_QUEUE_REFERENCE_READBACK_FAILED');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 22,
+      "text": "await store.atomic(AGG,current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 29,
+      "text": "await recover();return store.atomic(AGG,current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 41,
+      "text": "const applied=await store.atomicPair([waveKey(receipt.wave_key),AGG],([wave,current])=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 51,
+      "text": "const saved=await store.get(SCAN);let after_key=saved?.aggregate_revision===expected_revision?saved.after_key:DUE,complete=false,processed=0,next_deadline=Infinity;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 52,
+      "text": "const rows=await store.scanPrefix(DUE,{after_key,limit:40});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 58,
+      "text": "const ref=await store.get('pump:materialized-maturity:production-v3:current:'+await textHash(item.value.wave_key));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 62,
+      "text": "const changed=await store.atomicPair([waveKey(ref.wave_key),AGG],([wave,a])=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/materialized-v3-store.mjs",
+      "line": 74,
+      "text": "const committed=await store.atomicPair([AGG,SCAN],([a,scan])=>a?.revision===expected_revision&&!a.maturity_pending?{states:[a,snapshot],result:true}:{states:[a,scan],result:false});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/native-budget.mjs",
+      "line": 49,
+      "text": "try{inserted=await db.prepare(sql).bind(id,day,envelope.rows_read,envelope.rows_written,now,now-900000,protectedR,policy.manual_checks,currentUserManual?1:0,RESOURCE_LIMITS.d1_reads_day,protectedW,RESOURCE_LIMITS.d1_writes_day,mode==='CONTROL'?1:0,policy.rows_read,policy.rows_written,mode==='LOOKUP'?1:0,LOOKUP_ENVELOPE.max_runs_day,mode==='DELIVERY_CHECK'?1:0,mode==='MAP_CHECK'?1:0,mode==='DAY_CHECK'?1:0,...ACCEPTANCE_MANUAL_RUN_IDS.map(run=>'PUMP:MANUAL:'+run),mode==='METADATA_CHECK'?1:0,mode==='CONTROL'&&PROVIDER_STAGE==='SOURCE_FEASIBILITY_SINGLE'&&run_id===SOURCE_FEASIBILITY_ID?1:0).all();}catch{throw new BudgetRefusal('NATIVE_RESERVATION_ACK_UNKNOWN');}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/native-budget.mjs",
+      "line": 53,
+      "text": "let back;try{back=await db.prepare('SELECT reservation_id,day_utc,reserve_rows_read,reserve_rows_written,state FROM report2_runner_budget_ledger_shadow WHERE reservation_id=?1 LIMIT 1').bind(id).all();}catch{throw new BudgetRefusal('NATIVE_RESERVATION_READBACK_UNKNOWN');}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/native-budget.mjs",
+      "line": 68,
+      "text": "const r=await store.query(`UPDATE report2_runner_budget_ledger_shadow SET source_run_id=?2,measured_rows_read=?3,measured_rows_written=?4,measured_requests=?5,unknown_ops=0,state='FINALIZED',completed_ts=?6,reserve_rows_read=MAX(reserve_rows_read,?3),reserve_rows_written=MAX(reserve_rows_written,?4) WHERE reservation_id=?1 AND state='RESERVED'`,[reservation_id,run_id,read,write,requests,clock()],{read:1,write:1});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/native-budget.mjs",
+      "line": 70,
+      "text": "const back=await store.query('SELECT source_run_id,state,measured_rows_read,measured_rows_written FROM report2_runner_budget_ledger_shadow WHERE reservation_id=?1 LIMIT 1',[reservation_id]);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 15,
+      "text": "const outcome=await store.get('pump:outcome:'+signal.signal_id);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 27,
+      "text": "const signal=await store.get(evidence.origin.signal_id);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 36,
+      "text": "if(analysis.wave_state==='CANCELLED')await store.atomic(key,j=>({state:j?{...j,terminal:{state:'CANCELLED',event_ts:analysis.analysis_ts,recorded_ts:at}}:j,result:true}));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 44,
+      "text": "const pending=await store.atomic(key,j=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 53,
+      "text": "const card=await store.get('pump:card:'+card_id);if(!card?.analysis?.source_input_key||!['SENT','UNKNOWN','ERROR','STALE'].includes(card.state))return null;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 57,
+      "text": "await store.atomic(key,j=>{if(!j)throw Error('SAVED_ANALYSIS_JOURNAL_REQUIRED');if(!j.publications.some(e=>e.event_id===event.event_id))j.publications.push(event);return {state:j,result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 61,
+      "text": "const journal=await store.get(key);if(!journal)return null;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 63,
+      "text": "if(!selected.eligible){if(selected.status==='QUARANTINED')await store.set('pump:quarantine:'+key,selected);return selected;}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 64,
+      "text": "const saved=await store.get(selected.anchor.analysis_id);if(!saved?.analysis||await textHash(JSON.stringify(saved.analysis))!==selected.anchor.analysis_sha256)throw Error('ANCHOR_SAVED_BYTES_READBACK_FAILED');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 65,
+      "text": "await store.atomic(key,j=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 83,
+      "text": "await store.atomic(o.signal_id,current=>{if(current?.origin&&!equal(current.origin,o)||current?.original_card_id&&current.original_card_id!==original_refs.original_card_id)throw Error('ORIGINAL_SIGNAL_IMMUTABLE');return {state:current?{...current,publication,...original_refs}:signal,result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 85,
+      "text": "const evidence_key=await record(signal,await store.get('pump:outcome:'+o.signal_id));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 90,
+      "text": "for(const {id:key} of page.items){if(!resourcesAvailable())break;const j=await store.get(key);if(j&&(j.frozen_anchor||j.terminal||j.wave_expires_ts<=clock()))results.push(await sync(key));}return results;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 96,
+      "text": "await store.atomic(key,current=>({state:current??{record_id:key,recorded_ts:clock(),...payload},result:true}));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 98,
+      "text": "if(retained_features)await retained_features.record(signal,await store.get(key));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 110,
+      "text": "const key=item.id,row=await store.get(key);if(!row||row.record_id!==key)throw Error('SUMMARY_RECORD_MISSING');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/outcome-journal.mjs",
+      "line": 130,
+      "text": "await store.set('pump:summary-latest',result);return result;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/retained-capsules.mjs",
+      "line": 12,
+      "text": "const retained=await store.atomic(key,current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/retained-capsules.mjs",
+      "line": 19,
+      "text": "const readback=await store.get(key);if(!same(readback,retained))throw Error('RETAINED_CAPSULE_READBACK_FAILED');return readback;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/retained-capsules.mjs",
+      "line": 22,
+      "text": "const saved=await store.get(analysis_key);if(!saved?.analysis||!saved.input)throw Error('RETAINED_ORIGINAL_ANALYSIS_REQUIRED');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/retained-capsules.mjs",
+      "line": 50,
+      "text": "const card=cardKey?await store.get(cardKey):null;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 23,
+      "text": "const manualWork=createWorkIndex({store,kind:'manual',targetKey:id=>'pump:manual:'+id,completed:async job=>job.status==='COMPLETE'&&await store.get(manualResultKey(job.request_id))!==null});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 32,
+      "text": "const accepted=await store.atomic('pump:manual:'+request_id,current=>({state:current??job,result:!current||current.symbol===normalized&&current.publish===publish}));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 34,
+      "text": "const saved=await store.get('pump:manual:'+request_id);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 41,
+      "text": "for(const {id} of page.items){const existing=await store.get('pump:manual:'+id);if(existing?.status==='COMPLETE'){await manualWork.complete(id,{evidence_key:manualResultKey(id)});continue;}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 42,
+      "text": "const job=await store.atomic('pump:manual:'+id,current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 47,
+      "text": "async function finishManual(job,result){await store.set(manualResultKey(job.request_id),result);await store.atomic('pump:manual:'+job.request_id,current=>({state:{...current,status:'COMPLETE',completed_ts:clock()},result:true}));await manualWork.complete(job.request_id,{evidence_key:manualResultKey(job.request_id)});}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 48,
+      "text": "async function getManualResult(id){return store.get(manualResultKey(id));}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 54,
+      "text": "const index=await store.get('pump:overview-index')??[],recent=index.filter(t=>t>=now-3600000&&t<slot),history=[];"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 55,
+      "text": "for(const ts of recent)history.push({ts,rows:await store.get('pump:overview:'+ts)??[]});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 56,
+      "text": "await store.set('pump:overview:'+slot,compact);await store.set('pump:overview-index',[...recent,slot]);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 57,
+      "text": "const active=await store.get('pump:active-instruments')??[];"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 58,
+      "text": "const priorQueueSnapshot=await store.get('pump:candidate-queue')??{},hydrated=new Map();"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 65,
+      "text": "for(const id of legacy){const wave=await store.get('pump:wave:'+id);hydrated.set(id,{prior:JSON.stringify(priorQueueSnapshot[id]??null),metadata:queueWaveMetadata(wave,id,now,profile)});}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 66,
+      "text": "await store.atomic('pump:candidate-queue',queue=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 88,
+      "text": "const queue=await store.get('pump:candidate-queue')??{},now=clock();"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 103,
+      "text": "await store.atomic(key,current=>{if(retained_features&&current&&(JSON.stringify(current.analysis)!==JSON.stringify(analysis)||JSON.stringify(current.input)!==JSON.stringify(input)))throw Error('IMMUTABLE_ANALYSIS_INPUT_CONFLICT');return {state:current??{analysis,input,saved_ts:clock(),...(retained_features?{implementation_sha256:retained_features.implementation_sha256,evidence_class:retained_features.evidence_class}:{})},result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 107,
+      "text": "await store.set('pump:latest-analysis:'+instrumentKey(input.instrument),{analysis_key:key,analysis});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 111,
+      "text": "await store.atomicPair(['pump:wave:'+instrumentKey(input.instrument),'pump:candidate-queue'],([currentWave,queue])=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 117,
+      "text": "await store.atomic('pump:active-instruments',current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 146,
+      "text": "const core=await sources.getCore({instrument,run_id,mode,existing_facts:overviewFacts}),previous_wave=await store.get('pump:wave:'+instrumentKey(instrument));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 216,
+      "text": "const card=await store.get('pump:card:'+card_id);if(!card)return;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 221,
+      "text": "const key=card.analysis.source_input_key,saved=await store.get(key);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 240,
+      "text": "const signal=await store.get(key);if(!signal)throw Error('SAVED_OUTCOME_SIGNAL_MISSING');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 243,
+      "text": "await store.set(evidence_key,{schema:'PUMP_OUTCOME_WORK_EXCLUSION_V1',signal_id:signal.signal_id,origin:signal.origin,reason:'TEST_OR_UNCLASSIFIED_ORIGIN_RETAINED_FOR_AUDIT'});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 247,
+      "text": "const saved=await store.get('pump:outcome:'+signal.signal_id);if(saved?.status==='HIT'||saved?.status==='MISS'){const evidence_key=await observations.record(signal,saved);await outcomeWork.complete(key,{evidence_key});continue;}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 253,
+      "text": "await store.set('pump:outcome:'+signal.signal_id,outcome);const evidence_key=await observations.record(signal,outcome);results.push(outcome);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 270,
+      "text": "const owner=crypto.randomUUID(),claimed=await store.atomic('pump:executor',current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 276,
+      "text": "const valid=await store.atomic('pump:executor',current=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 317,
+      "text": "await store.atomic('pump:candidate-queue',queue=>{if(queue?.[instrument.instrument_id]){const at=clock();queue[instrument.instrument_id].next_check_ts=at+profile.candidate_recheck_ms;if(failedAdmitted)queue[instrument.instrument_id].last_failed_admitted_attempt_ts=at;}return {state:queue,result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 334,
+      "text": "result.resources=budget.summary();await store.set('pump:run:'+run_id,result);return manual?{...result,request_id:manual.request_id,manual_result:await getManualResult(manual.request_id)}:result;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/runner.mjs",
+      "line": 335,
+      "text": "}finally{await store.atomic('pump:executor',current=>({state:current?.owner===owner?{owner:null,run_id,released_ts:clock()}:current,result:true}));}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/saved-outcome.mjs",
+      "line": 16,
+      "text": "const get=async key=>{if(++reads>SAVED_OUTCOME_READ_BOUND)throw Error('SAVED_OUTCOME_READ_BOUND');return store.get(key);};"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/saved-statistics-audit.mjs",
+      "line": 17,
+      "text": "await store.atomic(key,current=>{if(current&&JSON.stringify(current)!==JSON.stringify(plan))fail('IMMUTABLE_AUDIT_PLAN_CONFLICT');return {state:current??plan,result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/saved-statistics-audit.mjs",
+      "line": 18,
+      "text": "if(JSON.stringify(await store.get(key))!==JSON.stringify(plan))fail('AUDIT_PLAN_READBACK_MISMATCH');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/saved-statistics-audit.mjs",
+      "line": 26,
+      "text": "const r=await store.query('SELECT length(CAST(value_json AS BLOB)) AS bytes,CASE WHEN length(CAST(value_json AS BLOB))<=?2 THEN value_json ELSE NULL END AS value_json FROM pump_report_state_v1 WHERE state_key=?1 LIMIT 1',[key,max_bytes]);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/saved-statistics-audit.mjs",
+      "line": 31,
+      "text": "const value=await store.get(key);if(bytes(value)>max_bytes)fail('AUDIT_POINT_BYTES_EXCEEDED');return value;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/source-feasibility.mjs",
+      "line": 6,
+      "text": "const reply=await store.query(`SELECT COUNT(*) AS reservation_count,"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/source-feasibility.mjs",
+      "line": 27,
+      "text": "const provider_ledger_snapshot=await store.get('pump:resources');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/source-feasibility.mjs",
+      "line": 29,
+      "text": "const {raw_responses,...summary}=result;await store.set('pump:source-feasibility:'+run_id,summary);return result;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/store.mjs",
+      "line": 39,
+      "text": "try{result=await this.db.prepare(sql).bind(...args).all();}catch(error){this.cost.requests++;this.cost.unknown_ops++;throw error;}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 10,
+      "text": "const head=await store.get(HEAD)??empty(),pending=head.pending;if(!pending)return head;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 12,
+      "text": "const row=await store.get(pending.id);if(row?.record_id!==pending.id)throw Error('SUMMARY_INDEX_PENDING_RECORD_MISSING');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 14,
+      "text": "await store.atomicPair([HEAD,pointerKey(pending.seq)],([current,pointer])=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 20,
+      "text": "return store.get(HEAD);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 24,
+      "text": "if((await store.get(id))?.record_id!==id)throw Error('SAVED_SUMMARY_RECORD_REQUIRED');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 27,
+      "text": "try{seq=await store.atomicPair([HEAD,MEMBER+id.slice(-64)],([head,member])=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 41,
+      "text": "const ids=await store.boundedArray(LEGACY,{max_items:40,max_bytes:10000});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 44,
+      "text": "await store.atomic(HEAD,current=>{current??=empty();if(current.legacy_hash&&current.legacy_hash!==hash)throw Error('LEGACY_SUMMARY_INDEX_CHANGED');return {state:{...current,legacy_hash:hash,legacy_count:ids.length},result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 49,
+      "text": "await store.atomic(HEAD,current=>{if(current.legacy_imported)return {state:current,result:true};if(current.count!==ids.length||current.pending)throw Error('LEGACY_SUMMARY_INDEX_ORDER_CONFLICT');return {state:{...current,legacy_imported:true,legacy_source_retained:true},result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 50,
+      "text": "return {ready:true,head:await store.get(HEAD)};"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 57,
+      "text": "const rows=await store.scanPrefix(PREFIX,{after_key:after?pointerKey(after):PREFIX,limit});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 66,
+      "text": "const head=await store.get(HEAD)??empty();"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 70,
+      "text": "const rows=await store.scanPrefix(PREFIX,{after_key:after?pointerKey(after):PREFIX,limit});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/summary-index.mjs",
+      "line": 76,
+      "text": "async function boundary(){const head=await store.get(HEAD)??empty();return {count:head.count,ready:head.legacy_imported,pending:Boolean(head.pending)};}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 15,
+      "text": "const head=await store.get(headKey)??initial(),p=head.pending;if(!p)return head;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 17,
+      "text": "if(!await store.get(targetKey(p.id)))throw Error('WORK_INDEX_PENDING_TARGET_MISSING');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 18,
+      "text": "const member=await store.get(await memberKey(p.id));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 20,
+      "text": "const current=await store.get(headKey);if(current?.count>=p.seq&&!same(current.pending,p))return current;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 24,
+      "text": "try{await store.atomicPair([headKey,pointerKey(p.seq)],([current,pointer])=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 32,
+      "text": "const done=await store.get(await memberKey(p.id));if(done?.id!==p.id||done.seq!==p.seq||done.status!=='DONE')throw error;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 33,
+      "text": "}return store.get(headKey);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 36,
+      "text": "if(!validId(id)||!await store.get(targetKey(id)))throw Error('SAVED_WORK_TARGET_REQUIRED');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 40,
+      "text": "try{result=await store.atomicPair([headKey,key],([head,member])=>{"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 54,
+      "text": "const ids=await store.boundedArray(legacyKeys[kind],{max_items:40,max_bytes:10000});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 57,
+      "text": "await store.atomic(headKey,current=>{current??=initial();if(current.legacy_hash&&current.legacy_hash!==hash)throw Error('LEGACY_WORK_INDEX_CHANGED');return {state:{...current,legacy_hash:hash,legacy_count:ids.length},result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 62,
+      "text": "await store.atomic(headKey,current=>{const at=start+offset;if(current.legacy_cursor>at)return {state:current,result:true};if(current.legacy_cursor!==at||ids[at]!==id)throw Error('LEGACY_WORK_CURSOR_CONFLICT');return {state:{...current,legacy_cursor:at+1},result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 65,
+      "text": "await store.atomic(headKey,current=>{if(current.pending||current.legacy_cursor!==ids.length)throw Error('LEGACY_WORK_MIGRATION_CONFLICT');return {state:{...current,legacy_imported:true,legacy_source_retained:true},result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 66,
+      "text": "return {ready:true,head:await store.get(headKey)};"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 72,
+      "text": "await ensureReady();const key=await memberKey(id),member=await store.get(key);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 75,
+      "text": "const target=await store.get(targetKey(id)),evidence=evidence_key?await store.get(evidence_key):null;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 77,
+      "text": "await store.atomic(key,current=>{if(current?.id!==id||current.seq!==member.seq)throw Error('WORK_INDEX_MEMBER_CONFLICT');return {state:current.status==='DONE'?current:{...current,status:'DONE',evidence_key},result:true};});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 79,
+      "text": "await store.removeWorkPointer(pointerKey(member.seq));return true;"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 84,
+      "text": "const head=await recover();let rows=await store.scanPrefix(prefix,{after_key:head.cursor?pointerKey(head.cursor):prefix,limit});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 85,
+      "text": "if(!rows.length&&head.cursor)rows=await store.scanPrefix(prefix,{limit});"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 90,
+      "text": "const member=await store.get(await memberKey(p.id));if(member?.id!==p.id||member.seq!==p.seq)throw Error('WORK_INDEX_MEMBER_CONFLICT');"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 91,
+      "text": "if(member.status==='DONE'){await store.removeWorkPointer(row.key);continue;}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/work-index.mjs",
+      "line": 95,
+      "text": "if(advance&&last)await store.atomic(headKey,current=>({state:{...current,cursor:last.value.seq},result:true}));"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 66,
+      "text": "const saved=await store.get(card.analysis.source_input_key);if(!saved?.input)return {valid:false,reason:'ORIGINAL_INPUT_NOT_SAVED'};"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 104,
+      "text": "const original=await runtime.store.get(answer.analysis_key);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 118,
+      "text": "const card=await runtime.store.get('pump:card:'+id);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 144,
+      "text": "if(mode!=='LOOKUP')await store.install();"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 165,
+      "text": "const savedCard=await store.get('pump:card:'+card_id);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 169,
+      "text": "if(PROVIDER_STAGE==='MANUAL_ACCEPTANCE'&&mode==='MANUAL'&&run_id===MANUAL_ACCEPTANCE_ID){const card=await store.get('pump:card:'+card_id);acceptedManual=card?.mode==='MANUAL'&&card.analysis?.ready===true&&card.analysis.run_id===run_id&&card.analysis.instrument?.native_symbol===MANUAL_ACCEPTANCE_SYMBOL+'-USDT';}"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 245,
+      "text": "await runtime.store.set('pump:metadata-qualification:'+CORRECTED_METADATA_ID,safe);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 249,
+      "text": "const delivery=await runtime.delivery.dispatch(card.card_id),saved=await runtime.store.get('pump:card:'+card.card_id);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 260,
+      "text": "await runtime.store.set('pump:day-qualification:'+DAY_DIAGNOSTIC_ID,result);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 264,
+      "text": "await runtime.store.set('pump:map-qualification:'+MAP_DIAGNOSTIC_ID,result);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 272,
+      "text": "await runtime.store.set('pump:qualification:'+response.receipt_id,result);"
+    },
+    {
+      "path": "F691/staged/pump-report/runtime/worker.mjs",
+      "line": 284,
+      "text": "await runtime.store.set('pump:statistics-audit-qualification:'+SAVED_STATISTICS_AUDIT_ID,result);"
+    },
+    {
+      "path": "BZ65/stage/runtime/retained-capsules.mjs",
+      "line": 12,
+      "text": "const retained=await store.atomic(key,current=>{"
+    },
+    {
+      "path": "BZ65/stage/runtime/retained-capsules.mjs",
+      "line": 19,
+      "text": "const readback=await store.get(key);if(!same(readback,retained))throw Error('RETAINED_CAPSULE_READBACK_FAILED');return readback;"
+    },
+    {
+      "path": "BZ65/stage/runtime/retained-capsules.mjs",
+      "line": 38,
+      "text": "const saved=await store.get(analysis_key);if(!saved?.analysis||!saved.input)throw Error('RETAINED_ORIGINAL_ANALYSIS_REQUIRED');"
+    },
+    {
+      "path": "BZ65/stage/runtime/retained-capsules.mjs",
+      "line": 44,
+      "text": "const pointer=await store.get(pointerKey);"
+    },
+    {
+      "path": "BZ65/stage/runtime/retained-capsules.mjs",
+      "line": 49,
+      "text": "const retained=await validateFeature(await store.get(key),saved,analysis_key);"
+    },
+    {
+      "path": "BZ65/stage/runtime/retained-capsules.mjs",
+      "line": 54,
+      "text": "let retained=await store.get(key);"
+    },
+    {
+      "path": "BZ65/stage/runtime/retained-capsules.mjs",
+      "line": 61,
+      "text": "retained=await store.atomic(key,current=>({state:current??candidate,result:current??candidate}));"
+    },
+    {
+      "path": "BZ65/stage/runtime/retained-capsules.mjs",
+      "line": 62,
+      "text": "const readback=await store.get(key);if(!same(readback,retained))throw Error('FEATURE_V3_READBACK_FAILED');"
+    },
+    {
+      "path": "BZ65/stage/runtime/retained-capsules.mjs",
+      "line": 89,
+      "text": "const card=cardKey?await store.get(cardKey):null;"
+    }
+  ]
+}
