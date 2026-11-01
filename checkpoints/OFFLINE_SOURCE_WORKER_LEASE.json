@@ -1,10 +1,10 @@
 {
   "schema": "REPORT2_OFFLINE_SOURCE_WORKER_LEASE_V1",
-  "owner": "CODEX:SOURCES:01a171fd:1793530962000",
+  "owner": "CODEX:SOURCES:01a171fd:1793533597000",
   "thread_id": "01a171fd-51b6-79a1-82f4-3dc4532aee24",
-  "acquired_ts": 1793530962000,
-  "expires_ts": 1793533362000,
-  "expected_main": "45bcf18e55d1fb17197e2455a485dbaa532d8d00",
+  "acquired_ts": 1793533597000,
+  "expires_ts": 1793534677000,
+  "expected_main": "e60e01d2a147918bb610bf81c249f5f413eb0842",
   "released": false,
   "status": "OWNED",
   "root_lease_owner": "CODEX:PUMP_STRUCTURAL_TA_AND_SMALL_COIN_LIQ_RESTORE_20261101:1793530677000",
@@ -14,18 +14,18 @@
   "guard_git_blobs": {
     "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
     "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
-    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "cc3eef65addeb2abd3877a5fd2143b26ac1b6d37",
-    "checkpoints/CURRENT_PROJECT_STATUS.json": "f844c2a632cd4c0669867714b4b66d7e3231ddd5",
-    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "588e03d8a33837d161c5c31def2427cb57fb5b9b",
-    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "2c4b97acf53edc1a3f3613f7bfb7f82f5e379b32",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "c9c95790a5cf6f412562fe8ecbb6ffba808f4b0a",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "e1ebc773fe1fc00c0c141aed4129412819f033b9",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "3850a4885229990dab28af9d46280c1dc927a286",
+    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "9f8d8e3142cef86cbd9e2618e679382babc73457",
     "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "d01559b212f302be54206010de6476336fb7ffe3",
     "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
     "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
     "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
-    "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "ac13b4cc94ea5d416d674c75acf9a78e7901eadc",
+    "pump-report/CONTRACT_RU.md": "ee07ed10ae10032674fd6953c2da8d3a0b554619",
+    "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "17ddb3d873b6f6aa927a4ed642749bdabee02f5b",
     "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "6eb5e5cefe7c7812c83d58956a845cbc41937466",
     "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
-    "pump-report/CONTRACT_RU.md": "ee07ed10ae10032674fd6953c2da8d3a0b554619",
     "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
     "checkpoints/pump-report-20261025/OWNER_UNIFIED_LAUNCH_AND_SOURCES_AMENDMENTS.json": "7500f72e1610fbe5b5ecd2db764dc5b5850d95fb",
     "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json": "96f5022f74e45eefc056628aaf0d95df13426894",
@@ -39,17 +39,15 @@
     "checkpoints/pump-report-20261025/ROOT_SEED_WINDOW_CONNECTED_CASE_V1_REPAIR.json": "9470a8575d5fd2b260c6802e1e184b8750ca3787",
     "checkpoints/pump-report-20261025/ROOT_POST_BREACH_PREAPPROVAL_CURRENT_FULL.json": "85ce077f34e39a1f9613f85d719e412e568612fb"
   },
-  "previous_release": "4ad91b3af5b2b8f471bd96f11d1042ea479fcf94",
-  "internal_finish_deadline_ts": 1793532462000,
-  "start_release_no_later_than_ts": 1793532582000,
-  "FULL_release_no_later_than_ts": 1793532762000,
+  "previous_expired_lease": {
+    "owner": "CODEX:SOURCES:01a171fd:1793530962000",
+    "expires_ts": 1793533362000,
+    "commit": "63ea3ee35da2596434d3dc7a18b53762ff7b7586",
+    "status": "EXPIRED_DURING_INTERRUPTION_NOT_REVIVED_NOT_CLAIMED_RELEASED"
+  },
+  "internal_finish_deadline_ts": 1793533957000,
+  "FULL_release_no_later_than_ts": 1793534077000,
   "minimum_FULL_release_margin_ms": 600000,
-  "scope": "Offline SOURCE small-coin future liquidation restoration proposal and primary-document gap research only, under compatible ROOT scope. Owned local handoffs/sources and proposal sources only; no production94 or canonical/shared/runtime/contracts/budget/publication edits, app imports/tests/processes, provider/native SQL/Cloudflare/OAuth/Telegram/market API calls, new keys/connections/purchases, budget rearm or old report activation. Preserve source clocks, all expenses UNKNOWN issued CLOSED holds caps manual3 nine pauses and two OWNER deferrals. Exact account hints and raw remain private/local. Public branch contains this minimal service lease only, never source code/raw/results. Work <=25min; FULL own release >=10min before <=40min expiry within ROOT.",
-  "requires_FULL_readback": true,
-  "private_support_pin_difference": {
-    "path": "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json",
-    "remote_blob": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
-    "local_blob": "6510febcf3a11ffc5981ae2e7bfa41418b2500e1",
-    "effect": "NO_IO_OR_QUALIFICATION_IN_THIS_SCOPE; retained floor24 preserved; neither version grants new source attempt"
-  }
+  "scope": "Save already-researched coherent small-coin future-LIQ restore proposal only in owned local handoffs/sources, including sanitized proof/identity/private-pointer index and unexecuted adapter proposal. No new research, Node, application imports, tests, native provider/market/SQL/CF/OAuth/Telegram IO, new keys/connections or production94 changes. Preserve working report, clocks, native-vs-model provenance and every prior UNKNOWN issued/CLOSED budget hold, qualification24 floor, manual3, nine pauses and two owner deferrals. Exact account data stays in existing private saved originals. Public ref contains this minimal service lease only. Work <=6min, new lease <=18min, FULL release >=10min before own expiry inside ROOT.",
+  "requires_FULL_readback": true
 }
