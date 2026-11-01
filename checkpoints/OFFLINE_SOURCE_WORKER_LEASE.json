@@ -1,12 +1,12 @@
 {
   "schema": "REPORT2_OFFLINE_SOURCE_WORKER_LEASE_V1",
-  "owner": "CODEX:SOURCES:01a171fd:1793534895000",
+  "owner": "CODEX:SOURCES:01a171fd:1793536794000",
   "thread_id": "01a171fd-51b6-79a1-82f4-3dc4532aee24",
-  "acquired_ts": 1793534895000,
-  "expires_ts": 1793537295000,
+  "acquired_ts": 1793536794000,
+  "expires_ts": 1793538594000,
   "expected_main": "0c0b80ffe3156bc4b5b854d736f0edbab4c0e4af",
-  "released": true,
-  "status": "RELEASED",
+  "released": false,
+  "status": "OWNED",
   "root_lease_owner": "CODEX:PUMP_SMALL_COIN_IDENTITY_AND_TA_DECISION_REFINEMENT_20261101:1793534749000",
   "root_expires_ts": 1793539849000,
   "all4_equal": true,
@@ -40,9 +40,9 @@
     "checkpoints/pump-report-20261025/ROOT_POST_BREACH_PREAPPROVAL_CURRENT_FULL.json": "85ce077f34e39a1f9613f85d719e412e568612fb"
   },
   "local_guard_comparison": {
-    "equal": 25,
     "total": 26,
-    "unchanged_known_provider_admission_mismatch": [
+    "equal": 25,
+    "known_differences": [
       {
         "path": "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json",
         "local": "6510febcf3a11ffc5981ae2e7bfa41418b2500e1",
@@ -52,17 +52,12 @@
     "no_native_admission_assumed": true
   },
   "previous_released_lease": {
-    "owner": "CODEX:SOURCES:01a171fd:1793533597000",
-    "commit": "fb770d5cff22d2aaec4b60508cd63f8cffe45b31",
-    "released_ts": 1793533944000
+    "owner": "CODEX:SOURCES:01a171fd:1793534895000",
+    "commit": "22d4378331c4df888ea37ec33a635bfec1a65b87"
   },
-  "internal_finish_deadline_ts": 1793536395000,
-  "FULL_release_no_later_than_ts": 1793536695000,
+  "internal_finish_deadline_ts": 1793537694000,
+  "FULL_release_no_later_than_ts": 1793537994000,
   "minimum_FULL_release_margin_ms": 600000,
-  "scope": "Focused authoritative small-coin derivative underlying and denomination linkage plus saved SDK compatibility and exact structural hint route-input dossier. Save one coherent finished LOCAL proposal/evidence packet only in owned handoffs/sources. Read saved code/primary documents only; no SDK execution/import, tests, market/provider native, SQL/CF/OAuth/Telegram/deploy/config/schedule/new keys/connections/purchases/trading. No production94 or common DTO/strictparser changes. Old UNKNOWN/SPENT/CLOSED holds, manual3/future cycles/caps/nine pauses/two OWNER deferrals retained. Public branch changes only this minimal own service lease. Own<=40min/work<=25min/FULL release>=10min inside ROOT.",
-  "requires_FULL_readback": true,
-  "work_completed_ts": 1793535576000,
-  "released_ts": 1793535593000,
-  "released_utc": "2026-11-01 12:19:53 UTC",
-  "release_reason": "FINISHED_LOCAL_USELESS_DOCUMENTARY_IDENTITY_SDK_INPUT_DOSSIER_AND_ONE_ROOT_DTO_V2_STATIC_REVIEW;NO_NATIVE_OR_EXECUTION"
+  "scope": "Finish one read-only TA V3 consistency ACK and focused existing saved proof lookup limited to five exactly named saved file/manifest refs for small-coin descriptor and SDK artifact pin. Save LOCAL coherent sanitized descriptor-pointer/SDK-pin findings and exact bounded readonly getter-locator proposal in owned handoffs/sources. Existing caller/ABI may be read/pinned as text only. No Node/SDK/app import/execution/tests/new source research or market/RPC/provider native/SQL/CF/OAuth/Telegram/deploy/config/pointer IO. No source activation/common DTO/production code changes. Exact private keys/accounts stay only in original retained files; preserve clocks, manual3/futurecycles/caps/all SPENT UNKNOWN CLOSED holds/nine pauses/two OWNERdeferrals. Own<=30min/work<=15min/FULLrelease>=10min inside ROOT. Public ref only this minimal service lease.",
+  "requires_FULL_readback": true
 }
