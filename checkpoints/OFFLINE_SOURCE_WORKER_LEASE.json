@@ -1,29 +1,29 @@
 {
   "schema": "REPORT2_OFFLINE_SOURCE_WORKER_LEASE_V1",
-  "owner": "CODEX:SOURCES:01a171fd:1793533597000",
+  "owner": "CODEX:SOURCES:01a171fd:1793534895000",
   "thread_id": "01a171fd-51b6-79a1-82f4-3dc4532aee24",
-  "acquired_ts": 1793533597000,
-  "expires_ts": 1793534677000,
-  "expected_main": "e60e01d2a147918bb610bf81c249f5f413eb0842",
-  "released": true,
-  "status": "RELEASED",
-  "root_lease_owner": "CODEX:PUMP_STRUCTURAL_TA_AND_SMALL_COIN_LIQ_RESTORE_20261101:1793530677000",
-  "root_expires_ts": 1793535177000,
+  "acquired_ts": 1793534895000,
+  "expires_ts": 1793537295000,
+  "expected_main": "0c0b80ffe3156bc4b5b854d736f0edbab4c0e4af",
+  "released": false,
+  "status": "OWNED",
+  "root_lease_owner": "CODEX:PUMP_SMALL_COIN_IDENTITY_AND_TA_DECISION_REFINEMENT_20261101:1793534749000",
+  "root_expires_ts": 1793539849000,
   "all4_equal": true,
   "all_guard_files_FULL_read": true,
   "guard_git_blobs": {
     "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
     "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
-    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "c9c95790a5cf6f412562fe8ecbb6ffba808f4b0a",
-    "checkpoints/CURRENT_PROJECT_STATUS.json": "e1ebc773fe1fc00c0c141aed4129412819f033b9",
-    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "3850a4885229990dab28af9d46280c1dc927a286",
-    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "9f8d8e3142cef86cbd9e2618e679382babc73457",
+    "checkpoints/CLOUD_PHASE_STATE_20261004.json": "4ca0e5f31bce07e05747754505516d26807f11b7",
+    "checkpoints/CURRENT_PROJECT_STATUS.json": "e958891263a3aa1fb177d4e353c4c9aa961cfa15",
+    "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "6a942298efd847684ba9d46adf795d55c13e5571",
+    "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "cdcbd7e8c7099120b55e71947522594700cbf040",
     "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "d01559b212f302be54206010de6476336fb7ffe3",
     "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421",
     "REPORT2_CURRENT_GENERATION.json": "e935be4ed1f4caa177af3ebee0cf55e4fc71856c",
     "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
     "pump-report/CONTRACT_RU.md": "ee07ed10ae10032674fd6953c2da8d3a0b554619",
-    "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "17ddb3d873b6f6aa927a4ed642749bdabee02f5b",
+    "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "464ee3198941337517e80a1ab70271c17d29edd2",
     "checkpoints/pump-report-20261025/NATIVE_QUALIFICATION_ACTUAL.json": "6eb5e5cefe7c7812c83d58956a845cbc41937466",
     "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d",
     "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
@@ -39,19 +39,26 @@
     "checkpoints/pump-report-20261025/ROOT_SEED_WINDOW_CONNECTED_CASE_V1_REPAIR.json": "9470a8575d5fd2b260c6802e1e184b8750ca3787",
     "checkpoints/pump-report-20261025/ROOT_POST_BREACH_PREAPPROVAL_CURRENT_FULL.json": "85ce077f34e39a1f9613f85d719e412e568612fb"
   },
-  "previous_expired_lease": {
-    "owner": "CODEX:SOURCES:01a171fd:1793530962000",
-    "expires_ts": 1793533362000,
-    "commit": "63ea3ee35da2596434d3dc7a18b53762ff7b7586",
-    "status": "EXPIRED_DURING_INTERRUPTION_NOT_REVIVED_NOT_CLAIMED_RELEASED"
+  "local_guard_comparison": {
+    "equal": 25,
+    "total": 26,
+    "unchanged_known_provider_admission_mismatch": [
+      {
+        "path": "checkpoints/pump-report-20261025/PROVIDER_QUALIFICATION_ADMISSION.json",
+        "local": "6510febcf3a11ffc5981ae2e7bfa41418b2500e1",
+        "remote": "b63f86627cf24d9fe8f145bb4ebb915c1453fd5d"
+      }
+    ],
+    "no_native_admission_assumed": true
   },
-  "internal_finish_deadline_ts": 1793533957000,
-  "FULL_release_no_later_than_ts": 1793534077000,
+  "previous_released_lease": {
+    "owner": "CODEX:SOURCES:01a171fd:1793533597000",
+    "commit": "fb770d5cff22d2aaec4b60508cd63f8cffe45b31",
+    "released_ts": 1793533944000
+  },
+  "internal_finish_deadline_ts": 1793536395000,
+  "FULL_release_no_later_than_ts": 1793536695000,
   "minimum_FULL_release_margin_ms": 600000,
-  "scope": "Save already-researched coherent small-coin future-LIQ restore proposal only in owned local handoffs/sources, including sanitized proof/identity/private-pointer index and unexecuted adapter proposal. No new research, Node, application imports, tests, native provider/market/SQL/CF/OAuth/Telegram IO, new keys/connections or production94 changes. Preserve working report, clocks, native-vs-model provenance and every prior UNKNOWN issued/CLOSED budget hold, qualification24 floor, manual3, nine pauses and two owner deferrals. Exact account data stays in existing private saved originals. Public ref contains this minimal service lease only. Work <=6min, new lease <=18min, FULL release >=10min before own expiry inside ROOT.",
-  "requires_FULL_readback": true,
-  "released_ts": 1793533944000,
-  "released_utc": "2026-11-01 11:52:24 UTC",
-  "work_completed_ts": 1793533944000,
-  "release_reason": "LOCAL_OFFLINE_SMALL_COIN_LIQ_PACKET_SAVED;NO_NATIVE_OR_TESTS"
+  "scope": "Focused authoritative small-coin derivative underlying and denomination linkage plus saved SDK compatibility and exact structural hint route-input dossier. Save one coherent finished LOCAL proposal/evidence packet only in owned handoffs/sources. Read saved code/primary documents only; no SDK execution/import, tests, market/provider native, SQL/CF/OAuth/Telegram/deploy/config/schedule/new keys/connections/purchases/trading. No production94 or common DTO/strictparser changes. Old UNKNOWN/SPENT/CLOSED holds, manual3/future cycles/caps/nine pauses/two OWNER deferrals retained. Public branch changes only this minimal own service lease. Own<=40min/work<=25min/FULL release>=10min inside ROOT.",
+  "requires_FULL_readback": true
 }
