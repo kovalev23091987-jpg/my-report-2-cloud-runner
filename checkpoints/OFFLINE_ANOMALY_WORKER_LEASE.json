@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "ACTIVE",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793520115000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793520115000,
@@ -112,5 +112,9 @@
       "sha": "ca753bc67024c05e46afa5ee26671512c9d10db3"
     }
   ],
-  "released": false
+  "released": true,
+  "released_ts": 1793520175000,
+  "released_utc": "2026-11-01 08:02:55 UTC",
+  "release_expected_main": "23aad919a4bd103ead96ac0dc96ee6916276e047",
+  "release_reason": "ROOT newer steering arrived after addressed own acquisition and limited selected-ref edit. Stop all helper payload writes now; release only own second scoped lease. Prior V1 manifest refers prior file; ROOT to select staged candidate by actual hash. Zero helper executions/native IO."
 }
