@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_REPORT_ANALYTICS_OFFLINE_BOUNDED_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793646842000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793646842000,
@@ -12,7 +12,7 @@
   "expected_main": "412104359914e65cce2fe2ca0ef38ad4c2a41929",
   "coordinator_owner": "CODEX:PUMP_COMBINED_ACCEPTANCE_OPERATOR_20261102:1793644656963",
   "coordinator_expires_ts": 1793649756963,
-  "released": false,
+  "released": true,
   "scope": {
     "prefix": "pump-report/handoffs/analytics/AGT_OUTCOME_JOIN_OPERATOR_20261102_V1/",
     "task": "Post-qualification ACK only: read exact qualification-result.json SHA315d839296f8375906e886b5659159c6af1dd9242c719fea8f97a453d73ffc5d, accept ANA41 plus connected12 reported artificial PASS, persist ACK retaining actual AGT NOT_READ/natural AUTO OPEN/graph closurefalse. No tests/imports/Node/code review/replay/new IO/native/engine; metadata only.",
@@ -61,5 +61,16 @@
     "released": true,
     "FULL_release_commit": "97a0c5b1ec7429167557954596c6937014e53954"
   },
-  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true
+  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true,
+  "released_ts": 1793646904000,
+  "work_stopped_ts": 1793646904000,
+  "work_stopped_before_deadline": true,
+  "release_authority_main": "412104359914e65cce2fe2ca0ef38ad4c2a41929",
+  "release_reason": "Saved exact post-qualification ACK accepting artificial ANA41 and connected12 PASS in result SHA315d839... No rerun/code review/imports/native/engine. Actual AGT NOT_READ, natural AUTO OPEN, graphclosurefalse retained.",
+  "packet": {
+    "path": "pump-report/handoffs/analytics/AGT_OUTCOME_JOIN_OPERATOR_20261102_V1/POST_QUALIFICATION_ACK_V1.json",
+    "sha256": "afd6f11d73bd1743c745c8735f2b100184fd932e71832424a3686faa53ea45ed",
+    "result_sha256": "315d839296f8375906e886b5659159c6af1dd9242c719fea8f97a453d73ffc5d",
+    "status": "ACCEPTED_ARTIFICIAL_ANA41_CONNECTED12"
+  }
 }
