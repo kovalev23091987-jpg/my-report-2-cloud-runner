@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_REPORT_ANALYTICS_OFFLINE_BOUNDED_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793626113436",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793626113436,
@@ -12,7 +12,7 @@
   "expected_main": "a89ed1125e4cdc14a5f6bd110430900de2e6a471",
   "coordinator_owner": "CODEX:PUMP_AGT_SENT_CHAIN_PREPARATION_20261102:1793626010011",
   "coordinator_expires_ts": 1793631110011,
-  "released": false,
+  "released": true,
   "scope": {
     "prefix": "pump-report/handoffs/analytics/ARIA_NORMALIZED_ORIGIN_INTEGRATION_20261102_V1/",
     "task": "Build100 proposal only: exact99 graph copy, accepted movement patch, all-new-A actual producer binding, one bounded affected qualifier prepared NOT executed until ROOT/SOURCE reviews. No working runtime/shared files/native/market/source/TG changes.",
@@ -210,5 +210,20 @@
     },
     "release_reason": "One bounded offline measurement completed and frozen; proposed patch only; no working runtime/native changes; integration/rollback new-normalized-origin branch remains open"
   },
-  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true
+  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true,
+  "released_ts": 1793626938161,
+  "work_stopped_ts": 1793626938161,
+  "work_stopped_before_deadline": true,
+  "release_authority_main": "8de4d797b17c6d609f2a89cdde812801e4d4b650",
+  "release_reason": "Build100 V2 corrects ROOT admission deadline P2; frozen proposal; no execution; review plus NEW ROOT execution admission pending",
+  "packet": {
+    "path": "pump-report/handoffs/analytics/ARIA_NORMALIZED_ORIGIN_INTEGRATION_20261102_V1/FROZEN_V2.json",
+    "sha256": "b0149400c26303b92af97b2d868a2d7e4cbe2b5b1b6ee36852d79655752a344d",
+    "candidate_artifact_sha256": "ffee73e9b4d6ec12685b91c717e6c13aecdeb4804ecd4d8f84a70210b4ea3010",
+    "candidate_implementation_sha256": "a79c7c7faa6ed4d764a59b536f52de8305d54fd98bdb3c5d03ce4f40af655241",
+    "Node_imports_tests": 0,
+    "engine_entries": 0,
+    "native_IO": 0,
+    "qualifier_sha256": "7cd857b70369661f424ddbdafdbe0b1efd1408882beca8a168df797df279c4b4"
+  }
 }
