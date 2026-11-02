@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_REPORT_ANALYTICS_OFFLINE_BOUNDED_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793627243928",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793627243928,
@@ -12,7 +12,7 @@
   "expected_main": "8de4d797b17c6d609f2a89cdde812801e4d4b650",
   "coordinator_owner": "CODEX:PUMP_POST_AGT_COHERENT_20261102:1793626837231",
   "coordinator_expires_ts": 1793631937231,
-  "released": false,
+  "released": true,
   "scope": {
     "prefix": "pump-report/handoffs/analytics/ARIA_ACTUAL_PRODUCER100_20261102_V1/",
     "task": "Prepare frozen one-engine new100 actual baseline->first A/B SOPH qualifier and AGT static review; script/template/freeze only; no execution until ROOT+SOURCE reviews and NEW ROOT execution admission. No forced normalization, retime, reference99, working/shared changes or native IO.",
@@ -63,5 +63,17 @@
     "released": true,
     "FULL_release_commit": "2d77c0749cde2f7d2dc5761f9457c2287d2acb90"
   },
-  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true
+  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true,
+  "released_ts": 1793627668983,
+  "work_stopped_ts": 1793627668983,
+  "work_stopped_before_deadline": true,
+  "release_authority_main": "8de4d797b17c6d609f2a89cdde812801e4d4b650",
+  "release_reason": "Actual producer100 one-engine qualifier and AGT static review frozen; UNEXECUTED; ROOT/SOURCE reviews plus NEW ROOT admission pending. No further edits while waiting.",
+  "packet": {
+    "path": "pump-report/handoffs/analytics/ARIA_ACTUAL_PRODUCER100_20261102_V1/FROZEN_V1.json",
+    "sha256": "5a4a0b17861a8390bc7e16c8934a764ff67af3a2dd1414e0683604166ee5dcc0",
+    "entry_sha256": "c2eed9396f6a849b5dfe35bdaf0555e02bcdf2efc073010b935b56cdcc8ca247",
+    "pins": 116,
+    "Node_JSparser_imports_tests_engine_native": 0
+  }
 }
