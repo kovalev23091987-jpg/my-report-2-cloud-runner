@@ -1,22 +1,22 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "RELEASED",
-  "owner": "CODEX:OFFLINE_ANOMALIES:1793599871568",
+  "status": "OWNED",
+  "owner": "CODEX:OFFLINE_ANOMALIES:1793603790590",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
-  "acquired_ts": 1793599871568,
-  "expires_ts": 1793601671568,
-  "working_deadline_ts": 1793600771568,
-  "planned_release_start_ts": 1793600771568,
-  "FULL_release_hard_deadline_ts": 1793601071568,
+  "acquired_ts": 1793603790590,
+  "expires_ts": 1793605590590,
+  "working_deadline_ts": 1793604690590,
+  "planned_release_start_ts": 1793604690590,
+  "FULL_release_hard_deadline_ts": 1793604990590,
   "minimum_FULL_margin_ms": 600000,
-  "expected_main": "82547ee139ca7577acfcd87e7a452810011d81ce",
-  "coordinator_owner": "CODEX:PUMP_SOURCE_BUDGET_AND_AUTO99_20261102:1793599607006",
-  "coordinator_expires_ts": 1793604707006,
-  "previous_own_release": "e92e9de547a3264078d3f9763c524002dee4e005",
-  "released": true,
-  "scope": "ROOT direct exact99 bounded production read PLAN only. NEW own<=30min/work<=15min/FULLrelease>=10min inside ROOT. Only local handoffs/analytics/EXACT99_NATIVE_READ_PLAN_20261102_V1/**. Field→PK read→consumer manifest based on accepted completed-auto-packet/savedOutcome/validatorV4: one selected card/currentoriginal and at most one firstB from verified locator, explicit immutable cache, post-accounting/post-ACK read_ts and packet hash. Prove <=16statements incl4ledger, unchanged LOOKUP500R30W/default10, with honest physical row bound qualification gaps; no claim of measured native capacity. READ_ACTIVE99 fiveCFREST witness, actual1793596891902 cutoff. No nativeSQLwrapper, codeproduction, strategy/runtime99/validator edits, SQL/CF/source/provider/OAuth/TG/market/nativeIO or tests/Node/parser/engine. No old accepted ROOT/source checks replay, no newchats/subagents/automations/outbound messages. ROOT owns actualschemaCONTROL and lateroperator. Preserve all costs UNKNOWN reserves/caps/9pauses/2OWNERdeferrals. One compact Markdown/JSON plan plus exact currentreader/policy gaps, physical businessacceptance OPEN. Own lease metadata only public; payload local. Timely own FULLrelease then only read-only frozenoperator review if assigned.",
+  "expected_main": "ca6b1e9148195d03b276163c7e57e80827b0e269",
+  "coordinator_owner": "CODEX:PUMP_AUTO99_OBSERVER_SOURCE_RECONCILIATION_20261102:1793603385542",
+  "coordinator_expires_ts": 1793608485542,
+  "previous_own_release": "72b14f894dc3d50279eca765d7cad01ed39f9d04",
+  "released": false,
+  "scope": "ROOT direct single connected async pure read-only direct-PK AUTO99 collector proposal. NEW own<=30min/work15/FULLrelease>=10insideROOT. Only local handoffs/analytics/EXACT99_DIRECT_PK_COLLECTOR_20261102_V1/**. store.get/clock only; ROOT supplies actual accounted ACK envelopes key/value/read_ts/value_sha256. Explicit immutable Map cache no extra reads/clock refresh. One completed selectedrun, one SENT original/card directPK, <=1firstB from verified exact5field locator for C, journal/signal/outcome and optional1same-card refetch. <=10businessreads+4ledger, noSENT OPEN<=3. Reuse pure saved observation via honestly named virtual one-row DIRECT_PK projection, not fake physical page. Preserve provenance/unknown/Aclocks/t0; no C→C/recursiveA. No production/runtime99/strategy/acceptedvalidatorV4 edits. No Node/import/parser/test/engine replay; ROOT does one new coherent qualification after reviews, never old15cases. No native wrapper/network/SQL/CF/provider/OAuth/market/TG or sends, no newchats/subagents/automations/outbound messages. Code/readcontract/hashes frozen, own FULLrelease then only readonly ROOT integration review. All SPENT UNKNOWN reserves caps/manual3/9pauses/2OWNERdeferrals retained. Only own lease metadata public; payload local.",
   "fresh_authority": {
-    "main": "82547ee139ca7577acfcd87e7a452810011d81ce",
+    "main": "ca6b1e9148195d03b276163c7e57e80827b0e269",
     "guard_paths": [
       "AGENTS.md",
       "pump-report/AGENTS.md",
@@ -42,14 +42,14 @@
       "checkpoints/pump-report-20261025/OWNER_PUBLICATION_AMENDMENTS.json"
     ],
     "all4_active_exact_equal": true,
-    "register_FULL_source": "ROOT current acquire FULL-local + fresh9e25ce metadata + exact local bytes",
+    "register_FULL_source": "ROOT current FULL-local and fresh a88f73 blob binding exact local fullbytes",
     "fence_active": false,
     "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"
   },
   "previous_lease_observation": {
-    "owner": "CODEX:OFFLINE_ANOMALIES:1793598887647",
+    "owner": "CODEX:OFFLINE_ANOMALIES:1793599871568",
     "status": "RELEASED",
-    "released_ts": 1793599000599
+    "released_ts": 1793600635967
   },
   "release_reason": "FROZEN_STATIC_READY_FIRST_INTEGRATION_FOR_ROOT_REVIEW_NO_EXECUTIONS",
   "frozen_packet": {
@@ -62,13 +62,5 @@
   "stopped_before_working_deadline": true,
   "FULL_required_before_hard_deadline": true,
   "past_V3_deadline_exception_preserved": true,
-  "work_stopped_before_deadline": true,
-  "released_ts": 1793600635967,
-  "packet": {
-    "local_path": "pump-report/handoffs/analytics/EXACT99_NATIVE_READ_PLAN_20261102_V1/FROZEN_V1.json",
-    "sha256": "75ca04765376128c772091c54febe8bf967702b41ce77fd984688b8110044bda",
-    "tests": 0,
-    "native_IO": 0
-  },
-  "reason": "Prepared field/read/consumer/cache/chronology manifest only, max14direct/16compat including4ledger. Physical row/write ceiling explicitly conditional pending qualified bounds, no cap increase/IO/admission claim. No runtime/strategy/code changes or tests."
+  "work_stopped_before_deadline": true
 }
