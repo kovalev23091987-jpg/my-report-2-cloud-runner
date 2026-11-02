@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793599871568",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793599871568,
@@ -13,7 +13,7 @@
   "coordinator_owner": "CODEX:PUMP_SOURCE_BUDGET_AND_AUTO99_20261102:1793599607006",
   "coordinator_expires_ts": 1793604707006,
   "previous_own_release": "e92e9de547a3264078d3f9763c524002dee4e005",
-  "released": false,
+  "released": true,
   "scope": "ROOT direct exact99 bounded production read PLAN only. NEW own<=30min/work<=15min/FULLrelease>=10min inside ROOT. Only local handoffs/analytics/EXACT99_NATIVE_READ_PLAN_20261102_V1/**. Field→PK read→consumer manifest based on accepted completed-auto-packet/savedOutcome/validatorV4: one selected card/currentoriginal and at most one firstB from verified locator, explicit immutable cache, post-accounting/post-ACK read_ts and packet hash. Prove <=16statements incl4ledger, unchanged LOOKUP500R30W/default10, with honest physical row bound qualification gaps; no claim of measured native capacity. READ_ACTIVE99 fiveCFREST witness, actual1793596891902 cutoff. No nativeSQLwrapper, codeproduction, strategy/runtime99/validator edits, SQL/CF/source/provider/OAuth/TG/market/nativeIO or tests/Node/parser/engine. No old accepted ROOT/source checks replay, no newchats/subagents/automations/outbound messages. ROOT owns actualschemaCONTROL and lateroperator. Preserve all costs UNKNOWN reserves/caps/9pauses/2OWNERdeferrals. One compact Markdown/JSON plan plus exact currentreader/policy gaps, physical businessacceptance OPEN. Own lease metadata only public; payload local. Timely own FULLrelease then only read-only frozenoperator review if assigned.",
   "fresh_authority": {
     "main": "82547ee139ca7577acfcd87e7a452810011d81ce",
@@ -62,5 +62,13 @@
   "stopped_before_working_deadline": true,
   "FULL_required_before_hard_deadline": true,
   "past_V3_deadline_exception_preserved": true,
-  "work_stopped_before_deadline": true
+  "work_stopped_before_deadline": true,
+  "released_ts": 1793600635967,
+  "packet": {
+    "local_path": "pump-report/handoffs/analytics/EXACT99_NATIVE_READ_PLAN_20261102_V1/FROZEN_V1.json",
+    "sha256": "75ca04765376128c772091c54febe8bf967702b41ce77fd984688b8110044bda",
+    "tests": 0,
+    "native_IO": 0
+  },
+  "reason": "Prepared field/read/consumer/cache/chronology manifest only, max14direct/16compat including4ledger. Physical row/write ceiling explicitly conditional pending qualified bounds, no cap increase/IO/admission claim. No runtime/strategy/code changes or tests."
 }
