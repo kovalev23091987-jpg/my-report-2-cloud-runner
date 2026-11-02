@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_REPORT_ANALYTICS_OFFLINE_BOUNDED_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793624257119",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793624257119,
@@ -12,7 +12,7 @@
   "expected_main": "1d78ae53354927e8044147087d48d155bfa00003",
   "coordinator_owner": "CODEX:PUMP_ADMITTED_ORIGINALS_EXECUTION_20261102:1793623913905",
   "coordinator_lease_released": true,
-  "released": false,
+  "released": true,
   "scope": {
     "prefix": "pump-report/handoffs/analytics/ARIA_TARGET_PROOF_MEASUREMENT_20261102_V1/",
     "task": "Exact saved ARIA/EVAA and at most two unchanged archival READY inputs; offline proposed reference-normalization patch only; one newly admitted bounded affected JS measurement; no working analytics/runtime/main/native/market/TG changes",
@@ -137,5 +137,17 @@
     },
     "reason": "DIRECT_PK_COLLECTOR_V1_FROZEN; ROOT INTEGRATION QUALIFICATION PENDING; NO RUNTIME OR NATIVE IO"
   },
-  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true
+  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true,
+  "released_ts": 1793625188773,
+  "work_stopped_ts": 1793625156464,
+  "work_stopped_before_deadline": true,
+  "packet": {
+    "path": "pump-report/handoffs/analytics/ARIA_TARGET_PROOF_MEASUREMENT_20261102_V1/FROZEN_RESULT_V1.json",
+    "sha256": "5ff5e0bf56de45ff45d2d4132f2d07b17f76ec43b2ccbd59ba562853837526e3",
+    "local_processes": 1,
+    "local_engine_entries": 8,
+    "result": "PASS_AFFECTED_MEASUREMENT_ONLY",
+    "native_IO": 0
+  },
+  "release_reason": "One bounded offline measurement completed and frozen; proposed patch only; no working runtime/native changes; integration/rollback new-normalized-origin branch remains open"
 }
