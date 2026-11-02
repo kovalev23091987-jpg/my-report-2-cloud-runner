@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793598887647",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793598887647,
@@ -13,7 +13,7 @@
   "coordinator_owner": "CODEX:PUMP_OWNER_APPROVED_EXACT99_ACTIVATION_20261102:1793596502645",
   "coordinator_expires_ts": 1793601602645,
   "previous_own_release": "0e48ead9e8e7720cbad6a313cd1b00d3d7216a3c",
-  "released": false,
+  "released": true,
   "scope": "ROOT direct narrow P2 fix only: local handoffs/analytics/EXACT99_ACCEPTANCE_VALIDATOR_20261102_V1/**. NEW own20min/work<=8/FULLrelease>=10min inside ROOT. Before delivery_bound require actual captured original read_ts>=original.saved_ts and card read_ts>=receipt.confirmed_ts. One small pure chronology helper and EXACTLY2 synthetic negative cases before the still-unexecuted single ROOT qualification. No other acceptance/strategy gates. Preserve ARTIFICIAL/control provenance and allold costs UNKNOWN caps/reserves/9pauses/2OWNERdeferrals. No Node/import/parser/test/engine/native/market/CF/OAuth/TG/source SQL/runtime99/canonical changes or outbound messages. Fresh main unchanged9c9 and cached FULL immutable guards reused after fresh mainHEAD and fresh ownref FULL; only ownlease metadata public. Freeze V4 exactSHA, ROOT/SOURCE staticreview, ROOT later owns actual qualification. Only own timely FULLrelease.",
   "fresh_authority": {
     "main": "9c9dc9517df7825d200f0184d7825a1083ac1b90",
@@ -61,5 +61,13 @@
   "stopped_before_working_deadline": true,
   "FULL_required_before_hard_deadline": true,
   "past_V3_deadline_exception_preserved": true,
-  "work_stopped_before_deadline": true
+  "work_stopped_before_deadline": true,
+  "released_ts": 1793599000599,
+  "packet": {
+    "local_path": "pump-report/handoffs/analytics/EXACT99_ACCEPTANCE_VALIDATOR_20261102_V1/FROZEN_V4.json",
+    "sha256": "e6ed0f7fe63dd9d3407eaa17e98bd3e18eb1c337da0445f341110cc127d64c8a",
+    "Node": 0,
+    "native_IO": 0
+  },
+  "reason": "Narrow SOURCE readback chronology P2 fixed only; one helper and exactly2 synthetic negatives before the unexecuted single ROOT qualification. No runtime/strategy/native changes."
 }
