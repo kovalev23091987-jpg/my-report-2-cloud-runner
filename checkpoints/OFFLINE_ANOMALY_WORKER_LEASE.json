@@ -1,6 +1,6 @@
 {
   "schema": "OFFLINE_ANOMALY_WORKER_LEASE_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793603790590",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793603790590,
@@ -13,7 +13,7 @@
   "coordinator_owner": "CODEX:PUMP_AUTO99_OBSERVER_SOURCE_RECONCILIATION_20261102:1793603385542",
   "coordinator_expires_ts": 1793608485542,
   "previous_own_release": "72b14f894dc3d50279eca765d7cad01ed39f9d04",
-  "released": false,
+  "released": true,
   "scope": "ROOT direct single connected async pure read-only direct-PK AUTO99 collector proposal. NEW own<=30min/work15/FULLrelease>=10insideROOT. Only local handoffs/analytics/EXACT99_DIRECT_PK_COLLECTOR_20261102_V1/**. store.get/clock only; ROOT supplies actual accounted ACK envelopes key/value/read_ts/value_sha256. Explicit immutable Map cache no extra reads/clock refresh. One completed selectedrun, one SENT original/card directPK, <=1firstB from verified exact5field locator for C, journal/signal/outcome and optional1same-card refetch. <=10businessreads+4ledger, noSENT OPEN<=3. Reuse pure saved observation via honestly named virtual one-row DIRECT_PK projection, not fake physical page. Preserve provenance/unknown/Aclocks/t0; no C→C/recursiveA. No production/runtime99/strategy/acceptedvalidatorV4 edits. No Node/import/parser/test/engine replay; ROOT does one new coherent qualification after reviews, never old15cases. No native wrapper/network/SQL/CF/provider/OAuth/market/TG or sends, no newchats/subagents/automations/outbound messages. Code/readcontract/hashes frozen, own FULLrelease then only readonly ROOT integration review. All SPENT UNKNOWN reserves caps/manual3/9pauses/2OWNERdeferrals retained. Only own lease metadata public; payload local.",
   "fresh_authority": {
     "main": "ca6b1e9148195d03b276163c7e57e80827b0e269",
@@ -62,5 +62,15 @@
   "stopped_before_working_deadline": true,
   "FULL_required_before_hard_deadline": true,
   "past_V3_deadline_exception_preserved": true,
-  "work_stopped_before_deadline": true
+  "work_stopped_before_deadline": true,
+  "released_ts": 1793604402205,
+  "work_stopped_ts": 1793604379844,
+  "packet": {
+    "local_path": "pump-report/handoffs/analytics/EXACT99_DIRECT_PK_COLLECTOR_20261102_V1/FROZEN_V1.json",
+    "sha256": "ac1a3a47da34e7af49f3a4c2ea79e7298e6d313b809b22f2d3edb42365a085e1",
+    "collector_sha256": "d195706e79df25b21cffc5459ec42028668f4ab51de89c63d8f582c6e3899ae6",
+    "tests": 0,
+    "native_IO": 0
+  },
+  "reason": "DIRECT_PK_COLLECTOR_V1_FROZEN; ROOT INTEGRATION QUALIFICATION PENDING; NO RUNTIME OR NATIVE IO"
 }
