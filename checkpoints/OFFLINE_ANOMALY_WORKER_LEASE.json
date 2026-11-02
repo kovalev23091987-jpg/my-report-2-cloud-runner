@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_REPORT_ANALYTICS_OFFLINE_BOUNDED_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793630557475",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793630557475,
@@ -12,7 +12,7 @@
   "expected_main": "a982f1264bfa64a84622be433faa901fe875c917",
   "coordinator_owner": "CODEX:PUMP_AGT_USEFUL_PLAN_20261102:1793628779459",
   "coordinator_expires_ts": 1793633879459,
-  "released": false,
+  "released": true,
   "scope": {
     "prefix": "pump-report/handoffs/analytics/AGT_STRUCTURAL_CORE_FALLBACK_ROUNDING_20261102_V1/",
     "task": "V4 targeted SOURCE review fixes only: shared shown/price cancellation-safe rounding, exact all24-key checker guard, one price boundary assert; new V4 immutable stage/artifact/qualifier/launcher/template/freeze. No imports/tests/replay/engine/source/native/TG, no prior freezes or production changes.",
@@ -63,5 +63,18 @@
     "released": true,
     "FULL_release_commit": "5e9b69933e733d3e7396d861733b50c669b8535a"
   },
-  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true
+  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true,
+  "released_ts": 1793630656220,
+  "work_stopped_ts": 1793630656220,
+  "work_stopped_before_deadline": true,
+  "release_authority_main": "a982f1264bfa64a84622be433faa901fe875c917",
+  "release_reason": "V4 SOURCE review fixes frozen, unexecuted; actual authority24 set and shared safe price/range rounding. ROOT/SOURCE exact review pending.",
+  "packet": {
+    "path": "pump-report/handoffs/analytics/AGT_STRUCTURAL_CORE_FALLBACK_ROUNDING_20261102_V1/FROZEN_V4.json",
+    "sha256": "48d4c05d78e58322094ab38f1c7e383c501b8a40fac409c1c25040d1fc640424",
+    "entry_sha256": "8d1ac5ed01d33d8f437afc3a145589ceeab3db080314eb5c099a64a414a77e47",
+    "artifact_sha256": "5dc1bef98c18b5ae845cece2a34d2236cfa2b1e3b06d089993a49dd5ba92b93f",
+    "implementation_sha256": "2af7aa8ebf505f703372103b60d1fe005de0d7fea9792844665fe2a1130220f2",
+    "Node_imports_tests_engine_native": 0
+  }
 }
