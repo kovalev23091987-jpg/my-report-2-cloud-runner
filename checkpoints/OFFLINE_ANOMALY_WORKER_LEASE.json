@@ -1,6 +1,6 @@
 {
   "schema": "PUMP_REPORT_ANALYTICS_OFFLINE_BOUNDED_V1",
-  "status": "OWNED",
+  "status": "RELEASED",
   "owner": "CODEX:OFFLINE_ANOMALIES:1793703853000",
   "thread_id": "01a171fe-a65e-7530-8ddc-f097297f8756",
   "acquired_ts": 1793703853000,
@@ -12,7 +12,7 @@
   "expected_main": "9c56c2c195e1687202369c6352d90142ab1377c5",
   "coordinator_owner": "CODEX:PUMP_CURRENT_NATIVE_ACCEPTANCE_20261103:1793701437533",
   "coordinator_expires_ts": 1793706537533,
-  "released": false,
+  "released": true,
   "scope": {
     "prefix": "pump-report/handoffs/analytics/CURRENT_PRODUCER100_TWO_RUN_POINT_PLAN_20261103_V1/",
     "task": "Only compact static exact future point-read contract for two retained Nov3 TG-cost run UUIDs and at most one bound producer100 saved analysis/card. Reuse accepted same-text projection verifier; cost!=SENT, max2RUN PK+1A+1C+native4 <=8SQL inside16/500R30W/cap10. Separate original1.9MB/aggregate bytebounds; no scans/wholeaudit. Current ROOT scope permits second actual LOOKUP only for LIQ; this plan is not executable now and requires future ROOTscope+separate actual admissions. No Node/import/engine/tests/liveSQL/providerHTTP/RPC/CF/OAuth/TG, no code/canonical/strategy changes. Own handoff metadata only.",
@@ -61,5 +61,16 @@
     "released": true,
     "FULL_release_commit": "1fc44582c46fa3d9a45883023b08c7e35382ad78"
   },
-  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true
+  "past_costs_unknowns_reserves_manual3_9pauses_2_OWNER_deferrals_preserved": true,
+  "released_ts": 1793704121000,
+  "work_stopped_ts": 1793704121000,
+  "work_stopped_before_deadline": true,
+  "release_authority_main": "9c56c2c195e1687202369c6352d90142ab1377c5",
+  "release_reason": "Finished static future current100 two known-run→one original/card point-read plan: max8SQL inside16/500R30W/cap10; cost is not SENT, saved verifier reuse and explicit1.9MB original bound. Not executable/current scope only second LIQ actual. No Node/import/tests/engine/liveIO.",
+  "packet": {
+    "path": "pump-report/handoffs/analytics/CURRENT_PRODUCER100_TWO_RUN_POINT_PLAN_20261103_V1/FROZEN_V1.json",
+    "sha256": "397f66b4099392729f78c1827589bd65d654f666205421e27e2f7b436a6777f6",
+    "plan_sha256": "88b42abeb49a31ef8a8818cef185bcdb59b44e4f59f2a2878316ec43946173b7",
+    "status": "STATIC_PLAN_FINISHED_NOT_EXECUTABLE_NOT_ADMITTED"
+  }
 }
