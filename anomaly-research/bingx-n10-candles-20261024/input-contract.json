@@ -1,0 +1,35 @@
+{
+  "schema": "BINGX_N10_ROOT_PROTECTED_INPUT_CONTRACT_V1",
+  "existing_export": "buildHtxPrimaryTechnicalReceipt",
+  "new_optional_args": {
+    "venue": "BINGX",
+    "bingx": {
+      "context": "existing private branded B04 context from ROOT binding",
+      "expected_identity": "independent full ROOT current registry identity, NOT Source/caller copy",
+      "capture": {
+        "raw_json": "complete original UTF8 candle body; private only; bounded2MiB local parse stop",
+        "receipt": "SOURCE normalizeBingxCandles receipt fields; Root independently authenticates original wire and usage"
+      },
+      "expected": {
+        "venue": "BINGX",
+        "instrument_ref": "resolveBingxExpectedHistoryRef exact current ref",
+        "native_symbol": "same exact independently expected symbol",
+        "family": "USDT_M",
+        "endpoint": "/openApi/swap/v3/quote/klines",
+        "payload_sha256": "ROOT independent retained original body SHA",
+        "received_ts": "original receipt clock, not processing now",
+        "interval": "actual requested source interval",
+        "window_start": "original candidate request window start",
+        "window_end": "original candidate request window end"
+      }
+    }
+  },
+  "actual_Worker_env_only": {
+    "REPORT2_BINGX_N10_CAPTURE_BY_REF": "Map instrument_ref -> {raw_json,receipt}; internal ROOT env only",
+    "REPORT2_BINGX_N10_EXPECTED_BY_REF": "Map instrument_ref -> independent expected capture descriptor; internal ROOT env only"
+  },
+  "caller_params": "never read for candle inputs or pins; no function/network reader/backend added",
+  "native_open_time_proof": "ABSENT. Caller closed/time/volume booleans or strings do not supply it. All native_time preserved; candidate_end is conditional, source_tsNULL and closed qualifierfalse.",
+  "result": "N10 check_completedfalse/evidence[], useful candidate price range + numeric grid + native rows + receipt provenance; firstknownNULL, volumeunitNULL, no score/entry/nativegrant",
+  "future_qualification_gap": "Independently qualify native time semantics and sufficient fresh actual closed-window provenance before any checked N10 evidence; not performed here."
+}

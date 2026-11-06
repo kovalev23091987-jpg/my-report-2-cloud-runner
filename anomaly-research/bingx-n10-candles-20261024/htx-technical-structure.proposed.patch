@@ -1,0 +1,52 @@
+--- a/current-generation/files/src/htx-technical-structure.mjs
++++ b/current-generation/files/src/htx-technical-structure.mjs
+@@ -1,3 +1,5 @@
++import {normalizeBingxCandles} from './bingx-perpetual-market.mjs';
++import {resolveBingxExpectedHistoryRef} from './market-snapshot-batch.mjs';
+ import {deriveBitfinexN10MemoryEvidence} from './bitfinex-n10-memory-context.mjs';
+ import {deriveKrakenN10MemoryEvidence} from './kraken-n10-memory-context.mjs';
+ import {createHash} from 'node:crypto';
+@@ -223,7 +225,9 @@
+ // A completed promise is not proof that its provider returned useful data.
+ // Check the existing snapshot AND trajectory; a rolling price summary alone
+ // cannot admit the primary technical pipeline. Flow coverage is independent.
+-export function buildHtxPrimaryTechnicalReceipt({contract,futures,trajectory,reference_price,now=Date.now(),route_state=null}={}){
++export function buildHtxPrimaryTechnicalReceipt({contract,futures,trajectory,reference_price,now=Date.now(),route_state=null,venue=null,bingx=null}={}){
++ const primaryVenue=venue??futures?.data?.venue??'HTX';
++ if(primaryVenue!=='HTX'||bingx!==null)return buildBingxPrimaryCandleCandidate({contract,now,venue:primaryVenue,bingx});
+  const f=futures?.data,t=trajectory?.data,failures=[];
+  const positive=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
+  const fresh=ts=>Number.isSafeInteger(ts)&&ts<=now&&now-ts<=TTL;
+@@ -248,3 +252,32 @@
+  return {status:closed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:closed,network_calls:0,evidence:closed?[...evidence,...recentPath]:[],receipts:[{check_completed:closed,status:route_state||'NO_ENTRY_STATE',contract,futures_status:states[0],trajectory_status:states[1],reference_price_status:reference_price?.status||'NOT_EVALUATED',reference_source_ts:reference_price?.source_ts??null,trajectory_source_ts:t?.provider_source_ts??null,actual_price_windows:windows,failures,source_transport:'EXISTING_SAME_CANDIDATE_SNAPSHOT_AND_TRAJECTORY',signed_raw_24h_verified:false,entry_authorized_by_context:false}],entry_rules_changed:false};
+ }
+ 
++
++// Reuse the actual SOURCE object-candle parser; it does not qualify native time
++// as an open timestamp. These are research price facts, never closed N10 evidence.
++function buildBingxPrimaryCandleCandidate({contract,now,venue,bingx}={}){
++ const denied=(reason,extra={})=>({status:'BINGX_TECHNICAL_CONTEXT_NOT_CLOSED',venue:'BINGX',contract,check_completed:false,network_calls:0,evidence:[],receipts:[{source:'BINGX_OFFICIAL_OBJECT_KLINES',check_completed:false,failures:[reason],entry_authorized_by_context:false,...extra}],entry_rules_changed:false,native_admission:false,score_allowed:false,entry_allowed:false});
++ try{
++  if(venue!=='BINGX'||!Number.isSafeInteger(now)||now<=0)return denied('EXACT_BINGX_DECISION_REQUIRED');
++  const {context,expected_identity:i,capture,expected}=bingx??{};
++  const ref=resolveBingxExpectedHistoryRef({context,expected_identity:i});
++  if(i.family!=='USDT_M'||i.quote!=='USDT'||i.settle!=='USDT'||i.margin!=='USDT'||i.native_symbol!==contract||i.contract!==contract)return denied('USDT_MARGIN_CRYPTO_PERPETUAL_ONLY');
++  if(!capture||!expected)return denied('ROOT_INDEPENDENT_CANDLE_CAPTURE_AND_PIN_REQUIRED');
++  if(expected.venue!=='BINGX'||expected.instrument_ref!==ref||expected.native_symbol!==contract||expected.family!==i.family||expected.endpoint!=='/openApi/swap/v3/quote/klines'||typeof expected.payload_sha256!=='string'||!/^[a-f0-9]{64}$/.test(expected.payload_sha256)||!Number.isSafeInteger(expected.received_ts)||expected.received_ts<=0||expected.received_ts>now)return denied('ROOT_EXACT_CANDLE_PIN_REQUIRED');
++  if(typeof capture.raw_json!=='string'||Buffer.byteLength(capture.raw_json)>2*1024*1024||createHash('sha256').update(capture.raw_json).digest('hex')!==expected.payload_sha256)return denied('ORIGINAL_CANDLE_BYTES_PIN_MISMATCH');
++  const r=capture.receipt;
++  if(r?.payload_sha256!==expected.payload_sha256||r.received_ts!==expected.received_ts||r.endpoint!==expected.endpoint||r.native_symbol!==contract||r.family!==i.family)return denied('ORIGINAL_CANDLE_RECEIPT_PIN_MISMATCH');
++  const parsed=normalizeBingxCandles({body:JSON.parse(capture.raw_json),receipt:r,instrument_identity:i,interval:expected.interval,window_start:expected.window_start,window_end:expected.window_end});
++  const rows=parsed.rows,step=rows.length?rows[0].candidate_end_ts-rows[0].candidate_open_ts:null;
++  const candidate=rows.length?{kind:'CANDIDATE_PRICE_RANGE_NATIVE_TIME_NOT_QUALIFIED',open:Number(rows[0].open_decimal),high:Math.max(...rows.map(x=>Number(x.high_decimal))),low:Math.min(...rows.map(x=>Number(x.low_decimal))),close:Number(rows.at(-1).close_decimal),native_grid_count:rows.length,candidate_window_start:parsed.window_start,candidate_window_end:parsed.window_end,candidate_interval_ms:step,native_grid_contiguous:parsed.contiguous,all_candles_closed:false,volume_unit:null}:null;
++  return denied('NATIVE_KLINE_OPEN_TIME_AND_CLOSED_BAR_SEMANTICS_NOT_QUALIFIED',{
++   instrument_ref:ref,instrument_identity:structuredClone(i),market:'FUTURES',family:i.family,quote:i.quote,settle:i.settle,margin:i.margin,
++   source_ts:null,received_ts:parsed.provenance.received_ts,decision_ts:now,receipt_age_ms:now-parsed.provenance.received_ts,first_known_ts:null,
++   payload_sha256:parsed.provenance.payload_sha256,endpoint:parsed.provenance.endpoint,receipt_authentication:parsed.provenance.receipt_authentication,
++   interval:parsed.interval,time_semantics:parsed.time_semantics,closed_ohlcv_qualified:false,volume_unit_qualified:false,volume_unit:null,
++   grid_status:parsed.status,native_grid_count:rows.length,omitted_rows:parsed.omitted_rows,candidate_price_range:candidate,
++   native_rows:rows.map(x=>({...x,volume_unit:null})),actual_price_windows:[],twenty_closed_bar_context:false,continuous_80h_qualified:false,
++   research_backfill:now-parsed.provenance.received_ts>TTL,current_primary_context_qualified:false,score_contribution:0
++  });
++ }catch(error){return denied(String(error?.message??error).slice(0,180));}
++}
