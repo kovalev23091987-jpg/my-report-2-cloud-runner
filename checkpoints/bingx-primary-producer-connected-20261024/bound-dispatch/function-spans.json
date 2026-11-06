@@ -1,0 +1,64 @@
+{
+  "schema": "SOURCE_ACTUAL_WORKER_DISPATCH_SPANS_V1",
+  "candidate": [
+    {
+      "name": "clamp",
+      "start": "function clamp(value, min, max, fallback) {",
+      "end": "\nfunction normalizeTs(value)",
+      "bytes": 159,
+      "sha256": "2c37f9b010ab247385686ec46bbaec5c666b81790a07e7060e6ea3ac7979d005",
+      "git_blob": "2f470b0a87eb225be5d6544cb7d6467aaf384588"
+    },
+    {
+      "name": "normalizeFuturesContract",
+      "start": "function normalizeFuturesContract(value) {",
+      "end": "\nfunction normalizeSpotSymbol(value)",
+      "bytes": 262,
+      "sha256": "d3cece45063609b5cbd2eec640a1cf4dccc2c659a7e3ccf7b62471491b20de2f",
+      "git_blob": "cf63ae0f3fed1b9eb992f500c6723ad9d3592d1c"
+    },
+    {
+      "name": "futuresSnapshot",
+      "start": "async function futuresSnapshot(",
+      "end": "\nasync function refreshHtxExecutionQuoteIfNeeded(",
+      "bytes": 12114,
+      "sha256": "13ee3cd067adfc5b537ccc00abf0fb91240163a32f5359f66d72b58d32f6d829",
+      "git_blob": "fa2788a8fba968989c2cc50357c64a7c9b4aba9c"
+    },
+    {
+      "name": "htxUniverseScan",
+      "start": "async function htxUniverseScan(",
+      "end": "\nfunction buildDeepCheckQueue(",
+      "bytes": 27359,
+      "sha256": "1eb6815fc55a754f4b9936d8b1b2855403baee7b4aa3b63399bf0d4b9125b91a",
+      "git_blob": "8872fb5f9d4dcd2847a294e0457c22eb152d6226"
+    },
+    {
+      "name": "settled",
+      "start": "  function settled(result) {",
+      "end": "\n  const futures =\n",
+      "bytes": 546,
+      "sha256": "cf6288062ead0f5fd6273c18a0320579a03eb400a81fdb308aa7a8d608ec922e",
+      "git_blob": "3a25bcf5f50c5abe0071f17fceabbb8a1d2ba226"
+    },
+    {
+      "name": "deepContract",
+      "start": "  const snapshotVenue=",
+      "end": "\n\n  if(approvedHtxLimitedReportAdmitted",
+      "bytes": 361,
+      "sha256": "4eabc4f9bc7f81a21cefdb71216bea6c163022d802e368085384696eb211b8c9",
+      "git_blob": "a36cc7271783774e0e9d1120149501bccc8878ee"
+    },
+    {
+      "name": "deepFuturesParams",
+      "start": "  const futuresParams = {",
+      "end": "\n\n  const spotParams = {",
+      "bytes": 417,
+      "sha256": "833595b8ee1236c0131e62a8db176d2ad895d2e20091b2db1ca07f183911cecc",
+      "git_blob": "915b6c5d41f7950d352ae4bcedf5a8a2faa13f0f"
+    }
+  ],
+  "FUTURES_BASE": "https://api.hbdm.com",
+  "HTTP_argument_expression": "{...params,venue:params?.venue??params?.instrument_identity?.venue??env?.REPORT2_PRIMARY_VENUE??'HTX',instrument_identity:params?.instrument_identity??null,_bingx_snapshot_reader:typeof env?._bingx_snapshot_reader==='function'?env._bingx_snapshot_reader:null}",
+  "scope": "Exact full function bodies and existing actual caller expressions extracted after FULL whole Worker authentication. Not full Worker or private assembly import/execution. HTX-positive variants stop at CONTROLLED callback/transport sentinel before legacy parsing/SQL."
+}

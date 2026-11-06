@@ -1,0 +1,37 @@
+{
+  "schema": "SOURCE_WORKER_BINGX_COMPLETED_CAPTURE_READER_CONTRACT_V1",
+  "status": "PROPOSED_INTERFACE_NOT_INSTALLED_NATIVE_PARENT",
+  "snapshot": {
+    "function": "futuresSnapshot(params,env=null)",
+    "selection": "Explicit params venue/identity or env.REPORT2_PRIMARY_VENUE BINGX enters only BingX early branch. Conflicting/unsupported venue never enters legacy HTX. HTX body is unchanged for resolved HTX.",
+    "handler": "params._bingx_snapshot_reader or internal env._bingx_snapshot_reader must be JavaScript FUNCTION. Public parsed JSON/string/allowed boolean cannot install a handler. Both actual HTTP/Deep callers overwrite params handler from internal env function.",
+    "input": {
+      "venue": "BINGX",
+      "native_contract": "Exact native params contract/contract_code/symbol, all provided aliases must agree; no ETHFI fallback/HTX normalization",
+      "expected_instrument_identity": "Structured clone of independently supplied ROOT params.instrument_identity. Original JSON snapshot compared after await; never constructed from returned component."
+    },
+    "expected_identity_authority": "ROOT real parent must install params.instrument_identity from its own externally qualified registry/primary-document binding and authenticate completed capture ownership/body/usage. Public JSON identity is only a request, not authority; a function alone is not a native grant. This dispatcher provides no missing parent or authentication service.",
+    "return": "Exact Sourcebc5a assembleBingxFuturesObservation component: execution_status PARTIAL, data.venue BINGX, same full identity/nativecontract, all five NO_GRANT flags false. Return unchanged to preserve source clocks/available_ts. Wrong identity, SUCCESS or grant uplift => empty PARTIAL/BINGX_PRIMARY_NOT_CONNECTED, no retry/fallback.",
+    "canonicality": "Exact full DTO JSON equality, including field order, is a strict correlation boundary; it is not a second canonical instrument namespace/native identity authenticator."
+  },
+  "universe": {
+    "function": "htxUniverseScan(params,env,options={})",
+    "handler": "FUNCTION-only params._bingx_universe_reader or internal env._bingx_universe_reader",
+    "existing_ROOT_binding": "env.REPORT2_BINGX_HISTORY_BINDING original B04 descriptor {expected:{venue,actor,schema_version,...},current:{registry_json,expected_sha256,git_blob_locator},compatible:[...]}; opaque bound-token-only input is not this proposed reader contract.",
+    "binding_check": "Bounded registry JSON SHA256 must equal independent ROOT expected current digest; venue/actor/snapshot schema checked. Expected identity set/digest/actor snapshot before reader await. Full B04 semantic/authenticated registry qualification and actual parent/capture ownership remain ROOT duties; these shape/hash checks do not create native grants.",
+    "input": {
+      "venue": "BINGX",
+      "expected_registry_binding": "Structured-cloned original ROOT descriptor, never from returned rows"
+    },
+    "return": "Root-owned typed component execution_status PARTIAL/status NOT_CLOSED, top native_admission/score/entry false, data.venue BINGX, same registry digest/actor, <=20000 data.contracts entries with same exact expected DTO/nativecontract and all data NO_GRANT flags false. Original clocks and all rows passed unchanged.",
+    "missing_or_wrong": "PARTIAL/NOT_CLOSED/BINGX_PRIMARY_NOT_CONNECTED, venueBINGX, actual_crypto_contract_count NULL at top/data (not0), empty contracts, no legacy HTX HTTP/history or persistence SQL. params.persist/options.persist cannot bypass the early return."
+  },
+  "scope": "Only actual existing guards and typed completed-capture dispatch. No default global fetch, network client, backend/schema/SQL helper or production-admission implementation.",
+  "ROOT_must_supply_before_native": [
+    "Real owned completed-capture reader functions",
+    "Independent exact expected identity and current B04 registry descriptor/external pins",
+    "Actual current parent/ownership/guard/unknown/source usage and native admission outside this proposal",
+    "Full actual producer/Worker/consumer/import closure and one new affected qualification",
+    "Full DeepCheck side-path isolation and later LAST nonexecutable reference hook; no old one7 approval reuse"
+  ]
+}

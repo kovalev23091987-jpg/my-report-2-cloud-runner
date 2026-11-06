@@ -1,0 +1,73 @@
+{
+  "schema": "SOURCE_WORKER_ACTUAL_CALLER_INVENTORY_V1",
+  "baseline_combined636": {
+    "bytes": 636110,
+    "sha256": "0dd323959c59f0428e95c71ee939624e59f10b6f484db115327f896ed966f13a",
+    "head": "2561b7204b694c963df478951965fd95b6248871"
+  },
+  "literal_snapshot_call_expressions": 2,
+  "snapshot_export_alias": "futuresSnapshotForTest (function export, not a third in-Worker call)",
+  "snapshot_paths": [
+    {
+      "kind": "DeepCheck",
+      "baseline_line": 16077,
+      "candidate": "futuresSnapshot(futuresParams, env)",
+      "params": "exact native BingX contract; venue from params/identity/env; independent params.instrument_identity; internal env function forwarded"
+    },
+    {
+      "kind": "HTTP default",
+      "baseline_line": 19143,
+      "candidate": "futuresSnapshot({...params,venue,...instrument_identity,_bingx_snapshot_reader:internalEnvFunction},env)",
+      "params_JSON_handler_overridden": true
+    }
+  ],
+  "universe_existing_calls": [
+    {
+      "kind": "HTTP universe",
+      "baseline_line": 19075
+    },
+    {
+      "kind": "scheduled",
+      "baseline_line": 19221
+    },
+    {
+      "kind": "buildInternalGlobalMarketContext",
+      "baseline_line": 20448
+    }
+  ],
+  "all_universe_callers": "Existing env argument is read by the early function guard; no new legacy fetch/SQL on BINGX path. No direct API client installed.",
+  "three_reference_boundaries": [
+    {
+      "name": "MID",
+      "bytes": 579,
+      "sha256": "ec478dbe69b7477ebc69a492fa6b6c6c5139e60d2d72a301c64d3e0eb9d062bf",
+      "unchanged": true,
+      "expected_identity": "independent params.instrument_identity; NOT component copy"
+    },
+    {
+      "name": "EXECUTABLE_REFERENCE",
+      "bytes": 660,
+      "sha256": "c6b4a43646e35c6287c831c87b7ae1fb68fdf4f35da8dcffc47352314257fae1",
+      "unchanged": true,
+      "expected_identity": "independent params.instrument_identity; NOT component copy"
+    },
+    {
+      "name": "EXECUTION_RECEIPT",
+      "bytes": 407,
+      "sha256": "14c7df56128aea3173ae7aa6231901f178c0f557e2513571375cf300318e725d",
+      "unchanged": true,
+      "expected_identity": "independent params.instrument_identity; NOT component copy"
+    }
+  ],
+  "HTX_unchanged_body_pins": {
+    "futures_tail": {
+      "bytes": 9214,
+      "sha256": "3412ebbd2d3f7eb1c5b1c2810403ca479ac95fb2ac8c0c7f5cb08f0096a49286"
+    },
+    "universe_tail": {
+      "bytes": 23428,
+      "sha256": "5772a7aaa674a1a031081df76e881c0b0365a752ff8f1244e698e8c14c936f3b"
+    }
+  },
+  "production_boundary": "This package does NOT make the full DeepCheck/Worker HTX-IO-free: spotSnapshot/futuresTrajectory/signed-tape/execution-refresh and other old HTX paths exist outside these dispatched functions. ROOT must isolate/own/admit those real producer paths before native primary cutover. Existing scheduled recordCronRun/control SQL outside htxUniverseScan also remains ROOT-owned; ZEROlegacy IO is a boundary of these functions, not whole scheduled/DeepCheck execution."
+}

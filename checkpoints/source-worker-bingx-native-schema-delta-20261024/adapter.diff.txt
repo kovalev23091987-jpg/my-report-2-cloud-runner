@@ -1,0 +1,89 @@
+--- 479d/bingx-perpetual-market.mjs
++++ proposed/bingx-perpetual-market.mjs
+@@ -11,7 +11,9 @@
+ const positive=x=>{const s=decimal(x);return s!==null&&Number(s)>0?s:null;};
+ const fail=reason=>{throw new Error(reason);};
+ const family=x=>['USDT_M','COIN_M'].includes(x)?x:fail('BINGX_FAMILY_REQUIRED');
+-const symbol=(x,f)=>text(x)&&!/[\s&=?#\u0000-\u001f]/.test(x)&&x.endsWith(f==='USDT_M'?'-USDT':'-USD')?x:fail('EXACT_NATIVE_SYMBOL_REQUIRED');
++// USDT_M identifies the existing swap API route family, never a settlement default.
++const symbol=(x,f)=>text(x)&&!/[\s&=?#\u0000-\u001f]/.test(x)&&(f==='USDT_M'?/-(?:USDT|USDC)$/.test(x):x.endsWith('-USD'))?x:fail('EXACT_NATIVE_SYMBOL_REQUIRED');
++const nativeQuote=(s,f)=>{symbol(s,f);return s.slice(s.lastIndexOf('-')+1);};
+ const hash=x=>typeof x==='string'&&/^[a-f0-9]{64}$/.test(x);
+ const NO_GRANT=Object.freeze({native_admission:false,primary_qualified:false,consumer_ready:false,score_allowed:false,entry_allowed:false});
+ const ROUTES={
+@@ -65,6 +67,7 @@
+ function instrument(i){
+   if(!object(i)||i.schema!=='BINGX_CRYPTO_PERPETUAL_INSTRUMENT_V1'||i.venue!=='BINGX'||i.product!=='PERPETUAL'||i.market!=='FUTURES')fail('BINGX_PERPETUAL_IDENTITY_REQUIRED');
+   symbol(i.native_symbol,family(i.family));
++  if(i.quote!==nativeQuote(i.native_symbol,i.family)||(i.family==='USDT_M'&&i.settle!==i.quote))fail('NATIVE_QUOTE_SETTLEMENT_IDENTITY_MISMATCH');
+   if(i.contract!==i.native_symbol||i.crypto_eligibility!=='VERIFIED_CRYPTO_PERPETUAL'||i.underlying_class!=='CRYPTO_ASSET'||!text(i.crypto_eligibility_proof_ref)||!text(i.identity_revision)||!hash(i.catalog_payload_sha256)||!text(i.base)||!text(i.quote)||!text(i.settle)||!text(i.margin))fail('QUALIFIED_CRYPTO_MAPPING_REQUIRED');
+   if(['PAXG','XAUT'].includes(i.base.toUpperCase()))fail('OWNER_EXCLUDES_GOLD_BACKED_TOKENS');
+   return i;
+@@ -73,7 +76,7 @@
+ export function normalizeBingxCatalog({family:f,body,receipt,bindings=[]}={}){
+   const provenance=receiptFor(body,receipt,f,'catalog');
+   if(!Array.isArray(body.data)||body.data.length>20000||!Array.isArray(bindings))fail('BOUNDED_CATALOG_ARRAY_REQUIRED');
+-  const seen=new Set();const identities=body.data.map(row=>{
++  const seen=new Set();const identities=body.data.map((row,rowIndex)=>{
+     if(!object(row))fail('CATALOG_OBJECT_REQUIRED');
+     const s=symbol(row.symbol,f);if(seen.has(s))fail('DUPLICATE_CATALOG_SYMBOL');seen.add(s);
+     const matches=bindings.filter(b=>b?.family===f&&b?.native_symbol===s);
+@@ -82,8 +85,8 @@
+     const nativeId=f==='USDT_M'?(text(row.contractId)??null):null;
+     const nativeBase=f==='USDT_M'?text(row.asset):null;
+     const settle=f==='USDT_M'?text(row.currency):null;
+-    const quote=f==='USDT_M'?'USDT':'USD';
+-    if(f==='USDT_M'&&settle!==null&&settle!=='USDT')fail('SETTLEMENT_FAMILY_MISMATCH');
++    const quote=nativeQuote(s,f);
++    if(f==='USDT_M'&&(settle===null||settle!==quote))fail('NATIVE_SYMBOL_CURRENCY_MISMATCH');
+     if(b&&(b.native_contract_id!==nativeId||b.quote!==quote||(nativeBase!==null&&b.base!==nativeBase)||(settle!==null&&b.settle!==settle)))fail('CATALOG_IDENTITY_BINDING_MISMATCH');
+     let eligibility=b?.crypto_eligibility??'UNKNOWN';
+     const underlyingClass=text(b?.underlying_class);
+@@ -101,7 +104,7 @@
+       price_unit:'QUOTE_PER_NATIVE_BASE',crypto_eligibility:eligibility,underlying_class:underlyingClass,crypto_eligibility_proof_ref:proof,identity_revision:revision,
+       asset_binding:{status:b?.asset_binding?.status==='VERIFIED_TOKEN'&&text(b?.asset_binding?.proof_ref)?'VERIFIED_TOKEN':'VENUE_SCOPED',canonical_asset_id:b?.asset_binding?.status==='VERIFIED_TOKEN'&&text(b?.asset_binding?.proof_ref)?text(b.asset_binding.canonical_asset_id):null,chain_id:b?.asset_binding?.status==='VERIFIED_TOKEN'&&text(b?.asset_binding?.proof_ref)?text(b.asset_binding.chain_id):null,token_address:b?.asset_binding?.status==='VERIFIED_TOKEN'&&text(b?.asset_binding?.proof_ref)?text(b.asset_binding.token_address):null,token_epoch:b?.asset_binding?.status==='VERIFIED_TOKEN'&&text(b?.asset_binding?.proof_ref)?text(b.asset_binding.token_epoch):null,proof_ref:text(b?.asset_binding?.proof_ref)},
+       token_multiplier_decimal:b?.asset_binding?.status==='VERIFIED_TOKEN'&&text(b?.asset_binding?.proof_ref)?positive(b?.token_multiplier_decimal):null,
+-      catalog_payload_sha256:provenance.payload_sha256,native_launch_ts:wireMs(row.launchTime??row.timeOnline),source_ts:null,received_ts:provenance.received_ts,
++      catalog_payload_sha256:provenance.payload_sha256,catalog_row_index:rowIndex,native_launch_ts:wireMs(row.launchTime??row.timeOnline),source_ts:null,received_ts:provenance.received_ts,
+       native_status:row.status??null,online:row.status===1,native_size_raw:row.size??null,eligible_for_migration:row.status===1&&eligibility==='VERIFIED_CRYPTO_PERPETUAL',...NO_GRANT};
+     return i;
+   });
+@@ -118,18 +121,27 @@
+   }else if(kind==='depth'){
+     if(!object(body.data))fail('DEPTH_OBJECT_REQUIRED');row=body.data;
+   }else row=selected(body.data,i.native_symbol);
+-  const result={status:'OBSERVED_UNQUALIFIED',kind,instrument_identity:i,provenance,source_ts:null,received_ts:provenance.received_ts,value_decimal:null,unit:null,raw_time_fields:{time:row.time??null,timestamp:row.timestamp??null,closeTime:row.closeTime??null,T:row.T??null},...NO_GRANT};
++  const result={status:'OBSERVED_UNQUALIFIED',kind,instrument_identity:i,provenance,source_ts:null,received_ts:provenance.received_ts,value_decimal:null,unit:null,raw_time_fields:{time:row.time??null,timestamp:row.timestamp??null,closeTime:row.closeTime??null,T:row.T??null,updateTime:row.updateTime??null},...NO_GRANT};
+   if(kind==='last'||kind==='ticker'){
+     result.value_decimal=positive(kind==='last'?row.price:row.lastPrice);if(result.value_decimal===null)fail('LAST_PRICE_REQUIRED');
+     result.unit='QUOTE_PER_NATIVE_BASE';result.source_ts=kind==='last'?wireMs(row.time):wireMs(row.closeTime);
+-    if(kind==='ticker')result.ticker={bid_decimal:positive(row.bidPrice),ask_decimal:positive(row.askPrice),book_source_ts:null,volume_decimal:decimal(row.volume),volume_unit:null,quote_volume_decimal:decimal(row.quoteVolume),quote_volume_unit:i.family==='USDT_M'?'USDT':null};
++    if(kind==='ticker')result.ticker={bid_decimal:positive(row.bidPrice),ask_decimal:positive(row.askPrice),book_source_ts:null,volume_decimal:decimal(row.volume),volume_unit:null,quote_volume_decimal:decimal(row.quoteVolume),quote_volume_unit:i.family==='USDT_M'&&i.quote==='USDT'?'USDT':null};
+   }else if(kind==='book'){
+     const bid=positive(row.bid_price),ask=positive(row.ask_price);if(bid===null||ask===null||Number(ask)<Number(bid))fail('NATIVE_BBO_REQUIRED');
+     result.bbo={best_bid:Number(bid),best_ask:Number(ask),bid_decimal:bid,ask_decimal:ask,bid_qty_decimal:decimal(row.bid_qty),ask_qty_decimal:decimal(row.ask_qty),quantity_unit:null,source_ts:null};
+     result.source_clock_reason='NATIVE_SAMPLE_HAS_NO_BOOK_CLOCK';
+   }else if(kind==='premium'){
+     result.mark_price_decimal=positive(row.markPrice);result.index_price_decimal=positive(row.indexPrice);result.last_funding_rate_decimal=decimal(row.lastFundingRate);result.next_funding_time=wireMs(row.nextFundingTime);result.funding_period_ms=null;
+-    result.source_clock_reason='NO_DOCUMENTED_MARK_OR_RATE_SOURCE_CLOCK';
++    // New actual swap/v2 capture: explicit hours is period metadata, not a price clock.
++    result.funding_interval_hours_raw=row.fundingIntervalHours??null;
++    result.funding_update_time=i.family==='USDT_M'?wireMs(row.updateTime):null;
++    if(result.funding_update_time!==null&&result.funding_update_time>result.received_ts)fail('FUTURE_FUNDING_METADATA_CLOCK');
++    const hours=row.fundingIntervalHours;
++    if(i.family==='USDT_M'&&typeof hours==='number'&&Number.isInteger(hours)&&hours>0&&hours<=24){result.funding_period_ms=hours*3600000;result.funding_period_origin='NATIVE_EXPLICIT_FUNDING_INTERVAL_HOURS';}
++    else result.funding_period_origin=null;
++    result.mark_price_source_ts=null;result.index_price_source_ts=null;result.funding_rate_source_ts=null;
++    result.funding_update_clock_scope='NATIVE_METADATA_UPDATE_TIME_NOT_PRICE_OR_RATE_FRESHNESS';
++    result.source_clock_reason='MARK_INDEX_RATE_CLOCK_UNQUALIFIED_UPDATE_TIME_SEPARATE';
+   }else if(kind==='oi'){
+     result.value_decimal=decimal(row.openInterest);if(result.value_decimal===null||Number(result.value_decimal)<0)fail('OPEN_INTEREST_VALUE_REQUIRED');
+     result.source_ts=i.family==='USDT_M'?wireMs(row.time):null;
+@@ -209,6 +221,6 @@
+       last_price:last?.value_decimal??null,last_price_source_ts:last?.source_ts??null,
+       mark_price:premium?.mark_price_decimal??null,mark_price_source_ts:premium?.source_ts??null,
+       open_interest:{native_value_decimal:oi?.oi?.native_value_decimal??null,source_ts:oi?.source_ts??null,unit:null,contracts:null,amount_base:null,value_usdt:null},
+-      funding:{funding_rate:premium?.last_funding_rate_decimal??null,period_ms:null,source_ts:null,next_funding_time:premium?.next_funding_time??null},
++      funding:{funding_rate:premium?.last_funding_rate_decimal??null,period_ms:premium?.funding_period_ms??null,period_origin:premium?.funding_period_origin??null,period_received_ts:premium?.received_ts??null,source_ts:null,native_update_time:premium?.funding_update_time??null,native_update_clock_scope:premium?.funding_update_clock_scope??null,next_funding_time:premium?.next_funding_time??null},
+       component_origins:items.map(x=>({kind:x.kind,endpoint:x.provenance.endpoint,payload_sha256:x.provenance.payload_sha256,source_ts:x.source_ts,received_ts:x.received_ts}))}};
+ }

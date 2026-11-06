@@ -1,0 +1,133 @@
+{
+  "schema": "B04_COMBINED_REQUIRED_IMPORT_CLOSURE_V1",
+  "fixed_main": "6a5fe77903b50f7ee2b05a735cd7a8429707755d",
+  "files": [
+    {
+      "path": "current-generation/files/src/market-contracts.mjs",
+      "role": "APPLICATION_MODULE",
+      "bytes": 11008,
+      "sha256": "b754f40558ce4e262168643193ce896e557fe40e6480d3c1978c1c39a3f1399d",
+      "git_blob": "ccecce2e4fde03a58dec52d2a651bf06b9455e62",
+      "author_candidate_reference": "anomaly-research/bingx-history-combined-20261024/market-contracts.combined.mjs.txt"
+    },
+    {
+      "path": "current-generation/files/src/market-history-reader.mjs",
+      "role": "APPLICATION_MODULE",
+      "bytes": 31312,
+      "sha256": "5c847e50ab123f2b4b6768ba0cf3249b8bd3178d36f41cc93c70fb41a06034af",
+      "git_blob": "5a518dbc2045380922159d6408291da23a17ff51",
+      "author_candidate_reference": "anomaly-research/bingx-history-combined-20261024/market-history-reader.combined.mjs.txt"
+    },
+    {
+      "path": "current-generation/files/src/market-snapshot-batch.mjs",
+      "role": "APPLICATION_MODULE",
+      "bytes": 28267,
+      "sha256": "ceafc8cba053095e7f26b07b7fac3f5d811e5bb85710b7284d903c65a3a538a3",
+      "git_blob": "e9013e4e914d3e2770fa9fece1ec76d6284bb149",
+      "author_candidate_reference": "anomaly-research/bingx-history-combined-20261024/market-snapshot-batch.combined.mjs.txt"
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "role": "TEXT_INPUT_NOT_IMPORTED",
+      "bytes": 647603,
+      "sha256": "4b066bbfbdaaf82b578493b95e48a87983a078cf400d38d154c6811d3f900860",
+      "git_blob": "68a7dd451320ee8cddf19ed95773c9a54687da13",
+      "author_candidate_reference": "anomaly-research/bingx-history-combined-20261024/worker.combined.mjs.txt"
+    },
+    {
+      "path": "checkpoints/bingx-primary-producer-connected-20261024/bound-history/combined.proposed.mjs",
+      "role": "ENTRY_MODULE",
+      "bytes": 4933,
+      "sha256": "cc71d406ac561d227df039a62bd8efc5968c2fe7e9d0853b99f275d10ee44820",
+      "git_blob": "40e35980250870c9031718975aa5f6c9a4966d92"
+    },
+    {
+      "path": "checkpoints/bingx-primary-producer-connected-20261024/bound-history/identity-case.bound.mjs",
+      "role": "CONTROLLED_COMPONENT_MODULE",
+      "bytes": 11978,
+      "sha256": "5c2c798c783f9351bbe20928ab6e5d81d12f8df41ebed1c4f6a318c5f0e883b6",
+      "git_blob": "df2fa014a19be0bec52b1ec453233d056574c69e"
+    },
+    {
+      "path": "checkpoints/bingx-primary-producer-connected-20261024/bound-history/targets-case.bound.mjs",
+      "role": "CONTROLLED_COMPONENT_MODULE",
+      "bytes": 19740,
+      "sha256": "29576350968b98835d7abac24be0f3ede0b7f2f21e378520ab77a9db6e5f41b2",
+      "git_blob": "68c9b5b689a8cf932bd4a0217cce93e7da8fe402"
+    },
+    {
+      "path": "checkpoints/bingx-primary-producer-connected-20261024/bound-history/target-bindings.json",
+      "role": "EXACT_COMPONENT_TARGET_BINDINGS",
+      "bytes": 2198,
+      "sha256": "adffadf8cb48672da5784bfc639d9a3c1de09d5643846af21cc68b3f4cdf0f28",
+      "git_blob": "f5fd94ba089d407870b0e4abaddbe07173717c41"
+    },
+    {
+      "path": "checkpoints/bingx-primary-producer-connected-20261024/bound-history/composition-recipe.json",
+      "role": "ORIGINALS_AND_TEXT_COMPOSITION_PINS",
+      "bytes": 33405,
+      "sha256": "81215131c917852e3fa0df0f63f7f4171a622bd43847d5b0afa39ca4b30ad358",
+      "git_blob": "d49a72352d0b8ded2b84d7286e456653c6dc3873"
+    }
+  ],
+  "literal_edges": [
+    {
+      "from": "anomaly-research/bingx-history-combined-20261024/combined.proposed.mjs",
+      "to": [
+        "anomaly-research/bingx-history-combined-20261024/identity-case.bound.mjs",
+        "anomaly-research/bingx-history-combined-20261024/targets-case.bound.mjs"
+      ],
+      "kind": "dynamic after FULL attestation"
+    },
+    {
+      "from": "anomaly-research/bingx-history-combined-20261024/identity-case.bound.mjs",
+      "to": [
+        "current-generation/files/src/market-contracts.mjs",
+        "current-generation/files/src/market-history-reader.mjs"
+      ],
+      "kind": "dynamic after exact4targetpins"
+    },
+    {
+      "from": "anomaly-research/bingx-history-combined-20261024/targets-case.bound.mjs",
+      "to": [
+        "current-generation/files/src/market-snapshot-batch.mjs",
+        "current-generation/files/src/market-history-reader.mjs"
+      ],
+      "kind": "dynamic after exact4targetpins"
+    },
+    {
+      "from": "current-generation/files/src/market-history-reader.mjs",
+      "to": [
+        "current-generation/files/src/market-snapshot-batch.mjs"
+      ],
+      "kind": "static import+reexport"
+    },
+    {
+      "from": "current-generation/files/src/market-snapshot-batch.mjs",
+      "to": [
+        "node:crypto"
+      ],
+      "kind": "static builtin"
+    },
+    {
+      "from": "current-generation/files/src/worker.js",
+      "to": [],
+      "kind": "NOT_IMPORTED; fullfileSHA binds only exact extracted functions/expressions used by components"
+    }
+  ],
+  "builtin_allowlist": [
+    "node:assert/strict",
+    "node:crypto",
+    "node:fs/promises",
+    "node:path",
+    "node:url"
+  ],
+  "external_packages": [],
+  "SOURCE479": "DTO contract reuse only; adapter module NOT imported/executed, no native registry/admission exists",
+  "before_first": "ROOT externally pins entry/closure/all files from frozen manifest BEFORE importing entry, then passes expected_closure_sha256 and existing save_result; entry redundantly verifies all app/case/input bytes before first application import",
+  "native_admission": false,
+  "full_Worker_production_transitive_closure_qualified": false,
+  "TOCTOU_or_crash_durability_guarantee": false,
+  "semantic_execution": "UNEXECUTED",
+  "required_parent_scope": "Actual ROOT caller/save_result filesystem writer and Node runtime are owned/pinned by ROOT outside this packet. This manifest closes all imports initiated by this entry/components, not arbitrary parent callback code or full production Worker."
+}
