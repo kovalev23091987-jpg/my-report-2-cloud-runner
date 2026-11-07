@@ -1,0 +1,26 @@
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -3903,7 +3903,12 @@
+   env,
+   nowMs
+ ) {
+-  if(env?.REPORT2_PRIMARY_VENUE&&env.REPORT2_PRIMARY_VENUE!=='HTX')return readMarketHistoryTargets({db:env?.DATA_DB,now_ts:nowMs,venue:env.REPORT2_PRIMARY_VENUE,root_history_binding:env?.REPORT2_BINGX_HISTORY_BINDING??null});
++  if(env?.REPORT2_PRIMARY_VENUE&&env.REPORT2_PRIMARY_VENUE!=='HTX'){
++    const history=await readMarketHistoryTargets({db:env?.DATA_DB,now_ts:nowMs,venue:env.REPORT2_PRIMARY_VENUE,root_history_binding:env?.REPORT2_BINGX_HISTORY_BINDING??null,history_reuse_key:env?.REPORT2_BINGX_HISTORY_READ_KEY??null});
++    // ROOT must provide one isolated env/run key for the current invocation.
++    env.REPORT2_BINGX_CURRENT_HISTORY_RESULT=history;
++    return history;
++  }
+   return readMarketHistoryTargets({db:env?.DATA_DB,now_ts:nowMs,actor:'HUB_PUBLIC_COLLECTOR',preferred_generation:env?.REPORT2_CURRENT_GENERATION||null});
+ }
+ 
+@@ -9521,6 +9526,9 @@
+   params,
+   env
+ ) {
++  if(params?.venue==='BINGX'||params?.instrument_identity?.venue==='BINGX'){
++    return readMarketHistoryForContract({db:env?.DATA_DB,contract:params?.contract??params?.contract_code,now_ts:Date.now(),hours:clamp(params?.hours,0.25,168,6),venue:'BINGX',instrument_identity:params?.instrument_identity??null,root_history_binding:env?.REPORT2_BINGX_HISTORY_BINDING??null,whole_history_result:env?.REPORT2_BINGX_CURRENT_HISTORY_RESULT??null,history_reuse_key:env?.REPORT2_BINGX_HISTORY_READ_KEY??null,allow_bounded_read:env?.REPORT2_BINGX_ALLOW_BOUNDED_HISTORY_READ===true,history_purpose:params?.history_purpose??null});
++  }
+   return readMarketHistoryForContract({
+     db: env?.DATA_DB,
+     contract: normalizeFuturesContract(params?.contract || params?.contract_code || 'ETHFI-USDT'),
