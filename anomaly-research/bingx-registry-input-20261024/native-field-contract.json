@@ -1,0 +1,177 @@
+{
+  "schema": "ACTUAL_CATALOG_NATIVE_FIELD_CONTRACT_V1",
+  "source": {
+    "path": "/private/tmp/report2-bingx-catalog-bootstrap-connected-20261024/bingx-public-original-2.bin",
+    "bytes": 605854,
+    "sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+    "received_ts": 1792862359941,
+    "http_status": 200,
+    "complete": true
+  },
+  "observed_field_types": {
+    "apiStateClose": {
+      "present": 1278,
+      "types": {
+        "str": 1278
+      }
+    },
+    "apiStateOpen": {
+      "present": 1278,
+      "types": {
+        "str": 1278
+      }
+    },
+    "asset": {
+      "present": 1278,
+      "types": {
+        "str": 1278
+      }
+    },
+    "brokerState": {
+      "present": 1278,
+      "types": {
+        "bool": 1278
+      }
+    },
+    "contractId": {
+      "present": 1278,
+      "types": {
+        "str": 1278
+      }
+    },
+    "currency": {
+      "present": 1278,
+      "types": {
+        "str": 1278
+      }
+    },
+    "displayName": {
+      "present": 1278,
+      "types": {
+        "str": 1278
+      }
+    },
+    "ensureTrigger": {
+      "present": 1278,
+      "types": {
+        "bool": 1278
+      }
+    },
+    "feeRate": {
+      "present": 1278,
+      "types": {
+        "float": 1278
+      }
+    },
+    "launchTime": {
+      "present": 1278,
+      "types": {
+        "int": 1278
+      }
+    },
+    "maintainTime": {
+      "present": 1278,
+      "types": {
+        "int": 1278
+      }
+    },
+    "makerFeeRate": {
+      "present": 1278,
+      "types": {
+        "float": 1278
+      }
+    },
+    "offTime": {
+      "present": 1278,
+      "types": {
+        "int": 1278
+      }
+    },
+    "pricePrecision": {
+      "present": 1278,
+      "types": {
+        "int": 1278
+      }
+    },
+    "quantityPrecision": {
+      "present": 1278,
+      "types": {
+        "int": 1278
+      }
+    },
+    "size": {
+      "present": 1278,
+      "types": {
+        "str": 1278
+      }
+    },
+    "status": {
+      "present": 1278,
+      "types": {
+        "int": 1278
+      }
+    },
+    "symbol": {
+      "present": 1278,
+      "types": {
+        "str": 1278
+      }
+    },
+    "takerFeeRate": {
+      "present": 1278,
+      "types": {
+        "float": 1278
+      }
+    },
+    "tradeMinLimit": {
+      "present": 1278,
+      "types": {
+        "int": 1278
+      }
+    },
+    "tradeMinQuantity": {
+      "present": 1278,
+      "types": {
+        "float": 1124,
+        "int": 154
+      }
+    },
+    "tradeMinUSDT": {
+      "present": 1278,
+      "types": {
+        "int": 1278
+      }
+    },
+    "triggerFeeRate": {
+      "present": 1278,
+      "types": {
+        "str": 1278
+      }
+    }
+  },
+  "exact_projection_fields": [
+    "contractId",
+    "symbol",
+    "asset",
+    "currency",
+    "status",
+    "apiStateOpen",
+    "apiStateClose",
+    "size",
+    "quantityPrecision",
+    "pricePrecision",
+    "launchTime"
+  ],
+  "limits": {
+    "currency": "USDT/USDC distinct; currenttwo-family consumer has no qualified USDC path",
+    "status": "Raw1/25; status1 filtering does not classify underlying",
+    "asset_symbol_displayName": "No independent token/underlying proof",
+    "apiStateOpen_Close": "Native strings, never Boolean(nonempty_string); no execution admission",
+    "size": "Native raw decimal, NOT qualified quantity multiplier or OI conversion",
+    "precisions_and_trade_minimums": "Formatting/constraints, not units/facevalue",
+    "launchTime": "Not complete token epoch/source freshness",
+    "category_underlyingClass": "Absent in all1278 captured rows"
+  },
+  "complete_crypto_classification": false,
+  "all_BingX_crypto_N": null
+}
