@@ -1,0 +1,6 @@
+  try {
+    await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);
+  } finally {
+    try { await anomalyParentCapability.close(); }
+    finally { if(anomalyParentCapability.installed)try{await persistRunnerAnomalyReceipts(anomalyParentCapability.receipts(),{pending_checkpoint:anomalyPendingJournal?.checkpoint()??null});}catch{console.error("ANOMALY_RECEIPT_ARTIFACT_NOT_SAVED");} }
+  }
