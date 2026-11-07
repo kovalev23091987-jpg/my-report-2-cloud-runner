@@ -1,0 +1,94 @@
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -114,7 +114,7 @@
+ } from "./canonical-runtime-adapter.mjs";
+ import {loadExecutionReportSource} from './execution-report-context.mjs';
+ import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,buildHtxExecutionReceipt} from './market-contracts.mjs';
+-import {readMarketHistoryForContract,readMarketHistoryTargets} from './market-history-reader.mjs';
++import {readMarketHistoryForContract,readMarketHistoryTargets,compareBingxHistoryPoint} from './market-history-reader.mjs';
+ import {compareOrdinaryDeepCandidates} from './deep-candidate-order.mjs';
+ import {scoreDiscoveryCandidate,compareDiscoveryCandidates} from './discovery-candidate-score.mjs';
+ import {buildLiquidationMaintenanceStatements,buildBoundedRetentionStatement} from './bounded-hot-maintenance.mjs';
+@@ -3903,6 +3903,7 @@
+   env,
+   nowMs
+ ) {
++  if(env?.REPORT2_PRIMARY_VENUE&&env.REPORT2_PRIMARY_VENUE!=='HTX')return readMarketHistoryTargets({db:env?.DATA_DB,now_ts:nowMs,venue:env.REPORT2_PRIMARY_VENUE,root_history_binding:env?.REPORT2_BINGX_HISTORY_BINDING??null});
+   return readMarketHistoryTargets({db:env?.DATA_DB,now_ts:nowMs,actor:'HUB_PUBLIC_COLLECTOR',preferred_generation:env?.REPORT2_CURRENT_GENERATION||null});
+ }
+ 
+@@ -4472,8 +4473,13 @@
+ 
+ function historyMetrics(
+   current,
+-  row
++  row,
++  history_options=null
+ ) {
++  if(current?.venue==='BINGX'||row?.venue==='BINGX'){
++    const result=compareBingxHistoryPoint({...history_options,current,prior:row});
++    return {...result,state:typeof result.price_change_pct==='number'&&typeof result.oi_change_pct==='number'?stageState(result.price_change_pct,result.oi_change_pct):'insufficient'};
++  }
+   if (!row) {
+     return {
+       available: false,
+@@ -5043,8 +5049,9 @@
+               history.targets?.[
+                 "5m"
+               ]?.get(
+-                key
+-              )
++                current?.venue==='BINGX'?current.instrument_ref:key
++              ),
++              {context:history.context,window:"5m",now_ts:now}
+             ),
+ 
+           "15m":
+@@ -5053,8 +5060,9 @@
+               history.targets?.[
+                 "15m"
+               ]?.get(
+-                key
+-              )
++                current?.venue==='BINGX'?current.instrument_ref:key
++              ),
++              {context:history.context,window:"15m",now_ts:now}
+             ),
+ 
+           "1h":
+@@ -5063,8 +5071,9 @@
+               history.targets?.[
+                 "1h"
+               ]?.get(
+-                key
+-              )
++                current?.venue==='BINGX'?current.instrument_ref:key
++              ),
++              {context:history.context,window:"1h",now_ts:now}
+             ),
+ 
+           "4h":
+@@ -5073,8 +5082,9 @@
+               history.targets?.[
+                 "4h"
+               ]?.get(
+-                key
+-              )
++                current?.venue==='BINGX'?current.instrument_ref:key
++              ),
++              {context:history.context,window:"4h",now_ts:now}
+             ),
+ 
+           "24h":
+@@ -5083,8 +5093,9 @@
+               history.targets?.[
+                 "24h"
+               ]?.get(
+-                key
+-              )
++                current?.venue==='BINGX'?current.instrument_ref:key
++              ),
++              {context:history.context,window:"24h",now_ts:now}
+             ),
+         };
+ 

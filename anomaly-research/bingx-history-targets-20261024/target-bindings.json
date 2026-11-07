@@ -1,0 +1,43 @@
+{
+  "schema": "B04_ACTUAL_CHAIN_TARGET_BINDINGS_V1",
+  "fixed_main": "665362d98296c2c86aa99cd0c7085b33bb337cf9",
+  "targets": {
+    "current-generation/files/src/market-snapshot-batch.mjs": {
+      "before": {
+        "bytes": 5423,
+        "sha256": "25d24e32073829fe7e4cccdfcf9369b3dfa16aa4ace326b1d0947f98c4aebd9c"
+      },
+      "after": {
+        "bytes": 22541,
+        "sha256": "f5e55895d9d322949fe31847bb6f7cee6fa370acd2c4e667f3b4c37c9252087f"
+      },
+      "proposed": "market-snapshot-batch.proposed.mjs.txt"
+    },
+    "current-generation/files/src/market-history-reader.mjs": {
+      "before": {
+        "bytes": 21619,
+        "sha256": "2e82c72abec59d4b66f6767a07c5a4f158865caca0f15d1ec54b09dac7b0ad79"
+      },
+      "after": {
+        "bytes": 26383,
+        "sha256": "aad28817e916196bd86da18d55cfe83e601c3aea2aef7030bb96094761134eed"
+      },
+      "proposed": "market-history-reader.proposed.mjs.txt"
+    },
+    "current-generation/files/src/worker.js": {
+      "before": {
+        "bytes": 634229,
+        "sha256": "99ccb5fc7eb9c72d5baff43f4928dd9dc599b2bb07b2f214d35c2d8a6e608ac4"
+      },
+      "after": {
+        "bytes": 635391,
+        "sha256": "436beff008f2cb544e578be57cd1da8a9c7efe6802e10f728c67373e3d55d8ef"
+      },
+      "proposed": "worker.proposed.mjs.txt"
+    }
+  },
+  "import_closure": "market-history-reader imports existing market-snapshot-batch, which imports node:crypto; Worker text extraction only in case. ROOT binds actual complete runtime closure before first import.",
+  "required_ROOT_binding": "Explicit protected expected venue/actor/schema/generation set plus current serialized registry+externalSHA/Gitbloblocator and<=2 exact compatible registries. Nativeauthenticated/admissionfalse.",
+  "actual_native_registry_or_producer_cutover_exists": false,
+  "old634_kept_byteexact_not_replayed": true
+}
