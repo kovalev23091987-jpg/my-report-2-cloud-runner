@@ -1,0 +1,419 @@
+{
+  "schema": "EXACT_ORIGINAL_TASK_ANCHOR_CODE_FEASIBILITY_V1",
+  "created_at_utc": "2026-10-19T10:37:57.455066+00:00",
+  "verdict": "ALREADY_LOADED_ORIGINAL_DATA_CAN_BE_CARRIED_BUT_RECEIPT_ALONE_IS_NOT_ANCHOR_AUTHORITY",
+  "summary_ru": "Исходные observed_ts и fingerprint полного плана доступны без нового чтения. Для узкого triggered recheck уже есть сильный SENT/lifecycle join и подтверждённое допущение анализа. Но нужные значения теряются в return/callsite, а результат завершения анализа не передаётся lifecycle. Одного нового поля в receipt недостаточно для безопасного сохранения старого SENT-якоря. Это проверка реализуемости, не готовое исправление и не новый механизм refresh.",
+  "scope": {
+    "thread_id": "01a14f2c-d037-7472-8f8f-76753a3a3bba",
+    "lease_owner": "CODEX:OFFLINE_ANOMALIES:1792405806988",
+    "lease_ref": "ac162caf42dd242503cd6ee120edceb347aeeb0f",
+    "lease_exact_readback": true,
+    "lease_expires_ts": 1792408806988,
+    "main_at_acquire": "65ebff0ee13daad21bbe1e4748ee95ead3b7a412",
+    "inspected_current_main": "72318564919738b252a79c0729bf6f5f1378c81f",
+    "PR527_already_in_main": true,
+    "new_only": "Existing exact-original return/callsite authority and missing comparisons; no repeat of523/528/old6/38/24/source525 audits.",
+    "app_module_test_probe_executions": 0,
+    "SQL_or_provider_or_artifact_GET_or_MAIN_TG_deploy": 0,
+    "runtime_patch": false,
+    "new_schema_model_SQL_framework": false,
+    "ordinary_manual_and_same_wave_refresh": "OPEN; the strong triggered admission does not automatically exist on these paths.",
+    "latest_guard_main": "857ff3f65ad95e25ad7e5e9028ef54d1f715eadf",
+    "all_eight_code_files_identical_at_latest_main": true,
+    "new_main_instructions_and_three_proofs_read": true
+  },
+  "already_existing_inputs": [
+    {
+      "at": "worker.js:19335-19340",
+      "actual_shape": "claimed task plus canonical JSON from task.publication_id; SENT query result contains only telegram_message_id",
+      "closed_now": [
+        "binding task publication/contract/direction/wave/run/snapshot, lifecycle event in OBSERVE/WAIT, dispatch SENT",
+        "originalIdeaIdentity checks recomputed original fingerprint plus contract/direction/run/snapshot/due/expiry"
+      ],
+      "not_closed_as_standalone_anchor_proof": [
+        "originalIdeaIdentity does not explicitly stamp/check original observed_ts against S392 snapshot clock",
+        "SENT message_id is checked by CAST in query, then only Boolean sent is used and message_id discarded",
+        "binding rules_version and exact lifecycle_event are not returned by this worker query; infer only event in OBSERVE/WAIT"
+      ]
+    },
+    {
+      "at": "original-idea-recheck.mjs:18-22",
+      "actual_receipt_fields": [
+        "task_id",
+        "publication_id",
+        "wave_id",
+        "contract",
+        "direction",
+        "original_run_id",
+        "original_snapshot_id",
+        "original_fingerprint",
+        "original_expires_ts",
+        "checked_ts",
+        "primary_price_receipt"
+      ],
+      "already_read_additions_available": [
+        "canonical.observed_ts",
+        "task.due_ts",
+        "task lease_owner/lease_started_ts/lease_expires_ts",
+        "full original canonical plan and fingerprint",
+        "worker sent.telegram_message_id before it is discarded"
+      ],
+      "meaning": "The existing original_fingerprint covers the full immutable original canonical, including its plan. A separate custom plan hash is unnecessary. It is not proof that a fresh analysis produced an identical plan."
+    },
+    {
+      "at": "triggered-entry-recheck.mjs:54-70",
+      "actual_selected_inputs": [
+        "task.*",
+        "sent_fingerprint",
+        "sent_observed_ts",
+        "telegram_message_id",
+        "exact publication canonical_json/analytical_fingerprint/actionability_status"
+      ],
+      "closed_now": [
+        "strict binding task tuple",
+        "SENT dispatch",
+        "lifecycle rules/status/observation clock equal binding",
+        "ACTIONABLE exact publication at sent_observed_ts and matching sent fingerprint",
+        "verifyTriggeredRecheck validates exact canonical/LIGHT fingerprint, task tuple, Telegram id, original due/expiry and fresh uncancelled price receipt",
+        "admission INSERT compare-and-set plus exact existing readback for one charged slot"
+      ],
+      "lost_now": "verifyTriggeredRecheck return omits sent_observed_ts, telegram_message_id, wave_id and due_ts. runner retains only task_id, so this stronger selection proof is not available to lifecycle.",
+      "additional_missing_comparison": "canonical.observed_ts === row.sent_observed_ts with a safe epoch stamp is not an explicit predicate of verifyTriggeredRecheck."
+    }
+  ],
+  "new_missing_comparisons_and_callsite_links": [
+    {
+      "id": "A",
+      "at": "verifyTriggeredRecheck return + admitTriggeredRecheck return + runner:595-608",
+      "required_link": "Retain the existing eligible/claimed exact-task admission result with already selected sent clock/fingerprint/message_id and original task tuple; tie it to this invocation, generation and source run. Explicitly compare original canonical observed_ts to selected SENT observed_ts.",
+      "current_gap": "Only task_id survives runner608. Boolean claimed or task_id alone cannot attest the old SENT clock or its immutable plan.",
+      "new_SQL_required_to_carry_selected_values": false
+    },
+    {
+      "id": "B",
+      "at": "worker:19334-19343 and qualifier:7-22",
+      "required_link": "Compare worker claimed task task_id/publication/contract/direction/wave/run/snapshot/due/expiry to the trusted admission result and already loaded original; compare original_fingerprint to canonicalFingerprint(original) and original observed_ts/S392 snapshot to the retained SENT anchor. Preserve the actual SENT message id instead of inferring it from a marker.",
+      "current_gap": "Worker only retains {task,canonical}; receipt omits original observed/due and does not carry SENT/admission provenance.",
+      "boundary": "This must use values from the exact old canonical, not the new analysis clock, its new plan or arbitrary stored supporting metadata."
+    },
+    {
+      "id": "C",
+      "at": "worker:17260-17305 and canonical-runtime-adapter:407,450-463",
+      "required_link": "Bind the carried original receipt to the fresh completed exact-task analysis run/snapshot/observed_ts and persisted publication receipt. Keep canonical.observed_ts, new evidence clocks and all fresh ENTRY gates unchanged.",
+      "current_gap": "Metadata is copied into the new canonical; effectiveState only downgrades an ENTRY when settlement/direction is not closed. It does not certify anchor preservation or plan equality."
+    },
+    {
+      "id": "D",
+      "at": "worker:19812-19817, finishOriginalIdeaAnalysis:69-73, completeRecheck:11-20",
+      "required_link": "Use the existing finish/complete return only when completed===true, status===CLOSED, state===PENDING, tied to this exact original task, exact claim owner/start, current persisted analysis and completion time before original expiry.",
+      "current_gap": "The result of await finishOriginalIdeaAnalysis is discarded. PENDING classification alone is not a successful native CAS acknowledgement. After completion the native claim is released, while env context still holds the old task object marked CLAIMED.",
+      "boundary": "No new query is needed to retain the existing return; no positive acknowledgement may be invented on error/unknown/NOT_UPDATED. In-memory task.state or lease expiry is not a new native readback.",
+      "existing_Pending_storage_shape": "When last_result is a LIGHT_PRICE_RECHECK_V1, completeRecheck stores only full_recheck publication_id/completed_ts/reason/authorizes_entry:false into it. The successful return contains status/completed/state, not an independently reloaded original clock/plan/SENT receipt; its exact call arguments must remain associated."
+    },
+    {
+      "id": "E",
+      "at": "runner:961,966,1094-1098 and lifecycle-sidecar:257,278",
+      "required_link": "Carry the verified in-memory original/admission/completion association through the existing same env after worker completion and pass it explicitly to lifecycle. Compare it to the fresh current-run canonical row, handoff contract/wave and prior lifecycle actually read for this key.",
+      "current_gap": "The same env object is available and pending work is awaited, but current lifecycle call/signatures do not accept original context; metadata.original_idea_recheck is not consumed there.",
+      "boundary": "A self-consistent new canonical fingerprint proves its own bytes. It does not by itself prove that an old SENT/task/claim verification ran in this invocation."
+    },
+    {
+      "id": "F",
+      "at": "prepareLifecycleTransition:27-54 after final dispatch decision, including recovery",
+      "required_link": "At most preserve an already matching prior anchor: prior observation_ts must equal the verified original SENT observed_ts, same contract/direction/wave/rules and visible OBSERVE/WAIT status; derived status must stay identical and effective dispatch must be absent for NO_STATE_CHANGE. Original task remains unexpired/PENDING after the exact analysis completion.",
+      "current_gap": "Existing upsert writes ctx.observation_ts even with no dispatch. There is no exact-original exception or comparison to trusted original context.",
+      "boundary": "Do not restore a different/newer prior anchor, recreate an old binding or suppress a real OBSERVE→WAIT/ENTRY/removal/exit/recovery transition. This hypothesis is preservation only, not repair of arbitrary already mismatched history.",
+      "time_of_state_knowledge": "PENDING is known at the existing acknowledged completion. It is not a fresh native read at the later lifecycle step; preserve all subsequent native state/expiry/identity checks and do not infer current state from elapsed time or a stale in-memory claim."
+    },
+    {
+      "id": "G",
+      "at": "classifyOriginalIdeaAnalysis:49-67 and source original canonical",
+      "required_link": "Treat settlement as confirmation of the original trigger and full analysis as a separate fresh decision. Compare receipt original fingerprint/clock/due to the actual original object before using them for old-anchor authority; leave the old task publication/run/snapshot/due/expiry unchanged.",
+      "current_gap": "Classifier compares selected tuple fields but does not consume original_fingerprint, original observed/due or full plan. Its PENDING/DONE outcome is not a same-plan certificate. Fresh entry/trigger/invalidation/targets are independently selected by the adapter.",
+      "boundary": "Do not rename full-analysis freshness into original evidence freshness or use this path to roll TTL or refresh a new plan under an old task."
+    },
+    {
+      "id": "H",
+      "at": "runner:577-615 and admitTriggeredRecheck:63,71-80",
+      "required_link": "Limit any inference from the stronger admission proof to an invocation which actually passed that existing admission for this exact task.",
+      "current_gap": "Regular cadence/manual analyses may not run admitTriggeredRecheck. Admission is once per task and its attempted slot is consumed; later ordinary analysis cannot be assumed to have the same current witness.",
+      "boundary": "Do not force an extra admission, bypass NOT EXISTS, refund a slot or generalize to ordinary manual/same-wave refresh. Those paths remain open."
+    }
+  ],
+  "static_counterexample": {
+    "kind": "BRANCH_DEPENDENCY_PROOF_ONLY_NOT_EXECUTED_TEST_OR_NATIVE_EVENT",
+    "preconditions": [
+      "A fresh CLOSED analysis canonical N satisfies all existing classifyOriginalIdeaAnalysis identity/time predicates for task Q.",
+      "N.state is OBSERVE; its receipt status is neither CANCELLED nor a terminal override.",
+      "Receipt task/publication/wave/direction/original run/snapshot/expiry match Q and now is before Q.expires_ts."
+    ],
+    "single_delta": "Replace only N.metadata.original_idea_recheck.original_fingerprint with a different 64-hex string, then define N.analytical_fingerprint as canonicalFingerprint(N). This is an algebraic definition, not an executed call.",
+    "deduction": "No predicate in classifyOriginalIdeaAnalysis49-67 reads original_fingerprint or compares an original object. All tested predicates are unchanged; the non-entry branch still reaches the same PENDING / ORIGINAL_IDEA_STILL_WAITING return. Adding an arbitrary original_observed_ts field is similarly ignored by current consumers.",
+    "consequence": "A successful classifier result and a new self-fingerprint cannot be reused as independent old SENT/plan/clock authority. This demonstrates a missing predicate for the proposed new use, not native corruption or an existing unauthorized ENTRY. The original producer normally sets the fingerprint from its trusted input; that provenance must survive the callsite chain."
+  },
+  "feasibility_result_ru": {
+    "перенос_данных": "Возможен без нового чтения: original canonical и task уже находятся в памяти; сильные SENT clock/fingerprint/message_id уже выбраны admission SQL в узком triggered пути.",
+    "сохранение_якоря": "Пока не реализовано и не квалифицировано. Нужна связка существующего verified admission → exact worker original/claim → fresh persisted analysis → положительный PENDING completion → уже совпадающий prior lifecycle/no dispatch. Одно поле receipt её не заменяет.",
+    "граница_без_нового_SQL": "Уже выбранные значения и существующие returns можно передать между callsites без новых запросов. Worker-only original context не доказывает точные lifecycle rules/event из своего SELECT; для ordinary/manual пути нельзя заимствовать authority от admission, которого не было. При отсутствии текущего сильного witness гипотеза здесь заканчивается отказом от изменения якоря.",
+    "реализация": "Патч, новая модель, тест, SQL, запуск приложения и live проверка не подготовлены и не выполнялись. Полный refresh, native cause и фактический ENTRY остаются открытыми."
+  },
+  "preserved_constraints": [
+    "exact original joins and SENT identity",
+    "contract/run/snapshot/fingerprint/wave/direction/due/expiry/freshness/LIMIT2",
+    "original publication/task immutable binding and deadline",
+    "fresh full ENTRY analysis and existing score/strategy/weights/forms",
+    "all provider/common caps and admission charges, no slot refund",
+    "main report/integrated LIQ and existing pauses",
+    "volume-triggered cleanup physical test LAST"
+  ],
+  "code_evidence": [
+    {
+      "path": "current-generation/files/src/original-idea-recheck.mjs",
+      "bytes": 7176,
+      "sha256": "5b75bf6b76670aa7e8075070888d2fce53c1658b226efef6d824565c32450122",
+      "Git_blob_oid": "6fb365c676725b2f2e6a0f1c1eac6074647bfcac",
+      "excerpts": [
+        {
+          "start_line": 7,
+          "end_line": 22,
+          "text": "export function originalIdeaIdentity({task,canonical}={}){\n return Boolean(task?.task_id&&task.publication_id&&task.wave_id&&canonical?.status==='CLOSED'&&\n  ['OBSERVE','WAIT_FOR_TRIGGER'].includes(canonical.state)&&['LONG','SHORT'].includes(canonical.direction)&&\n  canonical.analytical_fingerprint===canonicalFingerprint(canonical)&&\n  task.contract_code===canonical.metadata?.contract&&task.direction===canonical.direction&&\n  task.run_id===canonical.run_id&&task.snapshot_id===canonical.snapshot_id&&\n  task.due_ts===canonical.trigger?.next_recheck_ts&&task.expires_ts===canonical.trigger?.expires_ts);\n}\n// This receipt qualifies the original trigger only. All evidence and execution\n// checks of the new full analysis are still required to authorize ENTRY.\nexport function qualifyOriginalIdeaSettlement({task,canonical,candles=[],now_ts,current_price=null,current_price_receipt=null}={}){\n const base={schema:ORIGINAL_IDEA_RECHECK_VERSION,status:'NOT_CONFIRMED',settlement_confirmed:false,entry_authorized:false,sourceHTTP:0,\n  task_id:task?.task_id??null,publication_id:task?.publication_id??null,wave_id:task?.wave_id??null,\n  contract:task?.contract_code??null,direction:task?.direction??null,original_run_id:task?.run_id??null,\n  original_snapshot_id:task?.snapshot_id??null,original_fingerprint:canonical?.analytical_fingerprint??null,\n  original_expires_ts:task?.expires_ts??null,checked_ts:now_ts,primary_price_receipt:current_price_receipt};"
+        },
+        {
+          "start_line": 49,
+          "end_line": 74,
+          "text": "export function classifyOriginalIdeaAnalysis({task,canonical,now_ts}={}){\n const r=canonical?.metadata?.original_idea_recheck;\n if(!stamp(now_ts)||!task?.task_id)return {result:null,reason:'INVALID_ANALYSIS_CLOCK'};\n if(now_ts>=task.expires_ts)return {result:'EXPIRED',reason:'ORIGINAL_TTL_EXPIRED'};\n if(canonical?.status!=='CLOSED'||canonical.analytical_fingerprint!==canonicalFingerprint(canonical)||\n  canonical.metadata?.contract!==task.contract_code||canonical.run_id===task.run_id||canonical.observed_ts<task.lease_started_ts||\n  canonical.observed_ts>now_ts||now_ts-canonical.observed_ts>180000||r?.task_id!==task.task_id||\n  r.publication_id!==task.publication_id||r.wave_id!==task.wave_id||r.direction!==task.direction||\n  r.original_run_id!==task.run_id||r.original_snapshot_id!==task.snapshot_id||r.original_expires_ts!==task.expires_ts)\n  return {result:null,reason:'FRESH_SAME_IDEA_FULL_ANALYSIS_REQUIRED'};\n if(r.status==='CANCELLED')return {result:'CANCELLED',reason:'ORIGINAL_PRICE_CANCELLED'};\n if(['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(canonical.state)){\n  if(canonical.direction!==task.direction||r.status!=='ORIGINAL_TRIGGER_SETTLED'||r.settlement_confirmed!==true||r.entry_authorized!==false)\n   return {result:'PENDING',reason:'ORIGINAL_SETTLEMENT_NOT_CLOSED'};\n  return {result:'DONE',reason:'ORIGINAL_SETTLEMENT_AND_FRESH_FULL_ENTRY_CONFIRMED'};\n }\n // Missing data, a failed source or a still-waiting analysis is not a factual\n // cancellation. Keep the original task and deadline for the next price check.\n return {result:'PENDING',reason:canonical.state==='REJECTED'?'FRESH_ANALYSIS_REFUSED_ENTRY':'ORIGINAL_IDEA_STILL_WAITING'};\n}\nexport async function finishOriginalIdeaAnalysis(db,{task,canonical,publication_id,now_ts=Date.now()}={}){\n const outcome=classifyOriginalIdeaAnalysis({task,canonical,now_ts});\n if(!outcome.result)return {status:outcome.reason,completed:false};\n return {...await completeRecheck(db,{task_id:task.task_id,actor:task.lease_owner,lease_started_ts:task.lease_started_ts,\n  result:outcome.result,new_publication_id:publication_id,analysis_receipt:canonical?.metadata?.original_idea_recheck??null,completion_reason:outcome.reason,now_ts}),reason:outcome.reason};\n}"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/worker.js",
+      "bytes": 617350,
+      "sha256": "97e49115f32cfc1e833ebe47c55a99f1db750c02d78bc36454038e4ce58eaeb5",
+      "Git_blob_oid": "ef51e38495ff242698f80dbd644177aed47d7c71",
+      "excerpts": [
+        {
+          "start_line": 17260,
+          "end_line": 17263,
+          "text": "  const originalRecheckContext=env?.REPORT2_ORIGINAL_RECHECK_CONTEXT;\n  const originalIdeaRecheck=originalRecheckContext?.task?.contract_code===contract\n    ?qualifyOriginalIdeaSettlement({...originalRecheckContext,candles:readHtxClosedTriggerCandles({contract,now}),now_ts:now,current_price_receipt:htxObservationReferencePrice,current_price:htxObservationReferencePrice?.status==='CLOSED'?htxObservationReferencePrice.value:null})\n    :params?.discovery_row?.recheck_forced?{schema:'ORIGINAL_IDEA_RECHECK_V1_20261010',status:'NOT_CONFIRMED',settlement_confirmed:false,entry_authorized:false,reason:'EXACT_ORIGINAL_IDEA_REQUIRED'}:null;"
+        },
+        {
+          "start_line": 17305,
+          "end_line": 17305,
+          "text": "      original_idea_recheck:originalIdeaRecheck,"
+        },
+        {
+          "start_line": 19334,
+          "end_line": 19343,
+          "text": "      env.REPORT2_ORIGINAL_RECHECK_CONTEXT=null;\n      if(postV7RecheckClaim.claimed){\n        const task=postV7RecheckClaim.task;\n        const sent=await env.DATA_DB.prepare(`SELECT d.telegram_message_id FROM v3_dispatch_publication_binding_shadow b JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key WHERE b.publication_id=?1 AND b.contract_code=?2 AND b.direction=?3 AND b.wave_id=?4 AND b.run_id=?5 AND b.snapshot_id=?6 AND b.lifecycle_event IN ('OBSERVE','WAIT') AND d.state='SENT' AND CAST(d.telegram_message_id AS INTEGER)>0 AND d.contract=b.contract_code AND d.direction=b.direction AND d.wave_id=b.wave_id LIMIT 1`).bind(task.publication_id,task.contract_code,task.direction,task.wave_id,task.run_id,task.snapshot_id).first();\n        const saved=await env.DATA_DB.prepare('SELECT canonical_json FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1').bind(task.publication_id).first();\n        let canonical=null;try{canonical=JSON.parse(saved?.canonical_json);}catch{}\n        if(sent&&originalIdeaIdentity({task,canonical}))env.REPORT2_ORIGINAL_RECHECK_CONTEXT={task,canonical};\n      }\n\n      if(env?.REPORT2_TRIGGERED_RECHECK_TASK_ID && (!postV7RecheckClaim.claimed || postV7RecheckClaim.task?.task_id!==env.REPORT2_TRIGGERED_RECHECK_TASK_ID))throw new Error('TRIGGERED_RECHECK_CLAIM_NOT_CLOSED');"
+        },
+        {
+          "start_line": 19812,
+          "end_line": 19819,
+          "text": "      if (postV7RecheckClaim?.claimed === true) {\n        const exactResult=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[])\n          .find(row=>String(row?.contract||'').trim()===String(postV7RecheckClaim.task.contract_code||'').trim());\n        const receipt=exactResult?.post_v7_canonical_persistence;\n        if (exactResult?.execution_status === 'FULFILLED' && exactResult?.canonical_analytical_result?.status === 'CLOSED' && ['CLOSED','DEDUPLICATED'].includes(receipt?.status) && receipt?.publication_id) {\n          await finishOriginalIdeaAnalysis(env.DATA_DB,{task:postV7RecheckClaim.task,canonical:exactResult.canonical_analytical_result,publication_id:receipt.publication_id,now_ts:Date.now()});\n        }\n      }"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/runner-main.mjs",
+      "bytes": 134435,
+      "sha256": "71638d3ce2eb566aee85362d2742152b5fc8749854214137eb5c7129de176752",
+      "Git_blob_oid": "86fd8c2899cc07567a0ee94887a2b6a2dc1c6c67",
+      "excerpts": [
+        {
+          "start_line": 584,
+          "end_line": 585,
+          "text": "      let triggered={claimed:false,status:'REGULAR_CADENCE_LEASE_ACTIVE'};\n      if(cadence.status==='NOT_DUE'){"
+        },
+        {
+          "start_line": 595,
+          "end_line": 610,
+          "text": "            triggered=await admitTriggeredRecheck(env.DATA_DB,{actor:preflight.actor,now_ts:started,task_id:triggerOnly?triggerKickTaskId:null,admit:()=>({allowed:true})});\n            const usage=env.DATA_DB.usageSnapshot();\n            if(usage.unknown_ops||usage.rows_read>1300||usage.rows_written>14)throw new Error('TRIGGERED_ADMISSION_D1_ENVELOPE_EXCEEDED');\n          }finally{\n            await finalizeRunUsage(env.DATA_DB,{reservationId:triggerReservationId,sourceRunId:process.env.GITHUB_RUN_ID||'TRIGGERED_ADMISSION',usage:env.DATA_DB.usageSnapshot()});\n          }\n        }else{triggered={claimed:false,status:'D1_BUDGET_BLOCKED',budget:admissionBudget};await enforceDailyAnalysisAdmission({admission:admissionBudget,context:{daily_usage_scope:'NATIVE_DAILY_AGGREGATE',native_d1_daily:admissionBudget.daily,generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,source,task_id:triggerOnly?triggerKickTaskId:null,trigger_only:triggerOnly,trigger_admission:true,started_ts:started,failed_ts:Date.now(),d1_usage:env.DATA_DB.usageSnapshot?.()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});}\n      }\n      console.log('TRIGGERED_ENTRY_RECHECK_ADMISSION',JSON.stringify(triggered));\n      if(!triggered.claimed){\n        const finish=await releaseAnalyticsLease();if(!finish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${finish.status}`);\n        return;\n      }\n      env.REPORT2_TRIGGERED_RECHECK_TASK_ID=triggered.task.task_id;\n      env.REPORT2_DEEP_RUNTIME_OPTIONS={...env.REPORT2_DEEP_RUNTIME_OPTIONS,max_per_run:1};\n    }else{"
+        },
+        {
+          "start_line": 961,
+          "end_line": 967,
+          "text": "  await worker.scheduled({ scheduledTime: started, cron: source === \"schedule\" ? \"ROTATING_EXACT_20_MINUTES\" : \"manual\" }, env, ctx);\n  const leaseAfterWorker=await assertAnalyticsFence(env.DATA_DB,analyticsLease,{now:Date.now()});\n  if(!leaseAfterWorker.allowed)throw new Error(`ANALYTICS_FENCE_LOST_AFTER_WORKER:${leaseAfterWorker.status}`);\n  if(liquidationSources)console.log('LIQUIDATION_SOURCES_CANONICAL_RECEIPT',JSON.stringify(liquidationSources.summary()));\n  console.log('LIQUIDATION_PREDICTIVE_SOURCE_WEIGHTS_FINAL',JSON.stringify(await liquidationCalibration.summary()));\n  if (pending.length) await Promise.all(pending);\n  const cron = await env.DATA_DB.prepare(\"SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text,v3_discovery_shortlist_count,v3_live_shortlist_count,v3_live_deep_check_count,v3_live_zero_reason,v3_pipeline_health_status,v3_pipeline_health_reason,v3_live_lane,v3_maintenance_deferred FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1\").bind(started).first();"
+        },
+        {
+          "start_line": 1094,
+          "end_line": 1098,
+          "text": "    v3TelegramLifecycleSidecar = await runV3TelegramLifecycleSidecar(env.DATA_DB, {\n      source_run_id:String(cron.run_id || \"\"), now_ts:Date.now(),\n      d1_pretelegram_budget_closed:lifecyclePreactionBudget.allowed, dispatch_enabled:v3TelegramJournalEnabled,\n      completed_handoffs:completedLifecycleHandoffs, canonical_required:postV7UnifiedEnabled,\n    });"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/triggered-entry-recheck.mjs",
+      "bytes": 9502,
+      "sha256": "110b2709b1e581a6f996605079e23ec6612493286d6f5148665bd198e271ba0c",
+      "Git_blob_oid": "ce0ded7d079a472a1e1e8e0c7e0ff0e59eca091f",
+      "excerpts": [
+        {
+          "start_line": 19,
+          "end_line": 35,
+          "text": "export function verifyTriggeredRecheck(row,{now_ts}={}){\n let c,r;try{c=JSON.parse(row.canonical_json);r=JSON.parse(row.last_result);}catch{return {eligible:false,status:'INVALID_SAVED_RECEIPT'};}\n const now=Number(now_ts),trigger=c.trigger,hash=fingerprint(c);\n const exact=row.state==='PENDING'&&['OBSERVE','WAIT_FOR_TRIGGER'].includes(c.state)&&['LONG','SHORT'].includes(c.direction)&&\n   row.direction===c.direction&&c.metadata?.contract===row.contract_code&&c.run_id===row.run_id&&c.snapshot_id===row.snapshot_id&&\n   hash===c.analytical_fingerprint&&hash===row.analytical_fingerprint&&hash===r.analytical_fingerprint&&\n   r.task_id===row.task_id&&r.publication_id===row.publication_id&&r.run_id===row.run_id&&r.snapshot_id===row.snapshot_id&&\n   /^[1-9][0-9]*$/.test(String(row.telegram_message_id))&&String(row.telegram_message_id)===r.telegram_message_id&&\n   trigger?.expires_ts===row.expires_ts&&trigger?.next_recheck_ts===row.due_ts;\n if(!exact)return {eligible:false,status:'EXACT_SENT_IDENTITY_REQUIRED'};\n if(!Number.isSafeInteger(now)||now<row.due_ts||now>=row.expires_ts)return {eligible:false,status:'ORIGINAL_TRIGGER_WINDOW_CLOSED'};\n const clocks=[r.source_ts,r.observed_ts,r.checked_ts];\n if(!clocks.every(ts=>Number.isSafeInteger(ts)&&ts>=c.observed_ts&&ts<=now&&now-ts<=180000)||r.source!=='HTX_OFFICIAL_COLLECTOR')return {eligible:false,status:'FRESH_COLLECTOR_TRIGGER_REQUIRED'};\n const cancel=/^price\\s*(>=|<=|>|<)\\s*([0-9]+(?:\\.[0-9]+)?(?:e[+-]?[0-9]+)?)$/i.exec(String(trigger.cancel_condition||''));\n if(r.schema!=='LIGHT_PRICE_RECHECK_V1'||r.scope!=='PRICE_AND_CANCELLATION_ONLY'||r.status!=='TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED'||r.entry_authorized!==false||r.full_analysis_completed!==false||r.settlement_confirmed!==false||trigger.metric!=='price'||trigger.unit!=='USDT'||!Number.isFinite(r.price)||r.price<=0||!Number.isFinite(trigger.value)||trigger.value<=0||!cancel||!compare(r.price,trigger.operator,trigger.value)||compare(r.price,cancel[1],Number(cancel[2])))return {eligible:false,status:'UNCANCELLED_PRICE_TRIGGER_REQUIRED'};\n return {eligible:true,status:'FRESH_EXACT_SENT_PRICE_TRIGGER',task_id:row.task_id,contract:row.contract_code,direction:row.direction,publication_id:row.publication_id,run_id:row.run_id,snapshot_id:row.snapshot_id,expires_ts:row.expires_ts,analytical_fingerprint:hash};\n}"
+        },
+        {
+          "start_line": 54,
+          "end_line": 71,
+          "text": " const found=await db.prepare(`SELECT t.*,b.analytical_fingerprint AS sent_fingerprint,b.observed_ts AS sent_observed_ts,d.telegram_message_id\n   FROM v3_recheck_task_shadow t\n   JOIN v3_dispatch_publication_binding_shadow b ON b.publication_id=t.publication_id AND b.contract_code=t.contract_code AND b.direction=t.direction AND b.wave_id=t.wave_id AND b.run_id=t.run_id AND b.snapshot_id=t.snapshot_id\n   JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key AND d.state='SENT' AND d.contract=t.contract_code AND d.direction=t.direction AND d.wave_id=t.wave_id\n   JOIN v3_user_lifecycle_shadow l ON l.contract=t.contract_code AND l.direction=t.direction AND l.wave_id=t.wave_id AND l.rules_version=b.rules_version AND l.status=b.lifecycle_event AND l.observation_ts=b.observed_ts\n   WHERE t.state='PENDING' AND json_valid(t.last_result) AND json_extract(t.last_result,'$.status')='TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED'\n     AND t.expires_ts>?1 AND t.due_ts<=?1 AND b.lifecycle_event IN ('OBSERVE','WAIT')\n     AND (?2 IS NULL OR t.task_id=?2)\n     AND NOT EXISTS(SELECT 1 FROM report2_triggered_recheck_admission a WHERE a.task_id=t.task_id)\n   ORDER BY t.expires_ts,t.due_ts LIMIT 2`).bind(now_ts,task_id).all();\n const day=new Date(now_ts).toISOString().slice(0,10);\n for(const row of found?.results||[]){\n  const publication=await db.prepare(`SELECT canonical_json,analytical_fingerprint,actionability_status\n    FROM canonical_publication_shadow WHERE publication_id=?1 AND contract_code=?2 AND direction=?3 AND wave_id=?4 AND run_id=?5 AND snapshot_id=?6 AND observed_ts=?7 LIMIT 1`)\n    .bind(row.publication_id,row.contract_code,row.direction,row.wave_id,row.run_id,row.snapshot_id,row.sent_observed_ts).first();\n  if(publication?.actionability_status!=='ACTIONABLE'||publication.analytical_fingerprint!==row.sent_fingerprint)continue;\n  row.canonical_json=publication.canonical_json;row.analytical_fingerprint=publication.analytical_fingerprint;\n  const verified=verifyTriggeredRecheck(row,{now_ts});if(!verified.eligible)continue;"
+        },
+        {
+          "start_line": 76,
+          "end_line": 80,
+          "text": "     ON CONFLICT DO NOTHING`).bind(day,slot,row.task_id,actor,now_ts,row.last_result,row.updated_ts).run();\n   if(Number(result?.meta?.changes??result?.changes??0)!==1)continue;\n   const readback=await db.prepare('SELECT day_key,slot,task_id,actor,attempt_started_ts FROM report2_triggered_recheck_admission WHERE task_id=?1 LIMIT 1').bind(row.task_id).first();\n   if(readback?.day_key!==day||Number(readback.slot)!==slot||readback.actor!==actor||Number(readback.attempt_started_ts)!==now_ts)return {...base,status:'BURST_READBACK_FAILED'};\n   return {...base,status:'TRIGGERED_FULL_ANALYSIS_ADMITTED',claimed:true,task:verified,day_key:day,slot,max_per_run:1,failed_attempt_consumes_slot:true};"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/recheck-scheduler.mjs",
+      "bytes": 8019,
+      "sha256": "ba06136ae2efa0cf45826d54930b52548a2b6c9e9fc035536b31057298b34273",
+      "Git_blob_oid": "b25bdc399320725c3bded37ed6f82bda304f9589",
+      "excerpts": [
+        {
+          "start_line": 11,
+          "end_line": 20,
+          "text": "export async function completeRecheck(db,{task_id,actor='GITHUB_ACTIONS',lease_started_ts,result,new_publication_id=null,completion_reason=null,analysis_receipt=null,now_ts=Date.now()}={}){\n const now=stamp(now_ts),claim=stamp(lease_started_ts),terminal=upper(result);\n if(!db?.prepare||now===null||claim===null||!text(actor)||!text(task_id)||!['DONE','CANCELLED','EXPIRED','PENDING'].includes(terminal))return {status:'INVALID_COMPLETION',completed:false};\n if(terminal==='DONE'&&!text(new_publication_id))return {status:'FRESH_CANONICAL_PUBLICATION_REQUIRED',completed:false};\n const r=await db.prepare(`UPDATE v3_recheck_task_shadow SET state=?2,last_result=CASE WHEN ?2='PENDING' AND json_valid(last_result) AND json_extract(last_result,'$.schema')='LIGHT_PRICE_RECHECK_V1' THEN json_set(last_result,'$.full_recheck',json_object('publication_id',?7,'completed_ts',?4,'reason',?8,'authorizes_entry',json('false'))) ELSE json_object('schema','RECHECK_COMPLETION_V1','status',?2,'publication_id',?7,'completed_ts',?4,'reason',?8,'full_analysis_receipt',CASE WHEN json_valid(?9) THEN json(?9) ELSE NULL END,'original_light_price_receipt',CASE WHEN json_valid(last_result) AND json_extract(last_result,'$.schema')='LIGHT_PRICE_RECHECK_V1' THEN json(last_result) ELSE NULL END,'legacy_result',CASE WHEN json_valid(last_result) THEN NULL ELSE last_result END) END,lease_owner=NULL,lease_started_ts=NULL,lease_expires_ts=NULL,updated_ts=?4\n WHERE task_id=?1 AND state='CLAIMED' AND lease_owner=?5 AND lease_started_ts=?6 AND lease_expires_ts>=?4 AND ?4>=lease_started_ts\n AND (?2='EXPIRED' OR expires_ts>?4) AND (?2!='EXPIRED' OR expires_ts<=?4)\n AND (?2!='DONE' OR EXISTS(SELECT 1 FROM canonical_publication_shadow p WHERE p.publication_id=?7 AND p.publication_id!=v3_recheck_task_shadow.publication_id AND p.contract_code=v3_recheck_task_shadow.contract_code AND p.direction=v3_recheck_task_shadow.direction AND p.run_id!=v3_recheck_task_shadow.run_id AND p.observed_ts>=?6 AND p.observed_ts<=?4))`).bind(text(task_id),terminal,text(new_publication_id)||terminal,now,text(actor),claim,text(new_publication_id)||null,text(completion_reason)||null,analysis_receipt?JSON.stringify(analysis_receipt):null).run();\n const changed=Number(r?.meta?.changes??r?.changes??0)===1;return {status:changed?'CLOSED':'NOT_UPDATED',completed:changed,state:changed?terminal:null};\n}"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/canonical-runtime-adapter.mjs",
+      "bytes": 57800,
+      "sha256": "27094651cdc0fa7c75c6641d387e917b3a9ec75b10e52babb67200c661700484",
+      "Git_blob_oid": "655e24b7da80b6a7b4b323f39dba41cea36af8ee",
+      "excerpts": [
+        {
+          "start_line": 405,
+          "end_line": 407,
+          "text": " const analyzedState=selectCanonicalPublicationState({route_state:routedState,route_hard_veto:route?.hard_veto,early_candidate:early,early_quality:earlyQuality,interest,direction,observe_contract_closed:existingPlanClosed||observationPlanClosed});\n const routedOverall=finite(publication_shadow?.score_interval?.score_lower_bound);\n const effectiveState=original_idea_recheck&&['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(analyzedState)&&(original_idea_recheck.settlement_confirmed!==true||direction!==original_idea_recheck.direction)?'WAIT_FOR_TRIGGER':analyzedState;"
+        },
+        {
+          "start_line": 450,
+          "end_line": 459,
+          "text": " const canonical=buildCanonicalAnalyticalResult({\n  snapshot_id:text(snapshot_id)||`UNBOUND:${text(contract)||'UNKNOWN'}:${observed_ts}`,\n  run_id:text(run_id)||`UNBOUND:${observed_ts}`,\n  observed_ts,\n  universe:[{contract:text(contract)||null}],candidates:[{contract:text(contract)||null,ticker:text(contract)||null}],\n  source_receipts:runtimeSourceReceipts,hard_gates:hardGates({discovery:discovery_row,publication:publication_shadow,executionHandoff:execution_handoff}),\n  state:effectiveState,direction,overall_score_0_100:overall,coin_interest_score_0_100:interest,entry_readiness_score_0_100:null,\n  reasons:reasonFacts({discovery:discovery_row,opportunity,publication:publication_shadow}),current_price:price,\n  entry:entryFrom(publication_shadow,observation)??observation?.entry??null,trigger:route?.trigger??observation?.trigger??null,invalidation:publication_shadow?.scenario_plan?.invalidation??observation?.invalidation??null,\n  targets:selectedTargets,costs:publication_shadow?.cost_assessment??null,"
+        },
+        {
+          "line": 463,
+          "start_column": 1,
+          "end_column": 110,
+          "text": "  metadata:{contract:text(contract)||null,...(original_idea_recheck?{original_idea_recheck}:{}),idea_basis_rec"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/v3-telegram-runtime.mjs",
+      "bytes": 8617,
+      "sha256": "8fe389d38e614e5ffa368dae6bc862b84640dba0eb16f4c236343c4bdffe9511",
+      "Git_blob_oid": "f8181263836ae8706955f04c3c44cc0811879d0d",
+      "excerpts": [
+        {
+          "start_line": 27,
+          "end_line": 38,
+          "text": "  try{previous=await db.prepare(`SELECT status,reason,observation_ts,valid_until_ts,updated_ts FROM v3_user_lifecycle_shadow\n    WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND rules_version=?4 LIMIT 1`).bind(contract,dir,wave,rules).first();}\n  catch(error){return {...base,status:/no such table/i.test(String(error?.message||error))?'MIGRATION_REQUIRED':'PARTIAL',error:String(error?.message||error)};}\n  const previousStatus=upper(previous?.status||USER_STATE.NONE);\n  const derived=deriveUserLifecycleStatus({...ctx,previous_status:previousStatus,direction:dir});\n  if(derived.status===USER_STATE.NONE) return {...base,status:'CLOSED_NOT_USER_VISIBLE',previous_status:previousStatus,current_status:derived.status,reason:derived.reason,dispatch:null};\n  const now=Math.trunc(Number(now_ts)||Date.now());\n  const obs=Math.trunc(finite(ctx.observation_ts)??now);\n  const until=finite(ctx.valid_until_ts);\n  const dispatchCandidate=decideLifecycleDispatch({previous_status:previousStatus,current_status:derived.status,contract,direction:dir,wave_id:wave,rules_version:rules,cooldown_active:ctx.cooldown_active});\n  const dispatchEnabled=ctx.dispatch_enabled !== false;\n  let dispatch=dispatchEnabled ? dispatchCandidate : {...dispatchCandidate,dispatch:false,reason:dispatchCandidate.dispatch===true?'SHADOW_DISPATCH_DISABLED':dispatchCandidate.reason};"
+        },
+        {
+          "start_line": 40,
+          "end_line": 54,
+          "text": "  const qualified=qualifiedObservationRecovery({ctx,previous_status:previousStatus,current_status:derived.status,dispatch,now});\n  if(qualified){\n    const first=decideLifecycleDispatch({previous_status:USER_STATE.NONE,current_status:derived.status,contract,direction:dir,wave_id:wave,rules_version:rules,cooldown_active:ctx.cooldown_active});\n    if(first.dispatch===true)try{\n      const old=await findUnsentSourceRoleRefusal(db,{ctx,base_key:first.key,qualified});\n      if(old){recovery={base_key:first.key,qualified};dispatch={...first,key:first.key+'|RECOVERY|'+qualified.snapshot_id,reason:'FRESH_QUALIFIED_OBSERVATION_AFTER_UNSENT_PREPUBLICATION_REFUSAL'};}\n    }catch(error){return {...base,status:'RECOVERY_JOURNAL_NOT_CLOSED',error:String(error.message).slice(0,180)};}\n  }\n  const stmts=[db.prepare(`INSERT INTO v3_user_lifecycle_shadow(\n    contract,direction,wave_id,rules_version,status,reason,observation_ts,valid_until_ts,updated_ts,shadow_only)\n    VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,1)\n    ON CONFLICT(contract,direction,wave_id,rules_version) DO UPDATE SET\n      status=excluded.status,reason=excluded.reason,observation_ts=excluded.observation_ts,\n      valid_until_ts=excluded.valid_until_ts,updated_ts=excluded.updated_ts,shadow_only=1`)\n    .bind(contract,dir,wave,rules,derived.status,derived.reason,obs,until,now)];"
+        },
+        {
+          "start_line": 65,
+          "end_line": 67,
+          "text": "  let acknowledgements;try{acknowledgements=await db.batch(stmts);}catch(error){return {...base,status:'PARTIAL',error:String(error?.message||error)};}\n  if(recovery&&Number(acknowledgements?.[1]?.meta?.changes??acknowledgements?.[1]?.changes??0)!==1){dispatchRow=null;dispatch={dispatch:false,reason:'RECOVERY_ALREADY_QUEUED_OR_INELIGIBLE',key:null};}\n  return {...base,status:'CLOSED',previous_status:previousStatus,current_status:derived.status,reason:derived.reason,dispatch:dispatchRow,dispatch_decision:dispatch};"
+        }
+      ]
+    },
+    {
+      "path": "current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+      "bytes": 24415,
+      "sha256": "bc5845ba2f4904f320d7eb9c952759c5e4a4fc0ae33fc595df5f097e1125ac99",
+      "Git_blob_oid": "e10483c363de4e92539b62740dff5ac4fc08d0b8",
+      "excerpts": [
+        {
+          "start_line": 257,
+          "end_line": 258,
+          "text": "export async function runV3TelegramLifecycleSidecar(db,{source_run_id,now_ts=Date.now(),d1_pretelegram_budget_closed=true,dispatch_enabled=false,completed_handoffs=null,canonical_required=false}={}){\n  const base={version:V3_TELEGRAM_LIFECYCLE_SIDECAR_VERSION,mode:'SHADOW_ONLY',network_send:false,dispatch_enabled:dispatch_enabled===true,probability:null,validated_signal:false,trading_execution:false};"
+        },
+        {
+          "start_line": 270,
+          "end_line": 282,
+          "text": "  for(const h of loaded.handoffs.slice(0,V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.max_completed_handoffs)){\n    const contract=text(h.contract_code),waveId=text(h.wave_id);\n    const early=exactWaveOrLatest(loaded.early,contract,waveId);\n    const shadow=latestFor(loaded.shadow,contract,'observed_ts');\n    const final=latestFor(loaded.final,contract,'persisted_ts');\n    const previous=priorLifecycleFor(loaded.previous,contract,waveId||text(early?.wave_id));\n    const exactCanonical=(loaded.canonical||[]).filter(row=>row.contract_code===contract&&(!waveId||row.wave_id===waveId));\n    if(canonical_required&&exactCanonical.length>1){transitions.push({contract,status:'AMBIGUOUS_CURRENT_RUN_CANONICAL',current_status:null,dispatch:null});continue;}\n    const derived=deriveLifecycleContext({handoff:h,early,shadow,final,previous,now_ts,d1_pretelegram_budget_closed,dispatch_enabled,canonical:exactCanonical[0]||null,canonical_required});\n    if(derived.status!=='CLOSED'){transitions.push({contract,status:derived.status,reason:derived.reason??null,current_status:null,dispatch:null});continue;}\n    if(persistAttempts>=V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.max_persist_transitions){transitions.push({contract,status:'CAPACITY_DEFERRED',current_status:null,dispatch:null});continue;}\n    persistAttempts++;\n    const persisted=await prepareLifecycleTransition(db,derived.ctx,now_ts);"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "status": "PASS_ONE_FINAL_NEW_CODE_EVIDENCE_INTEGRITY",
+    "checked_at_utc": "2026-10-19T10:39:51.470851+00:00",
+    "PASS": 32,
+    "FAIL": 0,
+    "checks": [
+      "exact bounded owned offline lease remains within original expiry",
+      "fresh main four active states equal",
+      "fresh point explicitly retains this narrow read-only question",
+      "current main exact source hash and Git object: current-generation/files/src/original-idea-recheck.mjs",
+      "all cited exact line excerpts: current-generation/files/src/original-idea-recheck.mjs",
+      "current main exact source hash and Git object: current-generation/files/src/worker.js",
+      "all cited exact line excerpts: current-generation/files/src/worker.js",
+      "current main exact source hash and Git object: current-generation/files/runner-main.mjs",
+      "all cited exact line excerpts: current-generation/files/runner-main.mjs",
+      "current main exact source hash and Git object: current-generation/files/src/triggered-entry-recheck.mjs",
+      "all cited exact line excerpts: current-generation/files/src/triggered-entry-recheck.mjs",
+      "current main exact source hash and Git object: current-generation/files/src/recheck-scheduler.mjs",
+      "all cited exact line excerpts: current-generation/files/src/recheck-scheduler.mjs",
+      "current main exact source hash and Git object: current-generation/files/src/canonical-runtime-adapter.mjs",
+      "all cited exact line excerpts: current-generation/files/src/canonical-runtime-adapter.mjs",
+      "current main exact source hash and Git object: current-generation/files/src/v3-telegram-runtime.mjs",
+      "all cited exact line excerpts: current-generation/files/src/v3-telegram-runtime.mjs",
+      "current main exact source hash and Git object: current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+      "all cited exact line excerpts: current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs",
+      "qualifier base carries full original fingerprint but not original clock/due",
+      "static counterexample dependency absence, not executed outcome",
+      "strong admission already selects clock/fingerprint/id with strict lifecycle join",
+      "verified return currently drops clock/message/wave/due",
+      "once-per-task charged admission is preserved as a scope boundary",
+      "worker retains only task/canonical and ignores finish return",
+      "same env worker execution precedes lifecycle and receives only task id from admission",
+      "lifecycle currently has no original receipt/context consumer",
+      "existing completion returns acknowledgement and releases native claim",
+      "PENDING completion has only existing full_recheck compact fields",
+      "lifecycle already reads previous clock but ordinary upsert still replaces it",
+      "one connected eight-link finding, no patch/model/framework",
+      "only one own evidence file authored on the dedicated branch"
+    ],
+    "fresh_main": "857ff3f65ad95e25ad7e5e9028ef54d1f715eadf",
+    "guard_sha256": {
+      "AGENTS.md": "3424d70b4c2d08380493d0d152883bccc48401517224872e9d90cbe998bfbabe",
+      "MY_REPORT_2_STARTUP_CONTRACT.md": "9a45349d64225be5ab2740d2c374ed07a455fed655bffd15a0b41d68a110f44e",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "abcba8708f5cd51bf1c1b6c93a6c7d3fd45f57949221d378c6292375a8c2676d",
+      "audit-fixes/source-optimization-20260930/execution-lock.json": "835f02f6b395797e8242b9d76c6537fb7a055093f59956fd2cf0b7455cb85acf",
+      "REPORT2_CURRENT_GENERATION.json": "87df1b74ba07b0917fc8c70d7e1a619dc2b0177a2590e598d7d7598cf89fe873",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "932241b1201fb35facd874e1551f44460142d7d9b388386c03c09a68562747f6",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "79e1bd61d4f6437bb47c532ca3f971b389064ae8b0350504779114e7678993a9",
+      "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "2f70cb38d273a58b5021e60bed61808e4d78ce111d24d93aa3b301bfb1e63ce0",
+      "checkpoints/N05_CLOUD_CONTINUATION_HANDOFF_20261011.json": "e7c656fab995906aca695cc4cf927d6113f9c0dbe114d0b30c2fb7a113513db8",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "faa144764bcbdfad055d67c465849184fc1d4aae2e9a8f17e77684292df5c76c",
+      "checkpoints/anomaly-block-20261018/TECHNICAL_CONTRACT_RU.md": "8da017bda6ce7b00abb22a73ed69ec99a51e052b1d0e85f73a59ed8159d4a955"
+    },
+    "three_proofs": [
+      {
+        "path": "checkpoints/ACTIVE105_N10_OBSERVE_CLOCK_INTEGRATED_HANDOFF_20261019.json",
+        "sha256": "2b9263243134ba80d76980f82c68cad8004fd371b79a934c04ae7706c3d09cdb"
+      },
+      {
+        "path": "checkpoints/n10-observe-clock-connected-20261019/main-and-originals-receipts.json",
+        "sha256": "d226834688eb331d488b8f66190559feb3b29d7bd128b3363984e4ab2560ca41"
+      },
+      {
+        "path": "checkpoints/natural-39235810465/coordinator-native-review.json",
+        "sha256": "2edf33ea08105b6a0e8853e8b6e2ee8871fbb804b93c8141d89099b0686944d2"
+      }
+    ],
+    "application_module_test_probe_executions": 0,
+    "SQL_provider_GET_MAIN_TG_deploy": 0,
+    "new_runtime_patch_model_or_framework": false,
+    "semantic_tests_or_counterexample_execution": 0,
+    "native_cause_or_actual_ENTRY_proven": false
+  }
+}
