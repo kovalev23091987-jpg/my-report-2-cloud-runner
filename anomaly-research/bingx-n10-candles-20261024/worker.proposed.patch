@@ -1,0 +1,17 @@
+--- a/current-generation/files/src/worker.js
++++ b/current-generation/files/src/worker.js
+@@ -16108,7 +16108,13 @@
+     let historyProposal=null,historyError=null;
+     try{historyProposal=produceBingxHistoryRow({observation:source,context,instrument_ref:instrumentRef,processed_ts:decisionTs});}
+     catch(error){historyError=String(error?.message??error).slice(0,160);}
+-    return {...boundary,reason:'BINGX_FULL_DEEP_NOT_CONNECTED',futures_snapshot:source,observation_reference_price:bingxObservationReferencePrice,history_proposal:historyProposal,history_proposal_error:historyError,missing_chain:['NATIVE_PROVIDER_PARENT_ADMISSION','CURRENT_FULL_CRYPTO_REGISTRY','STRATEGY_CLOSED_CANDLES_AND_SIGNED_FLOW','EXECUTABLE_BOOK_AND_NATIVE_UNITS','CONNECTED_CURRENT_REPORT_ACCEPTANCE']};
++    // BINGX_N10_BOUND_CANDLE_INPUT_START
++    // Only ROOT internal maps may supply original bytes and the independent pin.
++    const primaryTechnicalReceipt=buildHtxPrimaryTechnicalReceipt({contract,futures:source,now:decisionTs,venue:'BINGX',bingx:{context,expected_identity:expectedIdentity,
++      capture:env?.REPORT2_BINGX_N10_CAPTURE_BY_REF instanceof Map?env.REPORT2_BINGX_N10_CAPTURE_BY_REF.get(instrumentRef)??null:null,
++      expected:env?.REPORT2_BINGX_N10_EXPECTED_BY_REF instanceof Map?env.REPORT2_BINGX_N10_EXPECTED_BY_REF.get(instrumentRef)??null:null}});
++    // BINGX_N10_BOUND_CANDLE_INPUT_END
++    return {...boundary,reason:'BINGX_FULL_DEEP_NOT_CONNECTED',futures_snapshot:source,observation_reference_price:bingxObservationReferencePrice,primary_technical_receipt:primaryTechnicalReceipt,history_proposal:historyProposal,history_proposal_error:historyError,missing_chain:['NATIVE_PROVIDER_PARENT_ADMISSION','CURRENT_FULL_CRYPTO_REGISTRY','STRATEGY_CLOSED_CANDLES_AND_SIGNED_FLOW','EXECUTABLE_BOOK_AND_NATIVE_UNITS','CONNECTED_CURRENT_REPORT_ACCEPTANCE']};
+   }
+   // BINGX_PRIMARY_DEEP_BOUNDARY_END
+   const cycleStartedTs = Date.now();
