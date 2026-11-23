@@ -1,0 +1,30 @@
+name: LIQ assembled spot and 105 admission offline
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bingx-primary-producer-new-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact current ROOT lease, four mirrors and fence
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node checkpoints/bingx-primary-producer-connected-20261024/qualification-guard.mjs
+      - name: One FIRST connected BingX qualification
+        run: node --test --test-reporter=spec checkpoints/bingx-primary-producer-connected-20261024/connected-common.mjs > audit-output/bingx-primary-producer-connected/node-spec.log 2>&1
+      - name: Preserve actual component returns and partial failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bingx-primary-producer-first-${{ github.run_id }}
+          path: audit-output/bingx-primary-producer-connected/
+          if-no-files-found: error
+          retention-days: 30

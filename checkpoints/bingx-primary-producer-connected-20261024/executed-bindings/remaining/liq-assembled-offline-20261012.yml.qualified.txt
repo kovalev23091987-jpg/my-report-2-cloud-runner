@@ -1,0 +1,42 @@
+name: LIQ assembled spot and 105 admission offline
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  bingx-primary-producer-remaining-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact current ROOT lease, four mirrors and fence
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node checkpoints/bingx-primary-producer-connected-20261024/qualification-guard.mjs
+      - name: Pin exact real assembly inputs before assembly or application import
+        run: node checkpoints/bingx-primary-producer-connected-20261024/remaining-prepins.mjs
+      - name: Existing authoritative offline runtime assembly only
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/bingx-primary-producer-connected/remaining-assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: ONLY remaining Root Deep7; completed97 never replayed
+        run: node --test --test-reporter=spec checkpoints/bingx-primary-producer-connected-20261024/remaining-common.mjs > audit-output/bingx-primary-producer-connected/node-spec.log 2>&1
+      - name: Preserve actual component returns and partial failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bingx-primary-producer-remaining-${{ github.run_id }}
+          path: audit-output/bingx-primary-producer-connected/
+          if-no-files-found: error
+          retention-days: 30

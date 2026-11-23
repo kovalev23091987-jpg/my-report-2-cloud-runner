@@ -114,7 +114,8 @@ import {
 } from "./canonical-runtime-adapter.mjs";
 import {loadExecutionReportSource} from './execution-report-context.mjs';
 import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,buildHtxExecutionReceipt} from './market-contracts.mjs';
-import {readMarketHistoryForContract,readMarketHistoryTargets} from './market-history-reader.mjs';
+import {readMarketHistoryForContract,readMarketHistoryTargets,compareBingxHistoryPoint} from './market-history-reader.mjs';
+import {bindBingxHistoryRegistry,resolveBingxExpectedHistoryRef,produceBingxHistoryRow} from './market-snapshot-batch.mjs';
 import {compareOrdinaryDeepCandidates} from './deep-candidate-order.mjs';
 import {scoreDiscoveryCandidate,compareDiscoveryCandidates} from './discovery-candidate-score.mjs';
 import {buildLiquidationMaintenanceStatements,buildBoundedRetentionStatement} from './bounded-hot-maintenance.mjs';
@@ -1105,7 +1106,30 @@ function findOi(data, contract) {
    FUTURES SNAPSHOT — существующий модуль
    ========================================================= */
 
-async function futuresSnapshot(params) {
+async function futuresSnapshot(params, env = null) {
+  const requestedVenue=params?.venue??params?.instrument_identity?.venue??null;
+  const configuredVenue=env?.REPORT2_PRIMARY_VENUE??null;
+  const venue=requestedVenue??configuredVenue??'HTX';
+  const needsBingx=venue==='BINGX'||configuredVenue==='BINGX'||params?.instrument_identity?.venue==='BINGX';
+  if(needsBingx||venue!=='HTX'){
+    const unavailable=(detail)=>({execution_status:'PARTIAL',reason:'BINGX_PRIMARY_NOT_CONNECTED',detail,available_ts:null,
+      data:{venue:needsBingx?'BINGX':venue,source:'PRIMARY_COMPLETED_CAPTURE_NOT_CONNECTED',instrument_identity:null,contract:null,timestamp:null,
+        bbo:{best_bid:null,best_ask:null,source_ts:null},liquidity:{depth_timestamp:null,capacity_units_known:false},
+        open_interest:{native_value_decimal:null,source_ts:null,unit:null,contracts:null,amount_base:null,value_usdt:null},funding:{funding_rate:null,period_ms:null,source_ts:null},
+        native_admission:false,primary_qualified:false,consumer_ready:false,score_allowed:false,entry_allowed:false}});
+    if(venue!=='BINGX'||configuredVenue!==null&&configuredVenue!=='BINGX')return unavailable('PRIMARY_VENUE_CONFLICT_OR_UNSUPPORTED');
+    const nativeContract=params?.contract??params?.contract_code??params?.symbol??null;
+    const identities=params?.instrument_identity;
+    if(typeof nativeContract!=='string'||!nativeContract||nativeContract.length>160||!identities||identities.schema!=='BINGX_CRYPTO_PERPETUAL_INSTRUMENT_V1'||identities.venue!=='BINGX'||identities.native_symbol!==nativeContract||identities.contract!==nativeContract||[params?.contract,params?.contract_code,params?.symbol].some(x=>x!==undefined&&x!==null&&x!==nativeContract))return unavailable('INDEPENDENT_ROOT_EXPECTED_IDENTITY_REQUIRED');
+    const reader=Object.hasOwn(params??{},'_bingx_snapshot_reader')&&typeof params._bingx_snapshot_reader==='function'?params._bingx_snapshot_reader:typeof env?._bingx_snapshot_reader==='function'?env._bingx_snapshot_reader:null;
+    if(reader===null)return unavailable('INTERNAL_COMPLETED_CAPTURE_READER_REQUIRED');
+    try{
+      const expected=structuredClone(identities),expectedJSON=JSON.stringify(expected);
+      const value=await reader({venue:'BINGX',native_contract:nativeContract,expected_instrument_identity:structuredClone(expected)});
+      if(value?.execution_status!=='PARTIAL'||value?.data?.venue!=='BINGX'||value.data.contract!==nativeContract||JSON.stringify(value.data.instrument_identity)!==expectedJSON||!['native_admission','primary_qualified','consumer_ready','score_allowed','entry_allowed'].every(k=>value.data[k]===false))return unavailable('COMPLETED_CAPTURE_CARRIER_NOT_EXACT_OR_GRANT_UPLIFT');
+      return value; // Actual bc5a assembler component; preserve original clocks/PARTIAL/NO_GRANT.
+    }catch{return unavailable('COMPLETED_CAPTURE_READER_FAILED_NO_FALLBACK');}
+  }
   const requestJson = typeof params?._fetch_json === "function" ? params._fetch_json : fetchJson;
   const contract = normalizeFuturesContract(
     params.contract || params.contract_code || params.symbol || "ETHFI-USDT"
@@ -3903,6 +3927,12 @@ async function loadHistoryTargets(
   env,
   nowMs
 ) {
+  if(env?.REPORT2_PRIMARY_VENUE&&env.REPORT2_PRIMARY_VENUE!=='HTX'){
+    const history=await readMarketHistoryTargets({db:env?.DATA_DB,now_ts:nowMs,venue:env.REPORT2_PRIMARY_VENUE,root_history_binding:env?.REPORT2_BINGX_HISTORY_BINDING??null,history_reuse_key:env?.REPORT2_BINGX_HISTORY_READ_KEY??null});
+    // ROOT must provide one isolated env/run key for the current invocation.
+    env.REPORT2_BINGX_CURRENT_HISTORY_RESULT=history;
+    return history;
+  }
   return readMarketHistoryTargets({db:env?.DATA_DB,now_ts:nowMs,actor:'HUB_PUBLIC_COLLECTOR',preferred_generation:env?.REPORT2_CURRENT_GENERATION||null});
 }
 
@@ -4472,8 +4502,13 @@ async function loadHistoryTargetsLegacy(
 
 function historyMetrics(
   current,
-  row
+  row,
+  history_options=null
 ) {
+  if(current?.venue==='BINGX'||row?.venue==='BINGX'){
+    const result=compareBingxHistoryPoint({...history_options,current,prior:row});
+    return {...result,state:typeof result.price_change_pct==='number'&&typeof result.oi_change_pct==='number'?stageState(result.price_change_pct,result.oi_change_pct):'insufficient'};
+  }
   if (!row) {
     return {
       available: false,
@@ -4832,6 +4867,33 @@ async function persistStage0(
     };
   }
 }async function htxUniverseScan(params, env, options = {}) {
+  const requestedVenue=params?.venue??params?.instrument_identity?.venue??null;
+  const configuredVenue=env?.REPORT2_PRIMARY_VENUE??null;
+  const venue=requestedVenue??configuredVenue??'HTX';
+  const needsBingx=venue==='BINGX'||configuredVenue==='BINGX'||params?.instrument_identity?.venue==='BINGX';
+  if(needsBingx||venue!=='HTX'){
+    const unavailable=(detail)=>({execution_status:'PARTIAL',status:'NOT_CLOSED',reason:'BINGX_PRIMARY_NOT_CONNECTED',detail,venue:needsBingx?'BINGX':venue,actual_crypto_contract_count:null,contracts:[],native_admission:false,score_allowed:false,entry_allowed:false,
+      data:{venue:needsBingx?'BINGX':venue,actual_crypto_contract_count:null,contracts:[],native_admission:false,primary_qualified:false,consumer_ready:false,score_allowed:false,entry_allowed:false}});
+    if(venue!=='BINGX'||configuredVenue!==null&&configuredVenue!=='BINGX')return unavailable('PRIMARY_VENUE_CONFLICT_OR_UNSUPPORTED');
+    const reader=Object.hasOwn(params??{},'_bingx_universe_reader')&&typeof params._bingx_universe_reader==='function'?params._bingx_universe_reader:typeof env?._bingx_universe_reader==='function'?env._bingx_universe_reader:null;
+    if(reader===null)return unavailable('INTERNAL_COMPLETED_UNIVERSE_READER_REQUIRED');
+    // Existing B04 descriptor must come from ROOT env, never from the returned component.
+    const binding=env?.REPORT2_BINGX_HISTORY_BINDING;
+    if(!binding||binding.expected?.venue!=='BINGX'||typeof binding.expected.actor!=='string'||binding.expected.schema_version!=='report2-market-snapshot-batch-v1'||typeof binding.current?.registry_json!=='string'||binding.current.registry_json.length>2097152||!/^([a-f0-9]{64})$/.test(String(binding.current.expected_sha256)))return unavailable('ROOT_EXPECTED_REGISTRY_BINDING_REQUIRED');
+    try{
+      const expectedBinding=structuredClone(binding),expectedDigest=expectedBinding.current.expected_sha256,expectedActor=expectedBinding.expected.actor;
+      const registryBytes=new TextEncoder().encode(expectedBinding.current.registry_json);
+      if(registryBytes.byteLength>2097152)return unavailable('ROOT_EXPECTED_REGISTRY_BODY_LIMIT');
+      const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',registryBytes)),x=>x.toString(16).padStart(2,'0')).join('');
+      if(digest!==expectedDigest)return unavailable('ROOT_EXPECTED_REGISTRY_DIGEST_MISMATCH');
+      const registry=JSON.parse(expectedBinding.current.registry_json);
+      if(registry.schema!=='BINGX_HISTORY_REGISTRY_V1'||registry.venue!=='BINGX'||registry.actor!==expectedActor||registry.snapshot_schema!==expectedBinding.expected.schema_version||!Array.isArray(registry.instruments)||registry.instruments.length>20000)return unavailable('ROOT_EXPECTED_REGISTRY_SHAPE_REQUIRED');
+      const expectedIdentities=new Set(registry.instruments.map(x=>JSON.stringify(x.instrument_identity)));
+      const value=await reader({venue:'BINGX',expected_registry_binding:structuredClone(expectedBinding)});
+      if(value?.execution_status!=='PARTIAL'||value.status!=='NOT_CLOSED'||value.data?.venue!=='BINGX'||value.data.registry_sha256!==expectedDigest||value.data.actor!==expectedActor||!Array.isArray(value.data.contracts)||value.data.contracts.length>20000||!value.data.contracts.every(x=>x?.venue==='BINGX'&&x.contract===x.instrument_identity?.native_symbol&&expectedIdentities.has(JSON.stringify(x.instrument_identity)))||!['native_admission','primary_qualified','consumer_ready','score_allowed','entry_allowed'].every(k=>value.data[k]===false)||value.native_admission!==false||value.score_allowed!==false||value.entry_allowed!==false)return unavailable('COMPLETED_UNIVERSE_NOT_BOUND_OR_GRANT_UPLIFT');
+      return value; // ROOT-authenticated completed rows only; never generate current clocks or IO.
+    }catch{return unavailable('COMPLETED_UNIVERSE_READER_FAILED_NO_FALLBACK');}
+  }
   const now = Date.now();
 
   const freshnessSec = Math.round(
@@ -5043,8 +5105,9 @@ async function persistStage0(
               history.targets?.[
                 "5m"
               ]?.get(
-                key
-              )
+                current?.venue==='BINGX'?current.instrument_ref:key
+              ),
+              {context:history.context,window:"5m",now_ts:now}
             ),
 
           "15m":
@@ -5053,8 +5116,9 @@ async function persistStage0(
               history.targets?.[
                 "15m"
               ]?.get(
-                key
-              )
+                current?.venue==='BINGX'?current.instrument_ref:key
+              ),
+              {context:history.context,window:"15m",now_ts:now}
             ),
 
           "1h":
@@ -5063,8 +5127,9 @@ async function persistStage0(
               history.targets?.[
                 "1h"
               ]?.get(
-                key
-              )
+                current?.venue==='BINGX'?current.instrument_ref:key
+              ),
+              {context:history.context,window:"1h",now_ts:now}
             ),
 
           "4h":
@@ -5073,8 +5138,9 @@ async function persistStage0(
               history.targets?.[
                 "4h"
               ]?.get(
-                key
-              )
+                current?.venue==='BINGX'?current.instrument_ref:key
+              ),
+              {context:history.context,window:"4h",now_ts:now}
             ),
 
           "24h":
@@ -5083,8 +5149,9 @@ async function persistStage0(
               history.targets?.[
                 "24h"
               ]?.get(
-                key
-              )
+                current?.venue==='BINGX'?current.instrument_ref:key
+              ),
+              {context:history.context,window:"24h",now_ts:now}
             ),
         };
 
@@ -9510,6 +9577,9 @@ async function htxStage0History(
   params,
   env
 ) {
+  if(params?.venue==='BINGX'||params?.instrument_identity?.venue==='BINGX'){
+    return readMarketHistoryForContract({db:env?.DATA_DB,contract:params?.contract??params?.contract_code,now_ts:Date.now(),hours:clamp(params?.hours,0.25,168,6),venue:'BINGX',instrument_identity:params?.instrument_identity??null,root_history_binding:env?.REPORT2_BINGX_HISTORY_BINDING??null,whole_history_result:env?.REPORT2_BINGX_CURRENT_HISTORY_RESULT??null,history_reuse_key:env?.REPORT2_BINGX_HISTORY_READ_KEY??null,allow_bounded_read:env?.REPORT2_BINGX_ALLOW_BOUNDED_HISTORY_READ===true,history_purpose:params?.history_purpose??null});
+  }
   return readMarketHistoryForContract({
     db: env?.DATA_DB,
     contract: normalizeFuturesContract(params?.contract || params?.contract_code || 'ETHFI-USDT'),
@@ -9517,6 +9587,8 @@ async function htxStage0History(
     now_ts: Date.now(),
     actor: 'HUB_PUBLIC_COLLECTOR',
     preferred_generation: env?.REPORT2_CURRENT_GENERATION || null,
+    venue:params?.venue??params?.instrument_identity?.venue??'HTX',
+    instrument_identity:params?.instrument_identity??null,
   });
 }
 
@@ -16013,22 +16085,50 @@ const LIQUIDATION_INTELLIGENCE_API = (() => {
 })();
 
 async function buildDeepCheckInput(params, env) {
+  // BINGX_PRIMARY_DEEP_BOUNDARY_START
+  if(env?.REPORT2_PRIMARY_VENUE==='BINGX'||params?.venue==='BINGX'||params?.instrument_identity?.venue==='BINGX'){
+    const requested=params?.contract??params?.contract_code??params?.symbol;
+    const contract=typeof requested==='string'&&requested===requested.trim()?requested:null;
+    const boundary={tool:'deep_check_input',venue:'BINGX',contract,status:'NOT_CLOSED',entry_authorized:false,primary_native_admission:false,legacy_fallback_enabled:false,history_proposal_persisted:false};
+    if(!contract)return {...boundary,reason:'BINGX_EXACT_CONTRACT_REQUIRED'};
+    let context,expectedIdentity,instrumentRef;
+    try{
+      const binding=env?.REPORT2_BINGX_HISTORY_BINDING;
+      context=bindBingxHistoryRegistry(binding);
+      const entries=JSON.parse(binding.current.registry_json).instruments.filter(entry=>entry.instrument_identity.native_symbol===contract);
+      if(entries.length!==1)throw Error('BINGX_EXACT_ROOT_REGISTRY_MEMBER_REQUIRED');
+      expectedIdentity=structuredClone(entries[0].instrument_identity);
+      instrumentRef=resolveBingxExpectedHistoryRef({context,expected_identity:expectedIdentity});
+    }catch(error){return {...boundary,reason:'BINGX_RESEARCH_BINDING_REQUIRED',binding_error:String(error?.message??error).slice(0,160)};}
+    const source=await futuresSnapshot({contract,venue:'BINGX',instrument_identity:expectedIdentity,_bingx_snapshot_reader:env?._bingx_snapshot_reader},env);
+    const decisionTs=Date.now();
+    const lastOrigins=Array.isArray(source?.data?.component_origins)?source.data.component_origins.filter(origin=>origin?.kind==='last'):[];
+    const lastOrigin=lastOrigins.length===1&&lastOrigins[0].source_ts===source?.data?.last_price_source_ts?lastOrigins[0]:null;
+    const bingxObservationReferencePrice=buildHtxReferencePrice({contract,venue:'BINGX',type:'LAST_OBSERVATION',value:Number(source?.data?.last_price),source_ts:source?.data?.last_price_source_ts,received_ts:lastOrigin?.received_ts??null,decision_ts:decisionTs,maximum_age_ms:300000,instrument_identity:source?.data?.instrument_identity??null,expected_instrument_identity:expectedIdentity});
+    let historyProposal=null,historyError=null;
+    try{historyProposal=produceBingxHistoryRow({observation:source,context,instrument_ref:instrumentRef,processed_ts:decisionTs});}
+    catch(error){historyError=String(error?.message??error).slice(0,160);}
+    return {...boundary,reason:'BINGX_FULL_DEEP_NOT_CONNECTED',futures_snapshot:source,observation_reference_price:bingxObservationReferencePrice,history_proposal:historyProposal,history_proposal_error:historyError,missing_chain:['NATIVE_PROVIDER_PARENT_ADMISSION','CURRENT_FULL_CRYPTO_REGISTRY','STRATEGY_CLOSED_CANDLES_AND_SIGNED_FLOW','EXECUTABLE_BOOK_AND_NATIVE_UNITS','CONNECTED_CURRENT_REPORT_ACCEPTANCE']};
+  }
+  // BINGX_PRIMARY_DEEP_BOUNDARY_END
   const cycleStartedTs = Date.now();
   let now = cycleStartedTs;
   const sharedFetch = createPerDeepCheckFetchCache();
 
-  const contract =
-    normalizeFuturesContract(
-      params?.contract ||
-      params?.contract_code ||
-      params?.symbol ||
-      "ETHFI-USDT"
-    );
+  const snapshotVenue=params?.venue??params?.instrument_identity?.venue??env?.REPORT2_PRIMARY_VENUE??'HTX';
+  const contract = snapshotVenue==='BINGX'||env?.REPORT2_PRIMARY_VENUE==='BINGX'
+    ? (params?.contract??params?.contract_code??params?.symbol??null)
+    : normalizeFuturesContract(params?.contract||params?.contract_code||params?.symbol||'ETHFI-USDT');
 
   if(approvedHtxLimitedReportAdmitted(env?.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT)&&env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT.limited_report.unknown_contracts.some(row=>row.contract===contract))return{tool:'deep_check_input',contract,status:'NOT_CLOSED',data_sufficiency:'INSUFFICIENT',reason:'CURRENT_NATIVE_CATALOG_RECORD_UNKNOWN',entry_authorized:false};
 
   const futuresParams = {
     contract,
+    contract_code:params?.contract_code,
+    symbol:params?.symbol,
+    venue:snapshotVenue,
+    instrument_identity:params?.instrument_identity??null,
+    _bingx_snapshot_reader:typeof env?._bingx_snapshot_reader==='function'?env._bingx_snapshot_reader:null,
     notional_usdt: 1000,
     execution_notional_usdt: 500,
     trades: 2000,
@@ -16061,7 +16161,7 @@ async function buildDeepCheckInput(params, env) {
 
   const results =
     await Promise.allSettled([
-      futuresSnapshot(futuresParams),
+      futuresSnapshot(futuresParams, env),
       approvedHtxAnalysisAssetForContract(contract) ? spotSnapshot(spotParams) : Promise.resolve(null),
       futuresTrajectory(trajectoryParams),
       htxStage0History(
@@ -16076,6 +16176,7 @@ async function buildDeepCheckInput(params, env) {
 
   function settled(result) {
     if (result.status === "fulfilled") {
+      if(result.value?.data?.venue==='BINGX')return result.value; // Preserve typed PARTIAL, source clocks and NO_GRANT.
       return {
         available_ts: componentsAvailableTs,
         execution_status: "FULFILLED",
@@ -16100,6 +16201,9 @@ async function buildDeepCheckInput(params, env) {
 
   const htxObservationReferencePrice = buildHtxReferencePrice({
     contract,
+    venue:futures?.data?.venue??futures?.data?.instrument_identity?.venue??'HTX',
+    instrument_identity:futures?.data?.instrument_identity??null,
+    expected_instrument_identity:params?.instrument_identity??null,
     type: 'MID_OBSERVATION',
     bid: futures?.data?.bbo?.best_bid,
     ask: futures?.data?.bbo?.best_ask,
@@ -17270,7 +17374,7 @@ async function buildDeepCheckInput(params, env) {
   const globalInternalContext=contextForContract(env?.REPORT2_GLOBAL_MARKET_CONTEXT || null,contract);
   const finalRouteState=String(finalDecisionPublicationShadow?.entry_signal?.state||''),finalRouteDirection=String(finalDecisionPublicationShadow?.entry_signal?.direction||'').toUpperCase();
   const htxReferencePrice=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState)&&['LONG','SHORT'].includes(finalRouteDirection)
-    ?buildHtxReferencePrice({contract,type:finalRouteDirection==='LONG'?'EXECUTABLE_ASK':'EXECUTABLE_BID',bid:futures?.data?.bbo?.best_bid,ask:futures?.data?.bbo?.best_ask,source_ts:htxObservationReferencePrice?.source_ts,received_ts:htxObservationReferencePrice?.received_ts})
+    ?buildHtxReferencePrice({contract,venue:futures?.data?.venue??futures?.data?.instrument_identity?.venue??'HTX',instrument_identity:futures?.data?.instrument_identity??null,expected_instrument_identity:params?.instrument_identity??null,type:finalRouteDirection==='LONG'?'EXECUTABLE_ASK':'EXECUTABLE_BID',bid:futures?.data?.bbo?.best_bid,ask:futures?.data?.bbo?.best_ask,source_ts:htxObservationReferencePrice?.source_ts,received_ts:htxObservationReferencePrice?.received_ts})
     :htxObservationReferencePrice;
   const directionCandidate=normalizeDirectionCandidate(params?.discovery_row?.discovery_direction_hint??params?.discovery_row?.early_candidate_direction_hint??params?.discovery_row?.direction_hint,{origin:'DISCOVERY',source_ts:params?.discovery_row?.snapshot_ts??params?.discovery_row?.observed_ts??params?.discovery_row?.source_ts??params?.discovery_row?.scan_ts,confirmation_state:'DISCOVERY_ONLY'});
   const entryDirectionAuthorization=authorizeEntryDirection({candidate:directionCandidate,final_route_state:finalRouteState,final_direction:finalRouteDirection,hard_veto:finalDecisionPublicationShadow?.entry_signal?.hard_veto===true});
@@ -17280,7 +17384,7 @@ async function buildDeepCheckInput(params, env) {
   const routedExecutionHandoff=entryState&&executionHandoff.ok===true
     ?checkExecutionHandoff(sealedFullEvidenceProof?.bundle?.execution_gate,{contract_code:contract,checked_ts:Date.now(),direction:finalRouteDirection})
     :executionHandoff;
-  const htxExecutionReceipt=buildHtxExecutionReceipt({component:{execution_status:routedExecutionHandoff?.ok===true?'SUCCESS':routedExecutionHandoff?.status,reason:routedExecutionHandoff?.reason},reference_price:htxReferencePrice});
+  const htxExecutionReceipt=buildHtxExecutionReceipt({component:{execution_status:routedExecutionHandoff?.ok===true?'SUCCESS':routedExecutionHandoff?.status,reason:routedExecutionHandoff?.reason,venue:routedExecutionHandoff?.venue??null,instrument_identity:routedExecutionHandoff?.instrument_identity??null},reference_price:htxReferencePrice,expected_instrument_identity:params?.instrument_identity??null});
   const strictRouteState=entryState&&(entryDirectionAuthorization.authorized!==true||htxExecutionReceipt.status!=='CLOSED')?'REJECTED':finalRouteState;
   const canonicalPublicationShadow={...finalDecisionPublicationShadow,entry_signal:{...(finalDecisionPublicationShadow?.entry_signal||{}),state:strictRouteState,direction:entryState?(entryDirectionAuthorization.authorized?entryDirectionAuthorization.direction:null):finalDecisionPublicationShadow?.entry_signal?.direction}};
   const canonicalDiscoveryRow=params?.discovery_row?{...params.discovery_row,current_price:htxReferencePrice.status==='CLOSED'?htxReferencePrice.value:null,early_candidate_direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction,direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction}:null;
@@ -19125,7 +19229,8 @@ const __REPORT2_ORIGINAL_HANDLER = {
 
       const output =
         await futuresSnapshot(
-          params
+          {...params,venue:params?.venue??params?.instrument_identity?.venue??env?.REPORT2_PRIMARY_VENUE??'HTX',instrument_identity:params?.instrument_identity??null,_bingx_snapshot_reader:typeof env?._bingx_snapshot_reader==='function'?env._bingx_snapshot_reader:null},
+          env
         );
 
       return jsonResponse(
@@ -20460,6 +20565,7 @@ export {
   loadHistoryTargets as loadStage0HistoryTargetsForTest,
   htxStage0History as htxStage0HistoryForTest,
   futuresSnapshot as futuresSnapshotForTest,
+  buildDeepCheckInput as buildDeepCheckInputForTest,
   spotSnapshot as spotSnapshotForTest,
   refreshHtxExecutionQuoteIfNeeded as refreshHtxExecutionQuoteIfNeededForTest,
   createPerDeepCheckFetchCache as createPerDeepCheckFetchCacheForTest,

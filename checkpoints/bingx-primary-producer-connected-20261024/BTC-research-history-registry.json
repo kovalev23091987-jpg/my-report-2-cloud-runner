@@ -1,0 +1,70 @@
+{
+  "schema": "BINGX_HISTORY_REGISTRY_V1",
+  "venue": "BINGX",
+  "actor": "REPORT2_BINGX_PUBLIC_RESEARCH",
+  "snapshot_schema": "report2-market-snapshot-batch-v1",
+  "row_schema": "BINGX_NATIVE_METRICS_ROW_V1",
+  "registry_revision": "BTC_USDT_RESEARCH_ONLY_COHORT_V1",
+  "registry_scope": "ONE_IDENTIFIED_RESEARCH_MEMBER_NOT_FULL_BINGX_TARGET",
+  "instruments": [
+    {
+      "instrument_identity": {
+        "schema": "BINGX_CRYPTO_PERPETUAL_INSTRUMENT_V1",
+        "venue": "BINGX",
+        "market": "FUTURES",
+        "product": "PERPETUAL",
+        "family": "USDT_M",
+        "contract": "BTC-USDT",
+        "native_symbol": "BTC-USDT",
+        "native_contract_id": "100",
+        "base": "BTC",
+        "quote": "USDT",
+        "settle": "USDT",
+        "margin": "USDT",
+        "linear_inverse": "LINEAR",
+        "quantity_unit": null,
+        "contract_size_decimal": null,
+        "contract_size_unit": null,
+        "price_unit": "QUOTE_PER_NATIVE_BASE",
+        "identity_revision": "BINGX_NATIVE100_BTC_USDT_PRICEONLY_V1",
+        "crypto_eligibility": "VERIFIED_CRYPTO_PERPETUAL",
+        "underlying_class": "CRYPTO_ASSET",
+        "crypto_eligibility_proof_ref": "ROOT_BTC_NATIVE100_BITCOIN_CURATED_V1",
+        "catalog_payload_sha256": "17e283eabf3c6bda448052b3925a8df4b52533990f698e92a1fca9138a0806ff",
+        "token_multiplier_decimal": null,
+        "asset_binding": {
+          "status": "VENUE_SCOPED",
+          "canonical_asset_id": null,
+          "chain_id": null,
+          "token_address": null,
+          "token_epoch": null,
+          "proof_ref": "ROOT_BTC_NATIVE100_BITCOIN_CURATED_V1"
+        }
+      },
+      "unit_revision": "NATIVE_PRICE_ONLY_OTHER_UNITS_UNKNOWN_V1",
+      "metric_specs": {
+        "price": {
+          "unit": "QUOTE_PER_NATIVE_BASE",
+          "basis": "LAST"
+        },
+        "oi": {
+          "unit": null,
+          "basis": "NATIVE_OPEN_INTEREST"
+        },
+        "turnover_24h": {
+          "unit": null,
+          "basis": "PROVIDER_ROLLING_24H"
+        },
+        "funding_rate": {
+          "unit": "RATE_PER_ACTUAL_PERIOD",
+          "basis": "NATIVE_FUNDING_RATE"
+        }
+      }
+    }
+  ],
+  "native_authenticated": false,
+  "native_provider_admission": false,
+  "current_production_registry": false,
+  "research_backfill_not_first_knowledge": true,
+  "global_crypto_target_N": null
+}
