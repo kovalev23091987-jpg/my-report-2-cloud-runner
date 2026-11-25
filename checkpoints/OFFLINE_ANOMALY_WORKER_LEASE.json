@@ -1,15 +1,15 @@
 {
   "schema": "PUMP_REPORT_ANALYTICS_OFFLINE_BOUNDED_V1",
+  "status": "OWNED",
+  "released": false,
+  "owner": "CODEX:OFFLINE_ANOMALIES:1795623161240",
   "thread_id": "01a1de6f-2d6f-7953-af96-c0860e1d493b",
+  "acquired_ts": 1795623161240,
+  "expires_ts": 1795624541240,
+  "working_deadline_ts": 1795623821240,
+  "planned_release_start_ts": 1795623881240,
+  "FULL_release_hard_deadline_ts": 1795623941240,
   "minimum_FULL_margin_ms": 600000,
-  "status": "RELEASED",
-  "released": true,
-  "owner": "CODEX:OFFLINE_ANOMALIES:1795622914006",
-  "acquired_ts": 1795622914006,
-  "expires_ts": 1795624414006,
-  "working_deadline_ts": 1795623694006,
-  "planned_release_start_ts": 1795623754006,
-  "FULL_release_hard_deadline_ts": 1795623814006,
   "expected_main": "315fa7de283d97f5731f2c2003895d25011ad6a3",
   "coordinator_owner": "CODEX:PUMP_UNIFIED_TZ_D_E3_20261125:1795619732189",
   "coordinator_expires_ts": 1795624832189,
@@ -49,19 +49,14 @@
       "expired": true
     },
     "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
-    "validated_at_ts": 1795622914006
+    "validated_at_ts": 1795623161240
   },
+  "previous_own_release": "a8ae00a5ae2740c4dba644f4bb37034d2aedc47b",
   "scope": {
     "prefix": "pump-report/handoffs/analytics/B_PLAN_GEOMETRY_20261125_V1/",
-    "task": "Direct ROOT follow-ups implementing owner approved Nov 25 spec §14. Qualify local ANA code and tests for E2, C2/C3, F/109 compatibility and separated F path counters, using existing bound archival and explicitly synthetic inputs. Only own ANA private stage and handoff. No native market, working SQL, Telegram, deployments, automations or source/ROOT shared edits.",
+    "task": "Direct ROOT follow-up on H4 and G1/G3 registration under owner accepted Nov 25 spec. Private replay H4 exact isolated formula and OI bounds, one local affected check, G1/G3 shadow preregistration without strategy change. Only ANA-owned files and private stage. No market/provider IO, working SQL, Telegram, deployment, external messaging, or changes to shared files.",
     "tests_imports_Node_allowed": true,
     "actual_IO_allowed": false,
     "owner_spec_sha256": "7c3cbb4733a77624dfd5e434a47ff749cd4a683983c6a37e17b266d3d4f4f7ac"
-  },
-  "previous_own_release": "d8232e28516309db609bd6e6b6f4987429cf6766",
-  "released_ts": 1795623030064,
-  "release_fresh_main": "315fa7de283d97f5731f2c2003895d25011ad6a3",
-  "native_io": 0,
-  "patch_manifest_sha256": "c49ef1c1a7c5984201d5fe0434408ffb12b002924b6660839347a49eaa0e3272",
-  "release_reason": "Private follow-up qualification completed. E2, C2, C3, F, pinned 109 adapter and F path counter results handed off locally."
+  }
 }
