@@ -1,25 +1,18 @@
 {
   "schema": "PUMP_REPORT_ANALYTICS_OFFLINE_BOUNDED_V1",
-  "status": "RELEASED",
-  "released": true,
-  "owner": "CODEX:OFFLINE_ANOMALIES:1795619836781",
   "thread_id": "01a1de6f-2d6f-7953-af96-c0860e1d493b",
-  "acquired_ts": 1795619836781,
-  "expires_ts": 1795624636781,
-  "working_deadline_ts": 1795623916781,
-  "planned_release_start_ts": 1795623976781,
-  "FULL_release_hard_deadline_ts": 1795624036781,
   "minimum_FULL_margin_ms": 600000,
+  "status": "OWNED",
+  "released": false,
+  "owner": "CODEX:OFFLINE_ANOMALIES:1795622914006",
+  "acquired_ts": 1795622914006,
+  "expires_ts": 1795624414006,
+  "working_deadline_ts": 1795623694006,
+  "planned_release_start_ts": 1795623754006,
+  "FULL_release_hard_deadline_ts": 1795623814006,
   "expected_main": "315fa7de283d97f5731f2c2003895d25011ad6a3",
   "coordinator_owner": "CODEX:PUMP_UNIFIED_TZ_D_E3_20261125:1795619732189",
   "coordinator_expires_ts": 1795624832189,
-  "scope": {
-    "prefix": "pump-report/handoffs/analytics/B_PLAN_GEOMETRY_20261125_V1/",
-    "task": "Owner specification accepted 25 Nov, section 14: ANA B1 and B3 first, then B2 and B4 only. Compare exact B105 and archived/synthetic inputs; own ANA code/tests and private stage; no shared edits, external data, native SQL, Telegram, automation or deployment.",
-    "tests_imports_Node_allowed": true,
-    "actual_IO_allowed": false,
-    "owner_spec_sha256": "7c3cbb4733a77624dfd5e434a47ff749cd4a683983c6a37e17b266d3d4f4f7ac"
-  },
   "fresh_authority": {
     "main": "315fa7de283d97f5731f2c2003895d25011ad6a3",
     "required_24_named_blobs": {
@@ -55,11 +48,15 @@
       "commit": "1910f7eabc9ae567e5fa010ac6ed9c1d3dc2960b",
       "expired": true
     },
-    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "validated_at_ts": 1795622914006
   },
-  "previous_own_release": "be811a934e6f777d2421701bb4ff44df0375eda2",
-  "released_ts": 1795622878977,
-  "release_fresh_main": "315fa7de283d97f5731f2c2003895d25011ad6a3",
-  "release_reason": "B1/B3/B2/B4 packet fully handed off. Release this narrower scope before separate follow-up qualification.",
-  "native_io": 0
+  "scope": {
+    "prefix": "pump-report/handoffs/analytics/B_PLAN_GEOMETRY_20261125_V1/",
+    "task": "Direct ROOT follow-ups implementing owner approved Nov 25 spec §14. Qualify local ANA code and tests for E2, C2/C3, F/109 compatibility and separated F path counters, using existing bound archival and explicitly synthetic inputs. Only own ANA private stage and handoff. No native market, working SQL, Telegram, deployments, automations or source/ROOT shared edits.",
+    "tests_imports_Node_allowed": true,
+    "actual_IO_allowed": false,
+    "owner_spec_sha256": "7c3cbb4733a77624dfd5e434a47ff749cd4a683983c6a37e17b266d3d4f4f7ac"
+  },
+  "previous_own_release": "d8232e28516309db609bd6e6b6f4987429cf6766"
 }
