@@ -1,20 +1,18 @@
 {
   "schema": "PUMP_REPORT_ANALYTICS_OFFLINE_BOUNDED_V1",
-  "status": "RELEASED",
-  "released": true,
-  "owner": "CODEX:OFFLINE_ANOMALIES:1795623161240",
   "thread_id": "01a1de6f-2d6f-7953-af96-c0860e1d493b",
-  "acquired_ts": 1795623161240,
-  "expires_ts": 1795624541240,
-  "working_deadline_ts": 1795623821240,
-  "planned_release_start_ts": 1795623881240,
-  "FULL_release_hard_deadline_ts": 1795623941240,
+  "owner": "CODEX:OFFLINE_ANOMALIES:1795625987332",
+  "status": "OWNED",
+  "released": false,
+  "acquired_ts": 1795625987332,
+  "expires_ts": 1795628087332,
+  "working_deadline_ts": 1795627367332,
+  "FULL_release_hard_deadline_ts": 1795627487332,
   "minimum_FULL_margin_ms": 600000,
-  "expected_main": "315fa7de283d97f5731f2c2003895d25011ad6a3",
-  "coordinator_owner": "CODEX:PUMP_UNIFIED_TZ_D_E3_20261125:1795619732189",
-  "coordinator_expires_ts": 1795624832189,
+  "expected_main": "73f13c8fc3ce2b73fc5ea9dfdc9b03c332759a89",
+  "previous_own_release": "a9937c613ab1d9454fc9d20e1ac4b36faeb9aac2",
   "fresh_authority": {
-    "main": "315fa7de283d97f5731f2c2003895d25011ad6a3",
+    "main": "73f13c8fc3ce2b73fc5ea9dfdc9b03c332759a89",
     "required_24_named_blobs": {
       "AGENTS.md": "a073956a9ca68b30207670583252f6842197f5a0",
       "MY_REPORT_2_STARTUP_CONTRACT.md": "d6c2d62f3830fec1eab290fab177d7077ff7f02f",
@@ -22,13 +20,13 @@
       "pump-report/AGENTS.md": "b40651e68f6e8e4827cf8664ed129a8222380dcc",
       "pump-report/CONTRACT_RU.md": "ee07ed10ae10032674fd6953c2da8d3a0b554619",
       "checkpoints/ACTIVE_WORKING_WINDOW_20261012.json": "d01559b212f302be54206010de6476336fb7ffe3",
-      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "9e4ef3f86bfb74045ffc1f115f2b78c80a2c024b",
-      "checkpoints/CURRENT_PROJECT_STATUS.json": "60614682486e8979b5a857f45cdea616af9f07f7",
-      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "486e01cd49e14527413de96e3bdd7fe3921cfec3",
-      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "b3bac557aa2c6bbb06077787c0614ed39f5fc6b4",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json": "ad91882bd49e5190efe317de629f75b6134a2d22",
+      "checkpoints/CURRENT_PROJECT_STATUS.json": "2bba652adcd3bedcf531c9adca9c35a7b076f6bd",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json": "c60ecde0b95bc863b5f2ec8796e2c368ef9eda3c",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json": "2d108d9060150e3d5e429e82756ea622fc2247dc",
       "checkpoints/PUMP_REPORT_OWNER_RESUME_20261025.json": "5f3793840e45606e7905094dd3f33fddf311977b",
       "checkpoints/REPORT2_OWNER_PAUSED_RESUME_HANDOFF_20261024.json": "e6a167a88084b7c2f1bc1238d1f2b8d3ad1e6f91",
-      "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "203f90e5eb141f9ece82c45587ecf007fe323fa8",
+      "checkpoints/pump-report-20261025/COORDINATOR_PROGRESS.json": "9064cb4eb1c36211b24cf4a650fc0160453d59db",
       "checkpoints/pump-report-20261025/OWNER_NO_MARKET_COMPARISON.json": "96f5022f74e45eefc056628aaf0d95df13426894",
       "checkpoints/pump-report-20261025/OWNER_UNIFIED_LAUNCH_AND_SOURCES_AMENDMENTS.json": "7500f72e1610fbe5b5ecd2db764dc5b5850d95fb",
       "checkpoints/pump-report-20261025/PUMP_REPORT_UNIFIED_WORKING_SPEC_RU.md": "c3b2e866c59f901959dd4fd57a790c3a5f001923",
@@ -41,7 +39,6 @@
       "checkpoints/pump-report-20261025/ROOT_SEED_WINDOW_CONNECTED_CASE_V1_REPAIR.json": "9470a8575d5fd2b260c6802e1e184b8750ca3787",
       "audit-fixes/source-optimization-20260930/execution-lock.json": "b7cfec4353c9cde30c1f836a5330d433203f9421"
     },
-    "other_window_blobs": {},
     "all4_equal": true,
     "fence_inactive": true,
     "separate_legacy_fence": {
@@ -49,19 +46,15 @@
       "expired": true
     },
     "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
-    "validated_at_ts": 1795623161240
+    "coordinator_scope_released": false,
+    "coordinator_owner": "CODEX:PUMP_TZ_WORKING_RELEASE_20261125:1795625837700",
+    "readback_ts": 1795625987332
   },
-  "previous_own_release": "a8ae00a5ae2740c4dba644f4bb37034d2aedc47b",
   "scope": {
     "prefix": "pump-report/handoffs/analytics/B_PLAN_GEOMETRY_20261125_V1/",
-    "task": "Direct ROOT follow-up on H4 and G1/G3 registration under owner accepted Nov 25 spec. Private replay H4 exact isolated formula and OI bounds, one local affected check, G1/G3 shadow preregistration without strategy change. Only ANA-owned files and private stage. No market/provider IO, working SQL, Telegram, deployment, external messaging, or changes to shared files.",
-    "tests_imports_Node_allowed": true,
+    "task": "Direct owner continue instruction and ROOT assignment: independent local structural origin readback comparison for exact Release1 price V2 and A105 exact decimal reader. Old and new retained origins, one affected test and private artifact/handoff if needed. No shared file mutations, market/provider HTTP, SQL, Telegram, installation or automation.",
+    "owner_spec_sha256": "7c3cbb4733a77624dfd5e434a47ff749cd4a683983c6a37e17b266d3d4f4f7ac",
     "actual_IO_allowed": false,
-    "owner_spec_sha256": "7c3cbb4733a77624dfd5e434a47ff749cd4a683983c6a37e17b266d3d4f4f7ac"
-  },
-  "released_ts": 1795623486414,
-  "release_fresh_main": "315fa7de283d97f5731f2c2003895d25011ad6a3",
-  "native_io": 0,
-  "release_reason": "Completed local H4 research patch/affected qualification and G1/G3 independent F cohort registration.",
-  "patch_manifest_sha256": "caba7ebafc535415f48c73f2c1e63d5c9ffc712ad75c6732432a13d4a34189d6"
+    "tests_imports_Node_allowed": true
+  }
 }
