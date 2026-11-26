@@ -3174,15 +3174,15 @@
   "automatic_operational_source_priority_authorized": true,
   "automatic_source_priority_does_not_change_strategy_weights": true,
   "last_owned_lease_released": {
-    "owner": "CODEX:PUMP_TZ_DAY_ACTUAL_20261126:1795712985922",
-    "acquired_ts": 1795712985922,
-    "expires_ts": 1795718325922,
-    "expected_main": "4032c64da975f871423feaa8fdeaf1491904fbdf",
+    "owner": "CODEX:PUMP_TZ_DAY_RECEIPT_IDENTITY_20261126:1795713202671",
+    "acquired_ts": 1795713202671,
+    "expires_ts": 1795718542671,
+    "expected_main": "91dec43c76f2ca5e90120f389fa20b74dc931bb2",
     "released": true,
     "status": "RELEASED",
-    "scope": "Exact full-day accounting for 26 November. One bounded SQL SELECT after positive current controls. No other operational IO.",
-    "released_ts": 1795713138316,
-    "released_utc": "2026-11-26T17:12:18.316259+00:00"
+    "scope": "Offline preparation and one exact read-only targeted D1 SELECT after live control and native limits, maximum 300 rows, no market, Telegram, deploy or operational writes.",
+    "released_ts": 1795713500705,
+    "released_utc": "2026-11-26T17:18:20.705838+00:00"
   },
   "one_market_fallback_rule": "For an asset without HTX spot, retain qualified HTX futures only as limited information; never fabricate spot or cross-market agreement. For HTX spot with failed quote, omit spot metric. N11 remains futures-only.",
   "spot_futures_original_clock_max_pair_skew_ms": 630000,
@@ -3278,10 +3278,10 @@
     "whole_day_unverified": true
   },
   "owner_deferred_106_asset": true,
-  "next_action": "Confirm unique dated Telegram receipts and the exact native failure codes. No retry or mutation of Telegram.",
+  "next_action": "Use the five identified exact run keys only to compare the saved receipt format and explain the gaps. No repeat day sweep.",
   "owned_lease": "CODEX:PUMP_TZ_DAY_RECEIPT_IDENTITY_20261126:1795713202671",
   "owned_lease_expires_ts": 1795718542671,
-  "lease_released": false,
+  "lease_released": true,
   "project_complete": false,
   "all_blocks_complete": false,
   "PR386_merged": true,
@@ -4562,7 +4562,7 @@
     "format_activated": false,
     "nominal_row_deficit_solved": false
   },
-  "own_lease_released_utc": "2026-11-26T17:12:18.316259+00:00",
+  "own_lease_released_utc": "2026-11-26T17:18:20.705838+00:00",
   "PR413_to415_current": {
     "PRs": [
       413,
@@ -12284,7 +12284,7 @@
     "status": "OFFLINE_PREPARATION_ONLY",
     "live_code_preserved": true
   },
-  "current_task": "TZ EXACT AUTO READY AND TELEGRAM RECEIPT RECONCILIATION",
+  "current_task": "TZ ACTUAL TELEGRAM DAY ACK PARTIAL CONFIRMATION",
   "previous_own_expiry_preserved": {
     "owner": "CODEX:PUMP_EXISTING_SOURCE_MONTH_AND_CURRENT_CHAIN_20261103:1793704480353",
     "expired_ts": 1793709580353,
