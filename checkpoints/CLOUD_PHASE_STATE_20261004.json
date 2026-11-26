@@ -329,19 +329,17 @@
     }
   ],
   "lease": {
-  "owner": "CODEX:PUMP_TZ_BOUNDED_DAY_TECHNICAL_20261126:1795699201006",
-  "acquired_ts": 1795699201006,
-  "expires_ts": 1795704541006,
-  "expected_main": "aab4e1660abb3af403125a726ab194c615ab9647",
-  "released": true,
-  "status": "RELEASED",
-  "scope": "Offline changes to existing private §11/12/13 accounting only, current runner shapes and local Workerd replay. No production D1, actual day opening before 20:00, market, Telegram, production settings or deployment. Existing one-read resource limits preserved.",
-  "released_ts": 1795699469718,
-  "released_utc": "2026-11-26T13:24:29.718929+00:00"
+  "owner": "CODEX:PUMP_TZ_H_IDOL_T0_RETAINED_ONLY_20261126:1795699734549",
+  "acquired_ts": 1795699734549,
+  "expires_ts": 1795705074549,
+  "expected_main": "9a3962d9dfb9abcfbca9ab71ea1ed82285b259a7",
+  "released": false,
+  "status": "OWNED",
+  "scope": "Dry-run exact IDOL T0 normalization on fixtures. 1 actual read-only D1 point, exact cache key for public BingX IDOL-USDT openInterest only, max 1 row, 0 writes, after live current version and actual native allowance; no scan, market calls, Telegram, deployment, settings or activation. No native OI unit change or public publishing."
 },
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1795699469718,
+  "updated_ts": 1795699734549,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -11037,10 +11035,10 @@
     "whole_day_unverified": true
   },
   "owner_deferred_106_asset": true,
-  "next_action": "Observe actual retained day at 20:00 under fresh positive admission. H is first liquidation package, sources and analytics continue on exact IDOL, E safeguards retained.",
-  "owned_lease": "CODEX:PUMP_TZ_BOUNDED_DAY_TECHNICAL_20261126:1795699201006",
-  "owned_lease_expires_ts": 1795704541006,
-  "lease_released": true,
+  "next_action": "Release scope and preserve HOLD or pass the exact retained evidence to Sources and Analytics.",
+  "owned_lease": "CODEX:PUMP_TZ_H_IDOL_T0_RETAINED_ONLY_20261126:1795699734549",
+  "owned_lease_expires_ts": 1795705074549,
+  "lease_released": false,
   "project_complete": false,
   "all_blocks_complete": false,
   "PR386_merged": true,
@@ -20043,7 +20041,7 @@
     "status": "OFFLINE_PREPARATION_ONLY",
     "live_code_preserved": true
   },
-  "current_task": "Day read now identifies proven technical candidate failures separately from missing wave coverage. Ready offline.",
+  "current_task": "H IDOL T0 exact retained cache read, then guarded shape validation",
   "previous_own_expiry_preserved": {
     "owner": "CODEX:PUMP_EXISTING_SOURCE_MONTH_AND_CURRENT_CHAIN_20261103:1793704480353",
     "expired_ts": 1793709580353,
