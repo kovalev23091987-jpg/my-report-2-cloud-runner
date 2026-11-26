@@ -3174,15 +3174,15 @@
   "automatic_operational_source_priority_authorized": true,
   "automatic_source_priority_does_not_change_strategy_weights": true,
   "last_owned_lease_released": {
-    "owner": "CODEX:PUMP_TZ_DAY_FIVE_ANCHORS_20261126:1795713565394",
-    "acquired_ts": 1795713565394,
-    "expires_ts": 1795718905394,
-    "expected_main": "eb64c3d549ad59ebdee534ac091e76a64d8d857c",
+    "owner": "CODEX:PUMP_TZ_DAY_COMPACT_ACK_20261126:1795713807667",
+    "acquired_ts": 1795713807667,
+    "expires_ts": 1795719147667,
+    "expected_main": "c41576e305319b8bc2f6173c1ce38fbe9d05f5d9",
     "released": true,
     "status": "RELEASED",
-    "scope": "One exact read-only D1 statement for the five previously identified run keys and up to ten known card/original references. Actual positive admission and max 40 rows. No market, Telegram or operational writes.",
-    "released_ts": 1795713734235,
-    "released_utc": "2026-11-26T17:22:14.235243+00:00"
+    "scope": "Exact compact scalar SELECT after verified current D1 admission, at most 40 row reads and zero writes. No market, Telegram, or deploy.",
+    "released_ts": 1795713957610,
+    "released_utc": "2026-11-26T17:25:57.610563+00:00"
   },
   "one_market_fallback_rule": "For an asset without HTX spot, retain qualified HTX futures only as limited information; never fabricate spot or cross-market agreement. For HTX spot with failed quote, omit spot metric. N11 remains futures-only.",
   "spot_futures_original_clock_max_pair_skew_ms": 630000,
@@ -3278,10 +3278,10 @@
     "whole_day_unverified": true
   },
   "owner_deferred_106_asset": true,
-  "next_action": "Complete saved day receipts and prepare the already planned G opening without changing current worker.",
+  "next_action": "Keep current e5e9 for opening PRE 23:50 / POST 00:00. Integrate source rebase and independent local code-only release under exact next permissions.",
   "owned_lease": "CODEX:PUMP_TZ_DAY_COMPACT_ACK_20261126:1795713807667",
   "owned_lease_expires_ts": 1795719147667,
-  "lease_released": false,
+  "lease_released": true,
   "project_complete": false,
   "all_blocks_complete": false,
   "PR386_merged": true,
@@ -4562,7 +4562,7 @@
     "format_activated": false,
     "nominal_row_deficit_solved": false
   },
-  "own_lease_released_utc": "2026-11-26T17:22:14.235243+00:00",
+  "own_lease_released_utc": "2026-11-26T17:25:57.610563+00:00",
   "PR413_to415_current": {
     "PRs": [
       413,
@@ -12284,7 +12284,7 @@
     "status": "OFFLINE_PREPARATION_ONLY",
     "live_code_preserved": true
   },
-  "current_task": "TZ FIVE EXACT COMPACT ACK AND ORIGINAL COMPARISON",
+  "current_task": "TZ FULL DAY FOUR EXACT AUTO ACKS RECONCILED",
   "previous_own_expiry_preserved": {
     "owner": "CODEX:PUMP_EXISTING_SOURCE_MONTH_AND_CURRENT_CHAIN_20261103:1793704480353",
     "expired_ts": 1793709580353,
