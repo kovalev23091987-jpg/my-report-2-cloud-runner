@@ -333,13 +333,15 @@
   "acquired_ts": 1795709497394,
   "expires_ts": 1795714837394,
   "expected_main": "c539ccff1cb14cda73ca812acb9a8c5113ca3667",
-  "released": false,
-  "status": "OWNED",
-  "scope": "Offline isolated e5e9 connected H+B5 staged reader with independent prequalified input seam. No market, Cloudflare, deployment, SQL D1 or Telegram."
+  "released": true,
+  "status": "RELEASED",
+  "scope": "Offline isolated e5e9 connected H+B5 staged reader with independent prequalified input seam. No market, Cloudflare, deployment, SQL D1 or Telegram.",
+  "released_ts": 1795710261211,
+  "released_utc": "2026-11-26T16:24:21.211196+00:00"
 },
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1795709497394,
+  "updated_ts": 1795710261211,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -10931,15 +10933,15 @@
   "automatic_operational_source_priority_authorized": true,
   "automatic_source_priority_does_not_change_strategy_weights": true,
   "last_owned_lease_released": {
-    "owner": "CODEX:PUMP_TZ_SELECTION_CUTOFF_CODE_ONLY_20261126:1795708844259",
-    "acquired_ts": 1795708844259,
-    "expires_ts": 1795714184259,
-    "expected_main": "a3323b6f89a0decc5d65859114df4de9d67797ef",
+    "owner": "CODEX:PUMP_TZ_PREQUALIFIED_H_TRANSPORT_20261126:1795709497394",
+    "acquired_ts": 1795709497394,
+    "expires_ts": 1795714837394,
+    "expected_main": "c539ccff1cb14cda73ca812acb9a8c5113ca3667",
     "released": true,
     "status": "RELEASED",
-    "scope": "One 26-Nov 19:05 natural slot quiescence read <=135 D1 rows and 0 writes with current Cloudflare quota. One reversible content-only PUT on exact e5e9 -> 5428adf5, only on positive timing, settings and exact rollback. No market, Telegram, D1 writes, settings, DB schema or schedule changes. Local control test allowed.",
-    "released_ts": 1795709343212,
-    "released_utc": "2026-11-26T16:09:03.212093+00:00"
+    "scope": "Offline isolated e5e9 connected H+B5 staged reader with independent prequalified input seam. No market, Cloudflare, deployment, SQL D1 or Telegram.",
+    "released_ts": 1795710261211,
+    "released_utc": "2026-11-26T16:24:21.211196+00:00"
   },
   "one_market_fallback_rule": "For an asset without HTX spot, retain qualified HTX futures only as limited information; never fabricate spot or cross-market agreement. For HTX spot with failed quote, omit spot metric. N11 remains futures-only.",
   "spot_futures_original_clock_max_pair_skew_ms": 630000,
@@ -11035,10 +11037,10 @@
     "whole_day_unverified": true
   },
   "owner_deferred_106_asset": true,
-  "next_action": "Prove full H4 on staged input plus rejection of missing attestation/real producer; hold current flags. Continue once actual Cloudflare control is restored.",
+  "next_action": "Actual qualified H receipt and current Cloudflare control required. Dashboard/API incident xiqj67vl5pqm; independent local B5 and time-bound queue remain.",
   "owned_lease": "CODEX:PUMP_TZ_PREQUALIFIED_H_TRANSPORT_20261126:1795709497394",
   "owned_lease_expires_ts": 1795714837394,
-  "lease_released": false,
+  "lease_released": true,
   "project_complete": false,
   "all_blocks_complete": false,
   "PR386_merged": true,
@@ -12319,7 +12321,7 @@
     "format_activated": false,
     "nominal_row_deficit_solved": false
   },
-  "own_lease_released_utc": "2026-11-26T16:09:03.212093+00:00",
+  "own_lease_released_utc": "2026-11-26T16:24:21.211196+00:00",
   "PR413_to415_current": {
     "PRs": [
       413,
@@ -20041,7 +20043,7 @@
     "status": "OFFLINE_PREPARATION_ONLY",
     "live_code_preserved": true
   },
-  "current_task": "TZ H PREQUALIFIED ONE-READ TRANSPORT AND NATIVE ID SEAM",
+  "current_task": "TZ H PREQUALIFIED INPUT ONE-READ LOCAL ACCEPTANCE",
   "previous_own_expiry_preserved": {
     "owner": "CODEX:PUMP_EXISTING_SOURCE_MONTH_AND_CURRENT_CHAIN_20261103:1793704480353",
     "expired_ts": 1793709580353,
