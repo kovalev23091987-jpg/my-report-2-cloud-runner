@@ -3174,15 +3174,15 @@
   "automatic_operational_source_priority_authorized": true,
   "automatic_source_priority_does_not_change_strategy_weights": true,
   "last_owned_lease_released": {
-    "owner": "CODEX:PUMP_TZ_FULL_DAY_ATTRIBUTION_20261126:1795707881180",
-    "acquired_ts": 1795707881180,
-    "expires_ts": 1795713221180,
-    "expected_main": "23d506681e74dffafe2e5cfcb053236737f4e914",
+    "owner": "CODEX:PUMP_TZ_B5_COMPATIBLE_READER_20261126:1795708109079",
+    "acquired_ts": 1795708109079,
+    "expires_ts": 1795713449079,
+    "expected_main": "7609d3389a2dc73ccdb9be095d2d445441c1164d",
     "released": true,
     "status": "RELEASED",
-    "scope": "Offline full-day summary and existing connector fixture, no actual IO or settings.",
-    "released_ts": 1795707989717,
-    "released_utc": "2026-11-26T15:46:29.717438+00:00"
+    "scope": "Offline isolated merged e5e9 H/B5 reader and recovery tests, intended fallback path. No live D1, network, Telegram, settings, deployment or old automation.",
+    "released_ts": 1795708427553,
+    "released_utc": "2026-11-26T15:53:47.553772+00:00"
   },
   "one_market_fallback_rule": "For an asset without HTX spot, retain qualified HTX futures only as limited information; never fabricate spot or cross-market agreement. For HTX spot with failed quote, omit spot metric. N11 remains futures-only.",
   "spot_futures_original_clock_max_pair_skew_ms": 630000,
@@ -3278,10 +3278,10 @@
     "whole_day_unverified": true
   },
   "owner_deferred_106_asset": true,
-  "next_action": "Verify ordinary fallback only before an external write, test lost ACK owner, classify native cost and release.",
+  "next_action": "Prepare selection-time evidence with no request changes. B5 writer remains disabled awaiting retained feature projection, real comparison and admission. Full day at 20:00.",
   "owned_lease": "CODEX:PUMP_TZ_B5_COMPATIBLE_READER_20261126:1795708109079",
   "owned_lease_expires_ts": 1795713449079,
-  "lease_released": false,
+  "lease_released": true,
   "project_complete": false,
   "all_blocks_complete": false,
   "PR386_merged": true,
@@ -4562,7 +4562,7 @@
     "format_activated": false,
     "nominal_row_deficit_solved": false
   },
-  "own_lease_released_utc": "2026-11-26T15:46:29.717438+00:00",
+  "own_lease_released_utc": "2026-11-26T15:53:47.553772+00:00",
   "PR413_to415_current": {
     "PRs": [
       413,
@@ -12284,7 +12284,7 @@
     "status": "OFFLINE_PREPARATION_ONLY",
     "live_code_preserved": true
   },
-  "current_task": "TZ B5 SAFE READER FOR IMMUTABLE BASE VARIANT OFFLINE",
+  "current_task": "TZ B5 COMPATIBLE READER AND LAST DEFINITION CHECK 17 LOCAL PASS",
   "previous_own_expiry_preserved": {
     "owner": "CODEX:PUMP_EXISTING_SOURCE_MONTH_AND_CURRENT_CHAIN_20261103:1793704480353",
     "expired_ts": 1793709580353,
